@@ -88,12 +88,12 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
 
         List<String> screenIdList = screenPersonMapper.getMaxScreenId(year, town);
         // 根据镇名称查询对应的区域代码
-        String code = screenDistrictMapper.selectByName(town);
+//        String code = screenDistrictMapper.selectByName(town);
 
         // 找到该乡镇最大的筛查编号
-        String maxScreenId = constructMaxScreenId(screenIdList, code, year, screenPerson.getScreenType());
+        String maxScreenId = constructMaxScreenId(screenIdList, town.substring(0,9), year, screenPerson.getScreenType());
 
-        String screenId = makeScreenId(maxScreenId, code);
+        String screenId = makeScreenId(maxScreenId, town.substring(0,9));
 
         screenPerson.setScreenId(screenId);
 
@@ -229,7 +229,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             String countyCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressCounty());
 
             if (code1 != null && countyCode1 != null && cityCode1 != null && provinceCode1 != null) {
-                if (!code1.substring(0, 6).equals(countyCode1) || !code1.substring(0, 4).equals(cityCode1) || !code1.substring(0, 2).equals(provinceCode1)) {
+                if (!code1.substring(0, 6).equals(countyCode1.substring(0,6)) || !code1.substring(0, 4).equals(cityCode1.substring(0, 4)) || !code1.substring(0, 2).equals(provinceCode1.substring(0, 2))) {
                     failureSpecification.put(failureSpecification.size(), "该摸底人员户籍省市县乡不匹配");
                     iterator.remove(); // 使用迭代器的 remove 方法移除当前元素
                     continue; // 跳过后续的操作，继续下一轮循环
@@ -241,11 +241,11 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             }
 
             if (code != null && countyCode != null && cityCode != null && provinceCode != null){
-                if (code.substring(0, 6).equals(countyCode) && code.substring(0, 4).equals(cityCode) && code.substring(0,2).equals(provinceCode)){
+                if (code.substring(0, 6).equals(countyCode.substring(0, 6)) && code.substring(0, 4).equals(cityCode.substring(0, 4)) && code.substring(0,2).equals(provinceCode.substring(0, 2))){
                     boolean isCodeUnique = true;
                     // 检查当前code是否已存在于 importVOList 中，若存在则将 isCodeUnique 标记为 false
                     for (ImportVO importVO : importVOList) {
-                        if (importVO.getCode().equals(code)) {
+                        if (importVO.getCode().substring(0, 9).equals(code.substring(0, 9))) {
                             isCodeUnique = false;
                             break; // 跳出循环
                         }
@@ -253,13 +253,13 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
                     // 如果 code 是唯一的，则将对象添加到 importVOList 中
                     if (isCodeUnique) {
                         // 获取该乡最大的筛查编号列表
-                        List<String> screenIdList = screenPersonMapper.getMaxScreenId(year, obj.getTown());
+                        List<String> screenIdList = screenPersonMapper.getMaxScreenId(year, code);
                         // 构造最大的筛查编号
-                        String maxScreenId = constructMaxScreenId(screenIdList, code, year, screenType);
+                        String maxScreenId = constructMaxScreenId(screenIdList, code.substring(0, 9), year, screenType);
                         // 创建 ImportVO 对象并设置属性
                         ImportVO importVO = new ImportVO();
                         importVO.setScreenId(maxScreenId);
-                        importVO.setCode(code);
+                        importVO.setCode(code.substring(0, 9));
                         importVO.setName(obj.getTown());
                         importVO.setScreenPersonDO(BeanUtils.toBean(obj, ScreenPersonDO.class));
                         importVOList.add(importVO); // 将 importVO 添加到 importVOList 中
@@ -272,13 +272,22 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
                 failureSpecification.put(failureSpecification.size(), "该摸底人员所在省市县乡缺失");
                 iterator.remove(); // 使用迭代器的 remove 方法移除当前元素
             }
+
+            obj.setProvince(provinceCode);
+            obj.setCity(cityCode);
+            obj.setCounty(countyCode);
+            obj.setTown(code);
+            obj.setPermanentAddressProvince(provinceCode1);
+            obj.setPermanentAddressCity(cityCode1);
+            obj.setPermanentAddressCounty(countyCode1);
+            obj.setPermanentAddressTown(code1);
         }
 
         // 处理非重复人员
         for (ScreenPersonImportVO obj : uniqueList) {
             String newScreenId = "";
             for (ImportVO importVO : importVOList) {
-                if (obj.getTown().equals(importVO.getName())) {
+                if (obj.getTown().substring(0, 9).equals(importVO.getCode())) {
                     String s = importVO.getScreenId();
                     // 生成 筛查编号
                     newScreenId = makeScreenId(s, importVO.getCode());
@@ -289,7 +298,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             obj.setScreenId(newScreenId);
             obj.setYear(year);
             obj.setScreenTime(screenTime);
-            processScreenPerson(screenType, year,obj, batchInsert, batchUpdate, createSpecification, failureSpecification);
+            processScreenPerson(screenType, year, obj, batchInsert, batchUpdate, createSpecification, failureSpecification);
         }
 
 
@@ -314,7 +323,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             String countyCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressCounty());
 
             if (code1 != null && countyCode1 != null && cityCode1 != null && provinceCode1 != null) {
-                if (!code1.substring(0, 6).equals(countyCode1) || !code1.substring(0, 4).equals(cityCode1) || !code1.substring(0, 2).equals(provinceCode1)) {
+                if (!code1.substring(0, 6).equals(countyCode1.substring(0, 6)) || !code1.substring(0, 4).equals(cityCode1.substring(0, 4)) || !code1.substring(0, 2).equals(provinceCode1.substring(0, 2))) {
                     failureSpecification.put(failureSpecification.size(), "该重复人员户籍省市县乡不匹配");
                     iterator2.remove(); // 使用迭代器的 remove 方法移除当前元素
                     continue; // 跳过后续的操作，继续下一轮循环
@@ -326,7 +335,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             }
 
             if (code != null && countyCode != null && cityCode != null && provinceCode != null){
-                if (!code.substring(0, 6).equals(countyCode) || !code.substring(0, 4).equals(cityCode) || !code.substring(0,2).equals(provinceCode)) {
+                if (!code.substring(0, 6).equals(countyCode.substring(0, 6)) || !code.substring(0, 4).equals(cityCode.substring(0, 4)) || !code.substring(0,2).equals(provinceCode.substring(0,2))) {
                     failureSpecification.put(failureSpecification.size(), "该重复人员所在省市县乡不匹配");
                     iterator2.remove(); // 使用迭代器的 remove 方法移除当前元素
                 }

@@ -1,6 +1,7 @@
 package cn.iocoder.yudao.module.ppd.controller.admin.screendistrict;
 
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO;
 import cn.iocoder.yudao.module.ppd.service.screendistrict.ScreenDistrictService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -25,37 +26,37 @@ public class ScreenDistrictController {
 
 
     @GetMapping("/get-province")
-    public CommonResult<List<String>> getProvince(){
-        List<String> provinceName = screenDistrictService.getProvinceName();
+    public CommonResult<List<ScreenDistrictDO>> getProvince(){
+        List<ScreenDistrictDO> provinceName = screenDistrictService.getProvinceName2();
         return success(provinceName);
     }
 
     @GetMapping("/get-city")
-    public CommonResult<List<String>> getCity(){
-        List<String> cityName = screenDistrictService.getCityName();
+    public CommonResult<List<ScreenDistrictDO>> getCity(){
+        List<ScreenDistrictDO> cityName = screenDistrictService.getCityName2();
         return success(cityName);
     }
 
 
     @GetMapping("/get-county")
-    public CommonResult<List<String>> getCounty(){
-        List<String> countyName = screenDistrictService.getCountyName();
+    public CommonResult<List<ScreenDistrictDO>> getCounty(){
+        List<ScreenDistrictDO> countyName = screenDistrictService.getCountyName2();
         return success(countyName);
     }
 
 
 
     @GetMapping("/get-town")
-    public CommonResult<List<String>> getTown(){
-        List<String> townName = screenDistrictService.getTownName();
+    public CommonResult<List<ScreenDistrictDO>> getTown(){
+        List<ScreenDistrictDO> townName = screenDistrictService.getTownName2();
         return success(townName);
     }
 
 
 
     @GetMapping("/get-village")
-    public CommonResult<List<String>> getVillage(){
-        List<String> villageName = screenDistrictService.getVillageName();
+    public CommonResult<List<ScreenDistrictDO>> getVillage(){
+        List<ScreenDistrictDO> villageName = screenDistrictService.getVillageName2();
         return success(villageName);
     }
 
