@@ -6,7 +6,7 @@
     "versionCode" : "100",
     "transformPx" : false,
     "app-plus" : {
-		"orientation" : [ "landscape-primary" ],
+        "orientation" : [ "landscape-primary" ],
         "usingComponents" : true,
         "nvueCompiler" : "uni-app",
         "splashscreen" : {
@@ -54,7 +54,7 @@
         },
         "usingComponents" : true
     },
-    "vueVersion" : "2",
+    "vueVersion" : "3",
     "h5" : {
         "template" : "static/index.html",
         "devServer" : {
