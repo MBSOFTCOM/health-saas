@@ -1,5 +1,5 @@
 // 应用全局配置
-module.exports = {
+export default {
   // baseUrl: 'http://api-dashboard.yudao.iocoder.cn',
   baseUrl: 'http://192.168.220.129:48089',
   baseApi: '/admin-api',
