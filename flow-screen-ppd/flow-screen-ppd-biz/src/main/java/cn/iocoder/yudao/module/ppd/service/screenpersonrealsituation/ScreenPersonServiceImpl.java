@@ -343,6 +343,14 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
                 failureSpecification.put(failureSpecification.size(), "该重复人员所在省市县乡缺失");
                 iterator2.remove(); // 使用迭代器的 remove 方法移除当前元素
             }
+            obj.setProvince(provinceCode);
+            obj.setCity(cityCode);
+            obj.setCounty(countyCode);
+            obj.setTown(code);
+            obj.setPermanentAddressProvince(provinceCode1);
+            obj.setPermanentAddressCity(cityCode1);
+            obj.setPermanentAddressCounty(countyCode1);
+            obj.setPermanentAddressTown(code1);
         }
 
         // 处理重复人员
@@ -763,6 +771,23 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
 
     @Override
     public void resolveDistrict(ScreenPersonDO obj) {
+        try {
+            obj.setProvince(screenDistrictMapper.getNameByCode(obj.getProvince()));
+            obj.setCity(screenDistrictMapper.getNameByCode(obj.getCity()));
+            obj.setCounty(screenDistrictMapper.getNameByCode(obj.getCounty()));
+            obj.setTown(screenDistrictMapper.getNameByCode(obj.getTown()));
+
+            obj.setPermanentAddressProvince(screenDistrictMapper.getNameByCode(obj.getPermanentAddressProvince()));
+            obj.setPermanentAddressCity(screenDistrictMapper.getNameByCode(obj.getPermanentAddressCity()));
+            obj.setPermanentAddressCounty(screenDistrictMapper.getNameByCode(obj.getPermanentAddressCounty()));
+            obj.setPermanentAddressTown(screenDistrictMapper.getNameByCode(obj.getPermanentAddressTown()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void resolveDistrict2(ScreenRepeatPersonDO obj) {
         try {
             obj.setProvince(screenDistrictMapper.getNameByCode(obj.getProvince()));
             obj.setCity(screenDistrictMapper.getNameByCode(obj.getCity()));

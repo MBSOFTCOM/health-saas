@@ -121,12 +121,13 @@
               placeholder="请选择省"
               clearable
               class="!w-240px"
+              @change="getCityList2(formData.permanentAddressProvince)"
             >
               <el-option
                 v-for="item in provinceList"
-                :key="item"
-                :label="item"
-                :value="item"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               />
             </el-select>
           </el-form-item>
@@ -140,12 +141,13 @@
               placeholder="请选择省"
               clearable
               class="!w-240px"
+              @change="getCityList(formData.province)"
             >
               <el-option
                 v-for="item in provinceList"
-                :key="item"
-                :label="item"
-                :value="item"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               />
             </el-select>
           </el-form-item>
@@ -158,16 +160,17 @@
             <el-select
               v-model="formData.permanentAddressCity"
               filterable
-              :filter-method="PinyinCity"
+              :filter-method="PinyinCity2"
               placeholder="请选择市"
               clearable
               class="!w-240px"
+              @change="getCountyList2(formData.permanentAddressCity)"
             >
               <el-option
-                v-for="item in cityList"
-                :key="item"
-                :label="item"
-                :value="item"
+                v-for="item in cityList2"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               />
             </el-select>
           </el-form-item>
@@ -181,12 +184,13 @@
               placeholder="请选择市"
               clearable
               class="!w-240px"
+              @change="getCountyList(formData.city)"
             >
               <el-option
                 v-for="item in cityList"
-                :key="item"
-                :label="item"
-                :value="item"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               />
             </el-select>
           </el-form-item>
@@ -199,16 +203,17 @@
             <el-select
               v-model="formData.permanentAddressCounty"
               filterable
-              :filter-method="PinyinCounty"
+              :filter-method="PinyinCounty2"
               placeholder="请选择县"
               clearable
               class="!w-240px"
+              @change="getTownList2(formData.permanentAddressCounty)"
             >
               <el-option
-                v-for="item in countyList"
-                :key="item"
-                :label="item"
-                :value="item"
+                v-for="item in countyList2"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               />
             </el-select>
           </el-form-item>
@@ -222,12 +227,13 @@
               placeholder="请选择县"
               clearable
               class="!w-240px"
+              @change="getTownList(formData.county)"
             >
               <el-option
                 v-for="item in countyList"
-                :key="item"
-                :label="item"
-                :value="item"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               />
             </el-select>
           </el-form-item>
@@ -240,16 +246,16 @@
             <el-select
               v-model="formData.permanentAddressTown"
               filterable
-              :filter-method="PinyinTown"
+              :filter-method="PinyinTown2"
               placeholder="请选择乡镇"
               clearable
               class="!w-240px"
             >
               <el-option
-                v-for="item in townList"
-                :key="item"
-                :label="item"
-                :value="item"
+                v-for="item in townList2"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               />
             </el-select>
           </el-form-item>
@@ -266,9 +272,9 @@
             >
               <el-option
                 v-for="item in townList"
-                :key="item"
-                :label="item"
-                :value="item"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               />
             </el-select>
           </el-form-item>
@@ -522,6 +528,10 @@ const provinceList = ref([]) //省列表
 const cityList = ref([]) //市列表
 const countyList = ref([]) // 县列表
 const townList = ref([]) //乡镇列表
+
+const cityList2 = ref([]) //户籍市列表
+const countyList2 = ref([]) // 户籍县列表
+const townList2 = ref([]) //户籍乡镇列表
 
 
 // 身高的验证规则
@@ -823,8 +833,8 @@ const PinyinProvince = (val) => {
 }
 // 市
 const copyCity = reactive([])
-const getCityList = ()=>{
-  ScreenDistrictApi.getCity().then(data => {
+const getCityList = (provinceCode) => {
+  ScreenDistrictApi.getCity(provinceCode).then(data => {
     cityList.value = data;
     copyCity.splice(0, copyCity.length, ...data);
   })
@@ -833,7 +843,7 @@ const PinyinCity = (val) => {
   if (val) {
     const result = []
     cityList.value.forEach((i) => {
-      const m = PinyinMatch.match(i, val)
+      const m = PinyinMatch.match(i.name, val)
       if (m) {
         result.push(i)
       }
@@ -844,10 +854,34 @@ const PinyinCity = (val) => {
     cityList.value.splice(0, cityList.value.length, ...copyCity)
   }
 }
+// 户籍市
+const copyCity2 = reactive([])
+const getCityList2 = (provinceCode) => {
+  ScreenDistrictApi.getCity(provinceCode).then(data => {
+    cityList2.value = data;
+    copyCity2.splice(0, copyCity2.length, ...data);
+  })
+}
+const PinyinCity2 = (val) => {
+  if (val) {
+    const result = []
+    cityList2.value.forEach((i) => {
+      const m = PinyinMatch.match(i.name, val)
+      if (m) {
+        result.push(i)
+      }
+    })
+    cityList2.value.splice(0, cityList2.value.length, ...result)
+  } else {
+    // 如果没有输入，则还原列表
+    cityList2.value.splice(0, cityList2.value.length, ...copyCity2)
+  }
+}
+
 // 县
 const copyCounty = reactive([])
-const getCountyList = ()=>{
-  ScreenDistrictApi.getCounty().then(data => {
+const getCountyList = (cityCode) => {
+  ScreenDistrictApi.getCounty(cityCode).then(data => {
     countyList.value = data;
     copyCounty.splice(0, copyCounty.length, ...data);
   })
@@ -856,7 +890,7 @@ const PinyinCounty = (val) => {
   if (val) {
     const result = []
     countyList.value.forEach((i) => {
-      const m = PinyinMatch.match(i, val)
+      const m = PinyinMatch.match(i.name, val)
       if (m) {
         result.push(i)
       }
@@ -867,10 +901,34 @@ const PinyinCounty = (val) => {
     countyList.value.splice(0, countyList.value.length, ...copyCounty)
   }
 }
+// 户籍县
+const copyCounty2 = reactive([])
+const getCountyList2 = (cityCode) => {
+  ScreenDistrictApi.getCounty(cityCode).then(data => {
+    countyList2.value = data;
+    copyCounty2.splice(0, copyCounty2.length, ...data);
+  })
+}
+const PinyinCounty2 = (val) => {
+  if (val) {
+    const result = []
+    countyList2.value.forEach((i) => {
+      const m = PinyinMatch.match(i.name, val)
+      if (m) {
+        result.push(i)
+      }
+    })
+    countyList2.value.splice(0, countyList2.value.length, ...result)
+  } else {
+    // 如果没有输入，则还原列表
+    countyList2.value.splice(0, countyList2.value.length, ...copyCounty2)
+  }
+}
+
 // 乡
 const copyTown = reactive([])
-const getTownList = ()=>{
-  ScreenDistrictApi.getTown().then(data => {
+const getTownList = (countyCode) => {
+  ScreenDistrictApi.getTown(countyCode).then(data => {
     townList.value = data;
     copyTown.splice(0, copyTown.length, ...data);
   })
@@ -879,7 +937,7 @@ const PinyinTown = (val) => {
   if (val) {
     const result = []
     townList.value.forEach((i) => {
-      const m = PinyinMatch.match(i, val)
+      const m = PinyinMatch.match(i.name, val)
       if (m) {
         result.push(i)
       }
@@ -888,6 +946,30 @@ const PinyinTown = (val) => {
   } else {
     // 如果没有输入，则还原列表
     townList.value.splice(0, townList.value.length, ...copyTown)
+  }
+}
+
+// 户籍乡
+const copyTown2 = reactive([])
+const getTownList2 = (countyCode) => {
+  ScreenDistrictApi.getTown(countyCode).then(data => {
+    townList2.value = data;
+    copyTown2.splice(0, copyTown2.length, ...data);
+  })
+}
+const PinyinTown2 = (val) => {
+  if (val) {
+    const result = []
+    townList2.value.forEach((i) => {
+      const m = PinyinMatch.match(i.name, val)
+      if (m) {
+        result.push(i)
+      }
+    })
+    townList2.value.splice(0, townList2.value.length, ...result)
+  } else {
+    // 如果没有输入，则还原列表
+    townList2.value.splice(0, townList2.value.length, ...copyTown2)
   }
 }
 
@@ -935,11 +1017,9 @@ const resetForm = () => {
 
 /** 初始化 **/
 onMounted(async () => {
-  getEthnicList()
-  getScreenPoint()
+  await getScreenPoint()
   getProvinceList()
-  getCityList()
-  getCountyList()
-  getTownList()
+  getEthnicList()
+
 })
 </script>
