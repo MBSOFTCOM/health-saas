@@ -6,6 +6,7 @@
     "versionCode" : "100",
     "transformPx" : false,
     "app-plus" : {
+		"orientation" : [ "landscape-primary" ],
         "usingComponents" : true,
         "nvueCompiler" : "uni-app",
         "splashscreen" : {

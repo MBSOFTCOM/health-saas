@@ -1,7 +1,7 @@
 // 应用全局配置
 module.exports = {
   // baseUrl: 'http://api-dashboard.yudao.iocoder.cn',
-  baseUrl: 'http://localhost:48080',
+  baseUrl: 'http://192.168.220.129:48089',
   baseApi: '/admin-api',
   // 应用信息
   appInfo: {
