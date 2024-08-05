@@ -1,4 +1,3 @@
-基于 Vue + uni-app 实现的管理后台。仓库地址：
+# 筛查-ppd
 
-* Gitee：<https://gitee.com/yudaocode/yudao-ui-admin-uniapp>
-* GitHub：<https://github.com/yudaocode/yudao-ui-admin-uniapp>
+## 打开后到本项目根目录下执行: npm install crypto-js

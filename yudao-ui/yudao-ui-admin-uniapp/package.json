@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "crypto-js": "^4.2.0",
+    "uview-plus": "^3.3.11"
+  }
+}
