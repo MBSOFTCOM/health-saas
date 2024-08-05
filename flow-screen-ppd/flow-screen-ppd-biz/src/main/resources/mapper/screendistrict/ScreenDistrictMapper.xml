@@ -49,21 +49,21 @@
     <select id="getCityName2" resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO">
         SELECT code ,name
         FROM tb_screen_district
-        WHERE level = 1
+        WHERE parent_code = #{provinceCode}
     </select>
 
 
     <select id="getCountyName2" resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO">
         SELECT code ,name
         FROM tb_screen_district
-        WHERE level = 2
+        WHERE parent_code = #{cityCode}
     </select>
 
 
     <select id="getTownName2" resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO">
         SELECT code ,name
         FROM tb_screen_district
-        WHERE level = 3
+        WHERE parent_code = #{countyCode}
     </select>
 
 

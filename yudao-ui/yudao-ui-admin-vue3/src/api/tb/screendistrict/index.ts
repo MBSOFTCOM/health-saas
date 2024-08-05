@@ -16,16 +16,16 @@ export const ScreenDistrictApi = {
     return await request.get({url: `/tb/screen-district/get-province`})
   },
 
-  getCity: async () => {
-    return await request.get({url: `/tb/screen-district/get-city`})
+  getCity: async (provinceCode: string) => {
+    return await request.get({url: `/tb/screen-district/get-city?provinceCode=` + provinceCode})
   },
 
-  getCounty: async () => {
-    return await request.get({url: `/tb/screen-district/get-county`})
+  getCounty: async (cityCode: string) => {
+    return await request.get({url: `/tb/screen-district/get-county?cityCode=` + cityCode})
   },
 
-  getTown: async () => {
-    return await request.get({url: `/tb/screen-district/get-town`})
+  getTown: async (countyCode: string) => {
+    return await request.get({url: `/tb/screen-district/get-town?countyCode=` + countyCode})
   },
 
   getVillage: async () => {
