@@ -85,6 +85,10 @@
         FROM tb_screen_district
         WHERE code = #{code}
     </select>
+    <select id="selectAll"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screendistrict.vo.ScreenDistrictRespVO">
+        select * FROM tb_screen_district
+    </select>
 
 
 </mapper>
