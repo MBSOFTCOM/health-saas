@@ -80,6 +80,11 @@
         WHERE level = 0
     </select>
 
+    <select id="getNameByCode" resultType="java.lang.String">
+        SELECT name
+        FROM tb_screen_district
+        WHERE code = #{code}
+    </select>
 
 
 </mapper>

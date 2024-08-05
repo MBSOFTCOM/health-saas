@@ -1,6 +1,7 @@
 package cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation;
 
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.iocoder.yudao.framework.apilog.core.annotation.ApiAccessLog;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.pojo.PageParam;
@@ -175,8 +176,8 @@ public class ScreenPersonController {
         for (ScreenPersonDO obj : list) {
             String strMoreType = screenPersonService.resolveMoreTypeToString(obj.getMoreType());
             obj.setMoreTypeStr(strMoreType);
+            screenPersonService.resolveDistrict(obj);
         }
-
         // 导出 Excel
         ExcelUtils.write2(response, "摸底人员表.xls", "摸底人员表", ScreenPersonRespVO.class,
                 BeanUtils.toBean(list, ScreenPersonRespVO.class));
@@ -195,6 +196,7 @@ public class ScreenPersonController {
         for (ScreenPersonDO obj : list) {
             String strMoreType = screenPersonService.resolveMoreTypeToString(obj.getMoreType());
             obj.setMoreTypeStr(strMoreType);
+            screenPersonService.resolveDistrict(obj);
         }
 
         // 导出 Excel

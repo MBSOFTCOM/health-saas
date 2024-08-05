@@ -69,4 +69,6 @@ public interface ScreenDistrictMapper extends BaseMapperX<ScreenDistrictDO> {
     List<String> getVillageName();
 
     String selectByName(String name);
+
+    String getNameByCode(String code);
 }

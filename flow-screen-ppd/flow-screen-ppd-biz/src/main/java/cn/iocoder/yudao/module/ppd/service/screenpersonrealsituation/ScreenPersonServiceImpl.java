@@ -761,6 +761,24 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         return imageStr;
     }
 
+    @Override
+    public void resolveDistrict(ScreenPersonDO obj) {
+        try {
+            obj.setProvince(screenDistrictMapper.getNameByCode(obj.getProvince()));
+            obj.setCity(screenDistrictMapper.getNameByCode(obj.getCity()));
+            obj.setCounty(screenDistrictMapper.getNameByCode(obj.getCounty()));
+            obj.setTown(screenDistrictMapper.getNameByCode(obj.getTown()));
+
+            obj.setPermanentAddressProvince(screenDistrictMapper.getNameByCode(obj.getPermanentAddressProvince()));
+            obj.setPermanentAddressCity(screenDistrictMapper.getNameByCode(obj.getPermanentAddressCity()));
+            obj.setPermanentAddressCounty(screenDistrictMapper.getNameByCode(obj.getPermanentAddressCounty()));
+            obj.setPermanentAddressTown(screenDistrictMapper.getNameByCode(obj.getPermanentAddressTown()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     @VisibleForTesting
     void validateImageExists(Long imageId) {
         if (imageId == null) {
