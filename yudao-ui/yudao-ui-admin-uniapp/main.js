@@ -1,17 +1,24 @@
-import Vue from 'vue'
-import App from './App'
-import store from './store' // store
-import plugins from './plugins' // plugins
-import './permission' // permission
-Vue.use(plugins)
+import { createSSRApp  } from 'vue'
+import App from './App.vue';
+import store from './store'; // store
+import plugins from './plugins'; // plugins
+import './permission'; // permission
+import GlobalConfigPlugin from './plugins/GlobalConfigPlugin'
+import uviewPlus from '@/uni_modules/uview-plus'
+import dbUtils from "@/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils.js" //sqlite-manage插件
 
-Vue.config.productionTip = false
-Vue.prototype.$store = store
 
-App.mpType = 'app'
 
-const app = new Vue({
-  ...App
-})
+export function createApp(){
+  const app = createSSRApp(App);
+  app.config.globalProperties.$dbUtils = dbUtils;
+  app.use(GlobalConfigPlugin)
+  app.use(store);
+  app.use(plugins);
+  app.use(uviewPlus)
+  return{
+    app
+  }
+}
 
-app.$mount()
+
