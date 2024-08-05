@@ -81,6 +81,7 @@
 			},
 		},
 		data() {
+			const defaultImg = import.meta.globEager('@/static/images/default.jpg')['./default.jpg'];
 			return {
 				// showBox:true,
 				clickShow: false,
@@ -88,7 +89,7 @@
 				verifyType: undefined,
 				// 所用组件类型
 				componentType: undefined,
-				defaultImg: require('@/static/images/default.jpg')
+				defaultImg
 			}
 		},
 		mounted() {

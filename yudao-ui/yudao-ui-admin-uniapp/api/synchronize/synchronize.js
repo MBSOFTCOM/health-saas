@@ -1,6 +1,6 @@
 import upload from '@/utils/upload'
 import request from '@/utils/request'
-import dbUtils from '@/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
+import dbUtils from '/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
 import { count,promise } from '../../utils/sqlite';
 import { login } from '../login';
 

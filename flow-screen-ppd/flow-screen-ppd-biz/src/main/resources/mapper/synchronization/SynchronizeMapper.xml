@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.iocoder.yudao.module.ppd.dal.mysql.synchronization.SynchronizeMapper">
+    <!--
+        一般情况下，尽可能使用 Mapper 进行 CRUD 增删改查即可。
+        无法满足的场景，例如说多表关联查询，才使用 XML 编写 SQL。
+        代码生成器暂时只生成 Mapper XML 文件本身，更多推荐 MybatisX 快速开发插件来生成查询。
+        文档可见：https://www.iocoder.cn/MyBatis/x-plugins/
+     -->
+
+    <select id="getTableList"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.TableSchema">
+        SELECT table_name,table_comment
+        FROM information_schema.tables
+        WHERE table_schema = 'tb_process'
+          AND table_name like concat('tb_screen_','%')
+        <if test="pageSize !=null and pageSize!=''">
+            limit #{pageNo},#{pageSize}
+        </if>
+    </select>
+    <select id="getTotal" resultType="java.lang.Long">
+        SELECT ifnull(count(*),0)
+        FROM information_schema.tables
+        WHERE table_schema = 'tb_process'
+          AND table_name like concat('tb_screen_','%')
+    </select>
+
+    <!--摸底表-->
+    <select id="selectPersonIdByIndex" resultType="java.lang.Long">
+        select id
+        from tb_screen_person
+        <where>
+            <if test="screenType != null">
+                screen_type = #{screenType} AND
+            </if>
+            <if test="year != null">
+                year= #{year} AND
+            </if>
+            <if test="idNum != null and idNum !=''">
+                id_num= #{idNum}
+            </if>
+
+        </where>
+    </select>
+    <update id="updateScreenPerson">
+        update tb_screen_person
+        <set>
+            <if test="item.screenId != null">screen_id = #{item.screenId},</if>
+            <if test="item.tel != null">tel = #{item.tel},</if>
+            <if test="item.height != null">height = #{item.height},</if>
+            <if test="item.weight != null">weight = #{item.weight},</if>
+            <if test="item.address != null">address = #{item.address},</if>
+            <if test="item.province != null">province = #{item.province},</if>
+            <if test="item.city != null">city = #{item.city},</if>
+            <if test="item.county != null">county = #{item.county},</if>
+            <if test="item.town != null">town = #{item.town},</if>
+            <if test="item.nation != null">nation = #{item.nation},</if>
+            <if test="item.firstType != null">first_type = #{item.firstType},</if>
+            <if test="item.moreType != null">more_type = #{item.moreType},</if>
+            <if test="item.schoolOrTemple != null">school_or_temple = #{item.schoolOrTemple},</if>
+            <if test="item.classroom != null">classroom = #{item.classroom},</if>
+            <if test="item.isNew != null">is_new = #{item.isNew},</if>
+            <if test="item.isScreened != null">is_screened = #{item.isScreened},</if>
+            <if test="item.isNewStudent != null">is_new_student = #{item.isNewStudent},</if>
+            <if test="item.screenPoint != null">screen_point = #{item.screenPoint},</if>
+            <if test="item.screenTime != null">screen_time = #{item.screenTime},</if>
+            <if test="item.remark != null">remark = #{item.remark}</if>
+        </set>
+        where id= #{id}
+    </update>
+    <select id="selectCountById" resultType="java.lang.Long">
+        select ifnull(count(*),0)
+        from `${tableName}`
+        where id = #{id}
+    </select>
+    <select id="selectMaxId" resultType="java.lang.Long">
+        SELECT MAX(id) FROM `${tableName}`
+    </select>
+
+    <select id="selectMaxOrderNum" resultType="java.lang.String">
+        select max(substring(screen_id,10,5)) as maxOrderNum
+        from tb_screen_person
+        where town=#{town}
+        and year =#{year}
+        and  screen_type=#{screenType}
+    </select>
+    <insert id="insertPerson">
+        INSERT INTO tb_screen_person(id, year, screen_id,screen_type, id_num, name, age, tel, sex, height, weight, permanent_address, permanent_address_province,
+                                     permanent_address_city, permanent_address_county, permanent_address_town, address, province, city, county, town, nation, first_type, more_type,
+                                     school_or_temple, classroom,is_new, is_screened, is_new_student, screen_point, screen_time, remark)
+        VALUES (#{id},#{year},#{screenId},#{screenType},#{idNum},#{name},#{age},#{tel},#{sex},#{height},#{weight},#{permanentAddress},#{permanentAddressProvince},#{permanentAddressCity},
+                #{permanentAddressCounty},#{permanentAddressTown},#{address},#{province},#{city},#{county},#{town},#{nation},#{firstType},#{moreType},
+                #{schoolOrTemple},#{classroom},#{isNew},#{isScreened},#{isNewStudent},#{screenPoint},#{screenTime},#{remark})
+    </insert>
+
+
+    <!--采集表-->
+    <select id="getCollectList"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.CollectVO">
+        SELECT id, screen_id,  person_id, outcome, doctor_signature, screen_agency, screen_time, screen_order,screen_point
+        FROM tb_screen_collect
+        <where>
+            <if test="screenId != null and screenId !='' ">
+                screen_id LIKE CONCAT('%', #{screenId}, '%') AND
+            </if>
+            <if test="screenPoint != null and screenPoint !=''">
+                screen_point LIKE CONCAT('%', #{screenPoint}, '%')
+            </if>
+        </where>
+        ORDER BY id DESC
+        <if test="pageSize !=-1">
+            limit #{pageNo},#{pageSize}
+        </if>
+    </select>
+    <select id="selectCollectCount" resultType="java.lang.Long">
+        SELECT ifnull(count(*),0)
+        FROM tb_screen_collect
+        <where>
+            <if test="screenId != null and screenId !='' ">
+                screen_id LIKE CONCAT('%', #{screenId}, '%') AND
+            </if>
+            <if test="screenPoint != null and screenPoint !=''">
+                screen_point LIKE CONCAT('%', #{screenPoint}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectCollectIdByIndex" resultType="java.lang.Long">
+        select id
+        from tb_screen_collect
+        <where>
+            <if test="screenId != null and screenId !=''">
+                screen_id= #{screenId} AND
+            </if>
+            <if test="screenOrder != null">
+                screen_order= #{screenOrder}  AND
+            </if>
+            <if test="personId != null and personId !=''">
+                person_id= #{personId}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateCollect">
+        update tb_screen_collect
+        <set>
+            <if test="item.outcome != null">outcome = #{item.outcome},</if>
+            <if test="item.doctorSignature != null">doctor_signature = #{item.doctorSignature},</if>
+            <if test="item.screenAgency != null">screen_agency = #{item.screenAgency},</if>
+            <if test="item.screenTime != null">screen_time = #{item.screenTime},</if>
+            <if test="item.screenPoint != null">screen_point = #{item.screenPoint},</if>
+            <if test="item.screenType != null">screen_type = #{item.screenType},</if>
+            <if test="item.year != null"> year = #{item.year}</if>
+        </set>
+        where id= #{id}
+    </update>
+
+    <insert id="insertCollect">
+        INSERT INTO tb_screen_collect
+                (id, screen_id, person_id, outcome, doctor_signature,
+                 screen_agency, screen_time, screen_order, screen_point,screen_type,year)
+        VALUES
+               (#{id},#{screenId},#{personId},#{outcome},#{doctorSignature},
+                #{screenAgency},#{screenTime},#{screenOrder},#{screenPoint},#{screenType},#{year})
+    </insert>
+
+    <!--ppd表-->
+    <select id="selectPpdIdByIndex" resultType="java.lang.Long">
+        select id
+        from tb_screen_ppd
+        <where>
+            <if test="screenId != null and screenId !=''">
+                screen_id= #{screenId} AND
+            </if>
+            <if test="screenOrder != null">
+                screen_order= #{screenOrder}  AND
+            </if>
+            <if test="personId != null and personId !=''">
+                person_id= #{personId}
+            </if>
+        </where>
+    </select>
+
+    <update id="updatePpd">
+        update tb_screen_ppd
+        <set>
+            <if test="item.transverseDiameter != null">transverse_diameter = #{item.transverseDiameter},</if>
+            <if test="item.longitudinalDiameter != null">longitudinal_diameter = #{item.longitudinalDiameter},</if>
+            <if test="item.bleb != null">bleb = #{item.bleb},</if>
+            <if test="item.injection != null">injection = #{item.injection},</if>
+            <if test="item.injectionWay != null">injection_way = #{item.injectionWay},</if>
+            <if test="item.outcome != null">outcome = #{item.outcome},</if>
+            <if test="item.doctorSignature != null">doctor_signature = #{item.doctorSignature},</if>
+            <if test="item.injectionAgency != null">injection_agency = #{item.injectionAgency},</if>
+            <if test="item.screenType != null">screen_type = #{item.screenType},</if>
+            <if test="item.year != null"> year = #{item.year},</if>
+            <if test="item.screenTime != null">screen_time = #{item.screenTime}</if>
+
+        </set>
+        where id=#{id}
+    </update>
+
+    <insert id="insertPpd">
+        INSERT INTO tb_screen_ppd
+            (id, screen_id, person_id, transverse_diameter, longitudinal_diameter, bleb, injection, injection_way,
+             outcome, doctor_signature, injection_agency, screen_order, screen_time,screen_type,year)
+        VALUES
+            (#{id},#{screenId},#{personId},#{transverseDiameter},#{longitudinalDiameter},#{bleb},#{injection},#{injectionWay},
+             #{outcome},#{doctorSignature},#{injectionAgency},#{screenOrder},#{screenTime},#{screenType},#{year})
+    </insert>
+
+
+    <!-- ct/dr表 -->
+    <select id="selectChestRadiographIdByIndex" resultType="java.lang.Long">
+        select id
+        from tb_screen_chest_radiograph
+        <where>
+            <if test="screenId != null and screenId !=''">
+                screen_id= #{screenId} AND
+            </if>
+            <if test="screenOrder != null ">
+                screen_order= #{screenOrder}  AND
+            </if>
+            <if test="personId != null and personId !=''">
+                person_id= #{personId}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateChestRadiograph">
+        update tb_screen_chest_radiograph
+        <set>
+            <if test="item.chestRadiographCode != null">chest_radiograph_code = #{item.chestRadiographCode},</if>
+            <if test="item.chestRadiograph != null">chest_radiograph = #{item.chestRadiograph},</if>
+            <if test="item.doctorSignature != null">doctor_signature = #{item.doctorSignature},</if>
+            <if test="item.outcome != null">outcome = #{item.outcome},</if>
+            <if test="item.screenTime!= null">screen_time = #{item.screenTime},</if>
+            <if test="item.photoTime!= null">photo_time = #{item.photoTime},</if>
+            <if test="item.year != null"> year = #{item.year},</if>
+            <if test="item.screenType != null">screen_type = #{item.screenType},</if>
+            <if test="item.remark != null">remark = #{item.remark}</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <insert id="insertChestRadiograph">
+        insert into tb_screen_chest_radiograph
+            (id, screen_id, person_id, chest_radiograph_code, chest_radiograph,photo_time,
+             doctor_signature, outcome, screen_order, screen_time, remark,screen_type,year)
+        values (#{id},#{screenId},#{personId},#{chestRadiographCode},#{chestRadiograph},#{photoTime},
+                #{doctorSignature},#{outcome},#{screenOrder},#{screenTime},#{remark},#{screenType},#{year})
+    </insert>
+
+    <!--  痰检表  -->
+    <select id="selectSputumExaminationIdByIndex" resultType="java.lang.Long">
+        select id
+        from tb_screen_sputum_examination
+        <where>
+            <if test="screenId != null and screenId !=''">
+                screen_id= #{screenId} AND
+            </if>
+            <if test="screenOrder != null ">
+                screen_order= #{screenOrder}  AND
+            </if>
+            <if test="personId != null and personId !=''">
+                person_id= #{personId}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateSputumExamination">
+        update tb_screen_sputum_examination
+        <set>
+            <if test="item.doctorSignature != null">doctor_signature = #{item.doctorSignature},</if>
+            <if test="item.atomization != null">atomization = #{item.atomization},</if>
+            <if test="item.sputumExamination != null">sputum_examination = #{item.sputumExamination},</if>
+            <if test="item.type != null">type = #{item.type},</if>
+            <if test="item.forthwithSputum != null">forthwith_sputum = #{item.forthwithSputum},</if>
+            <if test="item.forthwithSputumCode != null">forthwith_sputum_code = #{item.forthwithSputumCode},</if>
+            <if test="item.eveningSputum != null">evening_sputum = #{item.eveningSputum},</if>
+            <if test="item.eveningSputumCode != null">evening_sputum_code = #{item.eveningSputumCode},</if>
+            <if test="item.morningSputum != null">morning_sputum = #{item.morningSputum},</if>
+            <if test="item.morningSputumCode != null">morning_sputum_code = #{item.morningSputumCode},</if>
+            <if test="item.outcome != null">outcome = #{item.outcome},</if>
+            <if test="item.year != null"> year = #{item.year},</if>
+            <if test="item.screenType != null">screen_type = #{item.screenType},</if>
+            <if test="item.forthwithSputumTime != null"> forthwith_sputum_time= #{item.forthwithSputumTime},</if>
+            <if test="item.eveningSputumTime != null">evening_sputum_time = #{item.eveningSputumTime},</if>
+            <if test="item.morningSputumTime != null">morning_sputum_time = #{item.morningSputumTime},</if>
+            <if test="item.screenTime!= null">screen_time = #{item.screenTime}</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <insert id="insertSputumExamination">
+        insert into tb_screen_sputum_examination
+            (id, screen_id, person_id, doctor_signature,atomization, sputum_examination,forthwith_sputum_time,evening_sputum_time,morning_sputum_time,
+             type, forthwith_sputum, forthwith_sputum_code, evening_sputum, evening_sputum_code,
+             morning_sputum, morning_sputum_code, outcome, screen_order, screen_time,screen_type,year)
+        values (#{id},#{screenId},#{personId},#{doctorSignature},#{atomization},#{sputumExamination},#{forthwithSputumTime},#{eveningSputumTime},#{morningSputumTime},
+                #{type},#{forthwithSputum},#{forthwithSputumCode},#{eveningSputum},#{eveningSputumCode},
+                #{morningSputum},#{morningSputumCode},#{outcome},#{screenOrder},#{screenTime},#{screenType},#{year})
+    </insert>
+
+    <!-- 心电表   -->
+    <select id="selectElectrocardiogramIdByIndex" resultType="java.lang.Long">
+        select id
+        from tb_screen_electrocardiogram
+        <where>
+            <if test="screenId != null and screenId !=''">
+                screen_id= #{screenId} AND
+            </if>
+            <if test="screenOrder != null ">
+                screen_order= #{screenOrder}  AND
+            </if>
+            <if test="personId != null and personId !=''">
+                person_id= #{personId}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateElectrocardiogram">
+        update tb_screen_electrocardiogram
+        <set>
+            <if test="item.doctorSignature != null">doctor_signature = #{item.doctorSignature},</if>
+            <if test="item.electrocardiogram != null">electrocardiogram = #{item.electrocardiogram},</if>
+            <if test="item.screenPoint != null">screen_point = #{item.screenPoint},</if>
+            <if test="item.year != null"> year = #{item.year},</if>
+            <if test="item.screenType != null">screen_type = #{item.screenType},</if>
+            <if test="item.testResult != null">test_result = #{item.testResult},</if>
+            <if test="item.screenTime!= null">screen_time = #{item.screenTime}</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <insert id="insertElectrocardiogram">
+        insert into tb_screen_electrocardiogram
+            (id, person_id, screen_id, electrocardiogram, doctor_signature,
+             screen_time, screen_order, screen_point,screen_type,year,test_result)
+        values (#{id},#{personId},#{screenId},#{electrocardiogram},#{doctorSignature},
+                #{screenTime},#{screenOrder},#{screenPoint},#{screenType},#{year},#{testResult})
+    </insert>
+
+
+    <!-- 工作队伍   -->
+    <select id="getScreenPointAndAgencyByUserId"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.ScreenPointVO">
+        select concat(tsp.name,'-',tsp.screen_dept,'-',tsp.year) as name,tsp.screen_dept,tsp.id screenPointId
+        from tb_screen_point tsp
+        left join tb_user_screen_point tusp on tusp.screen_point_id=tsp.id
+        where tusp.user_id=#{id}
+        and tusp.deleted=0
+        and tsp.deleted=0
+        group by tsp.name,tsp.screen_dept,tsp.year,tsp.id
+    </select>
+    <select id="getScreenPointInfoByName"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.ScreenPointAndMemberVO">
+        select tsp.name,tsp.screen_dept as agency,tsp.worker,tsp.collect_worker,tsp.ppd_worker,tsp.drct_worker,tsp.sputum_worker,
+               tsp.electrocardiogram_worker,tsp.electrocardiogram_worker,tsp.diagnosis_worker,tsp.year
+        from tb_screen_point tsp
+        where tsp.id=#{screenPointId}
+        and tsp.deleted=0
+    </select>
+    <select id="getUserList"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.UserInfoVO">
+        SELECT su.id, su.username AS name, su.pwd_md5 AS pwd, su.nickname
+        FROM system_users su
+        JOIN system_users su2 ON su.screen_point_id = su2.screen_point_id
+        WHERE su2.id=#{id} AND su2.deleted=0
+    </select>
+    <select id="getRoleByUserId" resultType="java.lang.String">
+        SELECT sr.name
+        FROM system_role sr
+        LEFT JOIN system_user_role sur ON sr.id = sur.role_id
+        WHERE sur.user_id = #{id}
+          AND sr.code in ('capital','collect_group','ppd_group','dr/ct_group','sputum_group','electrocardiogram_group','experiment_group','diagnos_group')
+          AND sur.deleted = 0
+          AND sr.deleted=0
+    </select>
+    <select id="getScreenPoint" resultType="java.lang.String">
+        SELECT sp.name
+        FROM tb_screen_point sp
+        LEFT JOIN system_users su ON sp.id = su.screen_point_id
+        WHERE su.id = #{id}
+          AND su.deleted = 0;
+
+    </select>
+    <select id="getUserInfo" resultType="cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.UserInfoVO">
+        select id,username name,pwd_md5 pwd,nickname
+        from system_users
+        where id=#{id}
+          and deleted=0
+    </select>
+
+    <select id="getScreenAgency" resultType="java.lang.String">
+        SELECT sp.screen_dept
+        FROM tb_screen_point sp
+        LEFT JOIN system_users su ON sp.id = su.screen_point_id
+        WHERE su.id = #{id}
+          AND su.deleted = 0;
+    </select>
+
+    <!-- 汇总表   -->
+    <!--<select id="selectSumIdByIndex" resultType="cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumInfo">
+        select id,cur_finish
+        from tb_screen_sum
+        <where>
+            <if test="year != null">
+                year= #{year}  AND
+            </if>
+            <if test="screenType != null ">
+                screen_type= #{screenType}  AND
+            </if>
+            <if test="screenId != null and screenId !=''">
+                screen_id= #{screenId} AND
+            </if>
+            <if test="personId != null ">
+                person_id= #{personId}
+            </if>
+        </where>
+    </select>-->
+
+    <update id="updateSum">
+        update tb_screen_sum
+        <set>
+            <if test="item.lastCollectTime != null"> last_collect_time = #{item.lastCollectTime},</if>
+            <if test="item.collectNum != null">collect_num = #{item.collectNum},</if>
+            <if test="item.lastPpdTime != null">last_ppd_time = #{item.lastPpdTime},</if>
+            <if test="item.ppdNum != null">ppd_num = #{item.ppdNum},</if>
+            <if test="item.lastChestRadiographTime != null">last_chest_radiograph_time = #{item.lastChestRadiographTime},</if>
+            <if test="item.chestRadiographNum != null">chest_radiograph_num = #{item.chestRadiographNum},</if>
+            <if test="item.lastComputedTomographyTime != null">last_computed_tomography_time = #{item.lastComputedTomographyTime},</if>
+            <if test="item.computedTomographyNum != null">computed_tomography_num = #{item.computedTomographyNum},</if>
+            <if test="item.lastSputumExaminationTime != null">last_sputum_examination_time = #{item.lastSputumExaminationTime},</if>
+            <if test="item.sputumExaminationNum != null">sputum_examination_num = #{item.sputumExaminationNum},</if>
+            <if test="item.lastExperimentTime != null">last_experiment_time = #{item.lastExperimentTime},</if>
+            <if test="item.experimentNum != null">experiment_num = #{item.experimentNum},</if>
+            <if test="item.lastElectrocardiogramTime != null">last_electrocardiogram_time = #{item.lastElectrocardiogramTime},</if>
+            <if test="item.electrocardiogramNum != null">electrocardiogram_num = #{item.electrocardiogramNum},</if>
+            <if test="item.lastDiagnosisTime != null">last_diagnosis_time = #{item.lastDiagnosisTime},</if>
+            <if test="item.diagnosisNum != null">diagnosis_num = #{item.diagnosisNum},</if>
+            <if test="item.curFinish != null">cur_finish = #{item.curFinish},</if>
+            <if test="item.collectId != null">collect_id = #{item.collectId},</if>
+            <if test="item.ppdId != null">ppd_id = #{item.ppdId},</if>
+            <if test="item.chestRadiographId != null">chest_radiograph_id = #{item.chestRadiographId},</if>
+            <if test="item.computedTomographyId != null">computed_tomography_id = #{item.computedTomographyId},</if>
+            <if test="item.sputumExaminationId != null">sputum_examination_id = #{item.sputumExaminationId},</if>
+            <if test="item.experimentId != null">experiment_id = #{item.experimentId},</if>
+            <if test="item.electrocardiogramId != null">electrocardiogram_id = #{item.electrocardiogramId},</if>
+            <if test="item.diagnosisId != null">diagnosis_id = #{item.diagnosisId}</if>
+        </set>
+        where id=#{id}
+    </update>
+    <insert id="insertSum">
+        insert into tb_screen_sum
+        (id, person_id, screen_id,screen_type,year,last_collect_time,collect_num,last_ppd_time,ppd_num,
+         last_chest_radiograph_time,chest_radiograph_num,last_computed_tomography_time,computed_tomography_num,
+         last_sputum_examination_time,sputum_examination_num,last_experiment_time,experiment_num,
+         last_electrocardiogram_time,electrocardiogram_num,last_diagnosis_time,diagnosis_num,cur_finish,
+         collect_id,ppd_id,chest_radiograph_id,computed_tomography_id,sputum_examination_id,
+         experiment_id,electrocardiogram_id,diagnosis_id)
+        values (#{id},#{personId},#{screenId},#{screenType},#{year},#{lastCollectTime},#{collectNum},#{lastPpdTime},
+                #{ppdNum},#{lastChestRadiographTime},#{chestRadiographNum},#{lastComputedTomographyTime},#{computedTomographyNum},
+                #{lastSputumExaminationTime},#{sputumExaminationNum},#{lastExperimentTime},#{experimentNum},
+                #{lastElectrocardiogramTime},#{electrocardiogramNum},#{lastDiagnosisTime},#{diagnosisNum},#{curFinish},
+                #{collectId},#{ppdId},#{chestRadiographId},#{computedTomographyId},#{sputumExaminationId},
+                #{experimentId},#{electrocardiogramId},#{diagnosisId})
+    </insert>
+</mapper>

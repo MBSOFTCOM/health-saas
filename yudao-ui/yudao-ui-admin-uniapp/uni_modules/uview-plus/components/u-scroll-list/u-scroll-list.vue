@@ -22,9 +22,8 @@
 		<!-- #ifdef MP-WEIXIN || APP-VUE || H5 || MP-QQ -->
 		<!-- 以上平台，支持wxs -->
 		<scroll-view
-			class="u-scroll-list__scroll-view scroll-view-native"
+			class="u-scroll-list__scroll-view"
 			scroll-x
-			enable-flex
 			@scroll="wxs.scroll"
 			@scrolltoupper="wxs.scrolltoupper"
 			@scrolltolower="wxs.scrolltolower"
@@ -39,7 +38,7 @@
 			<!-- #ifndef APP-NVUE || MP-WEIXIN || H5 || APP-VUE || MP-QQ -->
 			<!-- 非以上平台，只能使用普通js实现 -->
 			<scroll-view
-				class="u-scroll-list__scroll-view scroll-view-js"
+				class="u-scroll-list__scroll-view"
 				scroll-x
 				@scroll="scrollHandler"
 				@scrolltoupper="scrolltoupperHandler"
@@ -205,8 +204,6 @@ export default {
 
 	&__scroll-view {
 		@include flex;
-		// 缺少会在enable-flex模式下高度异常
-		align-items: flex-start;
 
 		&__content {
 			@include flex;

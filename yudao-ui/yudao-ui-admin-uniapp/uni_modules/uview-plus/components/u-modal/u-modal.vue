@@ -20,10 +20,10 @@
 				width: addUnit(width),
 			}"
 		>
-			<view
+			<text
 				class="u-modal__title"
 				v-if="title"
-			>{{ title }}</view>
+			>{{ title }}</text>
 			<view
 				class="u-modal__content"
 				:style="{
@@ -31,9 +31,7 @@
 				}"
 			>
 				<slot>
-					<text class="u-modal__content__text" :style="{textAlign: contentTextAlign}">
-						{{ content }}
-					</text>
+					<text class="u-modal__content__text">{{ content }}</text>
 				</slot>
 			</view>
 			<view
@@ -176,10 +174,7 @@
 		overflow: hidden;
 
 		&__title {
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
+			display: block;
 			font-size: 16px;
 			font-weight: bold;
 			color: $u-content-color;

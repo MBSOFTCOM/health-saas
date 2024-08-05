@@ -82,12 +82,7 @@
 			itemStyle() {
 				const style = {
 					background: this.bgColor,
-					// #ifndef MP
 					width: this.width
-					// #endif
-					// #ifdef MP
-					width: '100%'
-					// #endif
 				}
 				return deepMerge(style, addStyle(this.customStyle))
 			}
@@ -177,7 +172,12 @@
 				}
 			}
 		},
+		// #ifdef VUE2
+		beforeDestroy() {
+		// #endif
+		// #ifdef VUE3
 		beforeUnmount() {
+		// #endif
 			// 移除事件监听，释放性能
 			uni.$off('$uGridItem')
 		}

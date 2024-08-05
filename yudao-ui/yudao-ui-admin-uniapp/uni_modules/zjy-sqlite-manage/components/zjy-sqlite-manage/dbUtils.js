@@ -1,3 +1,5 @@
+import { dbName, tbScreenCollect} from "../../../../utils/sqlite";
+
 /**
  * 打开数据库
  */
@@ -8,7 +10,7 @@ const openDb = (name) => {
 			name: name, //数据库名称
 			path: `_doc/${name}.db`, //数据库地址
 			success(e) {
-				console.info("11", e)
+				// console.info("11", e)
 				resolve(e);
 			},
 			fail(e) {
@@ -28,11 +30,11 @@ const init = (name, tableSqls) => {
 			// console.info("表已存在res："+res)
 			// console.info("表已存在："+data.tableName)
 			if(!res){
-				console.info("初始化表：",data.tableName)
+				// console.info("初始化表：",data.tableName)
 				addTab(name, data.sql);
 			}
 		}).catch(e => {
-			console.info("初始化表：",data.tableName)
+			// console.info("初始化表：",data.tableName)
 			addTab(name, data.sql);
 		})
 	}
@@ -49,11 +51,11 @@ const getTable = (name) => {
 			name: name,
 			sql: "select * FROM sqlite_master where type='table'",
 			success(e) {
-				console.log("getTable", e)
+				// console.log("getTable", e)
 				resolve(e);
 			},
 			fail(e) {
-				console.log(e)
+				// console.log(e)
 				reject(e);
 			}
 		})
@@ -86,7 +88,7 @@ const isTable = (name, tabName) => {
 				resolve(e[0].isTable ? true : false);
 			},
 			fail(e) {
-				console.log(e)
+				// console.log(e)
 				reject(e);
 			}
 		})
@@ -98,10 +100,11 @@ const updateSQL = (name, tabName, setData, setName, setVal) => {
 		let dataKeys = Object.keys(setData)
 		let setStr = ''
 		dataKeys.forEach((item, index) => {
-			console.log(setData[item])
+			// console.log(setData[item])
 			setStr += (
 				`${item} = ${JSON.stringify(setData[item])}${dataKeys.length - 1 !== index ? "," : ""}`)
 		})
+		// console.log(`update ${tabName} set ${setStr} where ${setName} = "${setVal}"`);
 		return new Promise((resolve, reject) => {
 			plus.sqlite.executeSql({
 				name: name,
@@ -134,7 +137,7 @@ const delData = (name, tabName, setData) => {
 			)
 		})
 		return new Promise((resolve, reject) => {
-			console.info(`delete from ${tabName} where ${setStr}`)
+			// console.info(`delete from ${tabName} where ${setStr}`)
 			plus.sqlite.executeSql({
 				name: name,
 				sql: `delete from ${tabName} where ${setStr}`,
@@ -188,7 +191,7 @@ const delTable = (name, tabName) => {
 				resolve(e);
 			},
 			fail(e) {
-				console.log(e)
+				// console.log(e)
 				reject(e);
 			}
 		})
@@ -212,7 +215,7 @@ const addTab = (name, sql) => {
 			}
 		})
 	})
-}
+} 
 /**
  * 添加数据
  * name:数据库名
@@ -231,9 +234,9 @@ const addTabItem = (name, tabName, obj) => {
 				valStr += ('"' + obj[item] + '",')
 			}
 		})
-		console.log(valStr)
+		// console.log(valStr)
 		let sqlStr = `insert into ${tabName}(${keyStr}) values(${valStr})`
-		console.log(sqlStr)
+		// console.log(sqlStr)
 		return new Promise((resolve, reject) => {
 			plus.sqlite.executeSql({
 				name: name,
@@ -295,7 +298,7 @@ const mergeSql = (name, tabName, tabs) => {
 				resolve(e);
 			},
 			fail(e) {
-				console.log(e)
+				// console.log(e)
 				reject(e);
 			}
 		})
@@ -312,7 +315,7 @@ const getDataList = async (name, tabName, num, size, byName, byType) => {
 	if (((num - 1) * size) == 0) {
 		numindex = 0
 	} else {
-		numindex = ((num - 1) * size) + 1
+		numindex = ((num - 1) * size) 
 	}
 	sql = `select * from ${tabName}`
 	if (byName && byType) {
@@ -326,6 +329,7 @@ const getDataList = async (name, tabName, num, size, byName, byType) => {
 		});
 	} else {
 		return new Promise((resolve, reject) => {
+			// console.log();
 			plus.sqlite.selectSql({
 				name: name,
 				// sql: "select * from userInfo limit 3 offset 3",
@@ -347,7 +351,7 @@ const selectDataList = (name, tabName, setData, byName, byType) => {
 	if (JSON.stringify(setData) !== '{}') {
 		let dataKeys = Object.keys(setData)
 		dataKeys.forEach((item, index) => {
-			console.log(setData[item])
+			// console.log(setData[item])
 			setStr += (
 				`${item}=${JSON.stringify(setData[item])}${dataKeys.length - 1 !== index ? " and " : ""}`
 			)
@@ -369,7 +373,7 @@ const selectDataList = (name, tabName, setData, byName, byType) => {
 					resolve(e);
 				},
 				fail(e) {
-					console.log(e)
+					// console.log(e)
 					reject(e);
 				}
 			})
@@ -387,11 +391,12 @@ const selectCount = (name, tabName, setData) => {
 	if (JSON.stringify(setData) !== '{}') {
 		let dataKeys = Object.keys(setData)
 		dataKeys.forEach((item, index) => {
-			console.log(setData[item])
+			// console.log(setData[item])
 			setStr += (
 				`${item}=${JSON.stringify(setData[item])}${dataKeys.length - 1 !== index ? " and " : ""}`
 			)
 		})
+		
 		sql = `SELECT COUNT(*) AS count FROM ${tabName} where ${setStr}`
 	} else {
 		sql = `SELECT COUNT(*) AS count FROM ${tabName}`
@@ -406,7 +411,7 @@ const selectCount = (name, tabName, setData) => {
 					resolve(e);
 				},
 				fail(e) {
-					console.log(e)
+					// console.log(e)
 					reject(e);
 				}
 			})
@@ -416,6 +421,41 @@ const selectCount = (name, tabName, setData) => {
 			reject("错误")
 		});
 	}
+}
+ 
+//患者修改
+const updatePerson =(setData, id)=>{
+	let setStr = ''
+	let sql = ''
+	if (JSON.stringify(setData) !== '{}') {
+		let dataKeys = Object.keys(setData)
+		dataKeys.forEach((item, index) => {
+			// console.log(setData[item])
+			setStr += (
+				`${item}=${JSON.stringify(setData[item])}${dataKeys.length - 1 !== index ? "," : ""}`
+			)
+		})
+		sql = `UPDATE ${tbScreenPatient} SET ${setStr} WHERE id = ${id}` 
+	} else {
+		reject("没有修改值！")
+	}
+	// console.log("SQL:"+sql);
+	
+	return new Promise((resolve, reject) => {
+		plus.sqlite.selectSql({
+			name: 'tb_screen',
+			sql: sql,
+			success(e) {
+				resolve(e);
+			},
+			fail(e) {
+				// console.log(e)
+				reject(e);
+			}
+		}).then(res=>{
+			// console.log("res=",res);
+		})
+	})
 }
 
 export default {
@@ -435,4 +475,5 @@ export default {
 	getDataList, //获取分页数据库数据
 	selectDataList, //查询数据库数据
 	selectCount, //查询数据条数
+	updatePerson,  //患者修改
 }

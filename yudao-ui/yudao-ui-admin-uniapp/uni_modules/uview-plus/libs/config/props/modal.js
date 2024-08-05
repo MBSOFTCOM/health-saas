@@ -25,7 +25,6 @@ export default {
         closeOnClickOverlay: false,
         negativeTop: 0,
         width: '650rpx',
-        confirmButtonShape: '',
-        contentTextAlign: 'left'
+        confirmButtonShape: ''
     }
 }

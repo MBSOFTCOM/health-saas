@@ -20,8 +20,6 @@ export default {
         blockColor: '#ffffff',
         showValue: false,
 		disabled:false,
-        blockStyle: {},
-        useNative: false,
-        height: '2px'
+        blockStyle: {}
     }
 }

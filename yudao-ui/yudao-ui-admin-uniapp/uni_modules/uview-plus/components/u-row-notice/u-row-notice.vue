@@ -275,9 +275,16 @@
 				this.$emit('close')
 			}
 		},
+		// #ifdef APP-NVUE
+		// #ifdef VUE2
+		beforeDestroy() {
+		// #endif
+		// #ifdef VUE3
 		beforeUnmount() {
+		// #endif
 			this.stopAnimation = true
-		}
+		},
+		// #endif
 	};
 </script>
 

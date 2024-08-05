@@ -1,12 +1,12 @@
 <template>
   <view class="about-container">
     <view class="header-section text-center">
-      <image style="width: 150rpx;height: 150rpx;" src="/static/logo200.png" mode="widthFix">
+      <image style="width: 250px;height: 80px;" src="/static/images/tb/logo.png" mode="widthFix">
       </image>
-      <uni-title type="h2" title="芋道移动端"></uni-title>
+      <uni-title type="h2" title="甘孜州色达县结核病全流程筛查管理系统"></uni-title>
     </view>
 
-    <view class="content-section">
+    <view class="content-section" style="font-size: 16px;">
       <view class="menu-list">
         <view class="list-cell list-cell-arrow">
           <view class="menu-item-box">
@@ -16,29 +16,21 @@
         </view>
         <view class="list-cell list-cell-arrow">
           <view class="menu-item-box">
-            <view>官方邮箱</view>
-            <view class="text-right">7685413@qq.com</view>
+            <view>公司地址</view>
+            <view class="text-right">北京市大兴区宏坤金融谷1号楼2层</view>
           </view>
         </view>
         <view class="list-cell list-cell-arrow">
           <view class="menu-item-box">
-            <view>服务热线</view>
-            <view class="text-right">400-999-9999</view>
-          </view>
-        </view>
-        <view class="list-cell list-cell-arrow">
-          <view class="menu-item-box">
-            <view>公司网站</view>
-            <view class="text-right">
-              <uni-link :href="url" :text="url" showUnderLine="false"></uni-link>
-            </view>
+            <view>联系电话</view>
+            <view class="text-right">010-61277190</view>
           </view>
         </view>
       </view>
     </view>
 
-    <view class="copyright">
-      <view>Copyright &copy; 2022 iocoder.cn All Rights Reserved.</view>
+    <view class="copyright" style="font-size: 16px;">
+      <view> &copy; 2020 北京福乐云数据科技有限公司</view>
     </view>
   </view>
 </template>
@@ -47,8 +39,8 @@
   export default {
     data() {
       return {
-        url: getApp().globalData.config.appInfo.site_url,
-        version: getApp().globalData.config.appInfo.version
+        // url: this.$config.appInfo.site_url,
+        version: this.$config.appInfo.version
       }
     }
   }

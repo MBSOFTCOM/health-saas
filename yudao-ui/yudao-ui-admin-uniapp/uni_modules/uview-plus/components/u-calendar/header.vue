@@ -65,8 +65,6 @@
 	@import "../../libs/css/components.scss";
 
 	.u-calendar-header {
-		display: flex;
-		flex-direction: column;
 		padding-bottom: 4px;
 
 		&__title {

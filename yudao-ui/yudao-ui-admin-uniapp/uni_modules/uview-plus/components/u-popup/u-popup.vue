@@ -177,17 +177,15 @@
 				}
 			},
 		},
-		emits: ["open", "close", "click", "update:show"],
+		emits: ["open", "close", "click"],
 		methods: {
 			// 点击遮罩
 			overlayClick() {
 				if (this.closeOnClickOverlay) {
-					this.$emit('update:show', false)
 					this.$emit('close')
 				}
 			},
 			close(e) {
-				this.$emit('update:show', false)
 				this.$emit('close')
 			},
 			afterEnter() {

@@ -474,7 +474,7 @@
 			flex-direction: row;
 			align-items: center;
 			text-align: left;
-			font-size: 14px;
+			font-size: 16px;
 			color: #606266;
 			height: 36px;
 			padding: 0 12px 0 0;

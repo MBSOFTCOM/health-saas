@@ -10,15 +10,15 @@ import dbUtils from "@/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manag
 
 
 export function createApp(){
-  const app = createSSRApp(App);
-  app.config.globalProperties.$dbUtils = dbUtils;
-  app.use(GlobalConfigPlugin)
-  app.use(store);
-  app.use(plugins);
-  app.use(uviewPlus)
-  return{
-    app
-  }
+	const app = createSSRApp(App);
+	app.config.globalProperties.$dbUtils = dbUtils;
+	app.use(GlobalConfigPlugin)
+	app.use(store);
+	app.use(plugins);
+	app.use(uviewPlus)
+	return{
+			app
+		}
 }
 
 

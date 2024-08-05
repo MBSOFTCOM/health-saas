@@ -22,7 +22,7 @@
 				<slot name="body">
 					<view class="uni-list-item__content"
 						:class="{ 'uni-list-item__content--center': thumb || showExtraIcon || showBadge || showSwitch }">
-						<text v-if="title" class="uni-list-item__content-title"
+						<text style="font-size: 20px;" v-if="title" class="uni-list-item__content-title"
 							:class="[ellipsis !== 0 && ellipsis <= 2 ? 'uni-ellipsis-' + ellipsis : '']">{{ title }}</text>
 						<text v-if="note" class="uni-list-item__content-note">{{ note }}</text>
 					</view>
@@ -30,7 +30,7 @@
 				<slot name="footer">
 					<view v-if="rightText || showBadge || showSwitch" class="uni-list-item__extra"
 						:class="{ 'flex--justify': direction === 'column' }">
-						<text v-if="rightText" class="uni-list-item__extra-text">{{ rightText }}</text>
+						<text style="font-size: 20px;" v-if="rightText" class="uni-list-item__extra-text">{{ rightText }}</text>
 						<uni-badge v-if="showBadge" :type="badgeType" :text="badgeText" :custom-style="badgeStyle" />
 						<switch v-if="showSwitch" :disabled="disabled" :checked="switchChecked"
 							@change="onSwitchChange" />

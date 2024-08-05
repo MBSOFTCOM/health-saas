@@ -6,7 +6,6 @@
             v-for="(arr, index) in showUrls"
             :forComputedUse="albumWidth"
             :key="index"
-            :style="{flexWrap: autoWrap ? 'wrap' : 'nowrap'}"
         >
             <view
                 class="u-album__row__wrapper"
@@ -27,8 +26,7 @@
                     :style="[
                         {
                             width: imageWidth,
-                            height: imageHeight,
-                            borderRadius: shape == 'circle' ? '10000px' : addUnit(radius)
+                            height: imageHeight
                         }
                     ]"
                 ></image>
@@ -40,9 +38,6 @@
                         index1 === showUrls[showUrls.length - 1].length - 1
                     "
                     class="u-album__row__wrapper__text"
-                    :style="{
-					    borderRadius: shape == 'circle' ? '50%' : addUnit(radius),
-				    }"
                 >
                     <up-text
                         :text="`+${urls.length - maxCount}`"
@@ -84,10 +79,7 @@ const dom = uni.requireNativePlugin('dom')
  * @property {Boolean}         previewFullImage 是否可以预览图片 （默认 true ）
  * @property {String | Number} rowCount         每行展示图片数量，如设置，singleSize和multipleSize将会无效	（默认 3 ）
  * @property {Boolean}         showMore         超出maxCount时是否显示查看更多的提示 （默认 true ）
- * @property {String}          shape            图片形状，circle-圆形，square-方形 （默认 'square' ）
- * @property {String | Number} radius           圆角值，单位任意，如果为数值，则为px单位 （默认 0 ）
- * @property {Boolean}         autoWrap         自适应换行模式，不受rowCount限制，图片会自动换行 （默认 false ）
- * @property {String}          unit             图片单位 （默认 px ）
+ *
  * @event    {Function}        albumWidth       某些特殊的情况下，需要让文字与相册的宽度相等，这里事件的形式对外发送  （回调参数 width ）
  * @example <u-album :urls="urls2" @albumWidth="width => albumWidth = width" multipleSize="68" ></u-album>
  */
@@ -127,48 +119,42 @@ export default {
                     marginBottom: addUnit(space)
                 }
                 // 如果为最后一行，则每个图片都无需下边框
-                if (index1 === rowLen && !this.autoWrap) style.marginBottom = 0
+                if (index1 === rowLen) style.marginBottom = 0
                 // 每行的最右边一张和总长度的最后一张无需右边框
-                if (!this.autoWrap) {
-                    if (
-                        index2 === rowCount ||
-                        (index1 === rowLen &&
-                            index2 === this.showUrls[index1 - 1].length)
-                    )
-                        style.marginRight = 0
-                }
+                if (
+                    index2 === rowCount ||
+                    (index1 === rowLen &&
+                        index2 === this.showUrls[index1 - 1].length)
+                )
+                    style.marginRight = 0
                 return style
             }
         },
         // 将数组划分为二维数组
         showUrls() {
-            if (this.autoWrap) {
-                return [ this.urls.slice(0, this.maxCount) ];
-            } else {
-                const arr = []
-                this.urls.map((item, index) => {
-                    // 限制最大展示数量
-                    if (index + 1 <= this.maxCount) {
-                        // 计算该元素为第几个素组内
-                        const itemIndex = Math.floor(index / this.rowCount)
-                        // 判断对应的索引是否存在
-                        if (!arr[itemIndex]) {
-                            arr[itemIndex] = []
-                        }
-                        arr[itemIndex].push(item)
+            const arr = []
+            this.urls.map((item, index) => {
+                // 限制最大展示数量
+                if (index + 1 <= this.maxCount) {
+                    // 计算该元素为第几个素组内
+                    const itemIndex = Math.floor(index / this.rowCount)
+                    // 判断对应的索引是否存在
+                    if (!arr[itemIndex]) {
+                        arr[itemIndex] = []
                     }
-                })
-                return arr
-            }
+                    arr[itemIndex].push(item)
+                }
+            })
+            return arr
         },
         imageWidth() {
             return addUnit(
-                this.urls.length === 1 ? this.singleWidth : this.multipleSize, this.unit
+                this.urls.length === 1 ? this.singleWidth : this.multipleSize
             )
         },
         imageHeight() {
             return addUnit(
-                this.urls.length === 1 ? this.singleHeight : this.multipleSize, this.unit
+                this.urls.length === 1 ? this.singleHeight : this.multipleSize
             )
         },
         // 此变量无实际用途，仅仅是为了利用computed特性，让其在urls长度等变化时，重新计算图片的宽度
@@ -187,7 +173,6 @@ export default {
         }
     },
     methods: {
-        addUnit,
         // 预览图片
         onPreviewTap(url) {
             const urls = this.urls.map((item) => {
@@ -257,6 +242,7 @@ export default {
 
     &__row {
         @include flex(row);
+        flex-wrap: wrap;
 
         &__wrapper {
             position: relative;

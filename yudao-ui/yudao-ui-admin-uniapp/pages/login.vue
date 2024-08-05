@@ -5,7 +5,7 @@
 		<image class="bg-2" src="../static/images/tb/bg-2.png" mode=""></image>
 		<image class="bg-3" src="../static/images/tb/bg-3.png" mode=""></image>
 		<view class="log-main">
-			<view class="title">甘孜州色达县结核病全流程筛查管理系统</view>
+			<view class="title">校园筛查管理系统</view>
 			<view class="log-ipt">
 				<view class="text">账号</view>
 				<input v-model="loginForm.username" class="input" type="text" placeholder="请输入账号" maxlength="30" />
@@ -211,7 +211,6 @@ export default {
 		top: 50px;
 	}
 	.log-main {
-		margin-top: 25%;
 		border-radius: 15px;
 		gap: 20px;
 		width: 500px;

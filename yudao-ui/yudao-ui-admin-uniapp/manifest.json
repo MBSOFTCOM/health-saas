@@ -1,12 +1,11 @@
 {
-    "name" : "芋道移动端",
-    "appid" : "__UNI__25A9D80",
+    "name" : "甘孜州色达县结核病全流程筛查管理系统",
+    "appid" : "__UNI__C10140E",
     "description" : "",
     "versionName" : "1.0.0",
-    "versionCode" : "100",
+    "versionCode" : 11,
     "transformPx" : false,
     "app-plus" : {
-        "orientation" : [ "landscape-primary" ],
         "usingComponents" : true,
         "nvueCompiler" : "uni-app",
         "splashscreen" : {
@@ -15,7 +14,11 @@
             "autoclose" : true,
             "delay" : 0
         },
-        "modules" : {},
+        "modules" : {
+            "Camera" : {},
+            "SQLite" : {},
+            "Barcode" : {}
+        },
         "distribute" : {
             "android" : {
                 "permissions" : [
@@ -34,10 +37,81 @@
                     "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
                     "<uses-feature android:name=\"android.hardware.camera\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
-                ]
+                ],
+                "minSdkVersion" : 21
             },
-            "ios" : {},
-            "sdkConfigs" : {}
+            "ios" : {
+                "dSYMs" : false
+            },
+            "sdkConfigs" : {
+                "ad" : {}
+            },
+            "splashscreen" : {
+                "useOriginalMsgbox" : true
+            }
+        },
+        "nativePlugins" : {
+            "mylibrary" : {
+                "__plugin_info__" : {
+                    "name" : "mylibrary",
+                    "description" : "自定义插件",
+                    "platforms" : "Android",
+                    "url" : "",
+                    "android_package_name" : "",
+                    "ios_bundle_id" : "",
+                    "isCloud" : false,
+                    "bought" : -1,
+                    "pid" : "",
+                    "parameters" : {}
+                }
+            },
+            "Mpaas-Scan" : {
+                "AppId" : "ALIPUB0CEC089281011",
+                "License" : "P0B/VA2OeN3iipm9W6GUEtMgpGE1QtL+yeiisuKGD9xEFWDOscVucC3QLlHXKbvN8wFgv9G/HghVh8TIjM2iU3kCVH4NP9Mh+llCaNemFlFmj0KPyCCt5YuuxZtHx1inhskr4KAkbcFsAg0v7KmirMANuXFrO1tThlIPGGg5SbFIx6cNMxzKK2cUcW6jSb62fJIaFynsEETFyKRAL5FVOip76FD8WG4SLXwQJ4tdWyR6cN/Is4dOVZ9qnJEbxLiVdOGdnEd/ON37t8EVqBkHYCGyogJYZZyJoSQb0vlpXJOdPsL2j8FeCu4uj4sZyq3bp0U3VZx1uXZZ4V4PWZIYHQ==",
+                "WorkspaceId" : "default",
+                "__plugin_info__" : {
+                    "name" : "支付宝原生扫码插件",
+                    "description" : "支付宝原生扫码组件，包体积仅0.7MB，15分钟即可完成接入。同时，mPaaS提供「扫码分析」大盘",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=2636",
+                    "android_package_name" : "com.flow.text",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "2636",
+                    "parameters" : {
+                        "AppId" : {
+                            "des" : "Android平台的AppId，请填写Android的config文件中的appId对应的值",
+                            "key" : "mobilegw.appid",
+                            "value" : ""
+                        },
+                        "License" : {
+                            "des" : "Android平台的License,，请填写Android的config文件中的mpaasConfigLicense对应的值",
+                            "key" : "mpaasConfigLicense",
+                            "value" : ""
+                        },
+                        "WorkspaceId" : {
+                            "des" : "Android平台的WorkspaceId，请填写Android的config文件中的workspaceId对应的值",
+                            "key" : "workspaceId",
+                            "value" : ""
+                        }
+                    }
+                }
+            },
+            "YY-TomatoOCR" : {
+                "__plugin_info__" : {
+                    "name" : "本地离线文字、身份证识别TomatoOCR - [试用版，仅用于自定义调试基座]",
+                    "description" : "本地离线文字识别，身份证识别，支持Android系统和IOS系统",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=7907",
+                    "android_package_name" : "",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 0,
+                    "pid" : "7907",
+                    "parameters" : {}
+                }
+            }
         }
     },
     "quickapp" : {},
@@ -66,5 +140,6 @@
             "mode" : "hash",
             "base" : "./"
         }
-    }
+    },
+    "locale" : "zh-Hans"
 }

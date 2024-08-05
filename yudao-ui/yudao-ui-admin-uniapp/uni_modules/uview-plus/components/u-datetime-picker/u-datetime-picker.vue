@@ -2,7 +2,6 @@
     <view v-if="hasInput" class="u-datetime-picker">
         <u-input
             :placeholder="placeholder"
-			:readonly="!!showByClickInput"
             border="surround"
             v-model="inputValue"
             @click="showByClickInput = !showByClickInput"

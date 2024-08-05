@@ -1,7 +1,7 @@
 <template>
   <view class="container">
     <view class="example">
-      <uni-forms ref="form" :model="user" labelWidth="80px">
+      <uni-forms ref="form" :model="user" labelWidth="90px">
         <uni-forms-item label="用户昵称" name="nickname">
           <uni-easyinput v-model="user.nickname" placeholder="请输入昵称" />
         </uni-forms-item>
@@ -12,9 +12,9 @@
           <uni-easyinput v-model="user.email" placeholder="请输入邮箱" />
         </uni-forms-item>
         <!-- TODO 芋艿：uni-data-checkbox 存在问题 -->
-        <uni-forms-item label="性别" name="sex" required>
-<!--          <uni-data-checkbox v-model="user.sex" :localdata="sexs" />-->
-        </uni-forms-item>
+<!--        <uni-forms-item label="性别" name="sex" required>
+         <uni-data-checkbox v-model="user.sex" :localdata="sexs" />
+        </uni-forms-item> -->
       </uni-forms>
       <button type="primary" @click="submit">提交</button>
     </view>

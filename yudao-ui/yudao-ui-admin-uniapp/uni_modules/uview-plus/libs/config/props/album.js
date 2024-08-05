@@ -20,8 +20,6 @@ export default {
         maxCount: 9,
         previewFullImage: true,
         rowCount: 3,
-        showMore: true,
-        autoWrap: false,
-        unit: 'px'
+        showMore: true
     }
 }
