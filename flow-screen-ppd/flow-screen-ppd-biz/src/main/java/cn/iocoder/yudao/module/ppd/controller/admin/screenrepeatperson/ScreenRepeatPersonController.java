@@ -93,6 +93,7 @@ public class ScreenRepeatPersonController {
         for (ScreenRepeatPersonDO obj : list) {
             String strMoreType = screenPersonService.resolveMoreTypeToString(obj.getMoreType());
             obj.setMoreTypeStr(strMoreType);
+            screenPersonService.resolveDistrict2(obj);
         }
 
         // 导出 Excel

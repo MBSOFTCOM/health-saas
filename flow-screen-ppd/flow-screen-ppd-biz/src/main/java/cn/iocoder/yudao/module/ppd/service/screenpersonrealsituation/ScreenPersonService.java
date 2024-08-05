@@ -3,6 +3,7 @@ package cn.iocoder.yudao.module.ppd.service.screenpersonrealsituation;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenrepeatperson.ScreenRepeatPersonDO;
 import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
 import jakarta.validation.Valid;
 
@@ -115,4 +116,6 @@ public interface ScreenPersonService {
 
 
     void resolveDistrict(ScreenPersonDO obj);
+
+    void resolveDistrict2(ScreenRepeatPersonDO obj);
 }
