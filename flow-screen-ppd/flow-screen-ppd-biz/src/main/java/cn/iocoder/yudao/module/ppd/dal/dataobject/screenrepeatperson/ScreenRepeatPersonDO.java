@@ -1,0 +1,189 @@
+package cn.iocoder.yudao.module.ppd.dal.dataobject.screenrepeatperson;
+
+import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
+import com.baomidou.mybatisplus.annotation.KeySequence;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.*;
+import org.glassfish.jaxb.core.v2.TODO;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+/**
+ * 重复筛查人员管理 DO
+ *
+ * @author 侯卿
+ */
+@TableName("tb_screen_repeat_person")
+@KeySequence("tb_screen_repeat_person_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ScreenRepeatPersonDO extends BaseDO {
+
+    /**
+     * 主键
+     */
+    @TableId
+    private Long id;
+    /**
+     * 身高
+     */
+    private BigDecimal height;
+    /**
+     * 体重
+     */
+    private BigDecimal weight;
+    /**
+     * 户籍地址
+     */
+    private String permanentAddress;
+    /**
+     * 户籍地址-省
+     */
+    private String permanentAddressProvince;
+    /**
+     * 户籍地址-市
+     */
+    private String permanentAddressCity;
+    /**
+     * 户籍地址-县
+     */
+    private String permanentAddressCounty;
+    /**
+     * 户籍地址-乡镇
+     */
+    private String permanentAddressTown;
+    /**
+     * 现住址
+     */
+    private String address;
+    /**
+     * 现住址-省
+     */
+    private String province;
+    /**
+     * 现住址-市
+     */
+    private String city;
+    /**
+     * 现住址-县
+     */
+    private String county;
+    /**
+     * 现住址-乡镇
+     */
+    private String town;
+    /**
+     * 民族
+     *
+     * 枚举 {@link TODO tb_ethnic 对应的类}
+     */
+    private Integer nation;
+    /**
+     * 第一人群分类（1-重点人群 2-非重点人群 4-教职工）
+     *
+     * 枚举 {@link TODO tb_first_people_type 对应的类}
+     */
+    private Integer firstType;
+    /**
+     * 多人群分类（1-学生、2-老年人、4-教职工、8-密接者、16-糖尿病、32-僧尼、64-既往患者）
+     *
+     * 枚举 {@link TODO tb_more_people_type 对应的类}
+     */
+    private Integer moreType;
+    /**
+     * 单位
+     */
+    private String schoolOrTemple;
+    /**
+     * 班级
+     */
+    private String classroom;
+    /**
+     * 既往有无和肺结核患者密切接触。0-否 1-是
+     */
+    private Integer contactHistory;
+    /**
+     * 是否需筛查(0-否，1-是)
+     *
+     * 枚举 {@link TODO is_new 对应的类}
+     */
+    private Integer isNew;
+    /**
+     * 是否已筛查(0-未筛查，1-已筛查，2-正在筛查中)
+     *
+     * 枚举 {@link TODO is_screen 对应的类}
+     */
+    private Integer isScreened;
+    /**
+     * 是否为新生(0-否，1-是)
+     *
+     * 枚举 {@link TODO is_new 对应的类}
+     */
+    private Integer isNewStudent;
+    /**
+     * 筛查点
+     */
+    private String screenPoint;
+    /**
+     * 计划筛查时间
+     */
+    private LocalDateTime screenTime;
+    /**
+     * 备注
+     */
+    private String remark;
+    /**
+     * 所属工作年份
+     */
+    private Integer year;
+    /**
+     * 筛查类型  1--常规、2--新生、3--应急
+     *
+     * 枚举 {@link TODO tb_screen_type 对应的类}
+     */
+    private Integer screenType;
+    /**
+     * 筛查编号（生成）
+     */
+    private String screenId;
+    /**
+     * 同步时唯一编码
+     */
+    private Long syncId;
+    /**
+     * 身份证号
+     */
+    private String idNum;
+    /**
+     * 姓名
+     */
+    private String name;
+    /**
+     * 年龄
+     */
+    private Integer age;
+    /**
+     * 联系电话
+     */
+    private String tel;
+    /**
+     * 性别(1-女，0-男)
+     *
+     * 枚举 {@link TODO tb_patient_sex 对应的类}
+     */
+    private Integer sex;
+
+    /**
+     * 多人群分类
+     */
+    @TableField(exist = false)
+    private String moreTypeStr;
+
+}

@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.iocoder.yudao.module.ppd.dal.mysql.screenpersonrealsituation.ScreenPersonMapper">
+
+    <select id="isNullByIdNum" resultType="java.lang.Long" parameterType="java.lang.String">
+        SELECT id
+        FROM tb_screen_person
+        WHERE id_num = #{idNum}
+          AND deleted = 0
+    </select>
+
+
+    <select id="getCheckList"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.CollectVO">
+        SELECT id, outcome, screen_agency, screen_time, screen_order, person_id
+        FROM tb_screen_collect
+        WHERE person_id = #{patientId}
+          AND year = #{year}
+          AND screen_type = #{screenType}
+          AND deleted = 0
+        ORDER BY id DESC
+    </select>
+
+
+    <select id="getPPDList"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ScreenTstVO">
+        SELECT transverse_diameter, longitudinal_diameter, bleb, injection, screen_order,person_id,
+               injection_way, outcome, injection_agency, screen_time, id
+        FROM tb_screen_ppd
+        WHERE person_id = #{patientId}
+          AND year = #{year}
+          AND screen_type = #{screenType}
+            AND deleted = 0
+        ORDER BY id DESC
+    </select>
+
+
+    <select id="getCTDRList"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ChestRadiographVO">
+        SELECT chest_radiograph_code, chest_radiograph, screen_time, outcome, screen_order,person_id, id
+        FROM tb_screen_chest_radiograph
+        WHERE person_id = #{patientId}
+          AND year = #{year}
+          AND screen_type = #{screenType}
+          AND deleted = 0
+        ORDER BY id DESC
+    </select>
+
+
+    <select id="getSputumList"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.SputumExaminationVO">
+        SELECT sputum_examination,
+               type,
+               forthwith_sputum,
+               forthwith_sputum_code,
+               evening_sputum,
+               evening_sputum_code,
+               morning_sputum,
+               morning_sputum_code,
+               outcome,
+               screen_time,
+               screen_order,
+               person_id, id
+        FROM tb_screen_sputum_examination
+        WHERE person_id = #{patientId}
+          AND year = #{year}
+          AND screen_type = #{screenType}
+          AND deleted = 0
+        ORDER BY id DESC
+    </select>
+
+
+    <select id="getElectList"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ElectrocardiogramVO">
+        SELECT electrocardiogram, screen_time, screen_order, person_id, id
+        FROM tb_screen_electrocardiogram
+        WHERE person_id = #{patientId}
+          AND year = #{year}
+          AND screen_type = #{screenType}
+          AND deleted = 0
+        ORDER BY id DESC
+    </select>
+
+
+    <select id="getDiagnoList"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.DiagnosisVO">
+        SELECT screen_time, outcome, report, preventive_treatment, screen_order, person_id, id, treatment_program
+        FROM tb_screen_diagnosis
+        WHERE person_id = #{patientId}
+          AND year = #{year}
+          AND screen_type = #{screenType}
+          AND deleted = 0
+        ORDER BY id DESC
+    </select>
+
+
+    <select id="isNullByIdNumYear" resultType="java.lang.Long">
+        SELECT id
+        FROM tb_screen_person
+        WHERE id_num = #{idNum}
+          AND year = #{year}
+          AND screen_type = #{screenType}
+          AND deleted = 0
+    </select>
+
+
+    <!--<select id="getImageUrl" resultType="cn.iocoder.yudao.module.flow.tb.process.controller.admin.screenpersonrealsituation.vo.ImageVO">
+        SELECT url, id
+        FROM tb_screen_images
+        WHERE person_id = #{personId}
+          AND type = #{type}
+          AND screen_order = #{screenOrder}
+          AND screen_id = #{screenId}
+          AND year = #{year}
+          AND screen_type = #{screenType}
+          AND deleted = 0
+    </select>-->
+
+    <select id="getImageUrl" resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ImageVO">
+        SELECT url, id
+        FROM tb_screen_images
+        WHERE person_id = #{personId}
+          AND type = #{type}
+          AND screen_order = #{screenOrder}
+          AND year = #{year}
+          AND screen_type = #{screenType}
+          AND deleted = 0
+    </select>
+
+
+    <select id="selectImageById"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ImageVO"
+            parameterType="java.lang.Long">
+        SELECT url, id
+        FROM tb_screen_images
+        WHERE id = #{imageId}
+          AND deleted = 0
+    </select>
+
+
+    <select id="getMaxScreenId" resultType="java.lang.String">
+        SELECT screen_id
+        FROM tb_screen_person
+        WHERE year = #{year}
+          AND town = #{town}
+          AND deleted = 0
+    </select>
+
+    <select id="getPage"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO">
+        SELECT id, name, id_num, screen_type, is_new, is_screened, is_new_student,
+               first_type, more_type, screen_time, sex, age, tel, nation, school_or_temple,
+               classroom, height, weight, permanent_address, permanent_address_province,
+               permanent_address_city, permanent_address_county, permanent_address_town,
+               address, province, city, county, town, screen_point, screen_id, year
+        FROM tb_screen_person
+        WHERE deleted = 0
+        <if test="idNum != null and idNum != '' ">AND id_num = #{idNum}</if>
+        <if test="year != null ">AND year = #{year}</if>
+        <if test="name != null and name != '' ">AND name LIKE #{name} || '%'</if>
+        <if test="age != null ">AND age = #{age}</if>
+        <if test="sex != null ">AND sex = #{sex}</if>
+        <if test="address != null and address != '' ">AND address LIKE #{address} || '%'</if>
+        <if test="nation != null ">AND nation = #{nation} </if>
+        <if test="firstType != null ">AND first_type = #{firstType}</if>
+        <if test="screenId != null and screenId != '' ">AND screen_id LIKE #{screenId} || '%'</if>
+        <if test="schoolOrTemple != null and schoolOrTemple != '' ">AND school_or_temple LIKE #{schoolOrTemple} || '%'</if>
+        <if test="classroom != null and classroom != '' ">AND classroom LIKE #{classroom} || '%'</if>
+        </select>
+
+
+    <update id="updateImage">
+        UPDATE tb_screen_images
+        SET url = #{imageStr}
+        WHERE id = #{imageId} AND deleted = 0
+    </update>
+    <update id="updateIsScreenedById">
+        UPDATE
+            `tb_screen_person`
+        SET `is_screened` = 1
+        WHERE
+            `id` = #{personId} AND deleted = 0
+    </update>
+
+
+    <select id="getScreenedCountFromPlan"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO">
+        SELECT id, more_type AS moreType
+        FROM tb_screen_person
+        WHERE is_new = 1
+        AND is_screened = 1
+        AND deleted = 0
+        <if test="screenType != null">AND screen_type = #{screenType}</if>
+        <if test="year != null">AND year = #{year}</if>
+        <if test="quarter != null and quarter == 1">AND DATE_FORMAT(create_time, '%m') in (1, 2, 3)</if>
+        <if test="quarter != null and quarter == 2">AND DATE_FORMAT(create_time, '%m') in (4, 5, 6)</if>
+        <if test="quarter != null and quarter == 3">AND DATE_FORMAT(create_time, '%m') in (7, 8, 9)</if>
+        <if test="quarter != null and quarter == 4">AND DATE_FORMAT(create_time, '%m') in (10, 11, 12)</if>
+    </select>
+
+    <select id="findPlannedScreening"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO">
+        SELECT id, more_type AS moreType
+        FROM tb_screen_person
+        WHERE is_new = 1
+        AND deleted = 0
+        <if test="screenType != null">AND screen_type = #{screenType}</if>
+        <if test="year != null">AND year = #{year}</if>
+        <if test="quarter != null and quarter == 1">AND DATE_FORMAT(create_time, '%m') in (1, 2, 3)</if>
+        <if test="quarter != null and quarter == 2">AND DATE_FORMAT(create_time, '%m') in (4, 5, 6)</if>
+        <if test="quarter != null and quarter == 3">AND DATE_FORMAT(create_time, '%m') in (7, 8, 9)</if>
+        <if test="quarter != null and quarter == 4">AND DATE_FORMAT(create_time, '%m') in (10, 11, 12)</if>
+    </select>
+
+    <select id="getActiveTuberculosisList"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO">
+        SELECT
+            sp.id,
+            sp.more_type
+        FROM
+            tb_screen_person sp
+                JOIN ( SELECT person_id
+                 FROM tb_screen_diagnosis
+                 WHERE outcome IN ( 8, 9 )
+                <if test="screenType != null">AND screen_type = #{screenType}</if>
+                <if test="year != null">AND year = #{year}</if>
+                <if test="quarter != null and quarter == 1">AND DATE_FORMAT(create_time, '%m') IN (1, 2, 3)</if>
+                <if test="quarter != null and quarter == 2">AND DATE_FORMAT(create_time, '%m') IN (4, 5, 6)</if>
+                <if test="quarter != null and quarter == 3">AND DATE_FORMAT(create_time, '%m') IN (7, 8, 9)</if>
+                <if test="quarter != null and quarter == 4">AND DATE_FORMAT(create_time, '%m') IN (10, 11, 12)</if>
+                 GROUP BY person_id
+                   ) AS diag ON sp.id = diag.person_id
+    </select>
+    <select id="getPathogenPositiveList"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO">
+        SELECT
+            sp.id,
+            sp.more_type
+        FROM
+            tb_screen_person sp
+                JOIN ( SELECT person_id
+                FROM tb_screen_experiment
+                WHERE ( smear_result = 1 OR culture_result = 1 OR (molecular_biology = 1 OR molecular_biology = 2) )
+                <if test="screenType != null">AND screen_type = #{screenType}</if>
+                <if test="year != null">AND year = #{year}</if>
+                <if test="quarter != null and quarter == 1">AND DATE_FORMAT(create_time, '%m') IN (1, 2, 3)</if>
+                <if test="quarter != null and quarter == 2">AND DATE_FORMAT(create_time, '%m') IN (4, 5, 6)</if>
+                <if test="quarter != null and quarter == 3">AND DATE_FORMAT(create_time, '%m') IN (7, 8, 9)</if>
+                <if test="quarter != null and quarter == 4">AND DATE_FORMAT(create_time, '%m') IN (10, 11, 12)</if>
+                GROUP BY person_id ) AS diag ON sp.id = diag.person_id
+    </select>
+    <select id="getConfirmedAndTreatingPatientsList"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO">
+        SELECT
+            sp.id,
+            sp.more_type
+        FROM
+            tb_screen_person sp
+                JOIN ( SELECT person_id
+                FROM tb_screen_diagnosis
+                WHERE outcome is not null
+                <if test="screenType != null">AND screen_type = #{screenType}</if>
+                <if test="year != null">AND year = #{year}</if>
+                <if test="quarter != null and quarter == 1">AND DATE_FORMAT(create_time, '%m') IN (1, 2, 3)</if>
+                <if test="quarter != null and quarter == 2">AND DATE_FORMAT(create_time, '%m') IN (4, 5, 6)</if>
+                <if test="quarter != null and quarter == 3">AND DATE_FORMAT(create_time, '%m') IN (7, 8, 9)</if>
+                <if test="quarter != null and quarter == 4">AND DATE_FORMAT(create_time, '%m') IN (10, 11, 12)</if>
+                GROUP BY person_id ) AS diag ON sp.id = diag.person_id;
+    </select>
+    <select id="getLatentInfectionList"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO">
+        SELECT
+            per.id,
+            per.more_type
+        FROM
+            tb_screen_person per
+                JOIN (
+                SELECT
+                    ppd.person_id
+                FROM
+                    tb_screen_ppd ppd
+                        INNER JOIN tb_screen_computed_tomography ct ON ppd.person_id = ct.person_id
+                        INNER JOIN tb_screen_chest_radiograph dr ON ppd.person_id = dr.person_id
+                WHERE
+                    ppd.outcome = 1
+                  AND dr.outcome = 0
+                  AND ct.outcome = 0
+                <if test="screenType != null">AND ppd.screen_type = #{screenType}</if>
+                <if test="year != null">AND ppd.year = #{year}</if>
+                <if test="quarter != null and quarter == 1">AND DATE_FORMAT(ppd.create_time, '%m') IN (1, 2, 3)</if>
+                <if test="quarter != null and quarter == 2">AND DATE_FORMAT(ppd.create_time, '%m') IN (4, 5, 6)</if>
+                <if test="quarter != null and quarter == 3">AND DATE_FORMAT(ppd.create_time, '%m') IN (7, 8, 9)</if>
+                <if test="quarter != null and quarter == 4">AND DATE_FORMAT(ppd.create_time, '%m') IN (10, 11, 12)</if>
+                GROUP BY
+                    ppd.person_id
+            ) AS diag ON per.id = diag.person_id;
+    </select>
+    <select id="getDiabetesAndHivList"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO">
+        SELECT
+            id,
+            more_type AS moreType
+        FROM
+            tb_screen_person
+        WHERE
+            <if test="screenType != null">screen_type = #{screenType}</if>
+            <if test="year != null">AND year = #{year}</if>
+            <if test="quarter != null and quarter == 1">AND DATE_FORMAT(create_time, '%m') IN (1, 2, 3)</if>
+            <if test="quarter != null and quarter == 2">AND DATE_FORMAT(create_time, '%m') IN (4, 5, 6)</if>
+            <if test="quarter != null and quarter == 3">AND DATE_FORMAT(create_time, '%m') IN (7, 8, 9)</if>
+            <if test="quarter != null and quarter == 4">AND DATE_FORMAT(create_time, '%m') IN (10, 11, 12)</if>
+    </select>
+</mapper>

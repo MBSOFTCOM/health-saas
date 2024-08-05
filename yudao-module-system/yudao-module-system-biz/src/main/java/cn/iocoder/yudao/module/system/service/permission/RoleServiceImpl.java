@@ -247,6 +247,24 @@ public class RoleServiceImpl implements RoleService {
         });
     }
 
+    @Override
+    public List<String> getRoleCode(Long loginUserId) {
+        return roleMapper.getRoleCode(loginUserId);
+    }
+
+    @Override
+    public List<RoleDO> getRoleListByOtherRole(Long loginUserId) {
+        List<Long> roleIds = roleMapper.getLoginRoleId(loginUserId);
+
+        Long minRoleId = null;
+
+        if (!roleIds.isEmpty()){
+            minRoleId = Collections.min(roleIds);
+        }
+
+        return roleMapper.getRoleListByOtherRole(minRoleId);
+    }
+
     /**
      * 获得自身的代理对象，解决 AOP 生效问题
      *

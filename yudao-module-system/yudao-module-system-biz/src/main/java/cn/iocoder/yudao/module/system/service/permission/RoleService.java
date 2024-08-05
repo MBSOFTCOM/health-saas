@@ -121,4 +121,19 @@ public interface RoleService {
      */
     void validateRoleList(Collection<Long> ids);
 
+
+    /**
+     * 获取登录账号的角色编码
+     * @param loginUserId
+     * @return
+     */
+    List<String> getRoleCode(Long loginUserId);
+
+    /**
+     * 非管理员获取角色列表
+     * @param loginUserId
+     * @return
+     */
+    List<RoleDO> getRoleListByOtherRole(Long loginUserId);
+
 }

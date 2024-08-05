@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.iocoder.yudao.module.ppd.dal.mysql.screenppd.ScreenPpdMapper">
+
+
+    <select id="selectByPersonIdLastTime"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screendiagnosis.vo.TBHealthScreening">
+        SELECT screen_time AS ppdInjectionTime, id
+        FROM tb_screen_ppd
+        WHERE person_id = #{personId}
+        ORDER BY screen_time DESC
+        LIMIT 1
+    </select>
+    <select id="getPpdData"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO">
+        select sp1.*,sp2.name
+        from tb_screen_ppd sp1
+        left join tb_screen_person sp2 on sp1.person_id=sp2.id
+        where sp2.screen_point=#{screenPoint}
+        and sp1.year=#{year}
+        and sp1.deleted=0
+        and sp2.deleted=0
+        <if test="screenId !=null and screenId !=''">
+            and sp1.screen_id like concat('%',#{screenId},'%')
+        </if>
+        <if test="injection !=null">
+            and sp1.injection=#{injection}
+        </if>
+        order by sp1.id desc
+        <if test="pageSize!=-1">
+            limit #{pageNo},#{pageSize}
+        </if>
+    </select>
+    <select id="getPpdCount" resultType="java.lang.Long">
+        select ifnull(count(*),0)
+        from tb_screen_ppd sp1
+        left join tb_screen_person sp2 on sp1.person_id=sp2.id
+        where sp2.screen_point=#{screenPoint}
+        and sp1.year=#{year}
+        and sp1.deleted=0
+        and sp2.deleted=0
+        <if test="screenId !=null and screenId !=''">
+            and sp1.screen_id like concat('%',#{screenId},'%')
+        </if>
+        <if test="injection !=null">
+            and sp1.injection=#{injection}
+        </if>
+    </select>
+</mapper>

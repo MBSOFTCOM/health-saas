@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.iocoder.yudao.module.ppd.dal.mysql.userscreenpoint.UserScreenPointMapper">
+
+
+    <select id="selectByUserId"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.userscreenpoint.UserScreenPointDO">
+        SELECT *
+        FROM tb_user_screen_point
+        WHERE deleted = 0
+    </select>
+
+    <select id="getIdByUserId" resultType="java.lang.Long">
+        SELECT id
+        FROM tb_user_screen_point
+        WHERE user_id = #{capId}
+          AND deleted = 0
+    </select>
+
+
+    <update id="deleteByUserIdAndRoleIdAndScreenPointId">
+        UPDATE tb_user_screen_point
+        SET deleted = 1
+        WHERE user_id = #{userId}
+          AND role_id = #{roleId}
+          AND screen_point_id = #{screenPointId}
+          AND deleted = 0
+    </update>
+</mapper>

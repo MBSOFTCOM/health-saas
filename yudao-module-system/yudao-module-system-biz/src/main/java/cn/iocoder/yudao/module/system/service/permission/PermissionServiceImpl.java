@@ -12,6 +12,7 @@ import cn.iocoder.yudao.module.system.dal.dataobject.permission.MenuDO;
 import cn.iocoder.yudao.module.system.dal.dataobject.permission.RoleDO;
 import cn.iocoder.yudao.module.system.dal.dataobject.permission.RoleMenuDO;
 import cn.iocoder.yudao.module.system.dal.dataobject.permission.UserRoleDO;
+import cn.iocoder.yudao.module.system.dal.mysql.permission.RoleMapper;
 import cn.iocoder.yudao.module.system.dal.mysql.permission.RoleMenuMapper;
 import cn.iocoder.yudao.module.system.dal.mysql.permission.UserRoleMapper;
 import cn.iocoder.yudao.module.system.dal.redis.RedisKeyConstants;
@@ -58,6 +59,8 @@ public class PermissionServiceImpl implements PermissionService {
     private DeptService deptService;
     @Resource
     private AdminUserService userService;
+    @Resource
+    private RoleMapper roleMapper;
 
     @Override
     public boolean hasAnyPermissions(Long userId, String... permissions) {
@@ -323,6 +326,53 @@ public class PermissionServiceImpl implements PermissionService {
             log.error("[getDeptDataPermission][LoginUser({}) role({}) 无法处理]", userId, toJsonString(result));
         }
         return result;
+    }
+
+    @Override
+    public Long getCollectRoleId() {
+        // 拿到采集组角色的id
+        return roleMapper.getIdByCode("collect_group");
+    }
+
+    @Override
+    public Long getPPDRoleId() {
+        // 拿到PPD组角色的id
+        return roleMapper.getIdByCode("ppd_group");
+    }
+
+    @Override
+    public Long getDrctRoleId() {
+        // 拿到drct组角色的id
+        return roleMapper.getIdByCode("dr/ct_group");
+    }
+
+    @Override
+    public Long getSputumRoleId() {
+        // 拿到痰检组角色的id
+        return roleMapper.getIdByCode("sputum_group");
+    }
+
+    @Override
+    public Long getExperimentRoleId() {
+        // 拿到实验组角色的id
+        return roleMapper.getIdByCode("experiment_group");
+    }
+
+    @Override
+    public Long getElectrocardiogramRoleId() {
+        // 拿到心电图组角色的id
+        return roleMapper.getIdByCode("electrocardiogram_group");
+    }
+
+    @Override
+    public Long getDiagnosisRoleId() {
+        // 拿到诊断组角色的id
+        return roleMapper.getIdByCode("diagnos_group");
+    }
+
+    @Override
+    public Long getCapitalRoleId() {
+        return roleMapper.getIdByCode("capital");
     }
 
     /**

@@ -143,4 +143,20 @@ public interface PermissionService {
      */
     DeptDataPermissionRespDTO getDeptDataPermission(Long userId);
 
+    Long getCollectRoleId();
+
+    Long getPPDRoleId();
+
+    Long getDrctRoleId();
+
+    Long getSputumRoleId();
+
+    Long getExperimentRoleId();
+
+    Long getElectrocardiogramRoleId();
+
+    Long getDiagnosisRoleId();
+
+    Long getCapitalRoleId();
+
 }
