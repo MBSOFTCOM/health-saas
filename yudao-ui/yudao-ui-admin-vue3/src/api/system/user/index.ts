@@ -79,3 +79,15 @@ export const updateUserStatus = (id: number, status: number) => {
 export const getSimpleUserList = (): Promise<UserVO[]> => {
   return request.get({ url: '/system/user/simple-list' })
 }
+
+export async function getUserId() {
+  return request.get({ url: '/system/user/getUserId' })
+}
+
+export async function getUserRole() {
+  return request.get({ url: '/system/user/getUserRole' })
+}
+
+export async function getRoles(userId:number) {
+  return request.get({ url: '/system/user/getRoles?userId=' + userId })
+}
