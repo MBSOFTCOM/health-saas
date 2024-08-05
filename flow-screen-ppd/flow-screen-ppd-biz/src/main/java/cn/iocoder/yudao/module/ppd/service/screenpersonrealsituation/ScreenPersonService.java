@@ -114,4 +114,5 @@ public interface ScreenPersonService {
     String updateImag2(Long personId, String screenId, Integer imageType, Integer screenOrder,Integer year, Integer screenType, InputStream file);
 
 
+    void resolveDistrict(ScreenPersonDO obj);
 }

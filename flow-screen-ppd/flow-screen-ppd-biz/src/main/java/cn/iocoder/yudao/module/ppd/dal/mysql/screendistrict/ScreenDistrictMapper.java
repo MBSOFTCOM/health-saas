@@ -25,17 +25,17 @@ public interface ScreenDistrictMapper extends BaseMapperX<ScreenDistrictDO> {
     /**
      * 获取 市 名称 列表
      */
-    List<ScreenDistrictDO> getCityName2();
+    List<ScreenDistrictDO> getCityName2(String provinceCode);
 
     /**
      * 获取 县 名称 列表
      */
-    List<ScreenDistrictDO> getCountyName2();
+    List<ScreenDistrictDO> getCountyName2(String cityCode);
 
     /**
      * 获取 乡镇 名称 列表
      */
-    List<ScreenDistrictDO> getTownName2();
+    List<ScreenDistrictDO> getTownName2(String countyCode);
 
     /**
      * 获取 村 名称 列表
@@ -69,4 +69,6 @@ public interface ScreenDistrictMapper extends BaseMapperX<ScreenDistrictDO> {
     List<String> getVillageName();
 
     String selectByName(String name);
+
+    String getNameByCode(String code);
 }

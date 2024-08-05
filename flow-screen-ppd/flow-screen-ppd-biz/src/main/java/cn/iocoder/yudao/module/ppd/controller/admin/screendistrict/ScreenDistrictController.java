@@ -8,6 +8,7 @@ import jakarta.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -32,23 +33,23 @@ public class ScreenDistrictController {
     }
 
     @GetMapping("/get-city")
-    public CommonResult<List<ScreenDistrictDO>> getCity(){
-        List<ScreenDistrictDO> cityName = screenDistrictService.getCityName2();
+    public CommonResult<List<ScreenDistrictDO>> getCity(@RequestParam("provinceCode") String provinceCode){
+        List<ScreenDistrictDO> cityName = screenDistrictService.getCityName2(provinceCode);
         return success(cityName);
     }
 
 
     @GetMapping("/get-county")
-    public CommonResult<List<ScreenDistrictDO>> getCounty(){
-        List<ScreenDistrictDO> countyName = screenDistrictService.getCountyName2();
+    public CommonResult<List<ScreenDistrictDO>> getCounty(@RequestParam("cityCode") String cityCode){
+        List<ScreenDistrictDO> countyName = screenDistrictService.getCountyName2(cityCode);
         return success(countyName);
     }
 
 
 
     @GetMapping("/get-town")
-    public CommonResult<List<ScreenDistrictDO>> getTown(){
-        List<ScreenDistrictDO> townName = screenDistrictService.getTownName2();
+    public CommonResult<List<ScreenDistrictDO>> getTown(@RequestParam("countyCode") String countyCode){
+        List<ScreenDistrictDO> townName = screenDistrictService.getTownName2(countyCode);
         return success(townName);
     }
 
