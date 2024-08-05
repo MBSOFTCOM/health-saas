@@ -6,35 +6,35 @@
     <select id="getCityName" resultType="java.lang.String">
         SELECT name
         FROM tb_screen_district
-        WHERE CHAR_LENGTH(code) = 4
+        WHERE level = 1
     </select>
 
 
     <select id="getCountyName" resultType="java.lang.String">
         SELECT name
         FROM tb_screen_district
-        WHERE CHAR_LENGTH(code) = 6
+        WHERE level = 2
     </select>
 
 
     <select id="getTownName" resultType="java.lang.String">
         SELECT name
         FROM tb_screen_district
-        WHERE CHAR_LENGTH(code) = 9
+        WHERE level = 3
     </select>
 
 
     <select id="getVillageName" resultType="java.lang.String">
         SELECT name
         FROM tb_screen_district
-        WHERE CHAR_LENGTH(code) = 12
+        WHERE level = 4
     </select>
 
 
     <select id="getProvinceName" resultType="java.lang.String">
         SELECT name
         FROM tb_screen_district
-        WHERE CHAR_LENGTH(code) = 2
+        WHERE level = 0
     </select>
 
 
@@ -44,6 +44,42 @@
         WHERE name = #{name}
         LIMIT 1
     </select>
+
+
+    <select id="getCityName2" resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO">
+        SELECT code ,name
+        FROM tb_screen_district
+        WHERE level = 1
+    </select>
+
+
+    <select id="getCountyName2" resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO">
+        SELECT code ,name
+        FROM tb_screen_district
+        WHERE level = 2
+    </select>
+
+
+    <select id="getTownName2" resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO">
+        SELECT code ,name
+        FROM tb_screen_district
+        WHERE level = 3
+    </select>
+
+
+    <select id="getVillageName2" resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO">
+        SELECT code ,name
+        FROM tb_screen_district
+        WHERE level = 4
+    </select>
+
+
+    <select id="getProvinceName2" resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO">
+        SELECT code ,name
+        FROM tb_screen_district
+        WHERE level = 0
+    </select>
+
 
 
 </mapper>

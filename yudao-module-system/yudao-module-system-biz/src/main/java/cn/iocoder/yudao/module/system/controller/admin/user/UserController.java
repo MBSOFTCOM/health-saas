@@ -7,12 +7,14 @@ import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
+import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.system.controller.admin.user.vo.user.*;
 import cn.iocoder.yudao.module.system.convert.user.UserConvert;
 import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import cn.iocoder.yudao.module.system.dal.dataobject.user.AdminUserDO;
 import cn.iocoder.yudao.module.system.enums.common.SexEnum;
 import cn.iocoder.yudao.module.system.service.dept.DeptService;
+import cn.iocoder.yudao.module.system.service.permission.RoleService;
 import cn.iocoder.yudao.module.system.service.user.AdminUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -45,6 +47,8 @@ public class UserController {
     private AdminUserService userService;
     @Resource
     private DeptService deptService;
+    @Resource
+    private RoleService roleService;
 
     @PostMapping("/create")
     @Operation(summary = "新增用户")
@@ -164,6 +168,25 @@ public class UserController {
                                                       @RequestParam(value = "updateSupport", required = false, defaultValue = "false") Boolean updateSupport) throws Exception {
         List<UserImportExcelVO> list = ExcelUtils.read(file, UserImportExcelVO.class);
         return success(userService.importUserList(list, updateSupport));
+    }
+
+    @GetMapping("/getUserId")
+    public CommonResult<Long> getUserId() {
+        Long loginUserId = SecurityFrameworkUtils.getLoginUserId();
+        return success(loginUserId);
+    }
+
+
+    @GetMapping("/getUserRole")
+    public CommonResult<List<String>> getUserRole() {
+        Long loginUserId = SecurityFrameworkUtils.getLoginUserId();
+        return success(roleService.getRoleCode(loginUserId));
+    }
+
+
+    @GetMapping("/getRoles")
+    public CommonResult<List<String>> getRoles(@RequestParam("userId") Long userId) {
+        return success(roleService.getRoleCode(userId));
     }
 
 }

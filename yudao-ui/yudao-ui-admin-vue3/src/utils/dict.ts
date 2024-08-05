@@ -209,5 +209,19 @@ export enum DICT_TYPE {
 
   // ========== ERP - 企业资源计划模块  ==========
   ERP_AUDIT_STATUS = 'erp_audit_status', // ERP 审批状态
-  ERP_STOCK_RECORD_BIZ_TYPE = 'erp_stock_record_biz_type' // 库存明细的业务类型
+  ERP_STOCK_RECORD_BIZ_TYPE = 'erp_stock_record_biz_type', // 库存明细的业务类型
+
+  // ========== TB - 患者筛查模块  ==========
+FIRST_TYPE = 'tb_first_people_type', // 第一人群分类
+  MORE_TYPE = 'tb_more_people_type', // 多人群分类
+  IS_NEW = 'is_new', //是否新增
+  IS_SCREEN = 'is_screen', //是否筛查
+  NATION = 'tb_ethnic', //民族字典
+  PATIENT_SEX = 'tb_patient_sex', //患者性别
+  TB_SCREEN_DIAGNOSIS_RESULT = 'tb_screen_experiment_result',  // 诊断组结果
+  TB_SCREEN_DIAGNOSIS_TREATMENT_PROGRAM = 'tb_screen_diagnosis_treatment_program',  //诊断组治疗方案
+  TB_SCREEN_DIAGNOSIS_REPORT = 'tb_screen_diagnosis_report', // 诊断组是否网报
+  TB_SCREEN_PREVENTIVE_TREATMENT = 'tb_screen_preventive_treatment', // 诊断组是否符合潜伏治疗条件
+  TB_SCREEN_INJECTION_WAY = 'tb_injection', //PPD组注射方式
+  TB_SCREEN_TYPE = 'tb_screen_type', // 筛查类型
 }

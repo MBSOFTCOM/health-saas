@@ -2,6 +2,7 @@ package cn.iocoder.yudao.module.ppd.service.screendistrict;
 
 
 
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screendistrict.ScreenDistrictMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -46,5 +47,30 @@ public class ScreenDistrictServiceImpl implements ScreenDistrictService {
     @Override
     public List<String> getVillageName() {
         return districtMapper.getVillageName();
+    }
+
+    @Override
+    public List<ScreenDistrictDO> getProvinceName2() {
+        return districtMapper.getProvinceName2();
+    }
+
+    @Override
+    public List<ScreenDistrictDO> getCityName2() {
+        return districtMapper.getCityName2();
+    }
+
+    @Override
+    public List<ScreenDistrictDO> getCountyName2() {
+        return districtMapper.getCountyName2();
+    }
+
+    @Override
+    public List<ScreenDistrictDO> getTownName2() {
+        return districtMapper.getTownName2();
+    }
+
+    @Override
+    public List<ScreenDistrictDO> getVillageName2() {
+        return districtMapper.getVillageName2();
     }
 }
