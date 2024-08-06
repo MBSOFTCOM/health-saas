@@ -44,7 +44,7 @@
 				</view>
 				<view class="main-text" style="margin-left: 315px; margin-top: -5px">
 					<view class="text-top">采集时间</view>
-					<view class="text-bom">
+					<view class="text-bom" v-if="orderAndTime.time">
 						{{ orderAndTime.time.split(' ')[0] }}
 					</view>
 				</view>
@@ -61,6 +61,19 @@
 					<uni-data-checkbox multiple v-model="checkbox" :localdata="itemStudent"></uni-data-checkbox>
 				</view>
 			</view>
+      <view style="width: 95px;margin-top: 5px;">2年内是否有与结核病患者的接触史:</view>
+      <up-radio-group
+          v-model="contacted"
+          placement="column">
+        <up-radio
+            :customStyle="{marginBottom: '8px'}"
+            v-for="(item, index) in radiolist1"
+            :key="index"
+            :label="item.name"
+            :name="item.value"
+            @change="radioChange"
+        />
+      </up-radio-group>
 			<view class="bom-m">
 				<view>医生签名</view>
 				<view class="sign-bg" v-if="!formData.doctorSignature" @click="onSign">
@@ -118,10 +131,12 @@ import {
 	tbScreenPerson,
 	tbScreenImages
 } from '@/utils/sqlite';
-import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
-import { updateOne } from '/utils/screenSum.js';
-import ScreenImages from '/utils/screenImages.js';
-import { commitTransaction, openTransaction, rollbackTransaction } from '../../../utils/sqlite';
+import * as PersonApi from '@/api/screen/person'
+import dbUtils from '@/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
+import { updateOne } from '@/utils/screenSum.js';
+import ScreenImages from '@/utils/screenImages.js';
+import { commitTransaction, openTransaction, rollbackTransaction } from '@/utils/sqlite';
+import { login } from '@/api/login';
 export default {
 	data() {
 		return {
@@ -209,6 +224,8 @@ export default {
 					value: 4
 				}
 			],
+			contacted:null,
+			radiolist1:[{name:'是',value: 1},{name:'否',value:0}],
 			isNewStudent: null
 		};
 	},
@@ -219,6 +236,12 @@ export default {
 		this.refreshMark();
 		//生成次序和时间
 		this.newOrderAndTime();
+		PersonApi.getPersonByIdNum(this.patient.idNum).then((res)=>{
+			let data=res[0]
+			this.patient.tel=data.tel
+			this.patient.schoolName=data.schoolOrTemple
+			this.patient.classroom=data.classroom
+		})
 		//修改初始数据
 		if (e.isNew == '0') {
 			uni.setNavigationBarTitle({
@@ -226,6 +249,7 @@ export default {
 			});
 			getCollectOen(e.id, e.order, parseInt(e.year), uni.$screenType).then((res) => {
 				const str = res[0].outcome.toString();
+				this.contacted=res[0].contacted
 				this.checkbox = str.split('').map(Number);
 				this.formData.doctorSignature = res[0].doctorSignature;
 			});
@@ -234,6 +258,11 @@ export default {
 	},
 
 	methods: {
+		radioChange(e){
+		  // console.log(e)
+		  // console.log(this.contacted)
+		  this.contacted=e
+		},
 		getNavItems(screenType, isNew) {
 			const screenNames = {
 				1: '常规筛查',
@@ -401,7 +430,7 @@ export default {
 			this.checkbox.forEach((i) => {
 				outcome = outcome + i;
 			});
-			//启动事物
+			//启动事务
 			openTransaction()
 				.then(async (r) => {
 					// 1 表示新增
@@ -414,18 +443,24 @@ export default {
 
 						//整理采集组的新增数据
 						const collect = {
+							idNum:this.patient.idNum,
 							screenType: uni.$screenType,
 							year: parseInt(this.patient.year),
 							screenId: this.patient.screenId,
 							personId: this.patient.id,
 							outcome: outcome,
+							contacted:this.contacted,
+							tel:this.patient.tel,
+							classroom:this.patient.classroom,
+							schoolName:this.patient.schoolName,
+							age:this.patient.age,
 							doctorSignature: this.formData.doctorSignature,
 							screenOrder: this.orderAndTime.order,
 							screenTime: this.orderAndTime.time,
 							creator: uni.$person.id,
 							createTime: this.orderAndTime.time
 						};
-
+						
 						// console.log(collect);
 						//结果·校验
 						if (collect.outcome == '' || collect.outcome == null || collect.outcome == undefined) {
@@ -442,7 +477,6 @@ export default {
 							this.$modal.msgError('签名不能为空');
 							return;
 						}
-
 						//插入采集数据
 						dbUtils.addTabItem(dbName, tbScreenCollect, collect);
 
@@ -495,6 +529,7 @@ export default {
 						const collect = {
 							outcome: outcome,
 							doctorSignature: this.formData.doctorSignature,
+							contacted:this.contacted,
 							updateTime: this.markText[0] + ' ' + this.markText[1],
 							updater: uni.$person.id
 						};
