@@ -139,7 +139,7 @@
           class="!w-140px"
         />
       </el-form-item>
-      <el-form-item label="计划筛查时间" prop="screenTime" label-width="120">
+      <el-form-item label="筛查时间" prop="screenTime" label-width="120">
         <el-date-picker
           v-model="queryParams.screenTime"
           value-format="YYYY-MM-DD HH:mm:ss"
@@ -209,6 +209,21 @@
                     :label="dict.value"
           >{{dict.label}}</el-radio>
         </el-radio-group>-->
+      </el-form-item>
+      <el-form-item label="学生类别" prop="studentType" label-width="97">
+        <el-select
+          v-model="queryParams.studentType"
+          placeholder="请选择学生类别"
+          clearable
+          class="!w-180px"
+        >
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.STUDENT_TYPE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery">
@@ -378,7 +393,8 @@ const queryParams = reactive({
   name: undefined,
   tel: undefined,
   sex: undefined,
-  moreTempType: []
+  moreTempType: [],
+  studentType: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中

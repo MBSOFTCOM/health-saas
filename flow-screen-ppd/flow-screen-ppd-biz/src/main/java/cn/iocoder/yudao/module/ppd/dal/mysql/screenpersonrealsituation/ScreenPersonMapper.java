@@ -1,6 +1,7 @@
 package cn.iocoder.yudao.module.ppd.dal.mysql.screenpersonrealsituation;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
 import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
@@ -41,7 +42,8 @@ public interface ScreenPersonMapper extends BaseMapperX<ScreenPersonDO> {
                 .eqIfPresent(ScreenPersonDO::getScreenType,reqVO.getScreenType())
                 .likeIfPresent(ScreenPersonDO::getScreenPoint, reqVO.getScreenPoint())
                 .eqIfPresent(ScreenPersonDO::getStudentType, reqVO.getStudentType())
-                .betweenIfPresent(ScreenPersonDO::getScreenTime, reqVO.getScreenTime())
+                .betweenIfPresent(ScreenPersonDO::getScreenStartTime, reqVO.getScreenTime())
+                .betweenIfPresent(ScreenPersonDO::getScreenEndTime, reqVO.getScreenTime())
                 .orderByDesc(ScreenPersonDO::getId));
     }
 
@@ -68,7 +70,8 @@ public interface ScreenPersonMapper extends BaseMapperX<ScreenPersonDO> {
                 .eqIfPresent(ScreenPersonDO::getIsScreened, reqVO.getIsScreened())
                 .likeIfPresent(ScreenPersonDO::getScreenPoint, reqVO.getScreenPoint())
                 .eqIfPresent(ScreenPersonDO::getStudentType, reqVO.getStudentType())
-                .betweenIfPresent(ScreenPersonDO::getScreenTime, reqVO.getScreenTime())
+                .betweenIfPresent(ScreenPersonDO::getScreenStartTime, reqVO.getScreenTime())
+                .betweenIfPresent(ScreenPersonDO::getScreenEndTime, reqVO.getScreenTime())
                 .orderByDesc(ScreenPersonDO::getId));
     }
 
