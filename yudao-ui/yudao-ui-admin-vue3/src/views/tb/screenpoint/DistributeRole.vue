@@ -170,13 +170,13 @@ const workerYear = ref()
 const oldUserList = ref([])
 
 const props = defineProps({
-  collectWorker: String, // 假设collectWorker是一个字符串类型的prop
+  collectWorker: String,
   ppdWorker: String,
   drctWorker: String,
-  sputumWorker: String,
+/*  sputumWorker: String,
   experimentWorker: String,
   electrocardiogramWorker: String,
-  diagnosisWorker: String,
+  diagnosisWorker: String,*/
   worker: String
 })
 
@@ -210,7 +210,7 @@ const open = async (type: number, capId: number, pointId: number, year: number) 
     case 3:
       dialogTitle.value = "分配CT/DR组人员"
       break
-    case 4:
+/*    case 4:
       dialogTitle.value = "分配痰检组人员"
       break
     case 5:
@@ -221,16 +221,18 @@ const open = async (type: number, capId: number, pointId: number, year: number) 
       break
     case 7:
       dialogTitle.value = "分配诊断组人员"
-      break
+      break*/
     case 8:
       dialogTitle.value = "分配采集组人员"
       break
     default:
       dialogTitle.value = "分配工作人员"
   }
-  let userStrId = props.collectWorker + ', ' + props.ppdWorker + ', '
+  /*let userStrId = props.collectWorker + ', ' + props.ppdWorker + ', '
     + props.drctWorker + ', ' + props.sputumWorker + ', ' + props.worker + ', '
-    + props.experimentWorker + ', ' + props.electrocardiogramWorker + ', ' + props.diagnosisWorker;
+    + props.experimentWorker + ', ' + props.electrocardiogramWorker + ', ' + props.diagnosisWorker;*/
+  let userStrId = props.collectWorker + ', ' + props.ppdWorker + ', '
+    + props.drctWorker +  ', ' + props.worker;
   let userIds = userStrId.split(', ').map(item => item.trim());
   oldUserList.value = [...new Set(userIds)];
 
@@ -374,7 +376,7 @@ const handleDistriScreenPoint = async () => {
     roleName = 'DR/CT组成员';
     roleId = await PermissionApi.getDRCTRoleId();
     userIdStr = props.drctWorker;
-  }else if (Type.value === 4){
+  }/*else if (Type.value === 4){
     roleName = '痰检组成员';
     roleId = await PermissionApi.getSputumRoleId();
     userIdStr = props.sputumWorker;
@@ -390,7 +392,7 @@ const handleDistriScreenPoint = async () => {
     roleName = '诊断组成员';
     roleId = await PermissionApi.getDiagnosisRoleId();
     userIdStr = props.diagnosisWorker;
-  }
+  }*/
   if (Type.value !== 1){
     const confirmationMessage = '是否确认将你所选择的人员的筛查点设置为 '+ `${roleName}` + ' ？';
     await message.confirm(confirmationMessage);
