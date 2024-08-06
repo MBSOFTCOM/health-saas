@@ -711,12 +711,6 @@ const open = async (type: string, id?: number) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
-  cityList.value = []
-  cityList2.value = []
-  countyList.value = []
-  countyList2.value = []
-  townList.value = []
-  townList2.value = []
   resetForm()
   // 新增时 给予默认值
   formData.value.screenType = 1;
