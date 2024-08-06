@@ -94,6 +94,18 @@ public class ScreenPersonPageReqVO extends PageParam {
     @Schema(description = "筛查类型")
     private Integer screenType;
 
-    @Schema(description = "对应摸底表中id", example = "3081")
+    @Schema(description = "对应摸底表中id")
     private Long personId;
+
+    @Schema(description = "学生类型")
+    private Integer studentType;
+
+    @Schema(description = "开始计划筛查时间")
+    private LocalDateTime screenStartTime;
+
+    @Schema(description = "结束计划筛查时间")
+    private LocalDateTime screenEndTime;
+
+    @Schema(description = "监护人手机号")
+    private String guardianTel;
 }

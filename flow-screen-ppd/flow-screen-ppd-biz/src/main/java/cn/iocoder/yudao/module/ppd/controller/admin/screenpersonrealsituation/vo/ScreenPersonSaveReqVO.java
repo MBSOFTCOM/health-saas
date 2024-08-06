@@ -51,7 +51,6 @@ public class ScreenPersonSaveReqVO {
     private BigDecimal weight;
 
     @Schema(description = "户籍地址")
-    @NotNull(message = "户籍地址不能为空！")
     private String permanentAddress;
 
     @Schema(description = "户籍地址-省")
@@ -67,7 +66,6 @@ public class ScreenPersonSaveReqVO {
     private String permanentAddressTown;
 
     @Schema(description = "现住址")
-    @NotNull(message = "现住址不能为空！")
     private String address;
 
     @Schema(description = "现住址-省")
@@ -101,7 +99,6 @@ public class ScreenPersonSaveReqVO {
     private String classroom;
 
     @Schema(description = "是否需筛查")
-    @NotNull(message = "是否需筛查选项不能为空！")
     private Integer isNew;
 
     @Schema(description = "是否已筛查")
@@ -120,7 +117,6 @@ public class ScreenPersonSaveReqVO {
     private String screenPoint;
 
     @Schema(description = "筛查时间")
-    @NotNull(message = "筛查时间不能为空！")
     private LocalDateTime screenTime;
 
     @Schema(description = "备注")
@@ -131,5 +127,17 @@ public class ScreenPersonSaveReqVO {
 
     @Schema(description = "筛查类型")
     private Integer screenType;
+
+    @Schema(description = "学生类型")
+    private Integer studentType;
+
+    @Schema(description = "开始计划筛查时间")
+    private LocalDateTime screenStartTime;
+
+    @Schema(description = "结束计划筛查时间")
+    private LocalDateTime screenEndTime;
+
+    @Schema(description = "监护人手机号")
+    private String guardianTel;
 
 }

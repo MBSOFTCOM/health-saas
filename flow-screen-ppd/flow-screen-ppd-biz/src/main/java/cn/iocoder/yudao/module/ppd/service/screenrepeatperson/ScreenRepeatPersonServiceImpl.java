@@ -164,7 +164,7 @@ public class ScreenRepeatPersonServiceImpl implements ScreenRepeatPersonService 
 
             List<String> screenIdList = screenPersonMapper.getMaxScreenId(screenPersonDO.getYear(), screenPersonDO.getTown());
             // 根据镇名称查询对应的区域代码
-            String code = screenDistrictMapper.selectByName(screenPersonDO.getTown());
+            String code = screenPersonDO.getTown().substring(0, 9);
             // 找到该乡镇最大的筛查编号
             String maxScreenId = constructMaxScreenId(screenIdList, code, screenPersonDO.getYear(), screenPersonDO.getScreenType());
             // 生成筛查编号

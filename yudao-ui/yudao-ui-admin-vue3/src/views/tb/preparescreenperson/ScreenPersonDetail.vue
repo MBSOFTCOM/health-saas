@@ -121,7 +121,7 @@
                 </div>
               </div>
               <div class="content_tow">
-                <div class="content_tow_item_column3_2">
+<!--                <div class="content_tow_item_column3_2">
                   <div class="content_tow_item_column3_item_1" style="font-size: 18px">
                     僧尼
                   </div>
@@ -151,7 +151,7 @@
                       {{ tbHealthScreening.monkOrNunOver15Years ? '☑' : '□' }}
                     </div>
                   </div>
-                </div>
+                </div>-->
                 <div class="content_tow_item_column3_1">
                   <div class="content_tow_item_column3_item_2point5" style="font-size: 18px">
                     老年人
@@ -537,7 +537,30 @@
               :formatter="dateFormatter"/>
           </el-table>
         </el-tab-pane>
-        <el-tab-pane label="痰检">
+        <el-tab-pane label="知情同意书">
+          <div style="padding: 10px; line-height: 1.6; font-size: 16px;">
+            <div style="text-align: center;">
+              <p style="font-size: 22px;"><strong>结核病筛查PPD皮肤试验知情告知书</strong></p>
+            </div>
+            <p>【疾病简介】结核病是由结核杆菌感染所致的慢性传染病，主要通过空气传播。感染后结核杆菌可经血液传播至全身各组织器官。</p>
+            <p>【皮试禁忌】患急性疾病（如麻疹、湿疹、百日咳、流行性感冒、肺炎）、急性眼结膜炎、急性中耳炎、广泛皮肤病者及过敏体质者（对奶粉过敏）、一个月内接种过疫苗者暂不使用。</p>
+            <p>【注意事项】</p>
+            <ol>
+              <li>PPD注射后请原地休息，观察30分钟，如无不适方可离开。如有不适应立即告知医生或护士。</li>
+              <li>保持PPD注射部位清洁干燥，禁揉搓、抓挠、涂擦药物，腕部禁止佩戴手表及饰品。</li>
+              <li>受试者于PPD注射后72小时查验反应结果。</li>
+            </ol>
+            <p><text><strong>【受试者姓名】</strong></text>______{学生姓名}_____<text><strong>身份证号码</strong></text>__________{身份证号}______________</p>
+            <p><text><strong>【学校班级】</strong></text>__________________________________________________________________</p>
+            <p>请仔细阅读并理解以上内容，受试者健康状况良好，无皮试禁忌症，愿意接受PPD皮肤试验。<text><strong>如拒绝接受PPD皮肤试验，请说明原因</strong></text>_______________________________________</p>
+            <div style="text-align: right;">
+              <p><text><strong>家长确认签名：</strong></text>____________________</p>
+              <p>年   月   日</p>
+            </div>
+          </div>
+
+        </el-tab-pane>
+<!--        <el-tab-pane label="痰检">
           <el-table :data="sputumList" :stripe="true" max-height="400px">
             <el-table-column label="筛查次序" prop="screenOrder" align="center" width="100"/>
             <el-table-column label="操作" align="center" fixed="right" width="200">
@@ -629,7 +652,7 @@
               label="筛查时间" align="center" prop="screenTime"
               :formatter="dateFormatter"/>
           </el-table>
-        </el-tab-pane>
+        </el-tab-pane>-->
 
       </el-tabs>
     </ContentWrap>
@@ -755,9 +778,9 @@ const open = async (id: number, year: number, screenType: number) => {
       checkList.value = data.checkList //采集组数据
       PPDList.value = data.ppdlist // PPD组数据
       CTDRList.value = data.ctdrlist // CT、DR组数据
-      sputumList.value = data.sputumList // 痰检组数据
+/*      sputumList.value = data.sputumList // 痰检组数据
       electList.value = data.electList // 心电图组数据
-      diagnoList.value = data.diagnoList // 诊断组数据
+      diagnoList.value = data.diagnoList // 诊断组数据*/
       tbHealthScreening.value = data.tbHealthScreening //体检单数据
     } finally {
       formLoading.value = false

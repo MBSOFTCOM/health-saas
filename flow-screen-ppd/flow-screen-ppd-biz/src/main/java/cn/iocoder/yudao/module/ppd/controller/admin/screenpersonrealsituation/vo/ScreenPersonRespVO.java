@@ -65,6 +65,23 @@ public class ScreenPersonRespVO {
     @Schema(description = "多人群分类（1-学生、2-老年人、4-教职工、8-密接者、16-糖尿病、32-僧尼、64-既往患者）")
     private Integer moreType;
 
+    @Schema(description = "学生类型")
+    @ExcelProperty(value = "学生类型", converter = DictConvert.class)
+    @DictFormat("student_type")
+    private Integer studentType;
+
+    @Schema(description = "开始计划筛查时间")
+    @ExcelProperty(value = "开始计划筛查时间")
+    private LocalDateTime screenStartTime;
+
+    @Schema(description = "结束计划筛查时间")
+    @ExcelProperty(value = "开始计划筛查时间")
+    private LocalDateTime screenEndTime;
+
+    @Schema(description = "监护人手机号")
+    @ExcelProperty(value = "监护人手机号")
+    private String guardianTel;
+
     @Schema(description = "计划筛查时间")
     @ExcelProperty("计划筛查时间")
     private LocalDateTime screenTime;

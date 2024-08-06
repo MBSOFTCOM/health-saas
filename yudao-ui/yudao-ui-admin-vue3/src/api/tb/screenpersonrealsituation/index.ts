@@ -69,6 +69,11 @@ export const ScreenPersonApi = {
     return await request.download({url: `/tb/screen-person/get-import-template`})
   },
 
+  // 下载待筛查人员导入模板 Excel
+  importScreenPersonTemplate2: async () => {
+    return await request.download({url: `/tb/screen-person/get-import-template2`})
+  },
+
   // 导出摸底 Excel
   exportScreenPerson: async (params) => {
     return await request.download({url: `/tb/screen-person/export-excel`, params})
