@@ -214,6 +214,24 @@
           新增
         </el-button>
         <el-button
+          type="success"
+          plain
+          @click="handleExportTemplate"
+          :loading="importTemplateLoading"
+        >
+          <Icon icon="ep:link" class="mr-5px"/>
+          下载导入模板
+        </el-button>
+        <el-button
+          type="info"
+          plain
+          @click="handleImport"
+          :loading="importLoading"
+          v-hasPermi="['tb:screen-person:create']"
+        >
+          <Icon icon="ep:finished" class="mr-5px" /> 导入
+        </el-button>
+        <el-button
           type="warning"
           plain
           @click="handleExport"
@@ -319,6 +337,9 @@
   <!-- 表单弹窗：添加/修改 -->
   <ScreenPersonForm ref="formRef" @success="getList"/>
 
+  <!-- 表单弹窗：导入摸底人员 -->
+  <ScreenPersonImportForm ref="importFormRef" @success="getList"/>
+
   <ScreenPersonDetail ref="newRef"/>
 
 </template>
@@ -326,13 +347,13 @@
 <script setup lang="ts">
 import PinyinMatch from 'pinyin-match'
 import {getIntDictOptions, DICT_TYPE} from '@/utils/dict'
-import {dateFormatter2, dateFormatter} from '@/utils/formatTime'
+import {dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {ScreenPersonApi, ScreenPersonVO} from '@/api/tb/screenpersonrealsituation'
 import ScreenPersonForm from './ScreenPersonForm.vue'
 import ScreenPersonDetail from './ScreenPersonDetail.vue'
 import {onMounted, ref, reactive, nextTick} from 'vue'
-import {ScreenRepeatPersonApi} from "@/api/tb/screenrepeatperson";
+import ScreenPersonImportForm from './ScreenPersonImportForm.vue'
 
 /** 摸底 列表 */
 defineOptions({name: 'ScreenedPerson'})
@@ -502,6 +523,32 @@ const handleDelete = async (id: number) => {
     // 刷新列表
     await getList()
   } catch {
+  }
+}
+
+/** 下载待筛查人员导入模板按钮操作 */
+const handleExportTemplate = async () => {
+  try {
+    // 导出的二次确认
+    await message.confirm("是否确认下载待筛查人员导入模板？")
+    // 发起导出
+    importTemplateLoading.value = true
+    const data = await ScreenPersonApi.importScreenPersonTemplate2()
+    download.excel(data, '待筛查人员导入模板.xls')
+  } catch {
+  } finally {
+    importTemplateLoading.value = false
+  }
+}
+
+/** 导入*/
+const importFormRef = ref()
+const handleImport = () => {
+  try {
+    importLoading.value = true
+    importFormRef.value.open()
+  }finally {
+    importLoading.value = false
   }
 }
 

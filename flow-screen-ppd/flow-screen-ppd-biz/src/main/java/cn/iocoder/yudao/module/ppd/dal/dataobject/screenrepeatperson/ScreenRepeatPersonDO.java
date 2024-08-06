@@ -186,4 +186,25 @@ public class ScreenRepeatPersonDO extends BaseDO {
     @TableField(exist = false)
     private String moreTypeStr;
 
+
+    /**
+     * 学生类型
+     */
+    private Integer studentType;
+
+    /**
+     * 开始计划筛查时间
+     */
+    private LocalDateTime screenStartTime;
+
+    /**
+     * 结束计划筛查时间
+     */
+    private LocalDateTime screenEndTime;
+
+    /**
+     * 监护人手机号
+     */
+    private String guardianTel;
+
 }

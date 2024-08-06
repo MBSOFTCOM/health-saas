@@ -341,29 +341,22 @@
 
       <el-row type="flex" justify="space-between">
         <el-col :span="11">
-<!--          <el-form-item
-            label="单位"
-            prop="schoolOrTemple"
-            v-if="
-              formData.firstType === 1 &&
-              (formData.moreTempType.includes(1) || formData.moreTempType.includes(32))
-            "
-          >
-            <el-input v-model="formData.schoolOrTemple" placeholder="请输入单位"/>
-          </el-form-item>-->
           <el-form-item
-            label="单位"
-            prop="schoolOrTemple"
+            label="是否为新生"
+            prop="isNewStudent"
+            v-if="formData.firstType == 1 && formData.moreTempType.includes(1)"
           >
-            <el-input v-model="formData.schoolOrTemple" placeholder="请输入单位"/>
+            <el-radio-group v-model="formData.isNewStudent">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="0" style="margin-left: -22px">否</el-radio>
+            </el-radio-group>
           </el-form-item>
-
         </el-col>
         <el-col :span="11">
           <el-form-item
             label="班级"
             prop="classroom"
-            v-if="formData.firstType === 1 && formData.moreTempType.includes(1)"
+            v-if="formData.firstType == 1 && formData.moreTempType.includes(1)"
           >
             <el-input v-model="formData.classroom" placeholder="请输入班级"/>
           </el-form-item>
@@ -372,17 +365,39 @@
 
       <el-row type="flex" justify="space-between">
         <el-col :span="11">
-          <el-form-item
-            label="是否为新生"
-            prop="isNewStudent"
-            v-if="formData.firstType === 1 && formData.moreTempType.includes(1)"
-          >
-            <el-radio-group v-model="formData.isNewStudent">
-              <el-radio :label="1">是</el-radio>
-              <el-radio :label="0" style="margin-left: -22px">否</el-radio>
-            </el-radio-group>
+          <el-form-item label="监护人手机号" prop="guardianTel" label-width="120" v-if="formData.firstType == 1 && formData.moreTempType.includes(1)">
+            <el-input v-model="formData.guardianTel" placeholder="请输入监护人手机号"/>
           </el-form-item>
         </el-col>
+        <el-col :span="11">
+          <el-form-item label="学生类型" prop="studentType" label-width="120" v-if="formData.firstType == 1 && formData.moreTempType.includes(1)">
+          <el-select
+            v-model="formData.studentType"
+            collapse-tags
+            clearable
+          >
+            <el-option
+              v-for="dict in getIntDictOptions(DICT_TYPE.STUDENT_TYPE)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+
+            />
+          </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row type="flex" justify="space-between">
+        <el-col :span="11">
+          <el-form-item
+            label="单位"
+            prop="schoolOrTemple"
+          >
+            <el-input v-model="formData.schoolOrTemple" placeholder="请输入单位"/>
+          </el-form-item>
+        </el-col>
+
         <el-col :span="11">
           <el-form-item label="是否需筛查" prop="isNew">
             <el-radio-group v-model="formData.isNew">
@@ -394,7 +409,7 @@
       </el-row>
 
       <el-row type="flex" justify="space-between">
-        <el-col :span="11">
+        <el-col :span="10">
           <el-form-item
             label="筛查点"
             prop="screenPoint"
@@ -413,13 +428,22 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item label="计划筛查时间" prop="screenTime" label-width="120">
-            <el-date-picker
+        <el-col :span="12">
+          <el-form-item label="筛查时间" prop="screenTime" label-width="80">
+<!--            <el-date-picker
               v-model="formData.screenTime"
               type="date"
               value-format="x"
               placeholder="选择计划筛查时间"
+            />-->
+            <el-date-picker
+              v-model="formData.timeRange"
+              type="daterange"
+              range-separator="-"
+              start-placeholder="开始"
+              end-placeholder="结束"
+              :size="'default'"
+              @change="formatTime(formData.timeRange)"
             />
           </el-form-item>
         </el-col>
@@ -473,6 +497,7 @@ import DictTag from '@/components/DictTag/src/DictTag.vue'
 import {ScreenDistrictApi} from '@/api/tb/screendistrict'
 import {toBuffer} from 'qrcode'
 import {ScreenPointApi} from "@/api/tb/screenpoint";
+import moment from "moment";
 
 /** 摸底 表单 */
 defineOptions({name: 'ScreenPersonForm'})
@@ -515,7 +540,12 @@ const formData = ref({
   isScreened: undefined,
   screenPoint: undefined,
   screenTime: undefined,
-  moreTempType: []
+  moreTempType: [],
+  studentType: undefined,
+  screenStartTime: undefined,
+  screenEndTime: undefined,
+  guardianTel: undefined,
+  timeRange: undefined,
 })
 const provinceList = ref([]) //省列表
 const cityList = ref([]) //市列表
@@ -525,6 +555,14 @@ const townList = ref([]) //乡镇列表
 const cityList2 = ref([]) //户籍市列表
 const countyList2 = ref([]) // 户籍县列表
 const townList2 = ref([]) //户籍乡镇列表
+
+const copyTown2 = reactive([])
+const copyTown = reactive([])
+const copyCounty = reactive([])
+const copyCounty2 = reactive([])
+const copyCity2 = reactive([])
+const copyCity = reactive([])
+
 
 const villageList = ref([]) //村列表
 const ethnicList = ref([]) // 民族列表
@@ -628,11 +666,11 @@ const formRules = reactive({
     {pattern: /^[0-9]{11}$/, message: '电话号码必须为11位数字', trigger: 'blur'}
   ],
   permanentAddress: [
-    {required: true, message: '请输入户籍地址', trigger: 'blur'},
+    // {required: true, message: '请输入户籍地址', trigger: 'blur'},
     {max: 60, message: '地址长度不能超过60个字符', trigger: 'blur'}
   ],
   address: [
-    {required: true, message: '请输入地址', trigger: 'blur'},
+    // {required: true, message: '请输入地址', trigger: 'blur'},
     {max: 60, message: '地址长度不能超过60个字符', trigger: 'blur'}
   ],
   firstType: [{required: true, message: '请选择第一人群分类', trigger: 'change'}],
@@ -646,10 +684,10 @@ const formRules = reactive({
   /*moreType: [
       {required: true, message: '请选择多人群分类', trigger: 'blur'},
     ],*/
-  permanentAddressProvince: [{required: true, message: '请选择户籍地址-省', trigger: 'blur'}],
+/*  permanentAddressProvince: [{required: true, message: '请选择户籍地址-省', trigger: 'blur'}],
   permanentAddressCity: [{required: true, message: '请选择户籍地址-市(州)', trigger: 'blur'}],
   permanentAddressCounty: [{required: true, message: '请选择户籍地址-县', trigger: 'blur'}],
-  permanentAddressTown: [{required: true, message: '请选择户籍地址-乡', trigger: 'blur'}],
+  permanentAddressTown: [{required: true, message: '请选择户籍地址-乡', trigger: 'blur'}],*/
   province: [{required: true, message: '请选择现住址-省', trigger: 'blur'}],
   city: [{required: true, message: '请选择现住址-市(州)', trigger: 'blur'}],
   county: [{required: true, message: '请选择现住址-县', trigger: 'blur'}],
@@ -673,6 +711,7 @@ const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
+
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
@@ -687,10 +726,17 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       formData.value = await ScreenPersonApi.getScreenPerson(id)
+      getCityList(formData.value.province)
+      getCityList2(formData.value.permanentAddressProvince)
+      getCountyList(formData.value.city)
+      getCountyList2(formData.value.permanentAddressCity)
+      getTownList(formData.value.county)
+      getTownList2(formData.value.permanentAddressCounty)
       formData.value.moreTempType = resolveMoreType(formData.value.moreType)
       if(formData.value.firstType == 4){
         formData.value.moreTempType = resolveMoreType(formData.value.moreType).filter(item => item != 4)
       }
+      formatTime2()
     } finally {
       formLoading.value = false
     }
@@ -730,12 +776,26 @@ const submitForm = async () => {
       const age = currentYear - birthYear
       data.age = age
       data.sex = getGenderCodeFromIdCard(data.idNum)
+
+      if (formData.value.firstType == 1 && formData.value.moreTempType.includes(1)){
+        if (formData.value.studentType == undefined){
+          message.error('请选择学生类别！')
+          return
+        }
+      }
+
       await ScreenPersonApi.createScreenPerson(data)
       message.success(t('common.createSuccess'))
     } else {
       // 如果选择了非重点人群，则把多人群分类置零
       if (data.firstType == 2) {
         data.moreType = 0
+      }
+      if (formData.value.firstType == 1 && formData.value.moreTempType.includes(1)){
+        if (formData.value.studentType == undefined){
+          message.error('请选择学生类别！')
+          return
+        }
       }
       await ScreenPersonApi.updateScreenPerson(data)
       message.success(t('common.updateSuccess'))
@@ -781,7 +841,12 @@ const resetForm = () => {
     isScreened: undefined,
     screenPoint: undefined,
     screenTime: undefined,
-    moreTempType: []
+    moreTempType: [],
+    studentType: undefined,
+    screenStartTime: undefined,
+    screenEndTime: undefined,
+    guardianTel: undefined,
+    timeRange: undefined,
   }
   formRef.value?.resetFields()
 }
@@ -809,7 +874,6 @@ const PinyinProvince = (val) => {
   }
 }
 // 市
-const copyCity = reactive([])
 const getCityList = (provinceCode) => {
   ScreenDistrictApi.getCity(provinceCode).then(data => {
     cityList.value = data;
@@ -832,7 +896,7 @@ const PinyinCity = (val) => {
   }
 }
 // 户籍市
-const copyCity2 = reactive([])
+
 const getCityList2 = (provinceCode) => {
   ScreenDistrictApi.getCity(provinceCode).then(data => {
     cityList2.value = data;
@@ -856,7 +920,7 @@ const PinyinCity2 = (val) => {
 }
 
 // 县
-const copyCounty = reactive([])
+
 const getCountyList = (cityCode) => {
   ScreenDistrictApi.getCounty(cityCode).then(data => {
     countyList.value = data;
@@ -879,7 +943,6 @@ const PinyinCounty = (val) => {
   }
 }
 // 户籍县
-const copyCounty2 = reactive([])
 const getCountyList2 = (cityCode) => {
   ScreenDistrictApi.getCounty(cityCode).then(data => {
     countyList2.value = data;
@@ -903,7 +966,7 @@ const PinyinCounty2 = (val) => {
 }
 
 // 乡
-const copyTown = reactive([])
+
 const getTownList = (countyCode) => {
   ScreenDistrictApi.getTown(countyCode).then(data => {
     townList.value = data;
@@ -927,7 +990,6 @@ const PinyinTown = (val) => {
 }
 
 // 户籍乡
-const copyTown2 = reactive([])
 const getTownList2 = (countyCode) => {
   ScreenDistrictApi.getTown(countyCode).then(data => {
     townList2.value = data;
@@ -1042,6 +1104,24 @@ const PinyinScreenPoint = (val) => {
     // 如果没有输入，则还原列表
     pointList.value.splice(0, pointList.value.length, ...copycommonAddrScreenPoint)
   }
+}
+
+const formatTime = (time) =>{
+  // 方法三：使用 moment.js
+  const dateString1 = time[0];
+  const dateString2 = time[1];
+
+  formData.value.screenStartTime = moment(dateString1).valueOf();
+  formData.value.screenEndTime = moment(dateString2).valueOf();
+}
+
+const formatTime2 = () =>{
+  const timestamp1 = formData.value.screenStartTime; // 假设这是一个时间戳
+  const timestamp2 = formData.value.screenEndTime; // 假设这是另一个时间戳
+
+  const dateString1 = moment(timestamp1).toISOString(); // 转换为 ISO 8601 格式的日期时间字符串
+  const dateString2 = moment(timestamp2).toISOString(); // 转换为 ISO 8601 格式的日期时间字符串
+  formData.value.timeRange = [dateString1,dateString2];
 }
 
 /** 初始化 **/

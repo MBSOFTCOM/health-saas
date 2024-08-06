@@ -164,6 +164,55 @@ public class ScreenPersonController {
     }
 
 
+    @GetMapping("/get-import-template2")
+    @Operation(summary = "下载待筛查人员模板")
+    @ApiAccessLog(operateType = EXPORT)
+    public void exportScreenPersonExcel2(HttpServletResponse response) throws IOException {
+        // 模板数据
+        List<ScreenPersonImportVO> list = screenPersonService.createSampleData();
+        // 存放下拉选列表数据
+        Map<Integer, List<String>> selectedData = new HashMap<>();
+        screenPersonService.addSelectedData("is_new", 2, selectedData);
+//        screenPersonService.addSelectedData("is_new", 3, selectedData);
+        screenPersonService.addSelectedData("tb_first_people_type", 3, selectedData);
+        screenPersonService.addSelectedData("tb_more_people_type", 4, selectedData);
+        screenPersonService.addSelectedData("tb_ethnic", 6, selectedData);
+
+        // 获取地区名称数据
+        List<String> provinceName = districtMapper.getProvinceName();
+        List<String> cityName = districtMapper.getCityName();
+        List<String> countyName = districtMapper.getCountyName();
+        List<String> townName = districtMapper.getTownName();
+        // 将地区名称数据放入选项数据中
+        if (provinceName.size()>0){
+            selectedData.put(12,provinceName);
+            selectedData.put(17,provinceName);
+        }
+        if (cityName.size()>0){
+            selectedData.put(13,cityName);
+            selectedData.put(18,cityName);
+        }
+        if (countyName.size()>0){
+            selectedData.put(14,countyName);
+            selectedData.put(19,countyName);
+        }
+        if (townName.size()>0){
+            selectedData.put(15,townName);
+            selectedData.put(20,townName);
+        }
+
+        // 筛查点列表
+        List<String> screenPointList = screenPointMapper.getScreenPointList();
+        if (screenPointList.size()>0){
+            selectedData.put(21, screenPointList);
+        }
+
+        // 导出 Excel 模板
+        ExcelUtils.write(response, "待筛查人员导入模板.xls", "待筛查人员数据", ScreenPersonImportTemplateVO2.class,
+                BeanUtils.toBean(list, ScreenPersonImportTemplateVO2.class), new CustomSheetWriteHandler().setMap(selectedData));
+    }
+
+
     @GetMapping("/export-excel")
     @Operation(summary = "导出摸底 Excel")
     @PreAuthorize("@ss.hasPermission('tb:screen-person:export')")

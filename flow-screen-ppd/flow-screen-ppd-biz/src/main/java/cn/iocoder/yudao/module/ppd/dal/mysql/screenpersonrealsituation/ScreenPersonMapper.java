@@ -40,6 +40,7 @@ public interface ScreenPersonMapper extends BaseMapperX<ScreenPersonDO> {
                 .eqIfPresent(ScreenPersonDO::getIsNew, reqVO.getIsNew())
                 .eqIfPresent(ScreenPersonDO::getScreenType,reqVO.getScreenType())
                 .likeIfPresent(ScreenPersonDO::getScreenPoint, reqVO.getScreenPoint())
+                .eqIfPresent(ScreenPersonDO::getStudentType, reqVO.getStudentType())
                 .betweenIfPresent(ScreenPersonDO::getScreenTime, reqVO.getScreenTime())
                 .orderByDesc(ScreenPersonDO::getId));
     }
@@ -66,6 +67,7 @@ public interface ScreenPersonMapper extends BaseMapperX<ScreenPersonDO> {
                 .eqIfPresent(ScreenPersonDO::getScreenType,reqVO.getScreenType())
                 .eqIfPresent(ScreenPersonDO::getIsScreened, reqVO.getIsScreened())
                 .likeIfPresent(ScreenPersonDO::getScreenPoint, reqVO.getScreenPoint())
+                .eqIfPresent(ScreenPersonDO::getStudentType, reqVO.getStudentType())
                 .betweenIfPresent(ScreenPersonDO::getScreenTime, reqVO.getScreenTime())
                 .orderByDesc(ScreenPersonDO::getId));
     }

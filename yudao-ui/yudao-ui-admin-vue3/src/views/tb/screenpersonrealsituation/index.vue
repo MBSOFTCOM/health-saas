@@ -222,15 +222,6 @@
           下载导入模板
         </el-button>
         <el-button
-          type="warning"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['tb:screen-person:export']"
-        >
-          <Icon icon="ep:position" class="mr-5px" /> 导出
-        </el-button>
-        <el-button
           type="info"
           plain
           @click="handleImport"
@@ -238,6 +229,15 @@
           v-hasPermi="['tb:screen-person:create']"
         >
           <Icon icon="ep:finished" class="mr-5px" /> 导入
+        </el-button>
+        <el-button
+          type="warning"
+          plain
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['tb:screen-person:export']"
+        >
+          <Icon icon="ep:position" class="mr-5px" /> 导出
         </el-button>
       </el-form-item>
     </el-form>

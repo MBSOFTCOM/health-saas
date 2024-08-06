@@ -112,4 +112,16 @@ public class ScreenRepeatPersonSaveReqVO {
     @Schema(description = "性别(1-女，0-男)")
     private Integer sex;
 
+    @Schema(description = "学生类型")
+    private Integer studentType;
+
+    @Schema(description = "开始计划筛查时间")
+    private LocalDateTime screenStartTime;
+
+    @Schema(description = "结束计划筛查时间")
+    private LocalDateTime screenEndTime;
+
+    @Schema(description = "监护人手机号")
+    private String guardianTel;
+
 }

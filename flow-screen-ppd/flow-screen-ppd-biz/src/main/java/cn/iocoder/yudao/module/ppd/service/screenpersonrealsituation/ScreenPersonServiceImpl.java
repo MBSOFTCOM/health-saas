@@ -631,10 +631,10 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         return List.of(
                 ScreenPersonImportVO.builder().name("张三").idNum("360888888888888888").nation(24)
                         .tel("18888888888").height(BigDecimal.valueOf(175.22)).weight(BigDecimal.valueOf(55.2))
-                        .permanentAddress("四川省甘孜藏族自治州康定市炉城街道").permanentAddressProvince("四川省")
-                        .permanentAddressCity("甘孜藏族自治州").permanentAddressCounty("康定市").permanentAddressTown("炉城街道")
-                        .address("四川省甘孜藏族自治州康定市炉城街道").province("四川省").city("甘孜藏族自治州").county("康定市")
-                        .town("炉城街道").firstType(0).isNew(0).remark("备注").build()
+                        .permanentAddress("重庆市重庆市辖区万州区高笋塘街道").permanentAddressProvince("重庆市")
+                        .permanentAddressCity("重庆市辖区").permanentAddressCounty("万州区").permanentAddressTown("高笋塘街道")
+                        .address("重庆市重庆市辖区万州区高笋塘街道").province("重庆市").city("重庆市辖区").county("万州区")
+                        .town("高笋塘街道").firstType(0).remark("备注").build()
         );
     }
 
@@ -689,14 +689,14 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         List<ChestRadiographVO> ctdrList =
                 screenPersonMapper.getCTDRList(patientId, year, screenType).parallelStream().collect(Collectors.toList());
 
-        List<DiagnosisVO> diagnoList =
+        /*List<DiagnosisVO> diagnoList =
                 screenPersonMapper.getDiagnoList(patientId, year, screenType).parallelStream().collect(Collectors.toList());
 
         List<ElectrocardiogramVO> electList =
                 screenPersonMapper.getElectList(patientId, year, screenType).parallelStream().collect(Collectors.toList());
 
         List<SputumExaminationVO> sputumList =
-                screenPersonMapper.getSputumList(patientId, year, screenType).parallelStream().collect(Collectors.toList());
+                screenPersonMapper.getSputumList(patientId, year, screenType).parallelStream().collect(Collectors.toList());*/
 
         List<ScreenTstVO> ppdList =
                 screenPersonMapper.getPPDList(patientId, year, screenType).parallelStream().collect(Collectors.toList());
@@ -707,9 +707,6 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         return new PatientInfoList()
                 .setCheckList(checkList)
                 .setCTDRList(ctdrList)
-                .setDiagnoList(diagnoList)
-                .setElectList(electList)
-                .setSputumList(sputumList)
                 .setPPDList(ppdList)
                 .setTbHealthScreening(tbHealthScreening);
     }

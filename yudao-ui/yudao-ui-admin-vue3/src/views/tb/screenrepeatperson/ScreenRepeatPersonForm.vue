@@ -342,18 +342,21 @@
       <el-row type="flex" justify="space-between">
         <el-col :span="11">
           <el-form-item
-            label="单位"
-            prop="schoolOrTemple"
+            label="是否为新生"
+            prop="isNewStudent"
+            v-if="formData.firstType == 1 && formData.moreTempType.includes(1)"
           >
-            <el-input v-model="formData.schoolOrTemple" placeholder="请输入单位"/>
+            <el-radio-group v-model="formData.isNewStudent">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="0" style="margin-left: -22px">否</el-radio>
+            </el-radio-group>
           </el-form-item>
-
         </el-col>
         <el-col :span="11">
           <el-form-item
             label="班级"
             prop="classroom"
-            v-if="formData.firstType === 1 && formData.moreTempType.includes(1)"
+            v-if="formData.firstType == 1 && formData.moreTempType.includes(1)"
           >
             <el-input v-model="formData.classroom" placeholder="请输入班级"/>
           </el-form-item>
@@ -362,17 +365,38 @@
 
       <el-row type="flex" justify="space-between">
         <el-col :span="11">
-          <el-form-item
-            label="是否为新生"
-            prop="isNewStudent"
-            v-if="formData.firstType === 1 && formData.moreTempType.includes(1)"
-          >
-            <el-radio-group v-model="formData.isNewStudent">
-              <el-radio :label="1">是</el-radio>
-              <el-radio :label="0" style="margin-left: -22px">否</el-radio>
-            </el-radio-group>
+          <el-form-item label="监护人手机号" prop="tel" label-width="120" v-if="formData.firstType == 1 && formData.moreTempType.includes(1)">
+            <el-input v-model="formData.tel" placeholder="请输入监护人手机号"/>
           </el-form-item>
         </el-col>
+        <el-col :span="11">
+          <el-form-item label="学生类型" prop="firstType" label-width="120" v-if="formData.firstType == 1 && formData.moreTempType.includes(1)">
+            <el-select
+              v-model="formData.firstType"
+              collapse-tags
+            >
+              <el-option
+                v-for="dict in getIntDictOptions(DICT_TYPE.STUDENT_TYPE)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row type="flex" justify="space-between">
+        <el-col :span="11">
+          <el-form-item
+            label="单位"
+            prop="schoolOrTemple"
+          >
+            <el-input v-model="formData.schoolOrTemple" placeholder="请输入单位"/>
+          </el-form-item>
+        </el-col>
+
         <el-col :span="11">
           <el-form-item label="是否需筛查" prop="isNew">
             <el-radio-group v-model="formData.isNew">
@@ -406,10 +430,13 @@
         <el-col :span="11">
           <el-form-item label="计划筛查时间" prop="screenTime" label-width="120">
             <el-date-picker
-              v-model="formData.screenTime"
-              type="date"
-              value-format="x"
-              placeholder="选择计划筛查时间"
+              v-model="formData.timeRange"
+              type="daterange"
+              range-separator="-"
+              start-placeholder="开始"
+              end-placeholder="结束"
+              :size="'default'"
+              @change="formatTime(formData.timeRange)"
             />
           </el-form-item>
         </el-col>
@@ -460,6 +487,7 @@ import {onMounted, reactive, ref} from "vue";
 import PinyinMatch from "pinyin-match";
 import {ScreenPointApi} from "@/api/tb/screenpoint";
 import {ScreenDistrictApi} from "@/api/tb/screendistrict";
+import moment from "moment";
 
 /** 重复筛查人员管理 表单 */
 defineOptions({ name: 'ScreenRepeatPersonForm' })
@@ -506,7 +534,12 @@ const formData = ref({
   age: undefined,
   tel: undefined,
   sex: undefined,
-  moreTempType: []
+  moreTempType: [],
+  studentType: undefined,
+  screenStartTime: undefined,
+  screenEndTime: undefined,
+  guardianTel: undefined,
+  timeRange: undefined,
 })
 const ethnicList = ref([]) // 民族列表
 const pointList = ref([]) // 筛查点列表
@@ -674,9 +707,16 @@ const open = async (type: string, id?: number) => {
     try {
       formData.value = await ScreenRepeatPersonApi.getScreenRepeatPerson(id)
       formData.value.moreTempType = resolveMoreType(formData.value.moreType)
+      getCityList(formData.value.province)
+      getCityList2(formData.value.permanentAddressProvince)
+      getCountyList(formData.value.city)
+      getCountyList2(formData.value.permanentAddressCity)
+      getTownList(formData.value.county)
+      getTownList2(formData.value.permanentAddressCounty)
       if(formData.value.firstType == 4){
         formData.value.moreTempType = resolveMoreType(formData.value.moreType).filter(item => item !== 4)
       }
+      formatTime2()
     } finally {
       formLoading.value = false
     }
@@ -1010,9 +1050,32 @@ const resetForm = () => {
     age: undefined,
     tel: undefined,
     sex: undefined,
-    moreTempType: []
+    moreTempType: [],
+    studentType: undefined,
+    screenStartTime: undefined,
+    screenEndTime: undefined,
+    guardianTel: undefined,
+    timeRange: undefined,
   }
   formRef.value?.resetFields()
+}
+
+const formatTime = (time) =>{
+  // 方法三：使用 moment.js
+  const dateString1 = time[0];
+  const dateString2 = time[1];
+
+  formData.value.screenStartTime = moment(dateString1).valueOf();
+  formData.value.screenEndTime = moment(dateString2).valueOf();
+}
+
+const formatTime2 = () =>{
+  const timestamp1 = formData.value.screenStartTime; // 假设这是一个时间戳
+  const timestamp2 = formData.value.screenEndTime; // 假设这是另一个时间戳
+
+  const dateString1 = moment(timestamp1).toISOString(); // 转换为 ISO 8601 格式的日期时间字符串
+  const dateString2 = moment(timestamp2).toISOString(); // 转换为 ISO 8601 格式的日期时间字符串
+  formData.value.timeRange = [dateString1,dateString2];
 }
 
 /** 初始化 **/
