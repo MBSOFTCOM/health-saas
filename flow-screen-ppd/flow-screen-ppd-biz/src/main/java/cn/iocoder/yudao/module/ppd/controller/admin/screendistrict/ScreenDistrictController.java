@@ -1,6 +1,7 @@
 package cn.iocoder.yudao.module.ppd.controller.admin.screendistrict;
 
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
+import cn.iocoder.yudao.module.ppd.controller.admin.screendistrict.vo.ScreenDistrictRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO;
 import cn.iocoder.yudao.module.ppd.service.screendistrict.ScreenDistrictService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 
 import java.util.List;
 
@@ -59,6 +59,12 @@ public class ScreenDistrictController {
     public CommonResult<List<ScreenDistrictDO>> getVillage(){
         List<ScreenDistrictDO> villageName = screenDistrictService.getVillageName2();
         return success(villageName);
+    }
+
+    @GetMapping("/all")
+    public CommonResult<List<ScreenDistrictRespVO>> getAllData(){
+        List<ScreenDistrictRespVO> list = screenDistrictService.getAll();
+        return success(list);
     }
 
 }

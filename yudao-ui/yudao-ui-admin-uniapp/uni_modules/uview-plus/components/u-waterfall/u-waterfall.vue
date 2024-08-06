@@ -1,9 +1,9 @@
 <template>
     <view class="u-waterfall">
-        <view ref="u-left-column" id="u-left-column" class="u-column">
+        <view id="u-left-column" class="u-column">
             <slot name="left" :leftList="leftList"></slot>
         </view>
-        <view ref="u-right-column" id="u-right-column" class="u-column">
+        <view id="u-right-column" class="u-column">
             <slot name="right" :rightList="rightList"></slot>
         </view>
     </view>
@@ -18,8 +18,6 @@
      * @property {String Number} add-time 单条数据添加到队列的时间间隔，单位ms，见上方注意事项说明（默认200）
      * @example <u-waterfall :flowList="flowList"></u-waterfall>
      */
-    import { mpMixin } from '../../libs/mixin/mpMixin';
-	import { mixin } from '../../libs/mixin/mixin';
     export default {
         name: "u-waterfall",
         props: {
@@ -56,7 +54,6 @@
                 default: 'id'
             }
         },
-        mixins: [mpMixin, mixin],
         data() {
             return {
                 leftList: [],
@@ -159,7 +156,7 @@
                 // #endif
                 // #ifdef VUE3
                 index = this.modelValue.findIndex(val => val[this.idKey] == id);
-                if (index != -1) this.$emit('update:modelValue', this.modelValue.splice(index, 1));
+                if (index != -1) this.$emit('input', this.modelValue.splice(index, 1));
                 // #endif
             },
             // 修改某条数据的某个属性
@@ -219,15 +216,10 @@
         @include flex;
         flex: 1;
         flex-direction: column;
-        overflow: hidden;
-        /* #ifndef APP-NVUE */
-        height: 100%;
-        /* #endif */
+        height: auto;
     }
 
     .u-image {
-        /* #ifndef APP-NVUE */
-        max-width: 100%;
-        /* #endif */
+        width: 100%;
     }
 </style>

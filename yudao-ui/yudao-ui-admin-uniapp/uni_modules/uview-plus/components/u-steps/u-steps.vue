@@ -61,9 +61,6 @@
 		},
 		created() {
 			this.children = []
-		},
-		options: {
-			virtualHost: false
 		}
 	}
 </script>
@@ -81,10 +78,6 @@
 		&--row {
 			flex-direction: row;
 			flex: 1;
-			/* #ifdef MP */
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-			/* #endif */
 		}
 	}
 </style>

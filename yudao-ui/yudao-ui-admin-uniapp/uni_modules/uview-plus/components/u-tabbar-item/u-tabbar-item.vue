@@ -126,10 +126,8 @@
 		align-items: center;
 		justify-content: center;
 		flex: 1;
-		/* #ifndef APP-NVUE */
 		width: 100%;
 		height: 100%;
-		/* #endif */
 		/* #ifdef H5 */
 		cursor: pointer;
 		/* #endif */

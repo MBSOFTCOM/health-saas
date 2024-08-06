@@ -1,0 +1,545 @@
+<template>
+	<view style="margin: 10px">
+		<view>
+			<yile-breadcrumb
+				:nav="nav"
+				color="rgba(153, 153, 153, 1)"
+				actColor="rgba(36, 93, 209, 1)"
+			></yile-breadcrumb>
+		</view>
+		<view class="main-top">
+			<view class="main-top-1">
+				<view class="main-text">
+					<view class="text-top">筛查编号</view>
+					<view class="text-bom">
+						{{ patient.screenId }}
+					</view>
+				</view>
+				<view class="main-text" style="margin: 0 150px">
+					<view class="text-top">姓名</view>
+					<view class="text-bom">
+						{{ patient.name }}
+					</view>
+				</view>
+				<view class="main-text" style="margin-right: 150px">
+					<view class="text-top">年龄</view>
+					<view class="text-bom">
+						{{ patient.age }}
+					</view>
+				</view>
+				<view class="main-text">
+					<view class="text-top">身份证</view>
+					<view class="text-bom">
+						{{ patient.idNum }}
+					</view>
+				</view>
+			</view>
+			<view class="main-top-1">
+				<view class="main-text">
+					<view class="text-top">注射次序</view>
+					<view class="text-bom" style="color: rgba(212, 48, 48, 1)">
+						<span v-if="patient.order">第 {{ patient.order }} 次</span>
+						<span v-if="!patient.order"></span>
+					</view>
+				</view>
+				<view class="main-text" style="margin-left: 315px; margin-top: -5px">
+					<view class="text-top">注射时间</view>
+					<view class="text-bom">
+						{{ patient.screenTime }}
+					</view>
+				</view>
+			</view>
+		</view>
+		<view class="main-bottom">
+			<view class="bom-t">
+				<view class="bom-ipt">
+					<view>横经(mm)</view>
+					<input
+						v-model="FormData.transverseDiameter"
+						confirm-type="search"
+						placeholder="请填写横经"
+						@blur="numberCheck(FormData.transverseDiameter, 1)"
+					/>
+				</view>
+				<view class="bom-ipt">
+					<view style="margin-left: 60px">纵经(mm)</view>
+					<input
+						v-model="FormData.longitudinalDiameter"
+						confirm-type="search"
+						placeholder="请填写纵经"
+						@blur="numberCheck(FormData.longitudinalDiameter, 2)"
+					/>
+				</view>
+			</view>
+			<view class="bom-t" style="margin: 15px 0">
+				<view style="width: 95px">局部症状</view>
+				<view class="bom-mup">
+					<uni-data-checkbox multiple v-model="crowdArr" :localdata="items"></uni-data-checkbox>
+				</view>
+			</view>
+			<view class="bom-t">
+				<view style="width: 95px">结果</view>
+				<view class="bom-mup">
+					<u-radio-group v-model="FormData.outcome" placement="row">
+						<u-radio
+							:customStyle="{ marginRight: '5vw' }"
+							v-for="(item, index) in outcomes"
+							:key="index"
+							:label="item.name"
+							:name="item.value"
+							labelSize="21px"
+							iconSize="27px"
+							size="29px"
+						></u-radio>
+					</u-radio-group>
+				</view>
+			</view>
+			<view class="bom-m">
+				<view>医生签名</view>
+				<view class="sign-bg" v-if="!signBase64" @click="onSign">
+					<view class="sign-text">
+						<image class="sign-img" src="../../../static/images/tb/sign.png" mode=""></image>
+						<span>点击签名</span>
+					</view>
+				</view>
+				<view class="sign-imgbg" v-if="FormData.doctorSignature">
+					<view style="margin-left: -50px">
+						<image class="sign-image" :src="FormData.doctorSignature" mode="widthFix"></image>
+					</view>
+					<up-button @click="onSign" class="custom-reset" :plain="true" text="重写"></up-button>
+				</view>
+			</view>
+		</view>
+
+		<view>
+			<u-popup :show="show" @close="close" mode="center" @open="open" :closeOnClickOverlay="false">
+				<view class="sign">
+					<sp-sign-board
+						v-if="show"
+						ref="signBoardRef"
+						:mark-text="markText"
+						horizontal
+						@reset="reset"
+						@event="event"
+						@firstTouchStart="firstTouchStart"
+					></sp-sign-board>
+				</view>
+			</u-popup>
+		</view>
+
+		<view style="display: flex; justify-content: center">
+			<up-button class="cur-add" text="保存" @click="newAdd"></up-button>
+		</view>
+	</view>
+</template>
+
+<script>
+import {
+	dbName,
+	tbScreenCollect,
+	getCollect,
+	tbScreenSum,
+	getCollectToId,
+	getCollectOen,
+	updateCollect
+} from '@/utils/sqlite';
+import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
+import {
+	getPpdList,
+	getPpdBypersonIdToOrder,
+	updateBypersonIdAndScreenOrder,
+	getBypersonIdAndScreenOrder,
+	getBypersonIdAndScreenOrderOne
+} from '@/utils/ppd.js';
+import { updateOne } from '/utils/screenSum.js';
+import ScreenImages from '../../../utils/screenImages.js';
+import { openTransaction } from '../../../utils/sqlite';
+export default {
+	data() {
+		return {
+			nav: [],
+			//签名
+			images: [],
+			crowdArr: [],
+			//传过来的患者信息
+			patient: {
+				id: '',
+				name: '',
+				age: '',
+				idNum: '',
+				screenId: '',
+				order: '',
+				screenTime: '',
+				isNew: true
+			},
+			//采集症状
+			checkbox: [],
+			items: [
+				{
+					text: '双圈',
+					value: 1
+				},
+				{
+					text: '水泡',
+					value: 2
+				},
+				{
+					text: '坏死',
+					value: 3
+				},
+				{
+					text: '淋巴管炎',
+					value: 4
+				}
+			],
+			// 数据
+			symptoms: [
+				{
+					name: '是',
+					value: 1
+				},
+				{
+					name: '否',
+					value: 0
+				}
+			],
+			// 结果
+			outcomes: [
+				{
+					name: '感染',
+					value: 1
+				},
+				{
+					name: '未感染',
+					value: 0
+				}
+			],
+			//提交数据
+			FormData: {},
+			//签名弹窗
+			show: false,
+			signBase64: '',
+			//存储生成的时间
+			markText: ''
+		};
+	},
+	onLoad(e) {
+		this.patient = e;
+		// console.log(this.patient);
+		//isNew 为0表示修改
+		if (e.isNew == 0) {
+			getBypersonIdAndScreenOrderOne(e.order, e.id).then((res) => {
+				// console.log(res);
+				this.FormData.transverseDiameter = res[0].transverseDiameter;
+				this.FormData.longitudinalDiameter = res[0].longitudinalDiameter;
+				this.FormData.bleb = res[0].bleb.toString();
+				this.FormData.outcome = res[0].outcome;
+				this.FormData.doctorSignature = res[0].doctorSignature;
+				this.crowdArr = this.FormData.bleb.split('').map(Number);
+			});
+		}
+		this.getNavItems(uni.$screenType);
+	},
+
+	methods: {
+		getNavItems(screenType) {
+			const screenNames = {
+				1: '常规筛查',
+				2: '新生入学筛查',
+				3: '应急筛查'
+			};
+			this.nav = [{ value: screenNames[screenType] }, { value: 'PPD组' }, { value: '提交结果', isActive: true }];
+
+			return this.nav;
+		},
+		//关闭弹窗
+		close() {
+			this.show = false;
+			this.$refs.signBoardRef.$destroy();
+		},
+		onSign() {
+			this.refreshMark();
+			this.show = true;
+			uni.$on('getSignImg', async ({ base64, path }) => {
+				this.signBase64 = base64;
+				this.signTempimg = path;
+				// console.log('==== base64 path :', base64, path);
+				let url = 'ccc';
+				await this.savePhoto(path, 2);
+				// console.log('==== path :',  path);
+				// 之后取消监听，防止重复监听
+				uni.$off('getSignImg');
+			});
+		},
+		async savePhoto(tempFilePath, type) {
+			uni.saveFile({
+				tempFilePath: tempFilePath, // 需要保存的文件的临时路径
+				success: async (res) => {
+					const savedFilePath = res.savedFilePath;
+					this.FormData.doctorSignature = savedFilePath;
+					// 将保存后的文件路径赋值给photoUrl以显示在页面上
+
+					uni.showToast({
+						title: '照片保存成功',
+						icon: 'success'
+					});
+				},
+				fail: () => {
+					uni.showToast({
+						title: '照片保存失败',
+						icon: 'none'
+					});
+				}
+			});
+		},
+		reset() {
+			this.refreshMark();
+		},
+		event() {
+			this.show = false;
+		},
+		//数字校验
+		numberCheck(i, count) {
+			const regex = /^[1-9][0-9]{0,2}$/;
+			if (!regex.test(i)) {
+				if (count == 1) {
+					this.FormData.transverseDiameter = '';
+				} else {
+					this.FormData.longitudinalDiameter = '';
+				}
+				uni.$u.toast('请输入不超过3位的整数且第一位不能位0');
+				return;
+			}
+		},
+		scanId() {},
+		//提交保存
+		async newAdd() {
+			if (Object.entries(uni.$person).length === 0) {
+				uni.showModal({
+					title: '提示',
+					content: '登录信息已过期，是否重新登陆？',
+					success: (res) => {
+						if (res.confirm) {
+							uni.reLaunch({
+								url: '/pages/login'
+							});
+						} else if (res.cancel) {
+							uni.showToast({
+								title: '已取消',
+								icon: 'none'
+							});
+						}
+					}
+				});
+				return;
+			}
+
+			//把状态置为已提交
+			this.FormData.injection = 1;
+
+			//症状
+			this.FormData.bleb = '';
+			this.crowdArr.forEach((i) => {
+				// console.log(i);
+				this.FormData.bleb = this.FormData.bleb + i.toString();
+			});
+
+			this.FormData.updater = uni.$person.id;
+			this.refreshMark();
+			this.FormData.updateTime = this.markText;
+
+			//非空校验
+			// console.log(this.FormData);
+			const data = {
+				injection: this.FormData.injection, //状态
+				transverseDiameter: this.FormData.transverseDiameter, //横泾
+				longitudinalDiameter: this.FormData.longitudinalDiameter, //纵径
+				outcome: this.FormData.outcome, //结果
+				bleb: this.FormData.bleb, //症状
+				doctorSignature: this.FormData.doctorSignature, //签名
+				updater: this.FormData.updater, //修改者
+				updateTime: this.FormData.updateTime //修改时间
+			};
+			const isNull = this.ifNull(data);
+			if (!isNull) {
+				uni.$u.toast('表单数据存在空,请检查表单,并填写完整!');
+				return;
+			}
+
+			openTransaction()
+				.then(async (r) => {
+					//提交信息
+					await updateBypersonIdAndScreenOrder(data, this.patient.order, this.patient.id);
+
+					//补充汇总表数据
+					const gather = {
+						curFinish: 'ppd组'
+					};
+
+					await updateOne(gather, this.patient.id, uni.$person.year, uni.$screenType);
+
+					//补充离线图片表图片信息
+					const setScreenImagesData = {
+						path: this.FormData.doctorSignature
+					};
+					await ScreenImages.updateOne(
+						setScreenImagesData,
+						this.patient.id,
+						uni.$person.year,
+						uni.$screenType,
+						this.patient.order,
+						9
+					);
+
+					//返回上一页
+					uni.navigateBack({
+						delta: 1 // 返回的页面数，如果delta是1，表示返回上一个页面
+					});
+
+					//流程无错误，提交事务
+					commitTransaction().then((r) => {
+						if (r != 200) {
+							throw new Error('提交失败');
+						}
+						this.$modal.msgSuccess('保存成功');
+						uni.hideLoading();
+					});
+				})
+				.catch((e) => {
+					// 存在问题，回滚
+					rollbackTransaction().then((res) => {
+						if (res != 200) {
+							uni.hideLoading();
+							this.$modal.msgError('更新失败,请重试');
+						}
+					});
+				});
+		},
+		//对提交数据非空校验进行
+		ifNull(obj) {
+			for (let key in obj) {
+				// console.log(key);
+				if (obj.hasOwnProperty(key)) {
+					if (obj[key] === null || obj[key] === undefined || obj[key] === '') {
+						return false;
+					}
+				}
+			}
+			return true;
+		},
+		// 生成时间
+		refreshMark() {
+			const currentDate = new Date();
+			const year = currentDate.getFullYear();
+			const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+			const day = String(currentDate.getDate()).padStart(2, '0');
+			const hours = String(currentDate.getHours()).padStart(2, '0');
+			const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+			const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+			this.markText = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+		},
+		open() {}
+	}
+};
+</script>
+
+<style lang="scss" scoped>
+.main-top {
+	color: rgba(150, 150, 150, 1);
+	background-color: #fff;
+	font-size: 18px;
+	.main-top-1 {
+		margin: 10px 20px;
+		display: flex;
+		align-items: center;
+		.main-text {
+			.text-bom {
+				font-size: 22px;
+				color: #000;
+			}
+		}
+	}
+}
+.main-bottom {
+	background-color: #fff;
+	font-size: 18px;
+	padding: 20px;
+	.bom-t {
+		display: flex;
+		align-items: center;
+		.bom-ipt {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			input {
+				height: 30px;
+				margin-left: 23px;
+				padding: 2px;
+				border: 1px solid rgba(204, 204, 204, 1);
+			}
+		}
+		.bom-mup {
+			margin-left: 10px;
+		}
+		.bom-stu {
+			margin-left: 10px;
+		}
+	}
+	.bom-m {
+		margin-top: 20px;
+		display: flex;
+		.sign-bg {
+			background: rgba(255, 246, 235, 1);
+			border: 1px solid rgba(255, 185, 20, 1);
+			width: 90%;
+			padding: 10px;
+			border-radius: 5px;
+			margin-left: 30px;
+			.sign-img {
+				width: 20px;
+				height: 20px;
+			}
+			.sign-text {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: rgba(36, 93, 209, 1);
+			}
+		}
+		.sign-imgbg {
+			position: relative;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: rgba(255, 246, 235, 1);
+			border: 1px solid rgba(255, 185, 20, 1);
+			width: 90%;
+			padding: 10px;
+			border-radius: 5px;
+			margin-left: 30px;
+			.sign-image {
+				width: 60px;
+				transform: scaleX(3) scaleY(2.1) rotate(90deg);
+			}
+			.custom-reset {
+				position: absolute;
+				right: 20px;
+				bottom: 20px;
+				width: 80px;
+				border: 1px solid rgba(204, 204, 204, 1);
+				color: #474747;
+			}
+		}
+	}
+}
+.cur-add {
+	width: 28%;
+	margin: 40px 0;
+	background: rgba(36, 93, 209, 1);
+	color: #fff;
+}
+.sign {
+	width: 80vw;
+	height: 90vh;
+}
+</style>

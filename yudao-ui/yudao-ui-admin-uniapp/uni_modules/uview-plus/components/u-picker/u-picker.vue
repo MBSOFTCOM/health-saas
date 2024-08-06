@@ -112,7 +112,6 @@ export default {
 		// 监听默认索引的变化，重新设置对应的值
 		defaultIndex: {
 			immediate: true,
-			deep:true,
 			handler(n) {
 				this.setIndexs(n, true)
 			}
@@ -126,7 +125,7 @@ export default {
 			}
 		},
 	},
-	emits: ['close', 'cancel', 'confirm', 'change', 'update:modelValue'],
+	emits: ['close', 'cancel', 'confirm', 'change'],
     computed: {
         inputLabel() {
             let items = this.innerColumns.map((item, index) => item[this.innerIndex[index]])

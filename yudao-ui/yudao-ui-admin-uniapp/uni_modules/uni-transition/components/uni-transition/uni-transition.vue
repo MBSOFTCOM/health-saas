@@ -254,7 +254,7 @@ export default {
 		},
 		animationType(type) {
 			return {
-				fade: type ? 0 : 1,
+				fade: type ? 1 : 0,
 				'slide-top': `translateY(${type ? '0' : '-100%'})`,
 				'slide-right': `translateX(${type ? '0' : '100%'})`,
 				'slide-bottom': `translateY(${type ? '0' : '100%'})`,

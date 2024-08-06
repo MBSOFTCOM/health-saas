@@ -56,26 +56,6 @@ export const props = defineMixin({
         showMore: {
             type: Boolean,
             default: () => defProps.album.showMore
-        },
-        // 图片形状，circle-圆形，square-方形
-        shape: {
-            type: String,
-            default: () => defProps.image.shape
-        },
-        // 圆角，单位任意
-        radius: {
-            type: [String, Number],
-            default: () => defProps.image.radius
-        },
-        // 自适应换行
-        autoWrap: {
-            type: Boolean,
-            default: () => defProps.album.autoWrap
-        },
-        // 单位
-        unit: {
-            type: [String],
-            default: () => defProps.album.unit
         }
     }
 })

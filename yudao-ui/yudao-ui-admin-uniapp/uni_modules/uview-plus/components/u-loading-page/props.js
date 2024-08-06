@@ -47,11 +47,6 @@ export const props = defineMixin({
         loadingColor: {
             type: String,
             default: () => defProps.loadingPage.loadingColor
-        },
-        // 层级
-        zIndex: {
-            type: [Number],
-            default: () => defProps.loadingPage.zIndex
-        },
+        }
     }
 })

@@ -20,7 +20,6 @@ export default {
         safeAreaInsetBottom: true,
         openType: '',
         closeOnClickOverlay: true,
-        round: 0,
-        wrapMaxHeight: '600px'
+        round: 0
     }
 }

@@ -22,6 +22,7 @@ export const tableNameList = [
 ]
 export const tbScreenPpd = "tb_screen_ppd"
 export const tbScreenPerson = "tb_screen_person"
+export const tbScreenDistrict = "tb_screen_district"
 //采集表
 export const tbScreenCollect = "tb_screen_collect"
 // dr表名
@@ -640,6 +641,15 @@ export async function promise(dataBase, sql) {
 			}
 		})
 	})
+}
+/**
+ * 清空表数据
+ * @param tabName {string}
+ */
+export const emptyData = (tabName) => {
+	let sql=`delete from ${tabName}`
+	console.log(sql);
+	return promise(dbName,sql)
 }
 /**
  * 统计表记录数量，适用于全是and 连接的精准查询，不支持模糊

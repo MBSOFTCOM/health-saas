@@ -468,8 +468,6 @@
 	.u-calendar-month {
 
 		&__title {
-			display: flex;
-			flex-direction: column;
 			font-size: 14px;
 			line-height: 42px;
 			height: 42px;

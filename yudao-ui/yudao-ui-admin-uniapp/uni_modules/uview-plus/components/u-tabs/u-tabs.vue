@@ -20,15 +20,11 @@
 							v-for="(item, index) in list"
 							:key="index"
 							@tap="clickHandler(item, index)"
-							@longpress="longPressHandler(item,index)"
 							:ref="`u-tabs__wrapper__nav__item-${index}`"
 							:style="[addStyle(itemStyle), {flex: scrollable ? '' : 1}]"
 							:class="[`u-tabs__wrapper__nav__item-${index}`, item.disabled && 'u-tabs__wrapper__nav__item--disabled']"
 						>
-							<slot v-if="$slots.content" name="content" :item="item" :keyName="keyName" :index="index" />
-							<slot v-else-if="!$slots.content && ($slots.default || $slots.$default)"
-								:item="item" :keyName="keyName" :index="index" />
-							<text v-else
+							<text
 								:class="[item.disabled && 'u-tabs__wrapper__nav__item__text--disabled']"
 								class="u-tabs__wrapper__nav__item__text"
 								:style="[textStyle(index)]"
@@ -103,8 +99,7 @@
 	 * @property {String}	keyName	 从`list`元素对象中读取的键名（默认 'name' ）
 	 * @event {Function(index)} change 标签改变时触发 index: 点击了第几个tab，索引从0开始
 	 * @event {Function(index)} click 点击标签时触发 index: 点击了第几个tab，索引从0开始
-	 * @event {Function(index)} longPress 长按标签时触发 index: 点击了第几个tab，索引从0开始
-	 * @example <u-tabs :list="list" :is-scroll="false" :current="current" @change="change" @longPress="longPress"></u-tabs>
+	 * @example <u-tabs :list="list" :is-scroll="false" :current="current" @change="change"></u-tabs>
 	 */
 	export default {
 		name: 'u-tabs',
@@ -162,7 +157,7 @@
 		async mounted() {
 			this.init()
 		},
-		emits: ['click', 'longPress', 'change', 'update:current'],
+		emits: ['click', 'change'],
 		methods: {
 			addStyle,
 			addUnit,
@@ -178,7 +173,6 @@
                 // 获取下划线的数值px表示法
 				const lineWidth = getPx(this.lineWidth);
 				this.lineOffsetLeft = lineOffsetLeft + (tabItem.rect.width - lineWidth) / 2
-				console.log(lineOffsetLeft)
 				// #ifdef APP-NVUE
 				// 第一次移动滑块，无需过渡时间
 				this.animation(this.lineOffsetLeft, this.firstTime ? 0 : parseInt(this.duration))
@@ -215,18 +209,10 @@
 				if (item.disabled) return
 				this.innerCurrent = index
 				this.resize()
-				this.$emit('update:current', index)
 				this.$emit('change', {
 					...item,
 					index
 				}, index)
-			},
-			// 长按事件
-			longPressHandler(item, index) {
-				this.$emit('longPress', {
-					...item,
-					index
-				})
 			},
 			init() {
 				sleep().then(() => {
@@ -258,12 +244,6 @@
 					return
 				}
 				Promise.all([this.getTabsRect(), this.getAllItemRect()]).then(([tabsRect, itemRect = []]) => {
-					// 兼容在swiper组件中使用
-					if (tabsRect.left > tabsRect.width) {
-						tabsRect.right = tabsRect.right - Math.floor(tabsRect.left / tabsRect.width) * tabsRect.width
-						tabsRect.left = tabsRect.left % tabsRect.width
-					}
-					// console.log(tabsRect)
 					this.tabsRect = tabsRect
 					this.scrollViewWidth = 0
 					itemRect.map((item, index) => {
@@ -347,12 +327,10 @@
 					@include flex;
 					align-items: center;
 					justify-content: center;
-					/* #ifdef H5 */
 					cursor: pointer;
-					/* #endif */
 
 					&--disabled {
-						/* #ifdef H5 */
+						/* #ifndef APP-NVUE */
 						cursor: not-allowed;
 						/* #endif */
 					}
@@ -360,9 +338,7 @@
 					&__text {
 						font-size: 15px;
 						color: $u-content-color;
-						/* #ifndef APP-NVUE */
                         white-space: nowrap !important;
-						/* #endif */
 
 						&--disabled {
 							color: $u-disabled-color !important;

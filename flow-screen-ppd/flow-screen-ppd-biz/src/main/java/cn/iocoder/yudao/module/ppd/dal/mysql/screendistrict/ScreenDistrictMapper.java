@@ -1,6 +1,7 @@
 package cn.iocoder.yudao.module.ppd.dal.mysql.screendistrict;
 
 import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
+import cn.iocoder.yudao.module.ppd.controller.admin.screendistrict.vo.ScreenDistrictRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
@@ -41,6 +42,10 @@ public interface ScreenDistrictMapper extends BaseMapperX<ScreenDistrictDO> {
      * 获取 村 名称 列表
      */
     List<ScreenDistrictDO> getVillageName2();
+    /**
+     * 获取 所有区划数据
+     */
+    List<ScreenDistrictRespVO> selectAll();
 
     /**
      * 获取 省 名称 列表

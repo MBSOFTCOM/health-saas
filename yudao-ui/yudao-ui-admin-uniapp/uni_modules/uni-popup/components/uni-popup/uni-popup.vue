@@ -39,7 +39,6 @@
 	 * @property {Boolean} isMaskClick = [true|false] 蒙版点击是否关闭弹窗
 	 * @property {String}  backgroundColor 主窗口背景色
 	 * @property {String}  maskBackgroundColor 蒙版颜色
-	 * @property {String}  borderRadius 设置圆角(左上、右上、右下和左下) 示例:"10px 10px 10px 10px"
 	 * @property {Boolean} safeArea		   是否适配底部安全区
 	 * @event {Function} change 打开关闭弹窗触发，e={show: false}
 	 * @event {Function} maskClick 点击遮罩触发
@@ -234,12 +233,6 @@
 			this.setH5Visible()
 		},
 		// #endif
-		activated() {
-   	  this.setH5Visible(!this.showPopup);
-    },
-    deactivated() {
-      this.setH5Visible(true);
-    },
 		created() {
 			// this.mkclick =  this.isMaskClick || this.maskClick
 			if (this.isMaskClick === null && this.maskClick === null) {
@@ -259,10 +252,10 @@
 			this.maskClass.backgroundColor = this.maskBackgroundColor
 		},
 		methods: {
-			setH5Visible(visible = true) {
+			setH5Visible() {
 				// #ifdef H5
 				// fix by mehaotian 处理 h5 滚动穿透的问题
-				document.getElementsByTagName('body')[0].style.overflow =  visible ? "visible" : "hidden";
+				document.getElementsByTagName('body')[0].style.overflow = 'visible'
 				// #endif
 			},
 			/**

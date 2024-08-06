@@ -3,8 +3,7 @@
 		<view class="u-steps-item__line" v-if="index + 1 < childLength"
 			:class="[`u-steps-item__line--${parentData.direction}`]" :style="[lineStyle]"></view>
 		<view class="u-steps-item__wrapper"
-			:class="[`u-steps-item__wrapper--${parentData.direction}`, parentData.dot && `u-steps-item__wrapper--${parentData.direction}--dot`]"
-			:style="[itemStyle]">
+			:class="[`u-steps-item__wrapper--${parentData.direction}`, parentData.dot && `u-steps-item__wrapper--${parentData.direction}--dot`]">
 			<slot name="icon">
 				<view class="u-steps-item__wrapper__dot" v-if="parentData.dot" :style="{
 						backgroundColor: statusColor
@@ -96,11 +95,6 @@
 		created() {
 			this.init()
 		},
-		// #ifdef MP-TOUTIAO
-		options: {
-			virtualHost: false
-		},
-		// #endif
 		computed: {
 			lineStyle() {
 				const style = {}
@@ -116,11 +110,6 @@
 					.parentData
 					.current ? this.parentData.activeColor : this.parentData.inactiveColor
 				return style
-			},
-			itemStyle() {
-				return {
-					...this.itemStyle
-				}
 			},
 			statusClass() {
 				const {
@@ -242,11 +231,10 @@
 			align-items: center;
 			position: relative;
 			background-color: #fff;
-			border-radius: 50px;
 
 			&--column {
 				width: 20px;
-				height: 20px;
+				height: 32px;
 
 				&--dot {
 					height: 20px;
@@ -255,7 +243,7 @@
 			}
 
 			&--row {
-				width: 20px;
+				width: 32px;
 				height: 20px;
 
 				&--dot {

@@ -20,7 +20,6 @@ export default {
         align: 'left',
         name: '',
         icon: '',
-        duration: 300,
-        showRight: true
+        duration: 300
     }
 }

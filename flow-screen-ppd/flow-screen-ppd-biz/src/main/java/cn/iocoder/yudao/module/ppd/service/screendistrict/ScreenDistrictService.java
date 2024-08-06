@@ -1,5 +1,6 @@
 package cn.iocoder.yudao.module.ppd.service.screendistrict;
 
+import cn.iocoder.yudao.module.ppd.controller.admin.screendistrict.vo.ScreenDistrictRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO;
 
 import java.util.List;
@@ -65,6 +66,10 @@ public interface ScreenDistrictService {
      * 获取 村 名称 列表
      */
     List<ScreenDistrictDO> getVillageName2();
+    /**
+     * 获取 所有区划数据
+     */
+    List<ScreenDistrictRespVO> getAll();
 
 
 

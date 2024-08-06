@@ -94,13 +94,7 @@
 			
 			<template v-if="isInCount">
 				<view
-				    v-if="$slots.trigger"
-				    @tap="chooseFile"
-				>
-					<slot name="trigger" />
-				</view>
-				<view
-				    v-else-if="!$slots.trigger && ($slots.default || $slots.$default)"
+				    v-if="$slots.default || $slots.$default"
 				    @tap="chooseFile"
 				>
 					<slot />
@@ -129,6 +123,7 @@
 				</view>
 			</template>
 		</view>
+
 	</view>
 </template>
 
@@ -196,15 +191,6 @@
 				immediate: true,
 				deep: true,
 			},
-			deletable(newVal) {
-				this.formatFileList()
-			},
-			maxCount(newVal) {
-				this.formatFileList()
-			},
-			accept(newVal) {
-				this.formatFileList()
-			}
 		},
 		// #ifdef VUE3
 		emits: ['error', 'beforeRead', 'oversize', 'afterRead', 'delete', 'clickPreview'],
@@ -346,7 +332,7 @@
 				});
 			},
 			onPreviewVideo(event) {
-				if (!this.previewFullImage) return;
+				if (!this.data.previewFullImage) return;
 				const {
 					index
 				} = event.currentTarget.dataset;
@@ -374,7 +360,7 @@
 					index
 				} = event.currentTarget.dataset;
 				const item = this.data.lists[index];
-				if (!this.previewFullImage) return;
+				if (!this.data.previewFullImage) return;
 				switch (item.type) {
 					case 'video':
 						this.onPreviewVideo(event);

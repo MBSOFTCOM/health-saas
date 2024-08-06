@@ -18,7 +18,7 @@
 			<view class="uni-dialog-button" v-if="showClose" @click="closeDialog">
 				<text class="uni-dialog-button-text">{{closeText}}</text>
 			</view>
-			<view class="uni-dialog-button" :class="showClose?'uni-border-left':''" @click="onOk">
+			<view class="uni-dialog-button uni-border-left" @click="onOk">
 				<text class="uni-dialog-button-text uni-button-color">{{okText}}</text>
 			</view>
 		</view>
@@ -179,10 +179,7 @@
 			// this.popup.closeMask()
 			if (this.mode === 'input') {
 				this.dialogType = 'info'
-				this.val = this.value;
-				// #ifdef VUE3
-				this.val = this.modelValue;
-				// #endif
+				this.val = this.value
 			} else {
 				this.dialogType = this.type
 			}
