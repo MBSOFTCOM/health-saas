@@ -1,4 +1,4 @@
-import {dbName, getMaxScreenOrder, tbScreenChestRadiograph,tbScreenImages, promise, tbScreenSum} from "../../utils/sqlite";
+import {dbName, getMaxScreenOrder, tbScreenChestRadiograph,tbScreenImages, promise, tbScreenSum} from "@/utils/sqlite";
 
 /**
  * 添加记录到图片表
@@ -15,7 +15,8 @@ export async function insertImg(util,data){
  * @returns {Promise<void>}
  */
 export async function updateImg(data){
- let sql=`update ${tbScreenImages} set path='${data.path}'  where screenOrder=${data.screenOrder} and personId=${data.personId} and screenType=${uni.$screenType}`
+ let sql=`update ${tbScreenImages} set path='${data.path}' where screenOrder=${data.screenOrder} and idNum=${data.idNum} and screenType=${uni.$screenType} and type=${data.type}`
+ // console.log(sql);
  await promise(dbName,sql)
 }
 

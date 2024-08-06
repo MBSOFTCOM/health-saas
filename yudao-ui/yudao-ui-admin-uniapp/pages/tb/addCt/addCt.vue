@@ -158,9 +158,9 @@
 </template>
 
 <script>
-import UniForms from '../../../uni_modules/uni-forms/components/uni-forms/uni-forms.vue';
-import UniEasyinput from '../../../uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue';
-import UniFormsItem from '../../../uni_modules/uni-forms/components/uni-forms-item/uni-forms-item.vue';
+import UniForms from '@/uni_modules/uni-forms/components/uni-forms/uni-forms.vue';
+import UniEasyinput from '@/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue';
+import UniFormsItem from '@/uni_modules/uni-forms/components/uni-forms-item/uni-forms-item.vue';
 import {
 	commitTransaction,
 	dbName,
@@ -169,11 +169,11 @@ import {
 	tbScreenChestRadiograph,
 	tbScreenSum,
 	user
-} from '../../../utils/sqlite';
-import { getMaxScreenOrder } from '../../../utils/sqlite';
-import { getCTById, updateDr, insertToSum, updateSum } from '../../../api/screen/dr';
-import { nationMap, sex, getValueByKey, getLabelByValue } from '../../../utils/dict';
-import { insertImg, updateImg } from '../../../api/screen/img';
+} from '@/utils/sqlite';
+import { getMaxScreenOrder } from '@/utils/sqlite';
+import { getCTById, updateDr, insertToSum, updateSum } from '@/api/screen/dr';
+import { nationMap, sex, getValueByKey, getLabelByValue } from '@/utils/dict';
+import { insertImg, updateImg } from '@/api/screen/img';
 export default {
 	components: { UniFormsItem, UniEasyinput, UniForms },
 	data() {
@@ -247,6 +247,7 @@ export default {
 		}
 		this.stateFlag = e.label;
 		this.formData.screenId = this.patient.screenId;
+		this.formData.idNum=this.patient.idNum
 		this.formData.year = this.patient.year;
 		// console.log("flag=",this.stateFlag)
 		if (e.label == '修改' || e.label == '详情') {
@@ -481,8 +482,10 @@ export default {
 						screenId: this.formData.screenId,
 						screenTime: this.formData.screenTime,
 						screenOrder: this.formData.screenOrder,
+						screenType: uni.$screenType,
 						screenPoint: this.patient.screenPoint,
 						personId: this.formData.personId,
+						idNum:this.patient.idNum,
 						year: this.patient.year,
 						path: null,
 						type: 1
@@ -520,7 +523,7 @@ export default {
 							}
 							if (this.formData.chestRadiograph) {
 								imgForm.type = 1;
-								imgForm.path = this.formData.doctorSignature;
+								imgForm.path = this.formData.chestRadiograph;
 								updateImg(imgForm);
 							}
 
@@ -548,13 +551,6 @@ export default {
 								param.curFinish = '胸片组';
 
 								await updateSum(this.formData.personId, param, this.$dbUtils);
-								if (data.chestRadiograph) {
-									await updateImg(imgForm);
-								}
-								if (this.formData.doctorSignature) {
-									imgForm.path = this.formData.doctorSignature;
-									await updateImg(imgForm);
-								}
 							} catch (e) {
 								this.$modal.msgError('更新失败,请重试');
 								console.log('更新错误e=', e);
@@ -590,7 +586,7 @@ export default {
 		//   插入ct/dr表
 		async insertItem() {
 			try {
-				console.log(this.formData);
+				// console.log(this.formData);
 				await this.$dbUtils.addTabItem(dbName, tbScreenChestRadiograph, this.formData);
 				let param = {};
 				param.personId = this.formData.personId;
