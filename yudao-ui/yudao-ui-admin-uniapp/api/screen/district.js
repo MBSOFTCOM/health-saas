@@ -23,11 +23,8 @@ export const  insData=(data)=>{
  * 覆盖区划数据
  */
 export const coverData=()=>{
-	console.log(2);
 	emptyData(tbScreenDistrict).then(()=>{
-		console.log(3);
 		getDistrictData().then((res)=>{
-			console.log(4);
 			insData(res.data)
 		})
 	})

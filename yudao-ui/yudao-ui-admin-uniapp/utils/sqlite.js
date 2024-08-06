@@ -155,6 +155,7 @@ export const tableSqls = [
 			"screenId" TEXT, --筛查编号
 			"syncId" INTEGER, --同步时唯一编码
 			"personId" INTEGER, --对应摸底表中id
+			"idNum" TEXT , -- 身份证号
 			"chestRadiographCode" TEXT, --胸片编号
 			"chestRadiograph" TEXT, --胸片
 			"photoTime" INTEGER, --胸片采集时间
@@ -178,6 +179,7 @@ export const tableSqls = [
 			"screenId" TEXT ,--筛查编号
 			"syncId" INTEGER ,--同步时唯一编码
 			"personId" INTEGER ,--对应摸底表中id
+			"idNum" TEXT , -- 身份证号
 			"computedTomographyCode" TEXT ,--胸片编号
 			"computedTomography" TEXT ,--胸片
 			"photoTime" INTEGER ,--胸片采集时间
@@ -367,6 +369,7 @@ export const tableSqls = [
 			"syncId" INTEGER , --同步时唯一编码
 			"screenId" TEXT, --筛查编号
 			"personId" INTEGER  , --患者id
+			"idNum" TEXT , -- 身份证号
 			"type" INTEGER  , --图片来源，1-DR 2-CT 3-实验室-痰菌培养图 4-心电图 5-即时痰、6-晨痰、7-夜间痰、8-采集组医生签名、9-ppd组医生签名、10-dr医生签名、11-ct医生签名、12-痰检组医生签名、13-实验室组医生签名、14-诊断组医生签名、15-心电图组医生签名
 			"path" TEXT , -- 图片路径（本地路径，保存在 /doc/..中）
 			"url" TEXT, -- 网络图片路径（完整路径）

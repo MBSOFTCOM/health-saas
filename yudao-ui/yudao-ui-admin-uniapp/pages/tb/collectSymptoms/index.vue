@@ -468,7 +468,14 @@ export default {
 							/* this.$modal.msgError('症状不能为空');
             return */
 						}
-
+						if(!collect.contacted){
+							uni.showToast({
+							title: '请选择有无接触史',
+							icon: 'none',
+							duration: 1000
+							})
+							return;
+						}
 						if (
 							collect.doctorSignature == '' ||
 							collect.doctorSignature == null ||
@@ -539,7 +546,14 @@ export default {
 							/* this.$modal.msgError('症状不能为空');
             return */
 						}
-
+						if(!collect.contacted){
+							uni.showToast({
+							title: '请选择有无接触史',
+							icon: 'none',
+							duration: 1000
+							})
+							return;
+						}
 						if (
 							collect.doctorSignature == '' ||
 							collect.doctorSignature == null ||
