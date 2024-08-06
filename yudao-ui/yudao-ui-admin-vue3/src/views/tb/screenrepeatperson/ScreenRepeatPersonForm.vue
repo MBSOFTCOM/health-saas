@@ -365,14 +365,14 @@
 
       <el-row type="flex" justify="space-between">
         <el-col :span="11">
-          <el-form-item label="监护人手机号" prop="tel" label-width="120" v-if="formData.firstType == 1 && formData.moreTempType.includes(1)">
-            <el-input v-model="formData.tel" placeholder="请输入监护人手机号"/>
+          <el-form-item label="监护人手机号" prop="guardianTel" label-width="120" v-if="formData.firstType == 1 && formData.moreTempType.includes(1)">
+            <el-input v-model="formData.guardianTel" placeholder="请输入监护人手机号"/>
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="学生类型" prop="firstType" label-width="120" v-if="formData.firstType == 1 && formData.moreTempType.includes(1)">
+          <el-form-item label="学生类型" prop="studentType" label-width="120" v-if="formData.firstType == 1 && formData.moreTempType.includes(1)">
             <el-select
-              v-model="formData.firstType"
+              v-model="formData.studentType"
               collapse-tags
             >
               <el-option
