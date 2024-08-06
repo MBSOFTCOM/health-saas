@@ -3,7 +3,9 @@
     <el-upload
       ref="uploadRef"
       v-model:file-list="fileList"
-      :action="importUrl + '?year=' + formData.year +'&screenType=' + formData.screenType + '&screenTime=' + formData.screenTime "
+      :action="importUrl + '?year=' + formData.year +'&screenType='
+      + formData.screenType + '&screenStartTime=' + formData.screenStartTime
+      + '&screenEndTime=' + formData.screenEndTime "
       :auto-upload="false"
       :disabled="formLoading"
       :headers="uploadHeaders"
@@ -48,11 +50,13 @@
 
       <el-form-item label="计划筛查时间:" label-width="120px" prop="screenTime">
         <el-date-picker
-          v-model="formData.screenTime"
-          type="date"
-          value-format="x"
-          placeholder="选择计划筛查时间"
-          class="!w-160px"
+          v-model="formData.timeRange"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
+          :size="'default'"
+          @change="formatTime(formData.timeRange)"
         />
       </el-form-item>
 
@@ -91,6 +95,7 @@ import {getAccessToken, getTenantId} from '@/utils/auth';
 import {getIntDictOptions, DICT_TYPE} from '@/utils/dict';
 import {reactive, ref, computed, onMounted} from "vue";
 import { ScreenRepeatPersonApi} from '@/api/tb/screenrepeatperson'
+import moment from "moment";
 
 
 defineOptions({name: 'ScreenPersonImportForm'})
@@ -106,7 +111,10 @@ const resultData4 = ref('') //导入后反馈重复的数据
 const formData = ref({
   screenType: undefined,
   year: undefined,
-  screenTime: undefined
+  screenTime: undefined,
+  screenStartTime: undefined,
+  screenEndTime: undefined,
+  timeRange: undefined,
 })
 const dialogVisible = ref(false) // 弹窗的是否展示
 const formLoading = ref(false) // 表单的加载中
@@ -127,7 +135,7 @@ const formRules = reactive({
   year: [
     {required: true, message: '请选择工作年度', trigger: 'blur'}
   ],
-  screenTime:[
+  timeRange:[
     {required: true, message: '请选择计划筛查时间', trigger: 'blur'}
   ]
 })
@@ -138,6 +146,7 @@ const open = () => {
   resetForm()
   fileList.value = [] // 清空文件列表
   formData.value.screenType = undefined
+  formData.value.timeRange = undefined
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
@@ -223,6 +232,17 @@ const resetForm = () => {
 /** 文件数超出提示 */
 const handleExceed = (): void => {
   message.error('最多只能上传一个文件！')
+}
+
+
+const formatTime = (time) =>{
+  // 方法三：使用 moment.js
+  const dateString1 = time[0];
+  const dateString2 = time[1];
+
+  formData.value.screenStartTime = moment(dateString1).valueOf();
+  formData.value.screenEndTime = moment(dateString2).valueOf();
+
 }
 
 // 使用 onMounted 钩子来设置默认年份

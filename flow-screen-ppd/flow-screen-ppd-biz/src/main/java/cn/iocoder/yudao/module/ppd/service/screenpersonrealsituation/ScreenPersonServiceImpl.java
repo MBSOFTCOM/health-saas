@@ -161,7 +161,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ScreenPersonImportRespVO importScreenPerson(List<ScreenPersonImportVO> list, Integer year, Integer screenType, LocalDateTime screenTime) {
+    public ScreenPersonImportRespVO importScreenPerson(List<ScreenPersonImportVO> list, Integer year, Integer screenType, LocalDateTime screenStartTime, LocalDateTime screenEndTime) {
         // 初始化变量
         List<ScreenPersonDO> batchInsert = new ArrayList<>();
         List<ScreenPersonDO> batchUpdate = new ArrayList<>();
@@ -182,9 +182,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
 
         // 使用 Stream 过滤空对象
         List<ScreenPersonImportVO> filteredList = list.stream()
-                .filter(vo -> !vo.isEmpty())
-                .collect(Collectors.toList());
-
+                .filter(vo -> !vo.isEmpty()).toList();
         // 创建两个新列表，用于存储重复和非重复数据
         List<ScreenPersonImportVO> duplicateList = new ArrayList<>();
         List<ScreenPersonImportVO> uniqueList = new ArrayList<>();
@@ -297,7 +295,8 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             }
             obj.setScreenId(newScreenId);
             obj.setYear(year);
-            obj.setScreenTime(screenTime);
+            obj.setScreenStartTime(screenStartTime);
+            obj.setScreenEndTime(screenEndTime);
             processScreenPerson(screenType, year, obj, batchInsert, batchUpdate, createSpecification, failureSpecification);
         }
 
@@ -356,7 +355,8 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         // 处理重复人员
         for (ScreenPersonImportVO obj : duplicateList) {
             obj.setYear(year);
-            obj.setScreenTime(screenTime);
+            obj.setScreenStartTime(screenStartTime);
+            obj.setScreenEndTime(screenEndTime);
             processScreenPerson2(screenType, year, obj, batchInsert2, batchUpdate2, createRepeatSpecification, failureSpecification);
         }
 
@@ -629,12 +629,12 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
     @Override
     public List<ScreenPersonImportVO> createSampleData() {
         return List.of(
-                ScreenPersonImportVO.builder().name("张三").idNum("360888888888888888").nation(24)
+                ScreenPersonImportVO.builder().name("张三").idNum("360888888888888888").nation(24).studentType(1)
                         .tel("18888888888").height(BigDecimal.valueOf(175.22)).weight(BigDecimal.valueOf(55.2))
                         .permanentAddress("重庆市重庆市辖区万州区高笋塘街道").permanentAddressProvince("重庆市")
                         .permanentAddressCity("重庆市辖区").permanentAddressCounty("万州区").permanentAddressTown("高笋塘街道")
                         .address("重庆市重庆市辖区万州区高笋塘街道").province("重庆市").city("重庆市辖区").county("万州区")
-                        .town("高笋塘街道").firstType(0).remark("备注").build()
+                        .town("高笋塘街道").firstType(0).remark("备注").guardianTel("18888888888").build()
         );
     }
 

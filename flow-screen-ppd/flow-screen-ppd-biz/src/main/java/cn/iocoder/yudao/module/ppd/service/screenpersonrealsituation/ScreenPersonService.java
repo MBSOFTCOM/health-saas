@@ -75,9 +75,9 @@ public interface ScreenPersonService {
                               Map<Integer, List<String>> selectedData);
 
     /**
-     * 导入摸底人员
+     * 导入摸底/待筛查人员
      */
-    ScreenPersonImportRespVO importScreenPerson(List<ScreenPersonImportVO> list, Integer year, Integer screenType, LocalDateTime screenTime);
+    ScreenPersonImportRespVO importScreenPerson(List<ScreenPersonImportVO> list, Integer year, Integer screenType, LocalDateTime screenStartTime, LocalDateTime screenEndTime);
 
     /**
      * 摸底人员导入模板

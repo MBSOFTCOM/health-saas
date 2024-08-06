@@ -365,14 +365,14 @@
 
       <el-row type="flex" justify="space-between">
         <el-col :span="11">
-          <el-form-item label="监护人手机号" prop="tel" label-width="120" v-if="formData.firstType == 1 && formData.moreTempType.includes(1)">
-            <el-input v-model="formData.tel" placeholder="请输入监护人手机号"/>
+          <el-form-item label="监护人手机号" prop="guardianTel" label-width="120" v-if="formData.firstType == 1 && formData.moreTempType.includes(1)">
+            <el-input v-model="formData.guardianTel" placeholder="请输入监护人手机号"/>
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="学生类型" prop="firstType" label-width="120" v-if="formData.firstType == 1 && formData.moreTempType.includes(1)">
+          <el-form-item label="学生类型" prop="studentType" label-width="120" v-if="formData.firstType == 1 && formData.moreTempType.includes(1)">
             <el-select
-              v-model="formData.firstType"
+              v-model="formData.studentType"
               collapse-tags
             >
               <el-option
@@ -408,7 +408,7 @@
       </el-row>
 
       <el-row type="flex" justify="space-between">
-        <el-col :span="11">
+        <el-col :span="10">
           <el-form-item
             label="筛查点"
             prop="screenPoint"
@@ -427,8 +427,8 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="11">
-          <el-form-item label="计划筛查时间" prop="screenTime" label-width="120">
+        <el-col :span="12">
+          <el-form-item label="筛查时间" prop="screenTime" label-width="80">
             <el-date-picker
               v-model="formData.timeRange"
               type="daterange"
@@ -655,11 +655,11 @@ const formRules = reactive({
     {validator: checkWeight, trigger: 'change'}
   ],
   permanentAddress: [
-    {required: true, message: '请输入户籍地址', trigger: 'blur'},
+    // {required: true, message: '请输入户籍地址', trigger: 'blur'},
     {max: 60, message: '地址长度不能超过60个字符', trigger: 'blur'}
   ],
   address: [
-    {required: true, message: '请输入地址', trigger: 'blur'},
+    // {required: true, message: '请输入地址', trigger: 'blur'},
     {max: 60, message: '地址长度不能超过60个字符', trigger: 'blur'}
   ],
   firstType: [{required: true, message: '请选择第一人群分类', trigger: 'change'}],
@@ -673,10 +673,10 @@ const formRules = reactive({
   /*moreType: [
       {required: true, message: '请选择多人群分类', trigger: 'blur'},
     ],*/
-  permanentAddressProvince: [{required: true, message: '请选择户籍地址-省', trigger: 'blur'}],
-  permanentAddressCity: [{required: true, message: '请选择户籍地址-市(州)', trigger: 'blur'}],
-  permanentAddressCounty: [{required: true, message: '请选择户籍地址-县', trigger: 'blur'}],
-  permanentAddressTown: [{required: true, message: '请选择户籍地址-乡', trigger: 'blur'}],
+  // permanentAddressProvince: [{required: true, message: '请选择户籍地址-省', trigger: 'blur'}],
+  // permanentAddressCity: [{required: true, message: '请选择户籍地址-市(州)', trigger: 'blur'}],
+  // permanentAddressCounty: [{required: true, message: '请选择户籍地址-县', trigger: 'blur'}],
+  // permanentAddressTown: [{required: true, message: '请选择户籍地址-乡', trigger: 'blur'}],
   province: [{required: true, message: '请选择现住址-省', trigger: 'blur'}],
   city: [{required: true, message: '请选择现住址-市(州)', trigger: 'blur'}],
   county: [{required: true, message: '请选择现住址-县', trigger: 'blur'}],

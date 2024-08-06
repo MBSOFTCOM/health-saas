@@ -3,6 +3,7 @@ package cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.v
 import cn.iocoder.yudao.framework.excel.core.annotations.DictFormat;
 import cn.iocoder.yudao.framework.excel.core.convert.DictConvert;
 import com.alibaba.excel.annotation.ExcelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +11,12 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
+
+/**
+ * 待筛查人员下载导入模板
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -44,6 +50,15 @@ public class ScreenPersonImportTemplateVO2 {
     @ExcelProperty(value = "多人群分类", converter = DictConvert.class)
     @DictFormat("tb_more_people_type")
     private Integer[] moreType;
+
+    @Schema(description = "学生类型")
+    @ExcelProperty(value = "学生类型", converter = DictConvert.class)
+    @DictFormat("student_type")
+    private Integer studentType;
+
+    @Schema(description = "监护人手机号")
+    @ExcelProperty(value = "监护人手机号")
+    private String guardianTel;
 
     /*@ExcelProperty("计划筛查时间")
     private LocalDateTime screenTime;*/

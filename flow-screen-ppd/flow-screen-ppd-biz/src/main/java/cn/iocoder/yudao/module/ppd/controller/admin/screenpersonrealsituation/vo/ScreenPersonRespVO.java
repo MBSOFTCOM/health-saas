@@ -71,11 +71,11 @@ public class ScreenPersonRespVO {
     private Integer studentType;
 
     @Schema(description = "开始计划筛查时间")
-    @ExcelProperty(value = "开始计划筛查时间")
+    @ExcelProperty(value = "计划筛查时间")
     private LocalDateTime screenStartTime;
 
     @Schema(description = "结束计划筛查时间")
-    @ExcelProperty(value = "开始计划筛查时间")
+    @ExcelProperty(value = "计划筛查时间")
     private LocalDateTime screenEndTime;
 
     @Schema(description = "监护人手机号")
@@ -83,7 +83,6 @@ public class ScreenPersonRespVO {
     private String guardianTel;
 
     @Schema(description = "计划筛查时间")
-    @ExcelProperty("计划筛查时间")
     private LocalDateTime screenTime;
 
     @Schema(description = "性别(1-女，0-男)")

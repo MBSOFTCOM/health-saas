@@ -248,7 +248,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column type="index" label="序号" align="center" width="70"
+      <el-table-column type="index" label="序号" align="center" width="65"
                        :show-overflow-tooltip="false" fixed="left"/>
       <el-table-column label="操作" align="center" fixed="right" width="160">
         <template #default="scope">
@@ -295,14 +295,17 @@
           </template>
         </template>
       </el-table-column>
+      <el-table-column label="学生类别" align="center" prop="studentType" width="130">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.STUDENT_TYPE" :value="scope.row.studentType"/>
+        </template>
+      </el-table-column>
       <el-table-column label="筛查点" align="center" prop="screenPoint" width="120"/>
-      <el-table-column
-        label="筛查时间"
-        align="center"
-        prop="screenTime"
-        :formatter="dateFormatter2"
-        width="180px"
-      />
+      <el-table-column label="筛查时间" align="center" width="180">
+        <template #default="scope">
+          {{ new Date(scope.row.screenStartTime).toLocaleDateString() }}-{{ new Date(scope.row.screenEndTime).toLocaleDateString() }}
+        </template>
+      </el-table-column>
       <el-table-column label="筛查编号" align="center" prop="screenId" width="190"/>
       <el-table-column label="联系电话" align="center" prop="tel" width="120"/>
       <el-table-column label="性别" align="center" prop="sex">

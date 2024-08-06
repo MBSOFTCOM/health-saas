@@ -3,7 +3,9 @@
     <el-upload
       ref="uploadRef"
       v-model:file-list="fileList"
-      :action="importUrl + '?year=' + formData.year +'&screenType=' + formData.screenType + '&screenTime=' + formData.screenTime "
+      :action="importUrl + '?year=' + formData.year +'&screenType='
+      + formData.screenType + '&screenStartTime=' + formData.screenStartTime
+      + '&screenEndTime=' + formData.screenEndTime "
       :auto-upload="false"
       :disabled="formLoading"
       :headers="uploadHeaders"
@@ -46,23 +48,16 @@
         />
       </el-form-item>
 
-      <el-form-item label="计划筛查时间:" label-width="120px" prop="screenTime">
+      <el-form-item label="计划筛查时间:" label-width="120px" prop="timeRange">
         <el-date-picker
-          v-model="formData.screenTime"
-          type="date"
-          value-format="x"
-          placeholder="选择计划筛查时间"
-          class="!w-160px"
-        />
-<!--        <el-date-picker
           v-model="formData.timeRange"
           type="daterange"
           range-separator="-"
-          start-placeholder="Start date"
-          end-placeholder="End date"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
           :size="'default'"
           @change="formatTime(formData.timeRange)"
-        />-->
+        />
       </el-form-item>
     </el-form>
 
@@ -140,7 +135,7 @@ const formRules = reactive({
   year: [
     {required: true, message: '请选择工作年度', trigger: 'blur'}
   ],
-  screenTime:[
+  timeRange:[
     {required: true, message: '请选择计划筛查时间', trigger: 'blur'}
   ]
 })
@@ -151,6 +146,7 @@ const open = () => {
   resetForm()
   fileList.value = [] // 清空文件列表
   formData.value.screenType = undefined
+  formData.value.timeRange = undefined
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
 

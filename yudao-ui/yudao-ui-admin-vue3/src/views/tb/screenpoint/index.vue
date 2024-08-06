@@ -95,30 +95,30 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="false">
       <el-table-column type="index" label="序号" align="center" width="70"
                        :show-overflow-tooltip="false" fixed="left"/>
-      <el-table-column label="筛查点名称" align="center" prop="name" width="150" fixed="left"/>
-      <el-table-column label="筛查单位" align="center" prop="screenDept" width="180" fixed="left"/>
-      <el-table-column label="工作年度" align="center" prop="year" width="100" fixed="left"/>
-      <el-table-column label="队长" align="center" prop="worker" width="120">
+      <el-table-column label="筛查点名称" align="center" prop="name" />
+      <el-table-column label="筛查单位" align="center" prop="screenDept" />
+      <el-table-column label="工作年度" align="center" prop="year" />
+      <el-table-column label="队长" align="center" prop="worker" >
         <template #default="scope">
           {{ resolveNickname(scope.row.worker) }}
         </template>
       </el-table-column>
-      <el-table-column label="采集组人员" align="center" prop="collectWorker" width="120">
+      <el-table-column label="采集组人员" align="center" prop="collectWorker">
         <template #default="scope">
           {{ resolveNickname(scope.row.collectWorker) }}
         </template>
       </el-table-column>
-      <el-table-column label="PPD组人员" align="center" prop="ppdWorker" width="120">
+      <el-table-column label="PPD组人员" align="center" prop="ppdWorker">
         <template #default="scope">
           {{ resolveNickname(scope.row.ppdWorker) }}
         </template>
       </el-table-column>
-      <el-table-column label="CT/DR组人员" align="center" prop="drctWorker" width="140">
+      <el-table-column label="CT/DR组人员" align="center" prop="drctWorker">
         <template #default="scope">
           {{ resolveNickname(scope.row.drctWorker) }}
         </template>
       </el-table-column>
-      <el-table-column label="痰检组人员" align="center" prop="sputumWorker" width="120">
+<!--      <el-table-column label="痰检组人员" align="center" prop="sputumWorker" width="120">
         <template #default="scope">
           {{ resolveNickname(scope.row.sputumWorker) }}
         </template>
@@ -137,7 +137,7 @@
         <template #default="scope">
           {{ resolveNickname(scope.row.diagnosisWorker) }}
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column label="操作" align="center" width="150" fixed="right">
         <template #default="scope">
           <el-button
@@ -242,20 +242,8 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await ScreenPointApi.getScreenPointPage(queryParams)
-
-    /*if (userRole.value.includes('county_manager') || userRole.value.includes('city_manager')
-      || userRole.value.includes('province_manager') || userRole.value.includes('super_admin')) {
-      list.value = data.list
-      total.value = data.total
-      return ;
-    }else if (userRole.value.includes('capital')){
-      list.value = data.list.filter(item => parseInt(item.worker) == userId.value);
-      total.value = data.total
-    }*/
-
     list.value = data.list
     total.value = data.total
-
   } finally {
     loading.value = false
   }

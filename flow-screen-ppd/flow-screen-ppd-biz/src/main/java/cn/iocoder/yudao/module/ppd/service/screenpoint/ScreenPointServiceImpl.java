@@ -3,6 +3,7 @@ package cn.iocoder.yudao.module.ppd.service.screenpoint;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
@@ -76,37 +77,34 @@ public class ScreenPointServiceImpl implements ScreenPointService {
             throw exception(SCREEN_POINT_EXISTS2);
         }
 
-        /*Long screenId = screenPointMapper.getIdByName(screenPoint.getName(), screenPoint.getYear(), screenPoint.getScreenDept());
-
-        if (ObjectUtil.isNotNull(screenId)) {
-            throw exception(SCREEN_POINT_EXISTS);
-        }*/
-
         screenPointMapper.insert(screenPoint);
         // 筛查点id
         Long screenPointId = screenPoint.getId();
-        // 队长id
-        Long capId = Long.valueOf(screenPoint.getWorker());
 
-        // 拿到队长角色的id
-        Long roleId = roleMapper.getIdByCode("capital");
-        // 分配新的队长
-        UserRoleDO addUserRoleDO = new UserRoleDO();
-        addUserRoleDO.setUserId(capId).setRoleId(roleId);
-        // 查看 用户角色 表中是否已经分配 该角色
-        Long id = userRoleMapper.selcetIsDistribute(capId, roleId);
+        if (StrUtil.isNotEmpty(screenPoint.getWorker())){
+            // 队长id
+            Long capId = Long.valueOf(screenPoint.getWorker());
 
-        if (id == null) {
-            // 在 用户角色 表中插入数据
-            userRoleMapper.insert(addUserRoleDO);
+            // 拿到队长角色的id
+            Long roleId = roleMapper.getIdByCode("capital");
+            // 分配新的队长
+            UserRoleDO addUserRoleDO = new UserRoleDO();
+            addUserRoleDO.setUserId(capId).setRoleId(roleId);
+            // 查看 用户角色 表中是否已经分配 该角色
+            Long id = userRoleMapper.selcetIsDistribute(capId, roleId);
+
+            if (id == null) {
+                // 在 用户角色 表中插入数据
+                userRoleMapper.insert(addUserRoleDO);
+            }
+            // 插入用户筛查点表中
+            UserScreenPointDO newUserScreenPoint = new UserScreenPointDO()
+                    .setUserId(capId)
+                    .setRoleId(roleId)
+                    .setScreenPointId(screenPointId)
+                    .setUserRoleId(id != null ? id : addUserRoleDO.getId());
+            userScreenPointMapper.insert(newUserScreenPoint);
         }
-        // 插入用户筛查点表中
-        UserScreenPointDO newUserScreenPoint = new UserScreenPointDO()
-                .setUserId(capId)
-                .setRoleId(roleId)
-                .setScreenPointId(screenPointId)
-                .setUserRoleId(id != null ? id : addUserRoleDO.getId());
-        userScreenPointMapper.insert(newUserScreenPoint);
         // 返回
         return screenPoint.getId();
     }
@@ -552,8 +550,10 @@ public class ScreenPointServiceImpl implements ScreenPointService {
         // 处理新队长
         handleNewCaptain(newCapId, roleId, screenPointId);
 
-        // 处理旧队长
-        handleOldCaptain(oldCapId, roleId, screenPointId);
+        if (ObjectUtil.isNotNull(oldCapId)){
+            // 处理旧队长
+            handleOldCaptain(oldCapId, roleId, screenPointId);
+        }
     }
 
     // 处理新队长

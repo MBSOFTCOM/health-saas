@@ -15,7 +15,6 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="筛查单位" prop="screenDept">
-<!--            <el-input v-model="formData.screenDept" placeholder="请选择筛查单位名称" style="width: 200px"/>-->
             <el-select
               v-model="formData.screenDept"
               filterable
@@ -80,13 +79,15 @@
 
           </el-tab-pane>
           <el-tab-pane label="采集组" name="collectGroup" v-if="formType=='update'">
-            <el-button
-              type="primary"
-              plain
-              @click="distributeRole(8)"
-            >
-              <Icon icon="ep:plus" class="mr-5px" /> 新增人员
-            </el-button>
+            <div style="margin-bottom: 20px">
+              <el-button
+                type="primary"
+                plain
+                @click="distributeRole(8)"
+              >
+                <Icon icon="ep:plus" class="mr-5px" /> 新增采集组人员
+              </el-button>
+            </div>
             <el-table v-loading="loading" :data="collectList">
               <el-table-column label="用户编号" align="center" key="id" prop="id"/>
               <el-table-column label="用户名称" align="center" prop="username"/>
@@ -107,13 +108,16 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="PPD组" name="ppdGroup" v-if="formType=='update'">
-            <el-button
-              type="primary"
-              plain
-              @click="distributeRole(2)"
-            >
-              <Icon icon="ep:plus" class="mr-5px" /> 新增人员
-            </el-button>
+
+            <div style="margin-bottom: 20px">
+              <el-button
+                type="primary"
+                plain
+                @click="distributeRole(2)"
+              >
+                <Icon icon="ep:plus" class="mr-5px" /> 新增PPD组人员
+              </el-button>
+            </div>
             <el-table v-loading="loading" :data="PPDList">
               <el-table-column label="用户编号" align="center" key="id" prop="id"/>
               <el-table-column label="用户名称" align="center" prop="username"/>
@@ -134,13 +138,16 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="CT/DR组" name="ctdrGroup" v-if="formType=='update'">
-            <el-button
-              type="primary"
-              plain
-              @click="distributeRole(3)"
-            >
-              <Icon icon="ep:plus" class="mr-5px" /> 新增人员
-            </el-button>
+
+            <div style="margin-bottom: 20px">
+              <el-button
+                type="primary"
+                plain
+                @click="distributeRole(3)"
+              >
+                <Icon icon="ep:plus" class="mr-5px" /> 新增CT/DR组人员
+              </el-button>
+            </div>
             <el-table v-loading="loading" :data="ctdrList">
               <el-table-column label="用户编号" align="center" key="id" prop="id"/>
               <el-table-column label="用户名称" align="center" prop="username"/>
@@ -160,7 +167,7 @@
               </el-table-column>
             </el-table>
           </el-tab-pane>
-          <el-tab-pane label="痰检组" name="sputumGroup" v-if="formType=='update'">
+<!--          <el-tab-pane label="痰检组" name="sputumGroup" v-if="formType=='update'">
             <el-button
               type="primary"
               plain
@@ -267,7 +274,7 @@
                 </template>
               </el-table-column>
             </el-table>
-          </el-tab-pane>
+          </el-tab-pane>-->
         </el-tabs>
 
       </ContentWrap>
@@ -280,11 +287,14 @@
 
   </Dialog>
 
-  <DistributeRole ref="distributeRoleRef" :collect-worker="formData.collectWorker"
+<!--  <DistributeRole ref="distributeRoleRef" :collect-worker="formData.collectWorker"
                   :ppd-worker="formData.ppdWorker"  :drct-worker="formData.drctWorker"
                   :sputum-worker="formData.sputumWorker" :experiment-worker="formData.experimentWorker"
                   :electrocardiogram-worker="formData.electrocardiogramWorker"
-                  :diagnosis-worker="formData.diagnosisWorker" :worker="formData.worker" @close="handleClose" />
+                  :diagnosis-worker="formData.diagnosisWorker" :worker="formData.worker" @close="handleClose" />-->
+  <DistributeRole ref="distributeRoleRef" :collect-worker="formData.collectWorker"
+                  :ppd-worker="formData.ppdWorker"  :drct-worker="formData.drctWorker"
+                   :worker="formData.worker" @close="handleClose" />
 
 </template>
 
@@ -294,10 +304,7 @@ import DistributeRole from './DistributeRole.vue'
 import {ref, provide, reactive, onMounted, computed} from "vue";
 import ContentWrap from "@/components/ContentWrap/src/ContentWrap.vue";
 import * as UserApi from "@/api/system/user";
-import Table from "@/components/Table/src/Table.vue";
-import {inject} from "vue/dist/vue";
 import PinyinMatch from "pinyin-match";
-import {ScreenDistrictApi} from "@/api/tb/screendistrict";
 
 /** 筛查点 表单 */
 defineOptions({name: 'ScreenPointForm'})
@@ -361,7 +368,7 @@ const formRules = reactive({
     { min: 3, max: 20, message: '筛查点名称长度应在3到20个字符之间', trigger: 'blur' }
   ],
   worker: [
-    { required: true, message: '请分配队长', trigger: 'blur' },
+    // { required: true, message: '请分配队长', trigger: 'blur' },
     { min: 1, max: 20, message: '队长名称长度应在3到20个字符之间', trigger: 'blur' }
   ],
   screenDept: [
@@ -435,7 +442,7 @@ const open = async (type: string, userlist: [], id?: number) => {
       // DR/CT组人员 弹框回显
       await resolveWorkers(formData.value.drctWorker, 'ctdrList', ctdrList);
 
-      // 痰检组人员回显
+      /*// 痰检组人员回显
       await resolveWorkers(formData.value.sputumWorker, 'sputumList', sputumList);
 
       // 实验组人员回显
@@ -445,7 +452,7 @@ const open = async (type: string, userlist: [], id?: number) => {
       await resolveWorkers(formData.value.electrocardiogramWorker, 'electrocardiogramList', electrocardiogramList);
 
       // 诊断组人员回显
-      await resolveWorkers(formData.value.diagnosisWorker, 'diagnoList', diagnoList);
+      await resolveWorkers(formData.value.diagnosisWorker, 'diagnoList', diagnoList);*/
 
       // 队长回显
       if (formData.value.worker !== null) {
@@ -495,7 +502,9 @@ const submitForm = async () => {
     const data = formData.value as unknown as ScreenPointVO
 
     if (formType.value === 'create') {
-      data.worker = capId.value.toString()
+      if (data.worker){
+        data.worker = capId.value.toString()
+      }
       await ScreenPointApi.createScreenPoint(data)
       message.success(t('common.createSuccess'))
     } else {
@@ -533,46 +542,46 @@ const distributeRole = (type: number) => {
 // 关闭 分配人员的窗口 的 后续处理
 const handleClose = async () => {
 
-  if (formType.value === 'update'){
+  if (formType.value == 'update'){
     formData.value = await ScreenPointApi.getScreenPoint(formData.value.id)
   }
 
-  if (formData.value.worker !== undefined) {
+  if (formData.value.worker != undefined && formData.value.worker != null) {
     const collectWorkerNickname = formData.value.worker.split(', ');
     formData.value.workers = collectWorkerNickname.map(id => {
       const user = userList.value.find(item => item.id.toString() === id);
       return user ? user.nickname : null; // 如果找到了对应的用户，则返回其昵称，否则返回 null
-    }).filter(nickname => nickname !== null).join(', ');
+    }).filter(nickname => nickname != null).join(', ');
     // 队长单位
     deptName.value = collectWorkerNickname.map(id => {
       const user = userList.value.find(item => item.id.toString() === id)
       return user ? user.deptName : null
-    }).filter(deptName => deptName !== null)
+    }).filter(deptName => deptName != null)
     // 队长手机号码
     mobile.value = collectWorkerNickname.map(id => {
       const user = userList.value.find(item => item.id.toString() === id)
       return user ? user.mobile : null
-    }).filter(mobile => mobile !== null)
+    }).filter(mobile => mobile != null)
   }
 
-  if (formData.value.worker === undefined && capId.value !== undefined) {
+  if (formData.value.worker == undefined && capId.value != undefined) {
     formData.value.worker = capId.value.toString()
     const WorkerNickname = capId.value.toString().split(', ');
     // 队长名字
     formData.value.workers = WorkerNickname.map(id => {
       const user = userList.value.find(item => item.id.toString() === id);
       return user ? user.nickname : null; // 如果找到了对应的用户，则返回其昵称，否则返回 null
-    }).filter(nickname => nickname !== null).join(', '); // 将找到的昵称拼接成一个字符串，以逗号分隔
+    }).filter(nickname => nickname != null).join(', '); // 将找到的昵称拼接成一个字符串，以逗号分隔
     // 队长单位
     deptName.value = WorkerNickname.map(id => {
       const user = userList.value.find(item => item.id.toString() === id)
       return user ? user.deptName : null
-    }).filter(deptName => deptName !== null)
+    }).filter(deptName => deptName != null)
     // 队长手机号码
     mobile.value = WorkerNickname.map(id => {
       const user = userList.value.find(item => item.id.toString() === id)
       return user ? user.mobile : null
-    }).filter(mobile => mobile !== null)
+    }).filter(mobile => mobile != null)
   }
   // 采集组
   if (formData.value.collectWorker != null) {
@@ -607,7 +616,7 @@ const handleClose = async () => {
     }
   }
 
-  // 痰检组
+  /*// 痰检组
   if (formData.value.sputumWorker != null ) {
     loading.value = true
     try {
@@ -649,7 +658,7 @@ const handleClose = async () => {
     } finally {
       loading.value = false
     }
-  }
+  }*/
 
 }
 
@@ -778,7 +787,7 @@ const handleDelete = async (id: number) => {
       }
     }
 
-    // 痰检组
+    /*// 痰检组
     if (activeName.value === 'sputumGroup'){
       let collectWorkerArray = formData.value.sputumWorker.split(', ').map(Number)
       // 找到需要删除的数据
@@ -908,7 +917,7 @@ const handleDelete = async (id: number) => {
           loading.value = false
         }
       }
-    }
+    }*/
 
     // 队长回显
     if (formData.value.worker !== undefined) {
@@ -994,7 +1003,7 @@ const getUserRole  = async () => {
 const isHavePower = computed(() => {
   // 确保 userRole.value 是数组，且包含 'super_admin' 或 'county_manager' 元素
   return userRole.value.includes('super_admin') || userRole.value.includes('county_manager')
-    || userRole.value.includes('city_manager');
+    || userRole.value.includes('city_manager') || userRole.value.includes('province_manager');
 });
 
 
