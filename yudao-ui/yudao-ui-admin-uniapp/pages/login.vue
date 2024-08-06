@@ -44,8 +44,8 @@ export default {
 			captchaEnabled: false, // 验证码开关 TODO 芋艿：需要抽到配置里
 			globalConfig: this.$config,
 			loginForm: {
-				username: 'admin',
-				password: 'admin123',
+				username: 'wanzhouqu0001',
+				password: '123456',
 				captchaVerification: ''
 			}
 		};
@@ -138,7 +138,7 @@ export default {
 			this.$store.dispatch('GetInfo').then((res) => {
 				SynchronizeApi.getUserInfo(res.user.id).then((resp) => {
 					let temp = resp.data;
-					// console.log(temp);
+					console.log(temp);
 					uni.$person = temp;
 					uni.$user = temp;
 					SynchronizeApi.getYear(temp.name).then((response) => {

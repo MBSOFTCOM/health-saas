@@ -34,6 +34,13 @@
 				</view>
 				<view class="top-right-2">
 					<up-button
+						@click="districtCover"
+						:plain="true"
+						text="同步区划数据"
+						v-if="activeItem === 0"
+						class="custom-style"
+					></up-button>
+					<up-button
 						@click="workTeam"
 						:plain="true"
 						text="同步工作队伍"
@@ -434,6 +441,7 @@ import {
 	items3
 } from '@/utils/dict.js';
 import * as SynchronizeApi from '@/api/synchronize/synchronize';
+import * as DistrictApi from '@/api/screen/district';
 import CryptoJS from 'crypto-js';
 
 export default {
@@ -756,6 +764,12 @@ updateArray(number) {
 			}
 			return str;
 		},
+		/**
+		 * 覆盖区划数据
+		 */
+		districtCover(){
+			DistrictApi.coverData()
+		},
 		//工作队伍 同步
 		workTeam() {
 			let self = this;
@@ -810,7 +824,7 @@ updateArray(number) {
 										
 										// 获取当前所选筛查点信息
 										let screenPointInfo = screenPointList[resp.tapIndex].name.split('-')
-
+										
 										// 存储全局变量(筛查点)
 										uni.$user.screenPoint = screenPointInfo[0];
 										self.queryParams.screenPoint = screenPointInfo[0];
@@ -822,7 +836,6 @@ updateArray(number) {
 										uni.$person.year = screenPointInfo[2];
 										// console.log(screenPointList[resp.tapIndex]);
 										//获取pc端 工作队伍信息
-
 										SynchronizeApi.getWorkTeamInfo(screenPointList[resp.tapIndex].screenPointId).then((res) => {
 											// console.log(res.data);
 											// console.log(uni.$user);
@@ -916,7 +929,7 @@ updateArray(number) {
 
 								// 获取当前所选筛查点信息
 								let screenPointInfo = screenPointList[0].name.split('-')
-
+								let pointId=uni.$user.screenPointList[0].screenPointId
 								// 存储全局变量(筛查点)
 								uni.$user.screenPoint = screenPointInfo[0];
 								self.queryParams.screenPoint = screenPointInfo[0];
@@ -929,7 +942,7 @@ updateArray(number) {
 
 								// console.log(screenPointList[resp.tapIndex]);
 								//获取pc端 工作队伍信息
-								SynchronizeApi.getWorkTeamInfo(screenPointInfo[0].screenPointId).then((res) => {
+								SynchronizeApi.getWorkTeamInfo(pointId).then((res) => {
 									if (uni.$user.year) {
 										// 过滤出与当前工作年度不同的数据
 										let differentYears = res.data.filter((item) => item.year != uni.$user.year);
