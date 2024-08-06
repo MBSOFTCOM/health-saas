@@ -44,13 +44,26 @@
 				</view>
 				<view class="main-text" style="margin-left: 315px; margin-top: -5px">
 					<view class="text-top">采集时间</view>
-					<view class="text-bom">
+					<view class="text-bom" v-if="orderAndTime.time">
 						{{ orderAndTime.time.split(' ')[0] }}
 					</view>
 				</view>
 			</view>
 		</view>
 		<view class="main-bottom">
+      <view style="width: 95px;margin-top: 5px;">2年内是否有与结核病患者的接触史:</view>
+      <up-radio-group
+          v-model="contacted"
+          placement="column">
+        <up-radio
+            :customStyle="{marginBottom: '8px'}"
+            v-for="(item, index) in radiolist1"
+            :key="index"
+            :label="item.name"
+            :name="item.value"
+            @change="radioChange"
+        />
+      </up-radio-group>
 			<view class="bom-t">
 				<view style="width: 95px;margin-top: 5px;">选择症状</view>
 				<view class="bom-mup" v-if="isNewStudent == 0" style="width: 70%">
@@ -60,6 +73,7 @@
 					<uni-data-checkbox   multiple v-model="checkbox" :localdata="itemStudent" disabled></uni-data-checkbox>
 				</view>
 			</view>
+
 			<view class="bom-m">
 				<view>医生签名</view>
 				<view class="sign-imgbg">
@@ -80,8 +94,7 @@
 						horizontal
 						@reset="reset"
 						@event="event"
-						@firstTouchStart="firstTouchStart"
-					></sp-sign-board>
+						@firstTouchStart="firstTouchStart"/>
 				</view>
 			</u-popup>
 		</view>
@@ -175,6 +188,8 @@ export default {
 					value: 4
 				}
 			],
+      contacted:null,
+      radiolist1:[{name:'是',value: 1},{name:'否',value:0}],
 			isNewStudent:null
 		};
 	},
@@ -189,7 +204,10 @@ export default {
 		getCollectOen(e.id,e.order,parseInt(e.year),uni.$screenType).then(res=>{
 			// console.log(res);
 			const str =res[0].outcome.toString()
-			this.checkbox=str.split("").map(Number)
+			this.contacted=res[0].contacted
+			if (str){
+				this.checkbox=str.split("").map(Number)
+			}
 			this.signBase64 = res[0].doctorSignature
 		})
 		

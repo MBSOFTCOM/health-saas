@@ -99,22 +99,28 @@ export const tableSqls = [
 	{
 		tableName: 'tb_screen_collect',
 		sql: `CREATE TABLE "tb_screen_collect" (
-				   "id" INTEGER PRIMARY KEY AUTOINCREMENT ,
-				   "screenId" TEXT, --筛查编号
-				   "syncId" INTEGER , --同步时唯一编码
-				   "personId" INTEGER  , --对应摸底表中id
-				   "outcome" INTEGER  , --结果
-				   "doctorSignature" TEXT , --医生签名
-				   "screenAgency" TEXT,  --筛查单位
-				   "screenOrder" INTEGER,  --筛查次序
-				   "screenPoint" TEXT,  --筛查点
-				   "screenTime" DATE, --采集时间
-				   "updater" TEXT, --更新者
-				   "updateTime" DATE, --修改时间
-				   "creator" TEXT, --创建者
-				   "createTime" DATE, --创建时间
-				   "screenType" INTEGER, --筛查类型  1--常规、2--新生、3--应急
-				   "year" INTEGER --工作年份
+			"id" INTEGER PRIMARY KEY AUTOINCREMENT ,-- 主键
+			"screenId" INTEGER , -- 筛查编号
+			"syncId" INTEGER , -- 同步时唯一编码
+			"personId" INTEGER , -- 对应摸底表中id
+			"idNum" TEXT , -- 身份证号
+			"age" INTEGER , -- 填写问卷时的年龄
+			"schoolName" TEXT , -- 填写问卷时，学生所处学校
+			"classroom" TEXT , -- 填写问卷时，学生所处班级
+			"tel" TEXT , -- 填写问卷时，学生的联系人电话
+			"outcome" TEXT , -- 结果症状
+			"contacted" INTEGER , -- 2年内是否有与结核病患者的接触史
+			"doctorSignature" TEXT , -- 医生签名
+			"screenAgency" TEXT , -- 筛查单位
+			"screenTime" TEXT , -- 筛查时间
+			"screenOrder" INTEGER , -- 筛查次序
+			"screenPoint" TEXT , -- 筛查点
+			"creator" TEXT , -- 创建者
+			"createTime" TEXT , -- 创建时间
+			"updater" TEXT , -- 更新者
+			"updateTime" TEXT , -- 更新时间
+			"year" INTEGER , -- 年份
+			"screenType" TEXT  -- 筛查类型  1--常规、2--新生、3--应急
 			  );`
 	},
 	{
