@@ -2,6 +2,7 @@ package cn.iocoder.yudao.module.system.controller.admin.permission;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
+import cn.iocoder.yudao.framework.datapermission.core.annotation.DataPermission;
 import cn.iocoder.yudao.module.system.controller.admin.permission.vo.permission.PermissionAssignRoleDataScopeReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.permission.vo.permission.PermissionAssignRoleMenuReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.permission.vo.permission.PermissionAssignUserRoleReqVO;
@@ -77,6 +78,73 @@ public class PermissionController {
     public CommonResult<Boolean> assignUserRole(@Validated @RequestBody PermissionAssignUserRoleReqVO reqVO) {
         permissionService.assignUserRole(reqVO.getUserId(), reqVO.getRoleIds());
         return success(true);
+    }
+
+
+    @GetMapping("/get-capital-roleid")
+    @Operation(summary = "获得队长的角色id")
+    @DataPermission(enable = false) // 对这个接口放开数据权限范围
+    public CommonResult<Long> getCapitalRoleId(){
+        Long capitalRoleId = permissionService.getCapitalRoleId();
+        return success(capitalRoleId);
+    }
+
+
+    @GetMapping("/get-collect-roleid")
+    @Operation(summary = "获得采集组的角色id")
+    @DataPermission(enable = false) // 对这个接口放开数据权限范围
+    public CommonResult<Long> getCollectRoleId(){
+        Long collectRoleId = permissionService.getCollectRoleId();
+        return success(collectRoleId);
+    }
+
+
+    @GetMapping("/get-ppd-roleid")
+    @Operation(summary = "获得PPD组的角色id")
+    @DataPermission(enable = false) // 对这个接口放开数据权限范围
+    public CommonResult<Long> getPPDRoleId(){
+        Long PPDRoleId = permissionService.getPPDRoleId();
+        return success(PPDRoleId);
+    }
+
+    @GetMapping("/get-drct-roleid")
+    @Operation(summary = "获得DRCT组的角色id")
+    @DataPermission(enable = false) // 对这个接口放开数据权限范围
+    public CommonResult<Long> getDrctRoleId(){
+        Long drctRoleId = permissionService.getDrctRoleId();
+        return success(drctRoleId);
+    }
+
+    @GetMapping("/get-sputum-roleid")
+    @Operation(summary = "获得痰检组的角色id")
+    @DataPermission(enable = false) // 对这个接口放开数据权限范围
+    public CommonResult<Long> getSputumRoleId(){
+        Long sputumRoleId = permissionService.getSputumRoleId();
+        return success(sputumRoleId);
+    }
+
+    @GetMapping("/get-experiment-roleid")
+    @Operation(summary = "获得实验组的角色id")
+    @DataPermission(enable = false) // 对这个接口放开数据权限范围
+    public CommonResult<Long> getExperimentRoleId(){
+        Long experimentRoleId = permissionService.getExperimentRoleId();
+        return success(experimentRoleId);
+    }
+
+    @GetMapping("/get-electrocardiogram-roleid")
+    @Operation(summary = "获得心电图组的角色id")
+    @DataPermission(enable = false) // 对这个接口放开数据权限范围
+    public CommonResult<Long> getElectrocardiogramRoleId(){
+        Long electrocardiogramRoleId = permissionService.getElectrocardiogramRoleId();
+        return success(electrocardiogramRoleId);
+    }
+
+    @GetMapping("/get-diagnosis-roleid")
+    @Operation(summary = "获得诊断组组的角色id")
+    @DataPermission(enable = false) // 对这个接口放开数据权限范围
+    public CommonResult<Long> getDiagnosisRoleId(){
+        Long diagnosisRoleId = permissionService.getDiagnosisRoleId();
+        return success(diagnosisRoleId);
     }
 
 }

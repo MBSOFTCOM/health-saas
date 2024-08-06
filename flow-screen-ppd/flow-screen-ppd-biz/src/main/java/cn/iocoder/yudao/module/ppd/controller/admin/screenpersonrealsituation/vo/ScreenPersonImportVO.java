@@ -61,6 +61,7 @@ public class ScreenPersonImportVO {
     private LocalDateTime screenEndTime;
 
     @Schema(description = "监护人手机号")
+    @ExcelProperty(value = "监护人手机号")
     private String guardianTel;
 
     private Integer moreType;
