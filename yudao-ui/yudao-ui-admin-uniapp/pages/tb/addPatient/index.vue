@@ -140,7 +140,7 @@
 								v-model="FormData.permanentAddressProvince"
 								:list="permanentAddressProvince"
 								valueName="name"
-								keyName="name"
+								keyName="code"
 								height="35px"
 								width="186px"
 								class="seach"
@@ -155,7 +155,7 @@
 								v-model="FormData.permanentAddressCity"
 								:list="permanentAddressCity"
 								valueName="name"
-								keyName="name"
+								keyName="code"
 								height="35px"
 								width="186px"
 								class="seach"
@@ -170,7 +170,7 @@
 								v-model="FormData.permanentAddressCounty"
 								:list="permanentAddressCounty"
 								valueName="name"
-								keyName="name"
+								keyName="code"
 								height="35px"
 								width="186px"
 								class="seach"
@@ -185,7 +185,7 @@
 								v-model="FormData.permanentAddressTown"
 								:list="permanentAddressTown"
 								valueName="name"
-								keyName="name"
+								keyName="code"
 								height="35px"
 								width="186px"
 								class="seach"
@@ -213,7 +213,7 @@
 								v-model="FormData.province"
 								:list="province"
 								valueName="name"
-								keyName="name"
+								keyName="code"
 								height="35px"
 								width="186px"
 								class="seach"
@@ -228,7 +228,7 @@
 								v-model="FormData.city"
 								:list="city"
 								valueName="name"
-								keyName="name"
+								keyName="code"
 								height="35px"
 								width="186px"
 								class="seach"
@@ -243,7 +243,7 @@
 								v-model="FormData.county"
 								:list="county"
 								valueName="name"
-								keyName="name"
+								keyName="code"
 								height="35px"
 								width="186px"
 								class="seach"
@@ -258,7 +258,7 @@
 								v-model="FormData.town"
 								:list="town"
 								valueName="name"
-								keyName="name"
+								keyName="code"
 								height="35px"
 								width="186px"
 								class="seach"
@@ -274,7 +274,7 @@
 						class="address-input"
 						confirm-type="search"
 						placeholder="请填写现住地址"
-						v-model="FormData.permanentAddress"
+						v-model="FormData.address"
 					/>
 				</view>
 				<view class="bom-1-3">
@@ -612,6 +612,7 @@ export default {
 		},
 		//新增患者提交
 		async newAdd() {
+      // console.log(this.FormData)
 			//数据校验
 			// this.newCheck()
 
@@ -634,7 +635,9 @@ export default {
 				});
 				return;
 			}
-
+			if(!this.FormData.idNum){
+				uni.$u.toast('请填入正确的身份证号');
+			}
 			//通过身份证获取性别年龄
 			const genderAndAge = this.getGenderAndAge(this.FormData.idNum);
 
@@ -914,7 +917,7 @@ export default {
 				// console.log(key);
 				if (obj.hasOwnProperty(key)) {
 					if (obj[key] === null || obj[key] === undefined || obj[key] === '') {
-						console.log(key, '有问题');
+						// console.log(key, '有问题');
 						return false;
 					}
 				}
@@ -979,7 +982,25 @@ export default {
 		//修改传输进来的数据
 		async uData(e) {
 			this.FormData = JSON.parse(e.val);
-			// console.log('p', this.FormData);
+			console.log('p', this.FormData);
+			selectDistrict(this.FormData.province).then((res) => {
+				this.city = res;
+			});
+			selectDistrict(this.FormData.city).then((res) => {
+				this.county = res;
+			});
+			selectDistrict(this.FormData.county).then((res) => {
+				this.town = res;
+			});
+			selectDistrict(this.FormData.permanentAddressProvince).then((res) => {
+				this.permanentAddressCity = res;
+			});
+			selectDistrict(this.FormData.permanentAddressCity).then((res) => {
+				this.permanentAddressCounty = res;
+			});
+			selectDistrict(this.FormData.permanentAddressCounty).then((res) => {
+				this.permanentAddressTown = res;
+			});
 
 			this.isNew = e.isNew;
 			this.crowdVal = this.FormData.firstType.toString();
@@ -1008,48 +1029,11 @@ export default {
 			}
 			// 判断 crowdArr 中是否包含 32
 			this.showMonks = this.crowdArr.includes('32');
-
+			selectProvince({code:this.FormData.permanentAddressProvince})
 			/* if (!(this.crowdArr.includes('1') && this.crowdArr.includes('32'))) {
 				this.FormData.schoolOrTemple = '';
 			} */
 
-			//获取现住址区划数据
-			let provinceCode = await selectDistrictName(this.FormData.permanentAddressProvince);
-			this.city = await selectDistrict(provinceCode[0].code);
-			let cityCode = await selectDistrictName(this.FormData.permanentAddressCity);
-			this.county = await selectDistrict(cityCode[0].code);
-			let countyCode = await selectDistrictName(this.FormData.permanentAddressCounty);
-			this.town = await selectDistrict(countyCode[0].code);
-			this.city.forEach((i) => {
-				i.code = parseInt(i.code);
-			});
-			this.county.forEach((i) => {
-				i.code = parseInt(i.code);
-			});
-			this.town.forEach((i) => {
-				i.code = parseInt(i.code);
-			});
-
-			//获取户籍地址区划数据
-			provinceCode = await selectDistrictName(this.FormData.permanentAddressProvince);
-			this.permanentAddressCity = await selectDistrict(provinceCode[0].code);
-			cityCode = await selectDistrictName(this.FormData.permanentAddressCity);
-			this.permanentAddressCounty = await selectDistrict(cityCode[0].code);
-			countyCode = await selectDistrictName(this.FormData.permanentAddressCounty);
-			this.permanentAddressTown = await selectDistrict(countyCode[0].code);
-			this.permanentAddressCity.forEach((i) => {
-				i.code = parseInt(i.code);
-			});
-			this.permanentAddressCounty.forEach((i) => {
-				i.code = parseInt(i.code);
-			});
-			this.permanentAddressTown.forEach((i) => {
-				i.code = parseInt(i.code);
-			});
-			// console.log(this.city);
-			// console.log(this.county);
-			// console.log(this.town);
-			// console.log('FormData2', this.FormData);
 		},
 
 		//现住址

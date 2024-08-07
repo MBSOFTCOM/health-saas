@@ -2616,6 +2616,16 @@ export async function selectDistrict(parentCode){
 
 	return await promise(dbName,sql)
 }
+export function listDistrictByLevel(level){
+    let sql = '';
+    if(level==null){
+		console.log("传入level为空");
+		return
+	}
+	sql = `SELECT * FROM tb_screen_district WHERE level = ${level} `
+
+	return promise(dbName,sql)
+}
 
 
 

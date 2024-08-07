@@ -136,13 +136,13 @@ public class ScreenComputedTomographyServiceImpl implements ScreenComputedTomogr
     }
 
     @Override
-    public Integer getMaxOrder(Long personId,Integer screenType,Integer year) {
-        return screenComputedTomographyMapper.getMaxOrder(personId,screenType,year);
+    public Integer getMaxOrder(String idNum,Integer screenType,Integer year) {
+        return screenComputedTomographyMapper.getMaxOrder(idNum,screenType,year);
     }
 
     @Override
-    public ScreenComputedTomographyRespVO getOneByPersonId(Long personId,Integer screenOrder,Integer screenType,Integer year) {
-        return screenComputedTomographyMapper.getOneByPersonId(personId,screenOrder,screenType,year);
+    public ScreenComputedTomographyRespVO getOneByPersonIdNum(String idNum,Integer screenOrder,Integer screenType,Integer year) {
+        return screenComputedTomographyMapper.getOneByPersonIdNum(idNum,screenOrder,screenType,year);
     }
 
     @Override

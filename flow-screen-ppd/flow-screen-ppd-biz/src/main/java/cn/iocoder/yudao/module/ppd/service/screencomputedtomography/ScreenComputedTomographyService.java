@@ -55,14 +55,14 @@ public interface ScreenComputedTomographyService {
     PageResult<ScreenComputedTomographyPersonRespVO> getScreenComputedTomographyPage(ScreenComputedTomographyPersonPageReqVO pageReqVO);
 
     List<ComputedTomographyOrderRespVO> getOrderAndTime(Long personId, Integer screenType, Integer year);
-    ScreenComputedTomographyRespVO getOneByPersonId(Long personId, Integer screenOrder, Integer screenType,Integer year);
+    ScreenComputedTomographyRespVO getOneByPersonIdNum(String idNum, Integer screenOrder, Integer screenType,Integer year);
 
     Integer getOutcomeByOrder(ScreenComputedTomographyPageReqVO reqVO);
 
     /**
      * 根据患者id查询最大筛查次数
-     * @param personId 患者id
+     * @param idNum 患者身份证
      * @return 最大筛查次数
      */
-    Integer getMaxOrder(Long personId,Integer screenType,Integer year);
+    Integer getMaxOrder(String idNum,Integer screenType,Integer year);
 }

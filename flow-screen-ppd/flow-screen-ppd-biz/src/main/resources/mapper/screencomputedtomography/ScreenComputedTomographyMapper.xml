@@ -86,13 +86,13 @@
     <select id="getMaxOrder" resultType="java.lang.Integer">
         select ifnull(max(screen_order),0)
         from tb_screen_computed_tomography
-        where person_id=#{personId} and screen_type=#{screenType} and `year`=#{year};
+        where idNum=#{idNum} and screen_type=#{screenType} and `year`=#{year};
     </select>
-    <select id="getOneByPersonId"
+    <select id="getOneByPersonIdNum"
             resultType="cn.iocoder.yudao.module.ppd.controller.admin.screencomputedtomography.vo.ScreenComputedTomographyRespVO">
         select id, screen_id screenId, sync_id syncId, person_id personId, computed_tomography_code computedTomographyCode, computed_tomography computedTomography, photo_time photoTime, doctor_signature doctorSignature, outcome, screen_order, screen_time screenTime, year, screen_type screenType,remark
         from tb_screen_computed_tomography
-        where person_id=#{personId}
+        where id_num=#{idNum}
         <if test="screenOrder!=null and screenOrder!=''">
             and screen_order=#{screenOrder}
         </if>

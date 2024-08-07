@@ -72,8 +72,8 @@ public class ScreenComputedTomographyController {
     @Operation(summary = "获得ct组")
     @Parameter(name = "id", description = "编号", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('tb:screen-chest-radiograph:query')")
-    public CommonResult<ScreenComputedTomographyRespVO> getScreenChestRadiograph(@RequestParam("personId") Long personId, @RequestParam("screenOrder") Integer screenOrder, @RequestParam("screenType") Integer screenType, @RequestParam("year") Integer year) {
-         ScreenComputedTomographyRespVO one = screenComputedTomographyService.getOneByPersonId(personId, screenOrder, screenType,year);
+    public CommonResult<ScreenComputedTomographyRespVO> getScreenChestRadiograph(@RequestParam("idNum") String  idNum, @RequestParam("screenOrder") Integer screenOrder, @RequestParam("screenType") Integer screenType, @RequestParam("year") Integer year) {
+         ScreenComputedTomographyRespVO one = screenComputedTomographyService.getOneByPersonIdNum(idNum, screenOrder, screenType,year);
          return success(one);
     }
 
@@ -94,8 +94,8 @@ public class ScreenComputedTomographyController {
     @GetMapping("/maxOrder")
     @Operation(summary = "最大筛查次序")
     @PreAuthorize("@ss.hasPermission('tb:screen-chest-radiograph:query')")
-    public Integer getScreenChestRadiographPage(@RequestParam("personId") Long personId,@RequestParam("screenType") Integer screenType,@RequestParam("year") Integer year) {
-        return screenComputedTomographyService.getMaxOrder(personId,screenType,year);
+    public Integer getScreenChestRadiographPage(@RequestParam("idNum") String idNum,@RequestParam("screenType") Integer screenType,@RequestParam("year") Integer year) {
+        return screenComputedTomographyService.getMaxOrder(idNum,screenType,year);
     }
     @GetMapping("/statiscs")
     @Operation(summary = "页面统计")
