@@ -215,4 +215,14 @@ public class DeptServiceImpl implements DeptService {
         });
     }
 
+    @Override
+    public Long getDeptId(String deptName) {
+        return deptMapper.getDeptId(deptName);
+    }
+
+    @Override
+    public Long getMyDept(Long loginUserId) {
+        return deptMapper.getMyDept(loginUserId);
+    }
+
 }

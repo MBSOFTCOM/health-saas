@@ -32,6 +32,11 @@ public class RoleSaveReqVO {
     @DiffLogField(name = "显示顺序")
     private Integer sort;
 
+    @Schema(description = "状态", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "状态不能为空")
+    @DiffLogField(name = "状态")
+    private Integer status;
+
     @Schema(description = "备注", example = "我是一个角色")
     @DiffLogField(name = "备注")
     private String remark;

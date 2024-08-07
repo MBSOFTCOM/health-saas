@@ -45,6 +45,10 @@ public interface ErrorCodeConstants{
     // ========== 重复筛查人员管理 ==========
     ErrorCode SCREEN_REPEAT_PERSON_NOT_EXISTS = new ErrorCode(100080, "重复筛查人员不存在");
 
+    // ========== 消耗管理 ==========
+    ErrorCode SCREEN_CONSUME_NOT_EXISTS = new ErrorCode(20000, "消耗管理不存在");
+
+
 }
 
 

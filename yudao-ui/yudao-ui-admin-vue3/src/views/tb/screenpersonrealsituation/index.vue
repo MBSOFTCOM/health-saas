@@ -194,6 +194,21 @@
           >{{dict.label}}</el-radio>
         </el-radio-group>-->
       </el-form-item>
+      <el-form-item label="学生类别" prop="studentType" label-width="97">
+        <el-select
+          v-model="queryParams.studentType"
+          placeholder="请选择学生类别"
+          clearable
+          class="!w-180px"
+        >
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.STUDENT_TYPE)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery">
           <Icon icon="ep:search" class="mr-5px"/>
@@ -246,8 +261,9 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column type="index" label="序号" align="center" width="70"
-                       :show-overflow-tooltip="false" fixed="left"/>
+<!--      <el-table-column type="index" label="序号" align="center" width="70"
+                       :show-overflow-tooltip="false" fixed="left"/>-->
+      <el-table-column label="筛查编号" align="center" prop="screenId" width="190" fixed="left"/>
       <el-table-column label="操作" align="center" fixed="right" width="160">
         <template #default="scope">
           <el-button link type="primary" @click="openForm('update', scope.row.id)"
@@ -306,7 +322,6 @@
           {{ new Date(scope.row.screenStartTime).toLocaleDateString() }}-{{ new Date(scope.row.screenEndTime).toLocaleDateString() }}
         </template>
       </el-table-column>
-      <el-table-column label="筛查编号" align="center" prop="screenId" width="190"/>
       <el-table-column label="联系电话" align="center" prop="tel" width="120"/>
       <el-table-column label="性别" align="center" prop="sex">
         <template #default="scope">
@@ -391,7 +406,8 @@ const queryParams = reactive({
   isScreened: undefined,
   screenPoint: undefined,
   screenTime: [],
-  moreTempType: []
+  moreTempType: [],
+  studentType: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中

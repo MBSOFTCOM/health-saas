@@ -684,7 +684,7 @@ const formRules = reactive({
   // nation: [{required: true, message: '请选择民族', trigger: 'change'}],
   isNew: [{required: true, message: '请选择是否需筛查', trigger: 'change'}],
   isScreened: [{required: true, message: '请选择是否已筛查', trigger: 'change'}],
-  screenPoint:[{required: true, message: '请选择筛查点', trigger: 'blur'}],
+  // screenPoint:[{required: true, message: '请选择筛查点', trigger: 'blur'}],
   year: [{validator: checkYear, trigger: 'blur'},{required: true, message: '请输入年度', trigger: 'blur'}],
   screenType: [{required: true, message: '请选择筛查类型', trigger: 'blur'}],
   screenTime: [{required: true, message: '请选择筛查时间', trigger: 'blur'}]

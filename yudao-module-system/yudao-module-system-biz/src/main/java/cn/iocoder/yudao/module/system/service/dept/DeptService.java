@@ -99,4 +99,13 @@ public interface DeptService {
      */
     void validateDeptList(Collection<Long> ids);
 
+    Long getDeptId(String deptName);
+
+    /**
+     * 获取登录账号的部门id
+     * @param loginUserId
+     * @return
+     */
+    Long getMyDept(Long loginUserId);
+
 }

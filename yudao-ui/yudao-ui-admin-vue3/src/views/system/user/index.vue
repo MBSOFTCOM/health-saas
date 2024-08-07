@@ -352,11 +352,26 @@ const handleResetPwd = async (row: UserApi.UserVO) => {
 /** 分配角色 */
 const assignRoleFormRef = ref()
 const handleRole = (row: UserApi.UserVO) => {
+  if (userId.value == row.id && !userRole.value.includes("super_admin")){
+    return message.error("不能给自己分配角色！")
+  }
   assignRoleFormRef.value.open(row)
+}
+
+const userId = ref()
+const getUserId  = async () => {
+  userId.value = await UserApi.getUserId();
+}
+
+const userRole = ref()
+const getUserRole  = async () => {
+  userRole.value = await UserApi.getUserRole();
 }
 
 /** 初始化 */
 onMounted(() => {
   getList()
+  getUserId()
+  getUserRole()
 })
 </script>

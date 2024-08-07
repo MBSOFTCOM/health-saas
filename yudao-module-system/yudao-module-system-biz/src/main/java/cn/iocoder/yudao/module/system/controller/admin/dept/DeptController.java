@@ -3,6 +3,7 @@ package cn.iocoder.yudao.module.system.controller.admin.dept;
 import cn.iocoder.yudao.framework.common.enums.CommonStatusEnum;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
+import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptListReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptRespVO;
 import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptSaveReqVO;
@@ -79,6 +80,13 @@ public class DeptController {
     public CommonResult<DeptRespVO> getDept(@RequestParam("id") Long id) {
         DeptDO dept = deptService.getDept(id);
         return success(BeanUtils.toBean(dept, DeptRespVO.class));
+    }
+
+    @GetMapping("/get-my-dept")
+    @Operation(summary = "获得登录账号部门id")
+    public CommonResult<Long> getMyDept() {
+        Long loginUserId = SecurityFrameworkUtils.getLoginUserId();
+        return success(deptService.getMyDept(loginUserId));
     }
 
 }

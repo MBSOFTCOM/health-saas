@@ -82,4 +82,7 @@ public class ScreenRepeatPersonPageReqVO extends PageParam {
     @Schema(description = "体重")
     private BigDecimal weight;
 
+    @Schema(description = "学生类别")
+    private Integer studentType;
+
 }

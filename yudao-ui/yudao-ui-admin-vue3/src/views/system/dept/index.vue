@@ -180,9 +180,21 @@ const handleDelete = async (id: number) => {
   } catch {}
 }
 
+const loginUserId = ref()
+const getMyDeptId = async () => {
+  loginUserId.value = await DeptApi.getMyDeptId();
+}
+
+const userRole = ref()
+const getUserRole  = async () => {
+  userRole.value = await UserApi.getUserRole();
+}
+
 /** 初始化 **/
 onMounted(async () => {
   await getList()
+  await getMyDeptId()
+  await getUserRole()
   // 获取用户列表
   userList.value = await UserApi.getSimpleUserList()
 })

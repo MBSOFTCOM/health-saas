@@ -29,7 +29,8 @@ export interface ScreenPersonVO {
   belongingRegion: string // 归属地区
   screenTime: Date // 筛查时间
   year: number
-  screenType: number
+  screenType: number,
+  studentType: number
 }
 
 // 摸底 API
