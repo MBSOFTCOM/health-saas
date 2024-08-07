@@ -9,7 +9,12 @@
       </el-form-item>
       <el-form-item label="角色">
         <el-select v-model="formData.roleIds" multiple placeholder="请选择角色">
-          <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.id" />
+          <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.id"
+                     :disabled="item.code==='collect_group' || item.code ==='ppd_group'
+                     || item.code === 'dr/ct_group' || item.code === 'sputum_group'
+                     || item.code === 'electrocardiogram_group' || item.code === 'experiment_group'
+                     || item.code === 'diagnos_group' || item.code === 'capital'"/>
+<!--          <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.id" />-->
         </el-select>
       </el-form-item>
     </el-form>

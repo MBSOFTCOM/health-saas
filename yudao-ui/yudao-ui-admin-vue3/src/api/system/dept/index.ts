@@ -41,3 +41,8 @@ export const updateDept = async (params: DeptVO) => {
 export const deleteDept = async (id: number) => {
   return await request.delete({ url: '/system/dept/delete?id=' + id })
 }
+
+export async function getMyDeptId() {
+  return await request.get({url: `/system/dept/get-my-dept`})
+}
+
