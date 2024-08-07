@@ -27,9 +27,9 @@ public interface ScreenComputedTomographyMapper extends BaseMapperX<ScreenComput
 
     List<ComputedTomographyOrderRespVO> getOrderAndTime(@Param("personId") Long personId, @Param("screenType") Integer screenType, @Param("year") Integer year);
 
-    Integer getMaxOrder(@Param("personId") Long personId, @Param("screenType") Integer screenType, @Param("year") Integer year);
+    Integer getMaxOrder(@Param("idNum") String idNum, @Param("screenType") Integer screenType, @Param("year") Integer year);
 
-    ScreenComputedTomographyRespVO getOneByPersonId(@Param("personId") Long personId, @Param("screenOrder") Integer screenOrder, @Param("screenType") Integer screenType, @Param("year") Integer year);
+    ScreenComputedTomographyRespVO getOneByPersonIdNum(@Param("idNum") String idNum, @Param("screenOrder") Integer screenOrder, @Param("screenType") Integer screenType, @Param("year") Integer year);
 
     ComputedTomographyStatistics getTypeStatistics(@Param("screenType") Integer screenType, @Param("year") Integer year);
     Integer getYearTimeStatistics(@Param("year") String year,@Param("screenType") Integer screenType);

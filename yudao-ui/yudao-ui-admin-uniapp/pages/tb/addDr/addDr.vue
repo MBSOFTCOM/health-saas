@@ -241,6 +241,7 @@ export default {
 		this.refreshMark();
 		this.patient = JSON.parse(e.val);
 		this.formData.screenId = this.patient.screenId;
+		this.formData.idNum = this.patient.idNum;
 		this.formData.year = this.patient.year;
 		if (!this.patient.age) {
 			this.patient.age = '';
@@ -249,9 +250,8 @@ export default {
 		// console.log("flag=",this.stateFlag)
 		// console.log(uni.$person)
 		if (e.label == '修改' || e.label == '详情') {
-			ctApi
-				.getOneCt({
-					personId: this.patient.id,
+			ctApi.getOneCt({
+					idNum: this.patient.idNum,
 					screenOrder: this.patient.screenOrder,
 					screenType: uni.$screenType,
 					year: this.patient.year
@@ -466,6 +466,7 @@ export default {
 			this.disabledBtu = true;
 			this.markText = this.refreshMark();
 			this.formData.personId = this.patient.id;
+			this.formData.idNum = this.patient.idNum;
 			this.formData.screenTime = this.markText[0];
 			this.formData.screenTime = new Date(this.markText[0]).getTime();
 			this.formData.updateTime = this.markText[0] + ' ' + this.markText[1];
@@ -476,7 +477,7 @@ export default {
 				this.formData.creator = user.id;
 				this.formData.createTime = this.markText[0] + ' ' + this.markText[1];
 				let data = await ctApi.getMaxScreenOrder({
-					personId: this.formData.personId,
+					idNum: this.patient.idNum,
 					screenType: uni.$screenType,
 					year: this.patient.year
 				});
@@ -490,6 +491,7 @@ export default {
 					screenId: this.patient.screenId,
 					screenTime: this.formData.screenTime,
 					screenOrder: this.formData.screenOrder,
+					idNum:this.patient.idNum,
 					screenPoint: this.patient.screenPoint,
 					personId: this.formData.personId,
 					imageType: 2,
@@ -519,6 +521,7 @@ export default {
 					data.id = this.formData.id;
 					data.year = this.patient.year;
 					data.personId = this.formData.personId;
+					data.idNum = this.patient.idNum;
 					data.outcome = this.formData.outcome;
 					data.computedTomography = this.formData.computedTomography;
 					data.doctorSignature = this.formData.doctorSignature;
@@ -532,13 +535,14 @@ export default {
 					try {
 						// console.log("personId=",this.formData.personId)
 						let order = await ctApi.getMaxScreenOrder({
-							personId: this.formData.personId,
+							idNum: this.patient.idNum,
 							screenType: uni.$screenType,
 							year: this.patient.year
 						});
 						if (this.formData.screenOrder == order) {
 							let param = {};
 							param.personId = this.formData.personId;
+							param.idNum = this.patient.idNum;
 							let time = this.refreshMark();
 							param.lastComputedTomographyTime = new Date(time[0] + ' ' + time[1]).getTime();
 							param.computedTomographyNum = this.formData.screenOrder;
@@ -574,12 +578,13 @@ export default {
 				await ctApi.create(this.formData);
 				let param = {};
 				param.personId = this.formData.personId;
+				param.idNum = this.patient.idNum;
 				let time = this.refreshMark();
 				param.lastComputedTomographyTime = new Date(time[0] + ' ' + time[1]).getTime();
 				let last = await getOneCt({
-					personId: this.formData.personId,
+					idNum: this.formData.personId,
 					screenOrder: await ctApi.getMaxScreenOrder({
-						personId: this.formData.personId,
+						idNum: this.patient.idNum,
 						screenType: uni.$screenType,
 						year: this.patient.year
 					}),
@@ -595,7 +600,7 @@ export default {
 				param.year = this.patient.year;
 				// console.log('param=', param);
 				let data = await sumApi.selectCount({
-					personId: this.formData.personId,
+					idNum: this.patient.idNum,
 					screenType: uni.$screenType,
 					year: this.patient.year
 				});
