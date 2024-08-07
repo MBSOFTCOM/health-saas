@@ -365,7 +365,6 @@
 <script setup lang="ts">
 import PinyinMatch from 'pinyin-match'
 import {getIntDictOptions, DICT_TYPE} from '@/utils/dict'
-import {dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {ScreenPersonApi, ScreenPersonVO} from '@/api/tb/screenpersonrealsituation'
 import ScreenPersonForm from './ScreenPersonForm.vue'
