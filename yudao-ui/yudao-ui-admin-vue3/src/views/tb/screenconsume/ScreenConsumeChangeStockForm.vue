@@ -8,7 +8,7 @@
       v-loading="formLoading"
     >
       <el-form-item label="数量" prop="number" >
-        <el-input :placeholder="text" style="width: 200px"/>
+        <el-input v-model="formData.number" :placeholder="text" style="width: 200px"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -91,11 +91,10 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     if (tittle.value == 'increase'){
-      await ScreenConsumeApi.getScreenConsume(formData.value.id)
-
+      // await ScreenConsumeApi.getScreenConsume(formData.value.id)
+      message.success("增加成功！")
     }else {
-
-
+      message.success("减少成功！")
     }
     dialogVisible.value = false
     // 发送操作成功的事件
