@@ -1,10 +1,12 @@
 package cn.iocoder.yudao.module.ppd.service.screenreagent;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentPageReqVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentSaveReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
 import jakarta.validation.Valid;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 试剂 Service 接口
@@ -51,4 +53,28 @@ public interface ScreenReagentService {
      */
     PageResult<ScreenReagentDO> getScreenReagentPage(ScreenReagentPageReqVO pageReqVO);
 
+    /**
+     *禁用试剂
+     */
+    Boolean forbidScreenReagent(Long id);
+
+    /**
+     *启用试剂
+     */
+    Boolean recoverScreenReagent(Long id);
+
+    /**
+     * 试剂导入模板
+     */
+    List<ScreenReagentImportVO> createSampleData();
+
+    /**
+     * Excel下拉框数据
+     */
+    void addSelectedData(String dictType, int index, Map<Integer, List<String>> selectedData);
+
+    /**
+     * 导入试剂
+     */
+    ScreenReagentImportRespVO importReagent(List<ScreenReagentImportVO> list);
 }

@@ -5,17 +5,24 @@ import cn.iocoder.yudao.framework.excel.core.convert.DictConvert;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.stream.Stream;
 
 @Schema(description = "管理后台 - 试剂 Response VO")
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Accessors(chain = false) // 设置 chain = false，避免用户导入有问题
 @ExcelIgnoreUnannotated
-public class ScreenReagentRespVO {
+public class ScreenReagentImportVO {
 
     @Schema(description = "试剂名称")
     @ExcelProperty("试剂名称")
@@ -25,11 +32,6 @@ public class ScreenReagentRespVO {
     @ExcelProperty(value = "试剂类型", converter = DictConvert.class)
     @DictFormat("dosage_form")
     private Integer type;
-
-    @Schema(description = "是否启用")
-    @ExcelProperty(value = "是否启用", converter = DictConvert.class)
-    @DictFormat("common_status")
-    private Integer usable;
 
     @Schema(description = "转换系数（人次）")
     @ExcelProperty("转换系数（人次）")
@@ -66,10 +68,8 @@ public class ScreenReagentRespVO {
     @ExcelProperty("供应商")
     private String manufacturer;
 
-    @Schema(description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
-    private LocalDateTime createTime;
-
-    @Schema(description = "自增主键id", requiredMode = Schema.RequiredMode.REQUIRED, example = "3319")
-    private Long id;
-
+    public boolean isEmpty(ScreenReagentImportVO respVO) {
+        ScreenReagentImportVO vo = new ScreenReagentImportVO();
+        return vo.equals(respVO);
+    }
 }

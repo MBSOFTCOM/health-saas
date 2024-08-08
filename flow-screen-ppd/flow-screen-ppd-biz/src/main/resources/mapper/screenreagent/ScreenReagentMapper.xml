@@ -3,5 +3,35 @@
 <mapper namespace="cn.iocoder.yudao.module.ppd.dal.mysql.screenreagent.ScreenReagentMapper">
 
 
+    <update id="forbidReagent">
+        UPDATE tb_screen_reagent
+        SET usable = 1
+        WHERE id = #{id}
+          AND deleted = 0
+    </update>
 
+
+    <update id="recoverReagent">
+        UPDATE tb_screen_reagent
+        SET usable = 0
+        WHERE id = #{id}
+          AND deleted = 0
+    </update>
+
+
+    <select id="selectIsExist" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM tb_screen_reagent
+        WHERE name = #{name}
+          AND type = #{type}
+          AND reagent_specs_num = #{reagentSpecsNum}
+          AND titer = #{titer}
+          AND potency_unit = #{potencyUnit}
+          AND specification = #{specification}
+          AND specification_unit = #{specificationUnit}
+          AND package_unit = #{packageUnit}
+          AND manufacturer = #{manufacturer}
+          AND threshold = #{threshold}
+          AND deleted = 0
+    </select>
 </mapper>
