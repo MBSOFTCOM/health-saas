@@ -92,7 +92,7 @@
     </select>
     <select id="getOneByPersonIdNum"
             resultType="cn.iocoder.yudao.module.ppd.controller.admin.screencomputedtomography.vo.ScreenComputedTomographyRespVO">
-        select id, screen_id screenId, sync_id syncId, person_id personId, computed_tomography_code computedTomographyCode, computed_tomography computedTomography, photo_time photoTime, doctor_signature doctorSignature, outcome, screen_order, screen_time screenTime, year, screen_type screenType,remark
+        select id, screen_id screenId, sync_id syncId, id_num idNum, person_id personId, computed_tomography_code computedTomographyCode, computed_tomography computedTomography, photo_time photoTime, doctor_signature doctorSignature, outcome, screen_order, screen_time screenTime, year, screen_type screenType,remark
         from tb_screen_computed_tomography
         where id_num=#{idNum}
         <if test="screenOrder!=null and screenOrder!=''">
