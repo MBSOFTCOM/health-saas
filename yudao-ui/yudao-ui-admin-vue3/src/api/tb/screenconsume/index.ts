@@ -9,6 +9,7 @@ export interface ScreenConsumeVO {
   consumeOrder: number // 消耗序位
   bathNumber: string // 批次号
   inboundNumber: number // 入库量（按试剂）
+  currentNumber: number // 当前库存
   manufactureDate: Date // 生产日期
   reagentSpecsNum: number // 转换系数（人次）
   threshold: number // 库存预警值（按试剂）
@@ -48,4 +49,11 @@ export const ScreenConsumeApi = {
   exportScreenConsume: async (params) => {
     return await request.download({ url: `/tb/screen-consume/export-excel`, params })
   },
+
+  // 获取试剂列表
+  getReagentList: async () => {
+    return await request.get({ url: `/tb/screen-consume/get-reagent-list` })
+  }
+
+
 }

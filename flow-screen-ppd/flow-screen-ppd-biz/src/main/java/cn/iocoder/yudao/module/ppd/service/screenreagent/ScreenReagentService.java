@@ -77,4 +77,9 @@ public interface ScreenReagentService {
      * 导入试剂
      */
     ScreenReagentImportRespVO importReagent(List<ScreenReagentImportVO> list);
+
+    /**
+     * 获取试剂列表
+     */
+    List<ScreenReagentDO> getReagentList();
 }

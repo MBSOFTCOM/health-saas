@@ -33,6 +33,9 @@ public class ScreenConsumePageReqVO extends PageParam {
     @Schema(description = "入库量（按试剂）")
     private Integer inboundNumber;
 
+    @Schema(description = "当前库存")
+    private Integer currentNumber;
+
     @Schema(description = "生产日期")
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private LocalDateTime[] manufactureDate;

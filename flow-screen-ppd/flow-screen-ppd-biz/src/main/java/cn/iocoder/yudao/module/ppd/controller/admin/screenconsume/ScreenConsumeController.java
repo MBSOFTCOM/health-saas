@@ -9,8 +9,12 @@ import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumePageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeSaveReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentPageReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
 import cn.iocoder.yudao.module.ppd.service.screenconsume.ScreenConsumeService;
+import cn.iocoder.yudao.module.ppd.service.screenreagent.ScreenReagentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,6 +39,8 @@ public class ScreenConsumeController {
 
     @Resource
     private ScreenConsumeService screenConsumeService;
+    @Resource
+    private ScreenReagentService screenReagentService;
 
     @PostMapping("/create")
     @Operation(summary = "创建消耗管理")
@@ -86,8 +92,16 @@ public class ScreenConsumeController {
         pageReqVO.setPageSize(PageParam.PAGE_SIZE_NONE);
         List<ScreenConsumeDO> list = screenConsumeService.getScreenConsumePage(pageReqVO).getList();
         // 导出 Excel
-        ExcelUtils.write(response, "消耗管理.xls", "数据", ScreenConsumeRespVO.class,
+        ExcelUtils.write2(response, "消耗管理.xls", "数据", ScreenConsumeRespVO.class,
                         BeanUtils.toBean(list, ScreenConsumeRespVO.class));
+    }
+
+    @GetMapping("/get-reagent-list")
+    @Operation(summary = "获取试剂列表")
+    @PreAuthorize("@ss.hasPermission('tb:screen-consume:create')")
+    public CommonResult<List<ScreenReagentDO>> getReagentList() {
+        List<ScreenReagentDO> list = screenReagentService.getReagentList();
+        return success(list);
     }
 
 }

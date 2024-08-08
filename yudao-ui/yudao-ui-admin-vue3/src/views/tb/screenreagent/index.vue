@@ -90,7 +90,7 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" border :show-overflow-tooltip="true" :row-class-name="rowClassName">
+    <el-table v-loading="loading" :data="list" :show-overflow-tooltip="true" :row-class-name="rowClassName">
       <el-table-column type="index" label="序号" align="center" width="70"
                        :show-overflow-tooltip="false" fixed="left"/>
       <el-table-column label="试剂名称" align="center" prop="name" />

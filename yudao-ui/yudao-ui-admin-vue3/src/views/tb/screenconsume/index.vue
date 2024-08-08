@@ -8,112 +8,38 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="试剂id" prop="reagentId">
-        <el-input
-          v-model="queryParams.reagentId"
-          placeholder="请输入试剂id"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
       <el-form-item label="试剂名称" prop="reagentName">
         <el-input
           v-model="queryParams.reagentName"
-          placeholder="请输入试剂名称"
+          placeholder="输入试剂名称"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          class="!w-140px"
+        />
+      </el-form-item>
+      <el-form-item label="批次号" prop="bathNumber">
+        <el-input
+          v-model="queryParams.bathNumber"
+          placeholder="输入批次号"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-140px"
         />
       </el-form-item>
       <el-form-item label="试剂类型" prop="reagentType">
         <el-select
           v-model="queryParams.reagentType"
-          placeholder="请选择试剂类型"
+          placeholder="请选择"
           clearable
-          class="!w-240px"
+          class="!w-120px"
         >
-          <el-option label="请选择字典生成" value="" />
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.DOSAGE_FORM)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
         </el-select>
-      </el-form-item>
-      <el-form-item label="消耗序位" prop="consumeOrder">
-        <el-select
-          v-model="queryParams.consumeOrder"
-          placeholder="请选择消耗序位"
-          clearable
-          class="!w-240px"
-        >
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="批次号" prop="bathNumber">
-        <el-input
-          v-model="queryParams.bathNumber"
-          placeholder="请输入批次号"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="入库量（按试剂）" prop="inboundNumber">
-        <el-input
-          v-model="queryParams.inboundNumber"
-          placeholder="请输入入库量（按试剂）"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="生产日期" prop="manufactureDate">
-        <el-date-picker
-          v-model="queryParams.manufactureDate"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-date-picker
-          v-model="queryParams.createTime"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="转换系数（人次）" prop="reagentSpecsNum">
-        <el-input
-          v-model="queryParams.reagentSpecsNum"
-          placeholder="请输入转换系数（人次）"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="库存预警值（按试剂）" prop="threshold">
-        <el-input
-          v-model="queryParams.threshold"
-          placeholder="请输入库存预警值（按试剂）"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="有效期" prop="indate">
-        <el-date-picker
-          v-model="queryParams.indate"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
       </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
@@ -141,49 +67,58 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="主键id" align="center" prop="id" />
-      <el-table-column label="试剂id" align="center" prop="reagentId" />
+    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" :row-class-name="rowClassName">
+      <el-table-column type="index" label="序号" align="center" width="70"
+                       :show-overflow-tooltip="false" fixed="left"/>
       <el-table-column label="试剂名称" align="center" prop="reagentName" />
-      <el-table-column label="试剂类型" align="center" prop="reagentType" />
-      <el-table-column label="消耗序位" align="center" prop="consumeOrder" />
+      <el-table-column label="试剂类型" align="center" prop="reagentType" width="130">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.DOSAGE_FORM" :value="scope.row.reagentType"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="消耗序位" align="center" prop="consumeOrder" width="120"/>
       <el-table-column label="批次号" align="center" prop="bathNumber" />
-      <el-table-column label="入库量（按试剂）" align="center" prop="inboundNumber" />
-      <el-table-column
-        label="生产日期"
-        align="center"
-        prop="manufactureDate"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        :formatter="dateFormatter"
-        width="180px"
-      />
-      <el-table-column label="转换系数（人次）" align="center" prop="reagentSpecsNum" />
-      <el-table-column label="库存预警值（按试剂）" align="center" prop="threshold" />
-      <el-table-column label="有效期" align="center" prop="indate" />
+      <el-table-column label="入库量" align="center" prop="inboundNumber" width="120"/>
+      <el-table-column label="当前库存" align="center" prop="currentNumber" width="120"/>
+      <el-table-column label="失效日期" align="center" prop="manufactureDate" :formatter="dateFormatter2" width="180px">
+        <template #default="scope">
+          {{scope.row.manufactureDate}}-{{scope.row.indate}}
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
             link
             type="primary"
-            @click="openForm('update', scope.row.id)"
+            @click="openForm2('increase', scope.row.id)"
             v-hasPermi="['tb:screen-consume:update']"
           >
-            编辑
+            增加
           </el-button>
           <el-button
+            link
+            type="danger"
+            @click="openForm2('decrease', scope.row.id)"
+            v-hasPermi="['tb:screen-consume:update']"
+          >
+            减少
+          </el-button>
+          <el-button
+            link
+            type="success"
+            @click="openForm('update', scope.row.id)"
+            v-hasPermi="['tb:screen-consume:delete']"
+          >
+            详情
+          </el-button>
+<!--          <el-button
             link
             type="danger"
             @click="handleDelete(scope.row.id)"
             v-hasPermi="['tb:screen-consume:delete']"
           >
             删除
-          </el-button>
+          </el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -198,13 +133,20 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <ScreenConsumeForm ref="formRef" @success="getList" />
+
+  <!-- 增加、减少库存 -->
+  <ScreenConsumeChangeStockForm ref="formRef2" @success="getList" />
+
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import { dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { ScreenConsumeApi, ScreenConsumeVO } from '@/api/tb/screenconsume'
 import ScreenConsumeForm from './ScreenConsumeForm.vue'
+import ScreenConsumeChangeStockForm from './ScreenConsumeChangeStockForm.vue'
+import {getIntDictOptions, DICT_TYPE} from '@/utils/dict'
+import {onMounted, ref, reactive} from 'vue'
 
 /** 消耗管理 列表 */
 defineOptions({ name: 'ScreenConsume' })
@@ -224,6 +166,7 @@ const queryParams = reactive({
   consumeOrder: undefined,
   bathNumber: undefined,
   inboundNumber: undefined,
+  currentNumber: undefined,
   manufactureDate: [],
   createTime: [],
   reagentSpecsNum: undefined,
@@ -258,11 +201,19 @@ const resetQuery = () => {
   handleQuery()
 }
 
-/** 添加/修改操作 */
+/** 详情操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
 }
+
+/** 增加、减少库存操作 */
+const formRef2 = ref()
+const openForm2 = (type: string, id?: number) => {
+  formRef2.value.open(type, id)
+}
+
+
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {
@@ -286,14 +237,28 @@ const handleExport = async () => {
     exportLoading.value = true
     const data = await ScreenConsumeApi.exportScreenConsume(queryParams)
     download.excel(data, '消耗管理.xls')
+    message.success("导出成功！")
   } catch {
   } finally {
     exportLoading.value = false
   }
 }
 
+// 根据 usable 字段返回行的类名
+const rowClassName = ({ row }) => {
+  return row.usable == 1 ? 'row-disabled' : '';
+};
+
 /** 初始化 **/
 onMounted(() => {
   getList()
 })
 </script>
+<style scoped lang="scss">
+.el-table {
+  .row-disabled {
+    /* 设置背景颜色为红色 */
+    background-color: grey;
+  }
+}
+</style>

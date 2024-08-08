@@ -4,10 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ScreenPersonImportRespVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportRespVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentPageReqVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentSaveReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenreagent.ScreenReagentMapper;
@@ -202,14 +199,10 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
                                         .setFailureSpecification(failureSpecification);
     }
 
-
-
-
-
-
-
-
-
+    @Override
+    public List<ScreenReagentDO> getReagentList() {
+        return screenReagentMapper.getReagentList();
+    }
 
 
     public void selectedData(Integer index, List<DictDataRespDTO> dictDataRespDTOS, Map<Integer, List<String>> selectedData) {

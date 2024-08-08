@@ -54,6 +54,10 @@ public class ScreenConsumeDO extends BaseDO {
      */
     private Integer inboundNumber;
     /**
+     * 当前库存
+     */
+    private Integer currentNumber;
+    /**
      * 生产日期
      */
     private LocalDateTime manufactureDate;

@@ -34,4 +34,18 @@
           AND threshold = #{threshold}
           AND deleted = 0
     </select>
+
+
+    <select id="getReagentList"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO">
+        SELECT id,
+               name,
+               type,
+               reagent_specs_num,
+               usable,
+               threshold
+        FROM tb_screen_reagent
+        WHERE usable = 0
+          AND deleted = 0
+    </select>
 </mapper>

@@ -32,6 +32,9 @@ public class ScreenConsumeSaveReqVO {
     @Schema(description = "入库量（按试剂）")
     private Integer inboundNumber;
 
+    @Schema(description = "当前库存")
+    private Integer currentNumber;
+
     @Schema(description = "生产日期")
     private LocalDateTime manufactureDate;
 

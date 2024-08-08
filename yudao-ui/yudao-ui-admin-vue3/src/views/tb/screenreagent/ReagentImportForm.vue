@@ -25,7 +25,7 @@
             type="primary"
             @click="importTemplate"
           >
-            下载模板
+            下载导入模板
           </el-link>
         </div>
       </template>

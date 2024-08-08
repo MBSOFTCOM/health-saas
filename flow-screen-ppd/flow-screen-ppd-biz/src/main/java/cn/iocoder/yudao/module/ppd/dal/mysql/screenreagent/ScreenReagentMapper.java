@@ -4,12 +4,14 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
 import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentPageReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 试剂 Mapper
@@ -53,4 +55,9 @@ public interface ScreenReagentMapper extends BaseMapperX<ScreenReagentDO> {
                           @Param("packageUnit") Integer packageUnit,
                           @Param("manufacturer") String manufacturer,
                           @Param("threshold") Integer threshold);
+
+    /**
+     * 获取试剂列表
+     */
+    List<ScreenReagentDO> getReagentList();
 }

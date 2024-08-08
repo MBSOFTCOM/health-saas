@@ -19,17 +19,9 @@ public interface ScreenConsumeMapper extends BaseMapperX<ScreenConsumeDO> {
 
     default PageResult<ScreenConsumeDO> selectPage(ScreenConsumePageReqVO reqVO) {
         return selectPage(reqVO, new LambdaQueryWrapperX<ScreenConsumeDO>()
-                .eqIfPresent(ScreenConsumeDO::getReagentId, reqVO.getReagentId())
                 .likeIfPresent(ScreenConsumeDO::getReagentName, reqVO.getReagentName())
                 .eqIfPresent(ScreenConsumeDO::getReagentType, reqVO.getReagentType())
-                .eqIfPresent(ScreenConsumeDO::getConsumeOrder, reqVO.getConsumeOrder())
-                .eqIfPresent(ScreenConsumeDO::getBathNumber, reqVO.getBathNumber())
-                .eqIfPresent(ScreenConsumeDO::getInboundNumber, reqVO.getInboundNumber())
-                .betweenIfPresent(ScreenConsumeDO::getManufactureDate, reqVO.getManufactureDate())
-                .betweenIfPresent(ScreenConsumeDO::getCreateTime, reqVO.getCreateTime())
-                .eqIfPresent(ScreenConsumeDO::getReagentSpecsNum, reqVO.getReagentSpecsNum())
-                .eqIfPresent(ScreenConsumeDO::getThreshold, reqVO.getThreshold())
-                .betweenIfPresent(ScreenConsumeDO::getIndate, reqVO.getIndate())
+                .likeIfPresent(ScreenConsumeDO::getBathNumber, reqVO.getBathNumber())
                 .orderByDesc(ScreenConsumeDO::getId));
     }
 
