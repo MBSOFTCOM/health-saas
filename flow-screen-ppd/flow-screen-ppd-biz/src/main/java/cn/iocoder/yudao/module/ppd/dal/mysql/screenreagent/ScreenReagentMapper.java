@@ -7,6 +7,9 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReage
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.math.BigDecimal;
 
 /**
  * 试剂 Mapper
@@ -21,17 +24,33 @@ public interface ScreenReagentMapper extends BaseMapperX<ScreenReagentDO> {
         return selectPage(reqVO, new LambdaQueryWrapperX<ScreenReagentDO>()
                 .likeIfPresent(ScreenReagentDO::getName, reqVO.getName())
                 .eqIfPresent(ScreenReagentDO::getType, reqVO.getType())
-                .eqIfPresent(ScreenReagentDO::getReagentSpecsNum, reqVO.getReagentSpecsNum())
                 .eqIfPresent(ScreenReagentDO::getUsable, reqVO.getUsable())
-                .eqIfPresent(ScreenReagentDO::getTiter, reqVO.getTiter())
-                .eqIfPresent(ScreenReagentDO::getPotencyUnit, reqVO.getPotencyUnit())
-                .eqIfPresent(ScreenReagentDO::getSpecification, reqVO.getSpecification())
-                .eqIfPresent(ScreenReagentDO::getSpecificationUnit, reqVO.getSpecificationUnit())
-                .eqIfPresent(ScreenReagentDO::getPackageUnit, reqVO.getPackageUnit())
-                .eqIfPresent(ScreenReagentDO::getManufacturer, reqVO.getManufacturer())
-                .eqIfPresent(ScreenReagentDO::getThreshold, reqVO.getThreshold())
-                .betweenIfPresent(ScreenReagentDO::getCreateTime, reqVO.getCreateTime())
+                .likeIfPresent(ScreenReagentDO::getManufacturer, reqVO.getManufacturer())
+                .eqIfPresent(ScreenReagentDO::getUsable, reqVO.getUsable())
                 .orderByDesc(ScreenReagentDO::getId));
     }
 
+    /**
+     *禁用试剂
+     */
+    Integer forbidReagent(Long id);
+
+    /**
+     *启用试剂
+     */
+    Integer recoverReagent(Long id);
+
+    /**
+     *判断是否已经有这种试剂了
+     */
+    Integer selectIsExist(@Param("name") String name,
+                          @Param("type") Integer type,
+                          @Param("reagentSpecsNum") Integer reagentSpecsNum,
+                          @Param("titer") BigDecimal titer,
+                          @Param("potencyUnit") Integer potencyUnit,
+                          @Param("specification") BigDecimal specification,
+                          @Param("specificationUnit") Integer specificationUnit,
+                          @Param("packageUnit") Integer packageUnit,
+                          @Param("manufacturer") String manufacturer,
+                          @Param("threshold") Integer threshold);
 }

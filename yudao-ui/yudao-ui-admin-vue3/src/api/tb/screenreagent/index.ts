@@ -47,4 +47,19 @@ export const ScreenReagentApi = {
   exportScreenReagent: async (params) => {
     return await request.download({ url: `/tb/screen-reagent/export-excel`, params })
   },
-}
+
+  // 禁用试剂
+  forbidScreenReagent: async (id: number) => {
+    return await request.get({ url: `/tb/screen-reagent/forbid?id=` + id })
+  },
+
+  // 启用试剂
+  recoverScreenReagent: async (id: number) => {
+    return await request.get({ url: `/tb/screen-reagent/recover?id=` + id })
+  },
+
+  // 下载试剂导入模板
+  importUserTemplate: async ()  =>{
+    return await request.download({url: `/tb/screen-reagent/import-template`})
+  }
+}

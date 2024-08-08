@@ -13,6 +13,8 @@ export interface ScreenConsumeVO {
   reagentSpecsNum: number // 转换系数（人次）
   threshold: number // 库存预警值（按试剂）
   indate: string // 有效期
+  usable: number // 是否启用
+
 }
 
 // 消耗管理 API
@@ -46,4 +48,4 @@ export const ScreenConsumeApi = {
   exportScreenConsume: async (params) => {
     return await request.download({ url: `/tb/screen-consume/export-excel`, params })
   },
-}
+}

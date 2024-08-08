@@ -49,8 +49,9 @@ public interface ErrorCodeConstants{
     ErrorCode SCREEN_CONSUME_NOT_EXISTS = new ErrorCode(20000, "消耗管理不存在");
 
 
-    // ========== 试剂 TODO 补充编号 ==========
+    // ========== 试剂  ==========
     ErrorCode SCREEN_REAGENT_NOT_EXISTS = new ErrorCode(20001, "试剂不存在");
+    ErrorCode SCREEN_REAGENT_Is_EXISTS = new ErrorCode(20002, "该试剂已存在！");
 
 
 }

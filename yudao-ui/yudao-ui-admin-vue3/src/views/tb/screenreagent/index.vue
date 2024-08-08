@@ -14,33 +14,18 @@
           placeholder="请输入试剂名称"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          class="!w-150px"
         />
       </el-form-item>
       <el-form-item label="试剂类型" prop="type">
         <el-select
           v-model="queryParams.type"
-          placeholder="请选择试剂类型"
+          placeholder="请选择"
           clearable
-          class="!w-180px"
+          class="!w-120px"
         >
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.DOSAGE_FORM)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="是否启用" prop="usable">
-        <el-select
-          v-model="queryParams.usable"
-          placeholder="用户状态"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -53,8 +38,23 @@
           placeholder="请输入供应商"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-240px"
+          class="!w-150px"
         />
+      </el-form-item>
+      <el-form-item label="是否启用" prop="usable">
+        <el-select
+          v-model="queryParams.usable"
+          placeholder="试剂状态"
+          clearable
+          class="!w-120px"
+        >
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
@@ -76,32 +76,40 @@
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
+        <el-button
+          type="warning"
+          plain
+          @click="handleImport"
+          v-hasPermi="['tb:screen-reagent:create']"
+        >
+          <Icon icon="ep:finished" class="mr-5px" /> 导入
+        </el-button>
       </el-form-item>
     </el-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <el-table v-loading="loading" :data="list" border :show-overflow-tooltip="true" :row-class-name="rowClassName">
       <el-table-column type="index" label="序号" align="center" width="70"
                        :show-overflow-tooltip="false" fixed="left"/>
       <el-table-column label="试剂名称" align="center" prop="name" />
-      <el-table-column label="试剂类型" align="center" prop="type">
+      <el-table-column label="试剂类型" align="center" prop="type" width="130">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.DOSAGE_FORM" :value="scope.row.type"/>
         </template>
       </el-table-column>
-      <el-table-column label="转换系数" align="center" prop="reagentSpecsNum" >
+      <el-table-column label="转换系数" align="center" prop="reagentSpecsNum" width="130" >
         <template #default="scope">
           {{scope.row.reagentSpecsNum}}人份
         </template>
       </el-table-column>
-
       <el-table-column label="品规" align="center" >
         <template #default="scope">
           {{scope.row.titer}}{{resolveDict(scope.row.potencyUnit, DICT_TYPE.TB_POTENCY_UNIT)}}/{{scope.row.specification}}{{resolveDict(scope.row.specificationUnit, DICT_TYPE.TB_SPECIFICATION)}}/{{resolveDict(scope.row.packageUnit, DICT_TYPE.TB_PACKAGE)}}
         </template>
       </el-table-column>
+      <el-table-column label="库存不足预警" align="center" prop="threshold" width="140"/>
       <el-table-column label="供应商" align="center" prop="manufacturer" />
       <el-table-column label="操作" align="center">
         <template #default="scope">
@@ -110,16 +118,27 @@
             type="primary"
             @click="openForm('update', scope.row.id)"
             v-hasPermi="['tb:screen-reagent:update']"
+            v-if="scope.row.usable == 0"
           >
             编辑
           </el-button>
           <el-button
             link
             type="danger"
-            @click="handleDelete(scope.row.id)"
+            @click="handleStatusChange(scope.row.id, 'forbid')"
             v-hasPermi="['tb:screen-reagent:delete']"
+            v-if="scope.row.usable == 0"
           >
-            删除
+            禁用
+          </el-button>
+          <el-button
+            link
+            type="success"
+            @click="handleStatusChange(scope.row.id, 'recover')"
+            v-hasPermi="['tb:screen-reagent:delete']"
+            v-if="scope.row.usable == 1"
+          >
+            启用
           </el-button>
         </template>
       </el-table-column>
@@ -135,6 +154,9 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <ScreenReagentForm ref="formRef" @success="getList" />
+
+  <!-- 剂型导入对话框 -->
+  <ReagentImportForm ref="importFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -143,6 +165,7 @@ import { ScreenReagentApi, ScreenReagentVO } from '@/api/tb/screenreagent'
 import ScreenReagentForm from './ScreenReagentForm.vue'
 import {getIntDictOptions, DICT_TYPE} from '@/utils/dict'
 import {onMounted, ref, reactive} from 'vue'
+import ReagentImportForm from './ReagentImportForm.vue';
 
 
 
@@ -232,16 +255,50 @@ const handleExport = async () => {
   }
 }
 
+/** 导入按钮操作*/
+const importFormRef = ref()
+const handleImport = () => {
+  importFormRef.value.open()
+}
+
+
+
+/** 禁用/启用按钮操作 */
+const handleStatusChange = async (id: number, action: 'forbid' | 'recover') => {
+  try {
+    // 根据 action 显示不同的确认信息和调用不同的 API 方法
+    const confirmMessage = action === 'forbid' ? "确认禁用该试剂吗？" : "确认启用该试剂吗？";
+    const successMessage = action === 'forbid' ? "禁用成功！" : "启用成功！";
+    // 二次确认
+    await message.confirm(confirmMessage);
+    // 根据 action 调用相应的 API 方法
+    if (action === 'forbid') {
+      await ScreenReagentApi.forbidScreenReagent(id);
+    } else {
+      await ScreenReagentApi.recoverScreenReagent(id);
+    }
+    // 操作成功提示
+    message.success(successMessage);
+    // 刷新列表
+    await getList();
+  } catch (error) {
+  }
+};
+
 // 处理品规的回显
 const resolveDict = (value, dict) => {
   let list = getIntDictOptions(dict)
   const item = list.find(item => item.value === value);
-
   if (item) {
     return item.label; // 返回找到的对象的 label 属性
   } else {
-    return undefined; // 如果找不到对应的 value，可以返回 undefined 或者其他标识
+    return ''; // 如果找不到对应的 value，
   }
+};
+
+// 根据 usable 字段返回行的类名
+const rowClassName = ({ row }) => {
+  return row.usable == 1 ? 'row-disabled' : '';
 };
 
 /** 初始化 **/
@@ -249,3 +306,12 @@ onMounted(() => {
   getList()
 })
 </script>
+
+<style scoped lang="scss">
+.el-table {
+  .row-disabled {
+    /* 设置背景颜色为红色 */
+    background-color: grey;
+  }
+}
+</style>

@@ -11,12 +11,12 @@
       <el-row type="flex" justify="space-between">
         <el-col :span="10">
           <el-form-item label="试剂名称" prop="name">
-            <el-input v-model="formData.name" placeholder="请输入试剂名称"/>
+            <el-input v-model="formData.name" clearable placeholder="请输入试剂名称"/>
           </el-form-item>
         </el-col>
         <el-col :span="14">
           <el-form-item label="转换系数(人次)" prop="reagentSpecsNum" label-width="120">
-            <el-input v-model="formData.reagentSpecsNum" placeholder="请输入每个品规(库存)使用人次数"/>
+            <el-input v-model="formData.reagentSpecsNum" clearable placeholder="请输入每个品规(库存)使用人次数"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -42,7 +42,7 @@
           <el-form-item label="品规" style="margin-left: -25px"/>
         </el-col>
         <el-col :span="4">
-          <el-input v-model="formData.titer" placeholder="请输入效价" style="width: 95px;margin-left: 20px"/>
+          <el-input v-model="formData.titer" placeholder="请输入效价" clearable style="width: 95px;margin-left: 20px"/>
         </el-col>
         <el-col :span="4" style="margin-left: 10px">
           <el-select
@@ -60,7 +60,7 @@
           </el-select>
         </el-col>
         <el-col :span="4">
-          <el-input v-model="formData.specification" prop="specification" placeholder="请输入规格" style="width: 95px"/>
+          <el-input v-model="formData.specification" prop="specification" placeholder="请输入规格" clearable style="width: 95px"/>
         </el-col>
         <el-col :span="4">
           <el-select
@@ -138,40 +138,45 @@ const formData = ref({
   threshold: undefined,
   id: undefined,
 })
+// 验证转换系数
+const checkReagentSpecsNum = (rule, value) => {
+  if (!value) {
+    return Promise.reject('请输入数字');
+  }
+  const trimmedValue = String(value).trim(); // 去除首尾空格
+  const reagentSpecsNum = parseFloat(trimmedValue); // 使用浮点数转换
+
+  if (isNaN(reagentSpecsNum)) {
+    return Promise.reject('必须为数字');
+  }
+  if (!Number.isInteger(reagentSpecsNum)) {
+    return Promise.reject('必须是整数');
+  }
+  if (reagentSpecsNum <= 0 || reagentSpecsNum > 999999) {
+    return Promise.reject('必须是大于0且不超过999999的整数');
+  }
+  return Promise.resolve();
+};
+
 const formRules = reactive({
   name: [
     { required: true, message: '请填写试剂名称', trigger: 'blur' },
-    { max: 10, message: '名称长度不能超过10个字符', trigger: 'blur' }
+    { max: 20, message: '名称长度不能超过20个字符', trigger: 'blur' }
   ],
   type: [
-    { required: true, message: '请选择试剂类型', trigger: 'blur' },
+    { required: true, message: '请选择试剂类型', trigger: 'change' },
   ],
   reagentSpecsNum: [
-    { required: true, type: 'number', message: '请输入数字', trigger: 'blur' },
-    { min: 0, message: '请输入大于等于0的数字', trigger: 'blur' }
-  ],
-  titer: [
-    { required: true, type: 'number', message: '请输入数字', trigger: 'blur' },
-    { min: 0, message: '请输入大于等于0的数字', trigger: 'blur' }
-  ],
-  potencyUnit: [
-    { required: true, trigger: 'blur' }
-  ],
-  specification: [
-    { required: true, max: 20, message: '规格长度不能超过20个字符', trigger: 'blur' }
-  ],
-  specificationUnit: [
-    { required: true, trigger: 'blur' }
-  ],
-  packageUnit: [
-    { required: true, trigger: 'blur' }
+    { required: true, message: '请填写转换系数', trigger: 'blur' },
+    {validator: checkReagentSpecsNum, trigger: 'blur'}
   ],
   manufacturer: [
-    { required: true, max: 50, message: '生产厂家长度不能超过20个字符', trigger: 'blur' }
+    { required: true, message: '请填写试剂供应商', trigger: 'blur' },
+    { max: 20, message: '剂供应商长度不能超过20个字符', trigger: 'blur' }
   ],
   threshold: [
-    { required: true, type: 'number', message: '请输入数字', trigger: 'blur' },
-    { min: 0, message: '请输入大于等于0的数字', trigger: 'blur' }
+    { required: true, message: '请填写库存预警值', trigger: 'blur' },
+    {validator: checkReagentSpecsNum, trigger: 'blur'}
   ],
 });
 const formRef = ref() // 表单 Ref
@@ -199,6 +204,23 @@ const emit = defineEmits(['success']) // 定义 success 事件，用于操作成
 const submitForm = async () => {
   // 校验表单
   await formRef.value.validate()
+  if (formData.value.potencyUnit == null){
+    console.log()
+    return message.error("请选择效价单位！")
+  }
+  if (formData.value.specificationUnit == null){
+    return message.error("请选择规格单位！")
+  }
+  if (formData.value.packageUnit == null){
+    return message.error("请选择包装单位！")
+  }
+  // 校验效价和规格
+  if (!validateInput(formData.value.titer)) {
+    return;
+  }
+  if (!validateInput(formData.value.specification)) {
+    return;
+  }
   // 提交请求
   formLoading.value = true
   try {
@@ -236,4 +258,32 @@ const resetForm = () => {
   }
   formRef.value?.resetFields()
 }
+
+// 校验效价、规格
+const validateInput = (value) => {
+  // 空值检查
+  if (value === null || value === undefined || value === '') {
+    message.error("请输入效价和规格！");
+    return false;
+  }
+
+  // 将值转换为数字
+  const numericValue = parseFloat(value);
+
+  // 数字有效性校验
+  if (isNaN(numericValue) || numericValue <= 0) {
+    message.error("效价和规格必须大于0！");
+    return false;
+  }
+
+  // 格式校验
+  const stringValue = numericValue.toString();
+  const regex = /^\d+(\.\d{1,2})?$/;
+  if (!regex.test(stringValue)) {
+    message.error("效价和规格最多保留两位小数！");
+    return false;
+  }
+
+  return true;
+};
 </script>

@@ -145,6 +145,7 @@ const resetForm = () => {
     reagentSpecsNum: undefined,
     threshold: undefined,
     indate: undefined,
+    usable: undefined,
   }
   formRef.value?.resetFields()
 }

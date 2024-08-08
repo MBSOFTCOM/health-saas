@@ -229,6 +229,7 @@ const queryParams = reactive({
   reagentSpecsNum: undefined,
   threshold: undefined,
   indate: [],
+  usable: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
