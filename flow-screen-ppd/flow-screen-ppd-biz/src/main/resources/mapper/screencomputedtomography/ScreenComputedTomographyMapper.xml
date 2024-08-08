@@ -30,7 +30,7 @@
     </select>
     <select id="selectScreenComputedTomographyPage"
             resultType="cn.iocoder.yudao.module.ppd.controller.admin.screencomputedtomography.vo.ScreenComputedTomographyPersonRespVO">
-        select p.*,c.cur_finish from tb_screen_person p left join tb_screen_sum c on p.id=c.person_id
+        select p.*,c.cur_finish from tb_screen_person p left join tb_screen_sum c on p.id_num=c.id_num
         <where>
             <if test="name!=null and name!=''">name like concat('%',#{name},'%')</if>
             <if test="idNum!=null and idNum !=''">and   id_num like concat('%',#{idNum},'%')</if>
@@ -52,12 +52,13 @@
                    )
             </if>
             <if test="startTime!=null and startTime !='' and endTime!=null and endTime !=''">and ( c.last_computed_tomography_time BETWEEN #{startTime}  AND #{endTime})</if>
+            and p.deleted=0
         </where>
            order by id desc
         limit #{pageNo},#{pageSize};
     </select>
     <select id="countScreenComputedTomographyPage" resultType="java.lang.Long">
-        select count(DISTINCT p.id) from tb_screen_person p left join tb_screen_sum c on p.id=c.person_id
+        select count(DISTINCT p.id) from tb_screen_person p left join tb_screen_sum c on p.id_num=c.id_num
         <where>
             <if test="name!=null and name!=''">name like concat('%',#{name},'%')</if>
             <if test="idNum!=null and idNum !=''">and   id_num like concat('%',#{idNum},'%')</if>
@@ -77,6 +78,7 @@
                 )
             </if>
             <if test="startTime!=null and startTime !='' and endTime!=null and endTime !=''">and ( c.last_computed_tomography_time BETWEEN #{startTime}  AND #{endTime})</if>
+            and p.deleted=0
         </where>
     </select>
     <select id="getOrderAndTime"
@@ -86,7 +88,7 @@
     <select id="getMaxOrder" resultType="java.lang.Integer">
         select ifnull(max(screen_order),0)
         from tb_screen_computed_tomography
-        where idNum=#{idNum} and screen_type=#{screenType} and `year`=#{year};
+        where id_num=#{idNum} and screen_type=#{screenType} and `year`=#{year};
     </select>
     <select id="getOneByPersonIdNum"
             resultType="cn.iocoder.yudao.module.ppd.controller.admin.screencomputedtomography.vo.ScreenComputedTomographyRespVO">
@@ -106,7 +108,7 @@
     </select>
     <select id="getTypeStatistics" resultType="cn.iocoder.yudao.module.ppd.controller.admin.screencomputedtomography.vo.ComputedTomographyStatistics">
         select count(case when c.outcome=0 then 1 end) normal,count(case when c.outcome=1 then 1 end) suspected
-        from tb_screen_computed_tomography c  join tb_screen_sum s on s.person_id=c.person_id
+        from tb_screen_computed_tomography c  join tb_screen_sum s on s.id_num=c.id_num
         where c.screen_type=#{screenType} and c.year=#{year}
     </select>
     <select id="getYearTimeStatistics" resultType="java.lang.Integer">
@@ -119,7 +121,7 @@
         SELECT ifnull(count(DISTINCT person_id),0) num FROM tb_screen_computed_tomography WHERE DATE (screen_time) = #{curDay} and screen_type=#{screenType}
     </select>
     <select id="getOutcomeByOrder" resultType="java.lang.Integer">
-        select outcome from tb_screen_computed_tomography where screen_type=#{screenType} and screen_order=#{screenOrder} and  person_id=#{personId} and year=#{year}
+        select outcome from tb_screen_computed_tomography where screen_type=#{screenType} and screen_order=#{screenOrder} and  id_num=#{idNum} and year=#{year}
     </select>
 
 

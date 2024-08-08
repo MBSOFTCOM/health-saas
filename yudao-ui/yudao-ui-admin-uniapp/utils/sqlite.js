@@ -311,7 +311,11 @@ export const tableSqls = [
 			  "updater" TEXT, --更新者
 			  "updateTime" DATE, --修改时间
 			  "creator" TEXT, --创建者
-			  "createTime" DATE --创建时间
+			  "createTime" DATE, --创建时间
+			  "studentType" INTEGER, -- 学生分类
+			  "screenStartTime" DATE, -- 计划筛查时间-开始
+			  "screenEndTime" DATE, -- 计划筛查时间-结束
+			  "guardianTel" TEXT  -- 监护人手机号
 			  
 	  );`
 	},

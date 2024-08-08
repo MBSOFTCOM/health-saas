@@ -1,14 +1,20 @@
 package cn.iocoder.yudao.module.ppd.service.screencomputedtomography;
 
 
+import cn.iocoder.yudao.framework.common.exception.ErrorCode;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screencomputedtomography.vo.*;
+import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.CommonReq;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencomputedtomography.ScreenComputedTomographyDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screensum.ScreenSumDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screencomputedtomography.ScreenComputedTomographyMapper;
+import cn.iocoder.yudao.module.ppd.dal.mysql.screensum.ScreenSumMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.validation.annotation.Validated;
 
 import java.text.SimpleDateFormat;
@@ -34,6 +40,9 @@ public class ScreenComputedTomographyServiceImpl implements ScreenComputedTomogr
     @Resource
     private ScreenComputedTomographyMapper screenComputedTomographyMapper;
 
+    @Resource
+    private ScreenSumMapper screenSumMapper;
+
     @Override
     public Long createScreenComputedTomography(ScreenComputedTomographySaveReqVO createReqVO) {
         // 插入
@@ -41,6 +50,67 @@ public class ScreenComputedTomographyServiceImpl implements ScreenComputedTomogr
         screenComputedTomographyMapper.insert(screenComputedTomography);
         // 返回
         return screenComputedTomography.getId();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void createScreenComputedTomographyTrans(ScreenComputedTomographySaveReqVO createReqVO) {
+        CommonReq commonReq = new CommonReq(createReqVO.getIdNum(), createReqVO.getYear() + "", createReqVO.getScreenType());
+        Integer countExists = screenSumMapper.countExists(commonReq);
+//        患者在某年的某筛查类型中是否有筛查流程记录
+        if (countExists.equals(0)){
+            throw exception(new ErrorCode(400000,"该患者"+createReqVO.getYear()+"年还未进行相关类型的筛查"));
+        }
+        try {
+            ScreenSumDO maxOrderSumDO = screenSumMapper.getMaxOrderSumDO(commonReq);
+//            是否含有最大次序的记录
+            if (maxOrderSumDO==null){
+                throw new NullPointerException();
+            }
+            if (maxOrderSumDO.getScreenOrder()==null || maxOrderSumDO.getScreenOrder().equals(0)){
+                throw exception(new ErrorCode(400000,"筛查的次序不正确"));
+            }
+//            流程表是否完整
+            if (maxOrderSumDO.getCollectId()==null || maxOrderSumDO.getPpdId()==null ){
+                throw exception(new ErrorCode(400000,"该患者"+createReqVO.getYear()+"年还未进行相关类型的采集组或ppd组筛查"));
+            }
+            createReqVO.setScreenOrder(maxOrderSumDO.getScreenOrder());
+            Long computedTomographyId = createScreenComputedTomography(createReqVO);
+            maxOrderSumDO.setComputedTomographyId(computedTomographyId);
+            maxOrderSumDO.setCurFinish("胸片组");
+            screenSumMapper.updateById(maxOrderSumDO);
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            throw exception(new ErrorCode(40000,"保存CT失败:\n"+e.getMessage()));
+        }
+    }
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer getCreateOrder(ScreenComputedTomographySaveReqVO createReqVO) {
+        CommonReq commonReq = new CommonReq(createReqVO.getIdNum(), createReqVO.getYear() + "", createReqVO.getScreenType());
+        Integer countExists = screenSumMapper.countExists(commonReq);
+//        患者在某年的某筛查类型中是否有筛查流程记录
+        if (countExists.equals(0)){
+            throw exception(new ErrorCode(400000,"该患者"+createReqVO.getYear()+"年还未进行相关类型的筛查"));
+        }
+        try {
+            ScreenSumDO maxOrderSumDO = screenSumMapper.getMaxOrderSumDO(commonReq);
+//            是否含有最大次序的记录
+            if (maxOrderSumDO==null){
+                throw new NullPointerException();
+            }
+            if (maxOrderSumDO.getScreenOrder()==null || maxOrderSumDO.getScreenOrder().equals(0)){
+                throw exception(new ErrorCode(400000,"筛查的次序不正确"));
+            }
+//            流程表是否完整
+            if (maxOrderSumDO.getCollectId()==null || maxOrderSumDO.getPpdId()==null ){
+                throw exception(new ErrorCode(400000,"该患者"+createReqVO.getYear()+"年还未进行相关类型的采集组或ppd组筛查"));
+            }
+            return maxOrderSumDO.getScreenOrder();
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            throw exception(new ErrorCode(40000,"保存CT失败:\n"+e.getMessage()));
+        }
     }
 
     @Override

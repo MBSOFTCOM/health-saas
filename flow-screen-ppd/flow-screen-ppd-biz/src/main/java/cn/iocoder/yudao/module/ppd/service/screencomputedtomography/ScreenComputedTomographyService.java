@@ -16,12 +16,19 @@ import java.util.List;
 public interface ScreenComputedTomographyService {
 
     /**
-     * 创建ct、dr组
+     * 创建ct组
      *
      * @param createReqVO 创建信息
      * @return 编号
      */
     Long createScreenComputedTomography(@Valid ScreenComputedTomographySaveReqVO createReqVO);
+    /**
+     * 创建ct组事务处理
+     *
+     * @param createReqVO 创建信息
+     */
+    void createScreenComputedTomographyTrans(@Valid ScreenComputedTomographySaveReqVO createReqVO);
+    Integer getCreateOrder(@Valid ScreenComputedTomographySaveReqVO createReqVO);
 
     /**
      * 更新ct、dr组

@@ -41,6 +41,19 @@ public class ScreenComputedTomographyController {
     public CommonResult<Long> createScreenChestRadiograph(@Valid @RequestBody ScreenComputedTomographySaveReqVO createReqVO) {
         return success(screenComputedTomographyService.createScreenComputedTomography(createReqVO));
     }
+    @PostMapping("/createTrans")
+    @Operation(summary = "创建ct组的事务")
+    @PreAuthorize("@ss.hasPermission('tb:screen-chest-radiograph:create')")
+    public CommonResult<Boolean> createScreenChestRadiographTrans(@Valid @RequestBody ScreenComputedTomographySaveReqVO createReqVO) {
+        screenComputedTomographyService.createScreenComputedTomographyTrans(createReqVO);
+        return success(true);
+    }
+    @PostMapping("/create-order")
+    @Operation(summary = "获取创建ct组时的次序")
+    @PreAuthorize("@ss.hasPermission('tb:screen-chest-radiograph:create')")
+    public CommonResult<Integer> getCreateOrder(@Valid @RequestBody ScreenComputedTomographySaveReqVO createReqVO) {
+        return success(screenComputedTomographyService.getCreateOrder(createReqVO));
+    }
 
     @PostMapping("/update")
     @Operation(summary = "更新ct、dr组")
@@ -107,7 +120,8 @@ public class ScreenComputedTomographyController {
     @GetMapping("/getOrders")
     @Operation(summary = "获取时间和次序")
     public CommonResult<List<ComputedTomographyOrderRespVO>> getOrderAndTime(@RequestParam("personId") Long personId, @RequestParam("screenType") Integer screenType, @RequestParam("year") Integer year){
-        return success(screenComputedTomographyService.getOrderAndTime(personId,screenType,year));
+        List<ComputedTomographyOrderRespVO> orderAndTime = screenComputedTomographyService.getOrderAndTime(personId, screenType, year);
+        return success(orderAndTime);
     }
     @GetMapping("/export-excel")
     @Operation(summary = "导出ct、dr组 Excel")

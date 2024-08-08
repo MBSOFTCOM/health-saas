@@ -38,13 +38,13 @@
 				<view class="main-text">
 					<view class="text-top">采集次序</view>
 					<view class="text-bom" style="color: rgba(212, 48, 48, 1)">
-						<span>第{{ formData.screenOrder }} 次</span>
+						<span>第{{ patient.screenOrder }} 次</span>
 					</view>
 				</view>
 				<view class="main-text" style="margin-left: 315px; margin-top: -5px">
 					<view class="text-top">采集时间</view>
 					<view class="text-bom">
-						{{ formatDate(formData.screenTime) }}
+						{{ formatDate(patient.screenTime) }}
 					</view>
 				</view>
 			</view>
@@ -137,7 +137,7 @@
 		</view>
 
 		<view>
-			<u-popup :show="show" @close="close" mode="center" @open="open" :closeOnClickOverlay="false">
+			<u-popup :show="show" @close="close" mode="center" :closeOnClickOverlay="false">
 				<view class="sign">
 					<sp-sign-board
 						v-if="show"
@@ -247,8 +247,8 @@ export default {
 			this.patient.age = '';
 		}
 		this.stateFlag = e.label;
-		// console.log("flag=",this.stateFlag)
-		// console.log(uni.$person)
+		// console.log(e);
+		// console.log(this.patient);
 		if (e.label == '修改' || e.label == '详情') {
 			ctApi.getOneCt({
 					idNum: this.patient.idNum,
@@ -258,7 +258,7 @@ export default {
 				})
 				.then((res) => {
 					this.formData = res.data;
-					// console.log("data=",data)
+					console.log("data=",data)
 					this.selectedImage = this.formData.computedTomography;
 					// console.log(this.selectedImage)
 					this.formData.computedTomography = null;
@@ -476,21 +476,13 @@ export default {
 			if (this.stateFlag == '新增') {
 				this.formData.creator = user.id;
 				this.formData.createTime = this.markText[0] + ' ' + this.markText[1];
-				let data = await ctApi.getMaxScreenOrder({
-					idNum: this.patient.idNum,
-					screenType: uni.$screenType,
-					year: this.patient.year
-				});
-				// console.log("maxOrder=",data)
-				this.formData.screenOrder = parseInt(data) + 1;
-				// console.log("screenOrder=",this.formData)
 			}
 			if (this.check()) {
 				// console.log("校验通过")
 				let imgForm = {
 					screenId: this.patient.screenId,
 					screenTime: this.formData.screenTime,
-					screenOrder: this.formData.screenOrder,
+					screenOrder: 0,
 					idNum:this.patient.idNum,
 					screenPoint: this.patient.screenPoint,
 					personId: this.formData.personId,
@@ -498,23 +490,32 @@ export default {
 					year: this.patient.year,
 					screenType: uni.$screenType
 				};
-				// console.log("form",imgForm)
-				let data = await this.uploadFilePromise(imgForm, this.formData.computedTomography);
-				// console.log("Data=",data)
-				if (data) {
-					this.formData.computedTomography = data.data;
-					let time = this.refreshMark();
-					this.formData.photoTime = new Date(time[0] + ' ' + time[1]).getTime();
-				}
-				let signForm = Object.assign({}, imgForm);
-				signForm.imageType = 11;
-				let signData = await this.uploadFilePromise(signForm, this.formData.doctorSignature);
-				if (signData) {
-					this.formData.doctorSignature = signData.data;
-				}
-				// console.log("上传结束")
+				ctApi.getCreateOrder({
+					idNum: this.patient.idNum,
+					screenType: uni.$screenType,
+					year: this.patient.year
+				}).then(async(res)=>{
+					imgForm.screenOrder=res.data
+					console.log(res);
+					let data = await this.uploadFilePromise(imgForm, this.formData.computedTomography);
+					if (data) {
+						this.formData.computedTomography = data.data;
+						let time = this.refreshMark();
+						this.formData.photoTime = new Date(time[0] + ' ' + time[1]).getTime();
+					}
+					let signForm = Object.assign({}, imgForm);
+					signForm.imageType = 11;
+					let signData = await this.uploadFilePromise(signForm, this.formData.doctorSignature);
+					if (signData) {
+						this.formData.doctorSignature = signData.data;
+					}
+				})
+
+				console.log("上传结束")
 				if (this.stateFlag == '新增') {
-					await this.insertItem();
+					ctApi.createTransaction(this.formData)
+					uni.hideLoading();
+					this.back()
 					// await insertImg(this.$dbUtils,imgForm)
 				} else {
 					let data = {};
@@ -574,7 +575,7 @@ export default {
 		//   插入ct/dr表
 		async insertItem() {
 			try {
-				// console.log("create,form=",this.formData)
+				console.log("create,form=",this.formData)
 				await ctApi.create(this.formData);
 				let param = {};
 				param.personId = this.formData.personId;
@@ -592,13 +593,13 @@ export default {
 					year: this.patient.year
 				});
 				// console.log("last=",last)
-				param.computedTomographyNum = last.data.screenOrder;
+				/*param.computedTomographyNum = last.data.screenOrder;
 				param.computedTomographyId = last.data.id;
 				param.screenType = uni.$screenType;
 				param.screenId = this.patient.screenId;
 				param.curFinish = '胸片组';
 				param.year = this.patient.year;
-				// console.log('param=', param);
+				console.log('param=', param);
 				let data = await sumApi.selectCount({
 					idNum: this.patient.idNum,
 					screenType: uni.$screenType,
@@ -609,7 +610,7 @@ export default {
 					await sumApi.create(param);
 				} else {
 					await sumApi.update(param);
-				}
+				}*/
 				await this.$modal.msgSuccess('保存成功');
 				uni.hideLoading();
 				this.disabledBtu = false;

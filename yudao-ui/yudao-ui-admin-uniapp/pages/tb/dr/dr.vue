@@ -764,8 +764,8 @@ export default {
 		},
 		// 分页触发
 		async change(e) {
-			console.log('e=');
-			console.log(e);
+			// console.log('e=');
+			// console.log(e);
 			this.pageParams.pageNo = e.current;
 			this.getPatientList();
 		},
