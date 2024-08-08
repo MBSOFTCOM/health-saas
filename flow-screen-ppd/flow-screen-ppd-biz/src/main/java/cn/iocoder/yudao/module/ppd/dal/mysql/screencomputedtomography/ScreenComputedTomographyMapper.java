@@ -6,6 +6,7 @@ import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
 import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
 import cn.iocoder.yudao.module.ppd.controller.admin.screencomputedtomography.vo.*;
 import cn.iocoder.yudao.module.ppd.controller.admin.screendiagnosis.vo.TBHealthScreening;
+import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.CommonReq;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencomputedtomography.ScreenComputedTomographyDO;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
@@ -44,6 +45,12 @@ public interface ScreenComputedTomographyMapper extends BaseMapperX<ScreenComput
                 .orderByDesc(ScreenComputedTomographyDO::getId));
     }
 
+    /**
+     * 计算某患者在某年某筛查类型，某次的ct记录
+     * @param req CommonReq{}
+     * @return Integer
+     */
+    Integer countByIdNum(CommonReq req);
     /**
      * 根据次序获得 ct的审核结果
      * @param reqVO ScreenComputedTomographyPageReqVO

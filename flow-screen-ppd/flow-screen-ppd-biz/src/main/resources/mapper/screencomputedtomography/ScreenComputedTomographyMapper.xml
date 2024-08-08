@@ -135,4 +135,13 @@
           AND screen_type = #{screenType}
           AND year = #{year}
     </select>
+    <select id="countByIdNum" resultType="java.lang.Integer">
+        select ifnull(count(*),0)
+        FROM tb_screen_computed_tomography
+        WHERE deleted = 0
+                  AND id_num = #{idNum}
+                  AND screen_order = #{screenOrder}
+                  AND screen_type = #{screenType}
+                  AND year = #{year}
+    </select>
 </mapper>

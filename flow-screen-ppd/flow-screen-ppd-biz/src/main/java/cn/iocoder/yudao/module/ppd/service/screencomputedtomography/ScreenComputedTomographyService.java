@@ -31,11 +31,16 @@ public interface ScreenComputedTomographyService {
     Integer getCreateOrder(@Valid ScreenComputedTomographySaveReqVO createReqVO);
 
     /**
-     * 更新ct、dr组
+     * 更新ct组
      *
      * @param updateReqVO 更新信息
      */
-    void updateScreenComputedTomography(@Valid ScreenComputedTomographySaveReqVO updateReqVO);
+    void updateScreenComputedTomography(@Valid ScreenComputedTomographySaveReqVO updateReqVO);    /**
+     * 更新ct组
+     *
+     * @param updateReqVO 更新信息
+     */
+    void updateScreenComputedTomographyTrans(@Valid ScreenComputedTomographySaveReqVO updateReqVO);
 
     /**
      * 删除ct、dr组

@@ -74,6 +74,11 @@ public class ScreenComputedTomographyServiceImpl implements ScreenComputedTomogr
             if (maxOrderSumDO.getCollectId()==null || maxOrderSumDO.getPpdId()==null ){
                 throw exception(new ErrorCode(400000,"该患者"+createReqVO.getYear()+"年还未进行相关类型的采集组或ppd组筛查"));
             }
+            commonReq.setScreenOrder(maxOrderSumDO.getScreenOrder());
+            Integer countByIdNum = screenComputedTomographyMapper.countByIdNum(commonReq);
+            if (!countByIdNum.equals(0)){
+                throw exception(new ErrorCode(4000000,"该患者"+createReqVO.getYear()+"年已经做过CT检查，请直接修改或开始新的筛查"));
+            }
             createReqVO.setScreenOrder(maxOrderSumDO.getScreenOrder());
             Long computedTomographyId = createScreenComputedTomography(createReqVO);
             maxOrderSumDO.setComputedTomographyId(computedTomographyId);
@@ -117,6 +122,23 @@ public class ScreenComputedTomographyServiceImpl implements ScreenComputedTomogr
     public void updateScreenComputedTomography(ScreenComputedTomographySaveReqVO updateReqVO) {
         // 校验存在
         validateScreenComputedTomographyExists(updateReqVO.getId());
+        // 更新
+        ScreenComputedTomographyDO updateObj = BeanUtils.toBean(updateReqVO, ScreenComputedTomographyDO.class);
+        screenComputedTomographyMapper.updateById(updateObj);
+    }
+    @Override
+    @Transactional
+    public void updateScreenComputedTomographyTrans(ScreenComputedTomographySaveReqVO updateReqVO) {
+        CommonReq commonReq = new CommonReq(updateReqVO.getIdNum(), updateReqVO.getYear() + "", updateReqVO.getScreenType());
+        Integer countExists = screenSumMapper.countExists(commonReq);
+//        患者在某年的某筛查类型中是否有筛查流程记录
+        if (countExists.equals(0)){
+            throw exception(new ErrorCode(400000,"该患者"+updateReqVO.getYear()+"年还未进行相关类型的筛查"));
+        }        // 校验存在
+        Integer countByIdNum = screenComputedTomographyMapper.countByIdNum(commonReq);
+        if (countByIdNum.equals(1)){
+            throw exception(new ErrorCode(400000,"该患者没有CT记录或历史CT记录存在错误"));
+        }
         // 更新
         ScreenComputedTomographyDO updateObj = BeanUtils.toBean(updateReqVO, ScreenComputedTomographyDO.class);
         screenComputedTomographyMapper.updateById(updateObj);

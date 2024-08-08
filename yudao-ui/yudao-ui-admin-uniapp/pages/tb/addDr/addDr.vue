@@ -478,27 +478,30 @@ export default {
 				this.formData.createTime = this.markText[0] + ' ' + this.markText[1];
 			}
 			if (this.check()) {
-        // 校验通过,上传图片
-        let imgForm = {
-          screenId: this.patient.screenId,
-          screenTime: this.formData.screenTime,
-          screenOrder: 0,
-          idNum: this.patient.idNum,
-          screenPoint: this.patient.screenPoint,
-          personId: this.formData.personId,
-          imageType: 2,
-          year: this.patient.year,
-          screenType: uni.$screenType
-        };
-        ctApi.getCreateOrder({
-          idNum: this.patient.idNum,
-          screenType: uni.$screenType,
-          year: this.patient.year
-        })
+			// 校验通过,上传图片
+			let imgForm = {
+			  screenId: this.patient.screenId,
+			  screenTime: this.formData.screenTime,
+			  screenOrder: 0,
+			  idNum: this.patient.idNum,
+			  screenPoint: this.patient.screenPoint,
+			  personId: this.formData.personId,
+			  imageType: 2,
+			  year: this.patient.year,
+			  screenType: uni.$screenType
+			};
+			ctApi.getCreateOrder({
+			  idNum: this.patient.idNum,
+			  screenType: uni.$screenType,
+			  year: this.patient.year
+			})
             .then(async (res) => {
+				console.log(res);
               imgForm.screenOrder = res.data
               // 判断是否以http开头，以http开头时不需要上传，否则需要上传
-              if (this.formData.computedTomography.indexOf('http') != 0) {
+			  console.log(this.formData);
+              if (this.formData.computedTomography) {
+				  console.log("图片上传");
                 let data = await this.uploadFilePromise(imgForm, this.formData.computedTomography);
                 if (data) {
                   this.formData.computedTomography = data.data;
@@ -506,24 +509,33 @@ export default {
                   this.formData.photoTime = new Date(time[0] + ' ' + time[1]).getTime();
                 }
               }
-              if (this.formData.doctorSignature.indexOf('http') != 0) {
+              if (this.formData.doctorSignature) {
+				  console.log("签名上传");
                 let signForm = Object.assign({}, imgForm);
                 signForm.imageType = 11;
                 this.uploadFilePromise(signForm, this.formData.doctorSignature).then((res) => {
                   this.formData.doctorSignature = res.data;
                 })
               }
-              if (this.stateFlag == '新增') {
+			  console.log(123);
+			  setTimeout(()=>{
+				  if (this.stateFlag == '新增') {
                   ctApi.createTransaction(this.formData)
-                  uni.hideLoading();
-                  this.back()
+				  setTimeout(()=>{
+					  uni.hideLoading();
+					  this.back()
+				  },1500)
+                  
                 } else {
+					console.log(222);
                   // console.log("updateData=",data)
-                  ctApi.update(data);
+                  ctApi.update(this.formData);
                   // await updateImg(imgForm)
                   this.disabledBtu = false;
                   this.back();
                 }
+			  },500)
+              
             })
       }
 		},

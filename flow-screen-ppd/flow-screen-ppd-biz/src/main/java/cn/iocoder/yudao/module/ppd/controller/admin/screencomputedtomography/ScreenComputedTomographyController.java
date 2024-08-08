@@ -56,10 +56,17 @@ public class ScreenComputedTomographyController {
     }
 
     @PostMapping("/update")
-    @Operation(summary = "更新ct、dr组")
+    @Operation(summary = "更新ct组")
     @PreAuthorize("@ss.hasPermission('tb:screen-chest-radiograph:update')")
     public CommonResult<Boolean> updateScreenChestRadiograph(@Valid @RequestBody ScreenComputedTomographySaveReqVO updateReqVO) {
         screenComputedTomographyService.updateScreenComputedTomography(updateReqVO);
+        return success(true);
+    }
+    @PostMapping("/updateTrans")
+    @Operation(summary = "更新ct组")
+    @PreAuthorize("@ss.hasPermission('tb:screen-chest-radiograph:update')")
+    public CommonResult<Boolean> updateScreenChestRadiographTrans(@Valid @RequestBody ScreenComputedTomographySaveReqVO updateReqVO) {
+        screenComputedTomographyService.updateScreenComputedTomographyTrans(updateReqVO);
         return success(true);
     }
 
