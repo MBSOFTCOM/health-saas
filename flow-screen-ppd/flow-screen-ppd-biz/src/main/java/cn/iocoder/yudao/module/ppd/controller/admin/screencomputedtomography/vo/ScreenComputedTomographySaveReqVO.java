@@ -15,6 +15,9 @@ public class ScreenComputedTomographySaveReqVO {
     @Schema(description = "筛查编号", example = "665")
     private String screenId;
 
+    @Schema(description = "身份证", example = "360888888888888888")
+    private String idNum;
+
     @Schema(description = "同步时唯一编码", example = "2243")
     private Long syncId;
 

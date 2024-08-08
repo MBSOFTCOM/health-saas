@@ -26,6 +26,9 @@ public class ScreenComputedTomographyPageReqVO extends PageParam {
     @Schema(description = "胸片编号")
     private String chestRadiographCode;
 
+    @Schema(description = "身份证")
+    private String idNum;
+
     @Schema(description = "胸片")
     private String chestRadiograph;
 

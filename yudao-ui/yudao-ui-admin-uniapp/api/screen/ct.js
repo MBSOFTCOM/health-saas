@@ -38,6 +38,7 @@ export function getSta(data){
  * @returns {Promise<unknown>}
  */
 export function getOneCt(data){
+    // 使用promise的形式返回
     return request({
         url:'/tb/screen-computed-tomography/getOne',
         method:'GET',
@@ -75,6 +76,30 @@ export function getMaxScreenOrder(data){
 export function create(data){
     return request({
         url:'/tb/screen-computed-tomography/create',
+        method:'POST',
+        data:data
+    })
+}
+
+/**
+ * 新增ct的事务，后端处理
+ * @returns {Promise | Promise<unknown>}
+ */
+export function createTransaction(data){
+    return request({
+        url:'/tb/screen-computed-tomography/createTrans',
+        method:'POST',
+        data:data
+    })
+}
+
+/**
+ * 新增ct的事务，后端处理
+ * @returns {Promise | Promise<unknown>}
+ */
+export function getCreateOrder(data){
+    return request({
+        url:'/tb/screen-computed-tomography/create-order',
         method:'POST',
         data:data
     })

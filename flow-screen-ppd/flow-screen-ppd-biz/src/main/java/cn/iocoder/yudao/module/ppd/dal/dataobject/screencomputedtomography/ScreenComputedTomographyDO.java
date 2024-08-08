@@ -31,6 +31,10 @@ public class ScreenComputedTomographyDO extends BaseDO {
      */
     private String screenId;
     /**
+     * 身份证号
+     */
+    private String idNum;
+    /**
      * 同步时唯一编码
      */
     private Long syncId;
