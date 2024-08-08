@@ -438,7 +438,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="筛查时间" prop="screenTime" label-width="80">
+          <el-form-item label="筛查时间" prop="timeRange" label-width="80">
 <!--            <el-date-picker
               v-model="formData.screenTime"
               type="date"
@@ -555,6 +555,7 @@ const formData = ref({
   screenEndTime: undefined,
   guardianTel: undefined,
   timeRange: undefined,
+  remark: undefined,
 })
 const provinceList = ref([]) //省列表
 const cityList = ref([]) //市列表
@@ -702,7 +703,7 @@ const formRules = reactive({
   year: [{validator: checkYear, trigger: 'blur'},{required: true, message: '请输入年度', trigger: 'blur'}],
   screenPoint:[{required: true, message: '请选择筛查点', trigger: 'blur'}],
   screenType: [{required: true, message: '请选择筛查类型', trigger: 'blur'}],
-  screenTime: [{ required: true, message: '请选择筛查时间', trigger: 'blur' }]
+  timeRange: [{ required: true, message: '请选择筛查时间', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
 
@@ -716,7 +717,7 @@ const open = async (type: string, id?: number) => {
   formData.value.screenType = 1;
   formData.value.isScreened = 0;
   formData.value.year = new Date().getFullYear();
-  formData.value.screenTime = new Date()
+  formData.value.screenTime = new Date();
 
   // 修改时，设置数据
   if (id) {
@@ -830,6 +831,7 @@ const resetForm = () => {
     screenPoint: undefined,
     screenTime: undefined,
     screenType: undefined,
+    remark: undefined,
   }
   formRef.value?.resetFields()
 }

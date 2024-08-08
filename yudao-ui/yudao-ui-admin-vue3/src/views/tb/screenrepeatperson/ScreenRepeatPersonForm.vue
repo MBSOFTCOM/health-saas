@@ -90,7 +90,7 @@
             effect="dark"
             :content="formData.permanentAddress"
             placement="top"
-            :disabled="formType === 'create' ? true : false"
+            :disabled="formType == 'create' ? true : false"
           >
             <el-form-item label="户籍地址" prop="permanentAddress">
               <el-input v-model="formData.permanentAddress" placeholder="请输入户籍地址"/>
@@ -102,7 +102,7 @@
             effect="dark"
             :content="formData.address"
             placement="top"
-            :disabled="formType === 'create' ? true : false"
+            :disabled="formType == 'create' ? true : false"
           >
             <el-form-item label="现住址" prop="address">
               <el-input v-model="formData.address" placeholder="请输入现住址"/>
@@ -428,7 +428,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="筛查时间" prop="screenTime" label-width="80">
+          <el-form-item label="筛查时间" prop="timeRange" label-width="80">
             <el-date-picker
               v-model="formData.timeRange"
               type="daterange"
@@ -687,7 +687,7 @@ const formRules = reactive({
   // screenPoint:[{required: true, message: '请选择筛查点', trigger: 'blur'}],
   year: [{validator: checkYear, trigger: 'blur'},{required: true, message: '请输入年度', trigger: 'blur'}],
   screenType: [{required: true, message: '请选择筛查类型', trigger: 'blur'}],
-  screenTime: [{required: true, message: '请选择筛查时间', trigger: 'blur'}]
+  timeRange: [{required: true, message: '请选择筛查时间', trigger: 'blur'}]
 })
 const formRef = ref() // 表单 Ref
 

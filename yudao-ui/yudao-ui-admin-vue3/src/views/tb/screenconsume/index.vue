@@ -64,17 +64,6 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="有效期" prop="indate">
-        <el-date-picker
-          v-model="queryParams.indate"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
-          class="!w-240px"
-        />
-      </el-form-item>
       <el-form-item label="生产日期" prop="manufactureDate">
         <el-date-picker
           v-model="queryParams.manufactureDate"
@@ -89,6 +78,35 @@
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="转换系数（人次）" prop="reagentSpecsNum">
+        <el-input
+          v-model="queryParams.reagentSpecsNum"
+          placeholder="请输入转换系数（人次）"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="库存预警值（按试剂）" prop="threshold">
+        <el-input
+          v-model="queryParams.threshold"
+          placeholder="请输入库存预警值（按试剂）"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="有效期" prop="indate">
+        <el-date-picker
+          v-model="queryParams.indate"
           value-format="YYYY-MM-DD HH:mm:ss"
           type="daterange"
           start-placeholder="开始日期"
@@ -131,7 +149,6 @@
       <el-table-column label="消耗序位" align="center" prop="consumeOrder" />
       <el-table-column label="批次号" align="center" prop="bathNumber" />
       <el-table-column label="入库量（按试剂）" align="center" prop="inboundNumber" />
-      <el-table-column label="有效期" align="center" prop="indate" />
       <el-table-column
         label="生产日期"
         align="center"
@@ -146,6 +163,9 @@
         :formatter="dateFormatter"
         width="180px"
       />
+      <el-table-column label="转换系数（人次）" align="center" prop="reagentSpecsNum" />
+      <el-table-column label="库存预警值（按试剂）" align="center" prop="threshold" />
+      <el-table-column label="有效期" align="center" prop="indate" />
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -204,9 +224,11 @@ const queryParams = reactive({
   consumeOrder: undefined,
   bathNumber: undefined,
   inboundNumber: undefined,
-  indate: [],
   manufactureDate: [],
   createTime: [],
+  reagentSpecsNum: undefined,
+  threshold: undefined,
+  indate: [],
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中

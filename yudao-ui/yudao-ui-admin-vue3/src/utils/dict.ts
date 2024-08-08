@@ -224,5 +224,9 @@ export enum DICT_TYPE {
   TB_SCREEN_PREVENTIVE_TREATMENT = 'tb_screen_preventive_treatment', // 诊断组是否符合潜伏治疗条件
   TB_SCREEN_INJECTION_WAY = 'tb_injection', //PPD组注射方式
   TB_SCREEN_TYPE = 'tb_screen_type', // 筛查类型
-  STUDENT_TYPE = 'student_type'
+  STUDENT_TYPE = 'student_type', // 学生类别
+  DOSAGE_FORM = 'dosage_form', //剂型类型
+  TB_POTENCY_UNIT = 'tb_potency_unit', //效价单位
+  TB_SPECIFICATION = 'tb_specification', //规格单位
+  TB_PACKAGE = 'tb_package', // 包装单位
 }

@@ -429,13 +429,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="筛查时间" prop="screenTime" label-width="80">
-<!--            <el-date-picker
-              v-model="formData.screenTime"
-              type="date"
-              value-format="x"
-              placeholder="选择计划筛查时间"
-            />-->
+          <el-form-item label="筛查时间" prop="timeRange" label-width="80">
             <el-date-picker
               v-model="formData.timeRange"
               type="daterange"
@@ -493,9 +487,7 @@ import PinyinMatch from 'pinyin-match'
 import {getIntDictOptions, DICT_TYPE} from '@/utils/dict'
 import {ScreenPersonApi, ScreenPersonVO} from '@/api/tb/screenpersonrealsituation'
 import {onMounted, ref, reactive, watch} from 'vue'
-import DictTag from '@/components/DictTag/src/DictTag.vue'
 import {ScreenDistrictApi} from '@/api/tb/screendistrict'
-import {toBuffer} from 'qrcode'
 import {ScreenPointApi} from "@/api/tb/screenpoint";
 import moment from "moment";
 
@@ -699,7 +691,7 @@ const formRules = reactive({
   // screenPoint:[{required: true, message: '请选择筛查点', trigger: 'blur'}],
   year: [{validator: checkYear, trigger: 'blur'},{required: true, message: '请输入年度', trigger: 'blur'}],
   screenType: [{required: true, message: '请选择筛查类型', trigger: 'blur'}],
-  screenTime: [{required: true, message: '请选择筛查时间', trigger: 'blur'}],
+  timeRange: [{required: true, message: '请选择筛查时间', trigger: 'blur'}],
   height: [
     {validator: checkHeight, trigger: 'change'}
   ],

@@ -9,8 +9,10 @@ export interface ScreenConsumeVO {
   consumeOrder: number // 消耗序位
   bathNumber: string // 批次号
   inboundNumber: number // 入库量（按试剂）
-  indate: number // 有效期
   manufactureDate: Date // 生产日期
+  reagentSpecsNum: number // 转换系数（人次）
+  threshold: number // 库存预警值（按试剂）
+  indate: string // 有效期
 }
 
 // 消耗管理 API

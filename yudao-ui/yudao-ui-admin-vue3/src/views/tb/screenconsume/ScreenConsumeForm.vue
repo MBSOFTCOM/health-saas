@@ -29,20 +29,26 @@
       <el-form-item label="入库量（按试剂）" prop="inboundNumber">
         <el-input v-model="formData.inboundNumber" placeholder="请输入入库量（按试剂）" />
       </el-form-item>
-      <el-form-item label="有效期" prop="indate">
-        <el-date-picker
-          v-model="formData.indate"
-          type="date"
-          value-format="x"
-          placeholder="选择有效期"
-        />
-      </el-form-item>
       <el-form-item label="生产日期" prop="manufactureDate">
         <el-date-picker
           v-model="formData.manufactureDate"
           type="date"
           value-format="x"
           placeholder="选择生产日期"
+        />
+      </el-form-item>
+      <el-form-item label="转换系数（人次）" prop="reagentSpecsNum">
+        <el-input v-model="formData.reagentSpecsNum" placeholder="请输入转换系数（人次）" />
+      </el-form-item>
+      <el-form-item label="库存预警值（按试剂）" prop="threshold">
+        <el-input v-model="formData.threshold" placeholder="请输入库存预警值（按试剂）" />
+      </el-form-item>
+      <el-form-item label="有效期" prop="indate">
+        <el-date-picker
+          v-model="formData.indate"
+          type="date"
+          value-format="x"
+          placeholder="选择有效期"
         />
       </el-form-item>
     </el-form>
@@ -73,8 +79,10 @@ const formData = ref({
   consumeOrder: undefined,
   bathNumber: undefined,
   inboundNumber: undefined,
-  indate: undefined,
   manufactureDate: undefined,
+  reagentSpecsNum: undefined,
+  threshold: undefined,
+  indate: undefined,
 })
 const formRules = reactive({
   reagentId: [{ required: true, message: '试剂id不能为空', trigger: 'blur' }],
@@ -133,8 +141,10 @@ const resetForm = () => {
     consumeOrder: undefined,
     bathNumber: undefined,
     inboundNumber: undefined,
-    indate: undefined,
     manufactureDate: undefined,
+    reagentSpecsNum: undefined,
+    threshold: undefined,
+    indate: undefined,
   }
   formRef.value?.resetFields()
 }
