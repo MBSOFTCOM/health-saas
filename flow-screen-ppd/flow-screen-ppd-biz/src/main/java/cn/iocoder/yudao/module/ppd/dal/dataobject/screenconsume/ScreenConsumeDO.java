@@ -4,6 +4,7 @@ import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -68,5 +69,9 @@ public class ScreenConsumeDO extends BaseDO {
      * 有效期
      */
     private String indate;
+    /**
+     * 是否启用
+     */
+    private Integer usable;
 
 }

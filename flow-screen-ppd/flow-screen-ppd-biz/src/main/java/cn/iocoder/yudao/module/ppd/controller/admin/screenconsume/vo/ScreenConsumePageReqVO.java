@@ -47,6 +47,9 @@ public class ScreenConsumePageReqVO extends PageParam {
     @Schema(description = "库存预警值（按试剂）")
     private Integer threshold;
 
+    @Schema(description = "是否启用")
+    private Integer usable;
+
     @Schema(description = "有效期")
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private String[] indate;

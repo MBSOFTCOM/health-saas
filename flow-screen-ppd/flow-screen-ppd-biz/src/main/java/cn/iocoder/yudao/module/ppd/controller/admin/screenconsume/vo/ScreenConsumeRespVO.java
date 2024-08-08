@@ -56,6 +56,10 @@ public class ScreenConsumeRespVO {
     @ExcelProperty("库存预警值（按试剂）")
     private Integer threshold;
 
+    @Schema(description = "是否启用")
+    @ExcelProperty("是否启用")
+    private Integer usable;
+
     @Schema(description = "有效期")
     @ExcelProperty("有效期")
     private String indate;
