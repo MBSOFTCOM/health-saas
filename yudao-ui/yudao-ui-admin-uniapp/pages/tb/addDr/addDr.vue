@@ -258,7 +258,7 @@ export default {
 				})
 				.then((res) => {
 					this.formData = res.data;
-					console.log("data=",data)
+					console.log("data=",res)
 					this.selectedImage = this.formData.computedTomography;
 					// console.log(this.selectedImage)
 					this.formData.computedTomography = null;
@@ -478,150 +478,72 @@ export default {
 				this.formData.createTime = this.markText[0] + ' ' + this.markText[1];
 			}
 			if (this.check()) {
-				// console.log("校验通过")
-				let imgForm = {
-					screenId: this.patient.screenId,
-					screenTime: this.formData.screenTime,
-					screenOrder: 0,
-					idNum:this.patient.idNum,
-					screenPoint: this.patient.screenPoint,
-					personId: this.formData.personId,
-					imageType: 2,
-					year: this.patient.year,
-					screenType: uni.$screenType
-				};
-				ctApi.getCreateOrder({
-					idNum: this.patient.idNum,
-					screenType: uni.$screenType,
-					year: this.patient.year
-				}).then(async(res)=>{
-					imgForm.screenOrder=res.data
-					console.log(res);
-					let data = await this.uploadFilePromise(imgForm, this.formData.computedTomography);
-					if (data) {
-						this.formData.computedTomography = data.data;
-						let time = this.refreshMark();
-						this.formData.photoTime = new Date(time[0] + ' ' + time[1]).getTime();
-					}
-					let signForm = Object.assign({}, imgForm);
-					signForm.imageType = 11;
-					let signData = await this.uploadFilePromise(signForm, this.formData.doctorSignature);
-					if (signData) {
-						this.formData.doctorSignature = signData.data;
-					}
-				})
-
-				console.log("上传结束")
-				if (this.stateFlag == '新增') {
-					ctApi.createTransaction(this.formData)
-					uni.hideLoading();
-					this.back()
-					// await insertImg(this.$dbUtils,imgForm)
-				} else {
-					let data = {};
-					data.id = this.formData.id;
-					data.year = this.patient.year;
-					data.personId = this.formData.personId;
-					data.idNum = this.patient.idNum;
-					data.outcome = this.formData.outcome;
-					data.computedTomography = this.formData.computedTomography;
-					data.doctorSignature = this.formData.doctorSignature;
-					data.computedTomographyCode = this.formData.computedTomographyCode;
-					data.remark = this.formData.remark;
-					let time = this.refreshMark();
-					data.photoTime = new Date(time[0] + ' ' + time[1]).getTime();
-					data.updater = this.formData.updater;
-					data.updateTime = this.markText[0] + ' ' + this.markText[1];
-
-					try {
-						// console.log("personId=",this.formData.personId)
-						let order = await ctApi.getMaxScreenOrder({
-							idNum: this.patient.idNum,
-							screenType: uni.$screenType,
-							year: this.patient.year
-						});
-						if (this.formData.screenOrder == order) {
-							let param = {};
-							param.personId = this.formData.personId;
-							param.idNum = this.patient.idNum;
-							let time = this.refreshMark();
-							param.lastComputedTomographyTime = new Date(time[0] + ' ' + time[1]).getTime();
-							param.computedTomographyNum = this.formData.screenOrder;
-							param.computedTomographyId = this.formData.id;
-							param.year = this.patient.year;
-							param.curFinish = '胸片组';
-							param.screenType = uni.$screenType;
-
-							await sumApi.update(param);
-						}
-						// console.log("updateData=",data)
-						await ctApi.update(data);
-						// await updateImg(imgForm)
-						this.disabledBtu = false;
-						await this.back();
-					} catch (e) {
-						this.disabledBtu = false;
-						this.$modal.msgError('更新失败,请重试');
-						console.log('更新错误e=', e);
-					}
-				}
-			}
+			// 校验通过,上传图片
+			let imgForm = {
+			  screenId: this.patient.screenId,
+			  screenTime: this.formData.screenTime,
+			  screenOrder: 0,
+			  idNum: this.patient.idNum,
+			  screenPoint: this.patient.screenPoint,
+			  personId: this.formData.personId,
+			  imageType: 2,
+			  year: this.patient.year,
+			  screenType: uni.$screenType
+			};
+			ctApi.getCreateOrder({
+			  idNum: this.patient.idNum,
+			  screenType: uni.$screenType,
+			  year: this.patient.year
+			})
+            .then(async (res) => {
+				console.log(res);
+              imgForm.screenOrder = res.data
+              // 判断是否以http开头，以http开头时不需要上传，否则需要上传
+			  console.log(this.formData);
+              if (this.formData.computedTomography) {
+				  console.log("图片上传");
+                let data = await this.uploadFilePromise(imgForm, this.formData.computedTomography);
+                if (data) {
+                  this.formData.computedTomography = data.data;
+                  let time = this.refreshMark();
+                  this.formData.photoTime = new Date(time[0] + ' ' + time[1]).getTime();
+                }
+              }
+              if (this.formData.doctorSignature) {
+				  console.log("签名上传");
+                let signForm = Object.assign({}, imgForm);
+                signForm.imageType = 11;
+                this.uploadFilePromise(signForm, this.formData.doctorSignature).then((res) => {
+                  this.formData.doctorSignature = res.data;
+                })
+              }
+			  console.log(123);
+			  setTimeout(()=>{
+				  if (this.stateFlag == '新增') {
+                  ctApi.createTransaction(this.formData)
+				  setTimeout(()=>{
+					  uni.hideLoading();
+					  this.back()
+				  },1500)
+                  
+                } else {
+					console.log(222);
+                  // console.log("updateData=",data)
+                  ctApi.update(this.formData);
+                  // await updateImg(imgForm)
+                  this.disabledBtu = false;
+                  this.back();
+                }
+			  },500)
+              
+            })
+      }
 		},
 		back() {
 			uni.navigateBack({
 				delta: 1
 			});
 		},
-		//   插入ct/dr表
-		async insertItem() {
-			try {
-				console.log("create,form=",this.formData)
-				await ctApi.create(this.formData);
-				let param = {};
-				param.personId = this.formData.personId;
-				param.idNum = this.patient.idNum;
-				let time = this.refreshMark();
-				param.lastComputedTomographyTime = new Date(time[0] + ' ' + time[1]).getTime();
-				let last = await getOneCt({
-					idNum: this.formData.personId,
-					screenOrder: await ctApi.getMaxScreenOrder({
-						idNum: this.patient.idNum,
-						screenType: uni.$screenType,
-						year: this.patient.year
-					}),
-					screenType: uni.$screenType,
-					year: this.patient.year
-				});
-				// console.log("last=",last)
-				/*param.computedTomographyNum = last.data.screenOrder;
-				param.computedTomographyId = last.data.id;
-				param.screenType = uni.$screenType;
-				param.screenId = this.patient.screenId;
-				param.curFinish = '胸片组';
-				param.year = this.patient.year;
-				console.log('param=', param);
-				let data = await sumApi.selectCount({
-					idNum: this.patient.idNum,
-					screenType: uni.$screenType,
-					year: this.patient.year
-				});
-				console.log('count=', data);
-				if (data == 0) {
-					await sumApi.create(param);
-				} else {
-					await sumApi.update(param);
-				}*/
-				await this.$modal.msgSuccess('保存成功');
-				uni.hideLoading();
-				this.disabledBtu = false;
-				this.back();
-			} catch (e) {
-				this.disabledBtu = false;
-				uni.hideLoading();
-				console.log('添加ct记录失败', e);
-				this.$modal.msgError('添加结果失败');
-			}
-		}
 	}
 };
 </script>

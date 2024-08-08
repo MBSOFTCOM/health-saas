@@ -20,6 +20,10 @@ public class ScreenComputedTomographyRespVO {
     @ExcelProperty("筛查编号")
     private String screenId;
 
+    @Schema(description = "身份证", example = "665")
+    @ExcelProperty("身份证")
+    private String idNum;
+
     @Schema(description = "同步时唯一编码", example = "2243")
     @ExcelProperty("同步时唯一编码")
     private Long syncId;

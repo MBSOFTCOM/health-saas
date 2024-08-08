@@ -12,7 +12,7 @@ public class CommonReq {
      * 患者id
      */
     private Long personId;
-    private String IdNum;
+    private String idNum;
     /**
      * 年度
      */
@@ -23,13 +23,13 @@ public class CommonReq {
     private Integer screenType;
 
     public CommonReq(String idNum, String year, Integer screenType) {
-        IdNum = idNum;
+        this.idNum = idNum;
         this.year = year;
         this.screenType = screenType;
     }
 
     public CommonReq(String idNum, String year, Integer screenOrder, Integer screenType) {
-        IdNum = idNum;
+        this.idNum = idNum;
         this.year = year;
         this.screenOrder = screenOrder;
         this.screenType = screenType;
