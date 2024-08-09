@@ -61,13 +61,21 @@
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
+        <el-button
+          type="warning"
+          plain
+          @click="handleImport"
+          v-hasPermi="['tb:screen-consume:create']"
+        >
+          <Icon icon="ep:finished" class="mr-5px" /> 导入
+        </el-button>
       </el-form-item>
     </el-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" :row-class-name="rowClassName">
+    <el-table v-loading="loading" :data="list" :show-overflow-tooltip="true" :row-class-name="rowClassName">
       <el-table-column type="index" label="序号" align="center" width="70"
                        :show-overflow-tooltip="false" fixed="left"/>
       <el-table-column label="试剂名称" align="center" prop="reagentName" />
@@ -80,7 +88,7 @@
       <el-table-column label="批次号" align="center" prop="bathNumber" />
       <el-table-column label="入库量" align="center" prop="inboundNumber" width="120"/>
       <el-table-column label="当前库存" align="center" prop="currentNumber" width="120"/>
-      <el-table-column label="失效日期" align="center" prop="manufactureDate" :formatter="dateFormatter2" width="180px">
+      <el-table-column label="失效日期" align="center" prop="manufactureDate" :formatter="dateFormatter2" width="150px">
         <template #default="scope">
           {{calculateExpiryDate(scope.row.manufactureDate, scope.row.indate)}}
         </template>
@@ -92,6 +100,7 @@
             type="primary"
             @click="openForm2('increase', scope.row.id)"
             v-hasPermi="['tb:screen-consume:update']"
+            v-if="scope.row.usable == 0"
           >
             增加
           </el-button>
@@ -101,6 +110,7 @@
             type="danger"
             @click="openForm2('decrease', scope.row.id)"
             v-hasPermi="['tb:screen-consume:update']"
+            v-if="scope.row.usable == 0"
           >
             减少
           </el-button>
@@ -139,7 +149,10 @@
   <ScreenConsumeChangeStockForm ref="formRef2" @success="getList" />
 
   <!-- 详情 -->
-  <ScreenConsumeDetialForm ref="formRef3" />
+  <ScreenConsumeDetailForm ref="formRef3" />
+
+  <!-- 导入对话框 -->
+  <ScreenConsumeImportForm ref="importFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -148,7 +161,8 @@ import download from '@/utils/download'
 import { ScreenConsumeApi, ScreenConsumeVO } from '@/api/tb/screenconsume'
 import ScreenConsumeForm from './ScreenConsumeForm.vue'
 import ScreenConsumeChangeStockForm from './ScreenConsumeChangeStockForm.vue'
-import ScreenConsumeDetialForm from './ScreenConsumeDetialForm.vue'
+import ScreenConsumeDetailForm from './ScreenConsumeDetailForm.vue'
+import ScreenConsumeImportForm from './ScreenConsumeImportForm.vue'
 import {getIntDictOptions, DICT_TYPE} from '@/utils/dict'
 import {onMounted, ref, reactive} from 'vue'
 
@@ -252,11 +266,6 @@ const handleExport = async () => {
   }
 }
 
-// 根据 usable 字段返回行的类名
-const rowClassName = ({ row }) => {
-  return row.usable == 1 ? 'row-disabled' : '';
-};
-
 const calculateExpiryDate = (manufactureDateTimestamp, validityDays) => {
   // 将生产日期时间戳转换为 Date 对象
   const manufactureDate = new Date(manufactureDateTimestamp);
@@ -275,16 +284,51 @@ const calculateExpiryDate = (manufactureDateTimestamp, validityDays) => {
   return `${year}-${month}-${day}`;
 }
 
+/** 导入按钮操作*/
+const importFormRef = ref()
+const handleImport = () => {
+  importFormRef.value.open()
+}
+
+// 根据 usable 字段返回行的类名
+const rowClassName = ({ row }) => {
+  if (row.usable == 1 && row.currentNumber < row.threshold){
+    return 'row-disabled-threshold';
+  }
+  if (row.usable == 1){
+    return 'row-disabled'
+  }
+  if ( row.currentNumber < row.threshold ){
+    return 'row-threshold'
+  }
+  return ''
+};
+
 /** 初始化 **/
 onMounted(() => {
   getList()
 })
 </script>
 <style scoped lang="scss">
-.el-table {
-  .row-disabled {
-    /* 设置背景颜色为红色 */
-    background-color: grey;
+::v-deep .el-table .row-disabled {
+  /* 设置背景颜色 */
+  background-color: #FAFAFA;
+  .cell {
+    color: #A6A6A6 !important;
+  }
+}
+
+::v-deep .el-table .row-disabled-threshold {
+  /* 设置背景颜色 */
+  background-color: #FAFAFA;
+  .cell {
+    color: rgba(255, 0, 0, 0.6) !important;
+  }
+}
+
+::v-deep .el-table .row-threshold {
+  .cell {
+    color: rgba(255, 0, 0, 0.6) !important;
   }
 }
 </style>

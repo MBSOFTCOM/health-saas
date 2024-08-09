@@ -5,7 +5,7 @@
     <select id="getScreenConsumeRecordList"
             resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenconsumerecord.vo.ScreenConsumeRecordRespVO"
             parameterType="java.lang.Long">
-        SELECT id,change_number, type, create_time, consume_id
+        SELECT id, change_number, type, create_time, consume_id
         FROM tb_screen_consume_record
         WHERE consume_id = #{id}
           AND deleted = 0

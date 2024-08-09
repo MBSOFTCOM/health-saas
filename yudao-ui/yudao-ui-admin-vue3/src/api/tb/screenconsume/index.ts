@@ -63,5 +63,10 @@ export const ScreenConsumeApi = {
   // 减少库存
   decreaseScreenConsume: async (id: number, number:number) => {
     return await request.get({ url: `/tb/screen-consume/decrease?id=` + id + '&number=' + number })
+  },
+
+  // 下载导入模板
+  importUserTemplate: async ()  =>{
+    return await request.download({url: `/tb/screen-consume/import-template`})
   }
 }

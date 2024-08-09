@@ -3,10 +3,11 @@ package cn.iocoder.yudao.module.ppd.service.screenreagent;
 import cn.hutool.core.util.ObjectUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ScreenPersonImportRespVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeImportVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.*;
-import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
+import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsume.ScreenConsumeMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenreagent.ScreenReagentMapper;
 import cn.iocoder.yudao.module.system.api.dict.DictDataApi;
 import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
@@ -36,6 +37,8 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
     private ScreenReagentMapper screenReagentMapper;
     @Resource
     private DictDataApi dictDataApi;
+    @Resource
+    private ScreenConsumeMapper screenConsumeMapper;
 
     @Override
     public Long createScreenReagent(ScreenReagentSaveReqVO createReqVO) {
@@ -43,10 +46,11 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
         ScreenReagentDO screenReagent = BeanUtils.toBean(createReqVO, ScreenReagentDO.class);
 
         // 判断是否已经有这种试剂了
-        Integer count = screenReagentMapper.selectIsExist(screenReagent.getName(), screenReagent.getType(),
+        /*Integer count = screenReagentMapper.selectIsExist(screenReagent.getName(), screenReagent.getType(),
                 screenReagent.getReagentSpecsNum(), screenReagent.getTiter(), screenReagent.getPotencyUnit(),
                 screenReagent.getSpecification(), screenReagent.getSpecificationUnit(), screenReagent.getPackageUnit(),
-                screenReagent.getManufacturer(), screenReagent.getThreshold());
+                screenReagent.getManufacturer(), screenReagent.getThreshold());*/
+        Integer count = screenReagentMapper.selectIsExist(screenReagent.getName());
         if (count > 0){
             throw exception(SCREEN_REAGENT_Is_EXISTS);
         }
@@ -57,23 +61,72 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateScreenReagent(ScreenReagentSaveReqVO updateReqVO) {
-        // 校验存在
+        // 校验试剂是否存在
         validateScreenReagentExists(updateReqVO.getId());
-        // 更新
+
+        // 将请求对象转换为数据库实体对象
         ScreenReagentDO updateObj = BeanUtils.toBean(updateReqVO, ScreenReagentDO.class);
 
-        // 判断是否已经有这种试剂了
-        Integer count = screenReagentMapper.selectIsExist(updateObj.getName(), updateObj.getType(),
-                updateObj.getReagentSpecsNum(), updateObj.getTiter(), updateObj.getPotencyUnit(),
-                updateObj.getSpecification(), updateObj.getSpecificationUnit(), updateObj.getPackageUnit(),
-                updateObj.getManufacturer(), updateObj.getThreshold());
-        if (count > 0){
+        // 检查试剂是否已经存在，避免重复
+        if (isReagentExists(updateObj)) {
             throw exception(SCREEN_REAGENT_Is_EXISTS);
         }
 
+        // 更新试剂信息
         screenReagentMapper.updateById(updateObj);
+
+        // 更新与试剂相关的消耗管理
+        updateConsumeRecords(updateObj);
     }
+
+    /**
+     * 检查试剂是否已经存在
+     *
+     * @param updateObj 需要检查的试剂对象
+     * @return 如果试剂已存在，则返回 true，否则返回 false
+     */
+    private boolean isReagentExists(ScreenReagentDO updateObj) {
+        /*Integer count = screenReagentMapper.selectIsExist(
+                updateObj.getName(), updateObj.getType(),
+                updateObj.getReagentSpecsNum(), updateObj.getTiter(),
+                updateObj.getPotencyUnit(), updateObj.getSpecification(),
+                updateObj.getSpecificationUnit(), updateObj.getPackageUnit(),
+                updateObj.getManufacturer(), updateObj.getThreshold()
+        );*/
+        Integer count = screenReagentMapper.selectIsExist(updateObj.getName());
+        return count > 1;
+    }
+
+    /**
+     * 更新与试剂相关的消耗管理
+     *
+     * @param updateObj 更新后的试剂对象
+     */
+    private void updateConsumeRecords(ScreenReagentDO updateObj) {
+        // 查询所有与试剂相关的消耗管理
+        List<ScreenConsumeDO> consumeList = screenConsumeMapper.selcetByReagentId(updateObj.getId());
+
+        if (consumeList.size() > 0){
+            // 更新每个消耗管理中的试剂信息
+            List<ScreenConsumeDO> updatedList = consumeList.stream()
+                    .peek(obj -> {
+                        obj.setReagentName(updateObj.getName())
+                                .setReagentType(updateObj.getType())
+                                .setReagentSpecsNum(updateObj.getReagentSpecsNum())
+                                .setThreshold(updateObj.getThreshold());
+                    })
+                    .collect(Collectors.toList());
+
+            // 批量更新消耗管理
+            if (!updatedList.isEmpty()) {
+                screenConsumeMapper.updateBatch(updatedList);
+            }
+        }
+    }
+
+
 
     @Override
     public void deleteScreenReagent(Long id) {
@@ -100,15 +153,19 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean forbidScreenReagent(Long id) {
         Integer count = screenReagentMapper.forbidReagent(id);
-        return count > 0;
+        Integer count2 = screenConsumeMapper.forbid(id);
+        return count > 0 && count2 > 0;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean recoverScreenReagent(Long id) {
         Integer count = screenReagentMapper.recoverReagent(id);
-        return count > 0;
+        Integer count2 = screenConsumeMapper.recover(id);
+        return count > 0 && count2 > 0;
     }
 
     @Override
@@ -129,6 +186,15 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
         }
     }
 
+    public void selectedData(Integer index, List<DictDataRespDTO> dictDataRespDTOS, Map<Integer, List<String>> selectedData) {
+        if (dictDataRespDTOS != null) {
+            List<String> dataList = dictDataRespDTOS.stream().map(DictDataRespDTO::getLabel).collect(Collectors.toList());
+            if (!dataList.isEmpty()) {
+                selectedData.put(index, dataList);
+            }
+        }
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ScreenReagentImportRespVO importReagent(List<ScreenReagentImportVO> list) {
@@ -136,9 +202,6 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
         // 使用 Stream 过滤空对象
         List<ScreenReagentImportVO> filteredList = list.stream()
                 .filter(vo -> !vo.isEmpty(vo)).toList();
-
-        System.out.println(filteredList.size());
-        System.out.println(filteredList);
 
         // 批量导入列表
         List<ScreenReagentDO> batchInsert = new ArrayList<>();
@@ -176,9 +239,10 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
             } else if (ObjectUtil.isNull(obj.getThreshold())) {
                 failureSpecification.put(count, "库存预警值为空");
             } else {
-                Integer isExist = screenReagentMapper.selectIsExist(obj.getName(), obj.getType(), obj.getReagentSpecsNum(),
+                /*Integer isExist = screenReagentMapper.selectIsExist(obj.getName(), obj.getType(), obj.getReagentSpecsNum(),
                         obj.getTiter(), obj.getPotencyUnit(), obj.getSpecification(), obj.getSpecificationUnit(),
-                        obj.getPackageUnit(), obj.getManufacturer(), obj.getThreshold());
+                        obj.getPackageUnit(), obj.getManufacturer(), obj.getThreshold());*/
+                Integer isExist = screenReagentMapper.selectIsExist(obj.getName());
                 if (isExist > 0){
                     failureSpecification.put(count, "该试剂已存在");
                 }else {
@@ -204,14 +268,11 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
         return screenReagentMapper.getReagentList();
     }
 
-
-    public void selectedData(Integer index, List<DictDataRespDTO> dictDataRespDTOS, Map<Integer, List<String>> selectedData) {
-        if (dictDataRespDTOS != null) {
-            List<String> dataList = dictDataRespDTOS.stream().map(DictDataRespDTO::getLabel).collect(Collectors.toList());
-            if (!dataList.isEmpty()) {
-                selectedData.put(index, dataList);
-            }
-        }
+    @Override
+    public List<String> getReagentList2() {
+        return screenReagentMapper.getReagentList2();
     }
+
+
 
 }

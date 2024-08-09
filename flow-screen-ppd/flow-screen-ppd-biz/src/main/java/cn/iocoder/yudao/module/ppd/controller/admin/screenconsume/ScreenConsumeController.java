@@ -6,15 +6,19 @@ import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeImportVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumePageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeSaveReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportRespVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentPageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
 import cn.iocoder.yudao.module.ppd.service.screenconsume.ScreenConsumeService;
 import cn.iocoder.yudao.module.ppd.service.screenreagent.ScreenReagentService;
+import cn.iocoder.yudao.module.ppd.utils.CustomSheetWriteHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -25,9 +29,12 @@ import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
@@ -129,6 +136,33 @@ public class ScreenConsumeController {
                                                        @RequestParam("number") Integer number) {
         Boolean isSuccess = screenConsumeService.decreaseScreenConsume(id, number);
         return success(isSuccess);
+    }
+
+    @GetMapping("/import-template")
+    @Operation(summary = "下载消耗管理导入模板")
+    @PreAuthorize("@ss.hasPermission('tb:screen-consume:export')")
+    @ApiAccessLog(operateType = EXPORT)
+    public void getImportTemplateScreenConsumeExcel(HttpServletResponse response) throws IOException {
+
+        // 模板数据
+        List<ScreenConsumeImportVO> list = screenConsumeService.createSampleData();
+        // 存放下拉选列表数据
+        Map<Integer, List<String>> selectedData = new HashMap<>();
+        List<String> reagentList = screenReagentService.getReagentList2();
+        if (reagentList.size() > 0){
+            selectedData.put(0, reagentList);
+        }
+        ExcelUtils.write(response, "消耗管理导入模板.xls", "消耗管理数据", ScreenConsumeImportVO.class,
+                BeanUtils.toBean(list, ScreenConsumeImportVO.class), new CustomSheetWriteHandler().setMap(selectedData));
+    }
+
+    @PostMapping("/import-excel")
+    @Operation(summary = "导入消耗管理")
+    @PreAuthorize("@ss.hasPermission('tb:screen-consume:create')")
+    @Parameter(name = "file", description = "Excel 文件", required = true)
+    public CommonResult<ScreenReagentImportRespVO> importExcel(@RequestParam("file") MultipartFile file) throws Exception {
+        List<ScreenConsumeImportVO> list = ExcelUtils.read(file, ScreenConsumeImportVO.class);
+        return success(screenConsumeService.importScreenConsume(list));
     }
 
 }

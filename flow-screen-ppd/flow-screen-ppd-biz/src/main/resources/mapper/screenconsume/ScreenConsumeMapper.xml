@@ -18,4 +18,51 @@
         WHERE id = #{id}
           AND deleted = 0
     </update>
+
+
+    <select id="selcetByReagentId"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO">
+        SELECT id, reagent_id, reagent_name, reagent_type, reagent_specs_num, threshold, usable
+        FROM tb_screen_consume
+        WHERE reagent_id = #{reagentId}
+          AND deleted = 0
+    </select>
+
+    <update id="forbid">
+        UPDATE tb_screen_consume
+        SET usable = 1
+        WHERE reagent_id = #{id}
+          AND deleted = 0
+    </update>
+
+
+    <update id="recover">
+        UPDATE tb_screen_consume
+        SET usable = 0
+        WHERE reagent_id = #{id}
+          AND deleted = 0
+    </update>
+
+    <select id="isExist" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM tb_screen_consume
+        WHERE deleted = 0
+          AND reagent_id = #{reagentId}
+          AND consume_order = #{consumeOrder}
+          AND bath_number = #{bathNumber}
+          AND indate = #{indate}
+          AND manufacture_date = #{manufactureDate}
+    </select>
+
+    <select id="isExist2" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM tb_screen_consume
+        WHERE deleted = 0
+          AND reagent_name = #{reagentName}
+          AND consume_order = #{consumeOrder}
+          AND bath_number = #{bathNumber}
+          AND indate = #{indate}
+          AND manufacture_date = #{manufactureDate}
+    </select>
+
 </mapper>

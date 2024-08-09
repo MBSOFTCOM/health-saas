@@ -113,33 +113,34 @@
       <el-table-column label="供应商" align="center" prop="manufacturer" />
       <el-table-column label="操作" align="center">
         <template #default="scope">
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['tb:screen-reagent:update']"
-            v-if="scope.row.usable == 0"
-          >
-            编辑
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleStatusChange(scope.row.id, 'forbid')"
-            v-hasPermi="['tb:screen-reagent:delete']"
-            v-if="scope.row.usable == 0"
-          >
-            禁用
-          </el-button>
-          <el-button
-            link
-            type="success"
-            @click="handleStatusChange(scope.row.id, 'recover')"
-            v-hasPermi="['tb:screen-reagent:delete']"
-            v-if="scope.row.usable == 1"
-          >
-            启用
-          </el-button>
+            <!-- 你的操作按钮 -->
+            <el-button
+              link
+              type="primary"
+              @click="openForm('update', scope.row.id)"
+              v-hasPermi="['tb:screen-reagent:update']"
+              v-if="scope.row.usable == 0"
+            >
+              编辑
+            </el-button>
+            <el-button
+              link
+              type="danger"
+              @click="handleStatusChange(scope.row.id, 'forbid')"
+              v-hasPermi="['tb:screen-reagent:delete']"
+              v-if="scope.row.usable == 0"
+            >
+              禁用
+            </el-button>
+            <el-button
+              link
+              type="success"
+              @click="handleStatusChange(scope.row.id, 'recover')"
+              v-hasPermi="['tb:screen-reagent:delete']"
+              v-if="scope.row.usable == 1"
+            >
+              启用
+            </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -155,7 +156,7 @@
   <!-- 表单弹窗：添加/修改 -->
   <ScreenReagentForm ref="formRef" @success="getList" />
 
-  <!-- 剂型导入对话框 -->
+  <!-- 试剂导入对话框 -->
   <ReagentImportForm ref="importFormRef" @success="getList" />
 </template>
 
@@ -308,10 +309,14 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.el-table {
-  .row-disabled {
-    /* 设置背景颜色为红色 */
-    background-color: grey;
+::v-deep .el-table .row-disabled {
+  /* 设置背景颜色 */
+  background-color: #FAFAFA;
+
+  .cell {
+    color: #A6A6A6 !important; /* 使用浅灰色使字体更浅 */
   }
 }
+
+
 </style>

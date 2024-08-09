@@ -45,7 +45,7 @@ public interface ScreenReagentMapper extends BaseMapperX<ScreenReagentDO> {
     /**
      *判断是否已经有这种试剂了
      */
-    Integer selectIsExist(@Param("name") String name,
+    /*Integer selectIsExist(@Param("name") String name,
                           @Param("type") Integer type,
                           @Param("reagentSpecsNum") Integer reagentSpecsNum,
                           @Param("titer") BigDecimal titer,
@@ -54,10 +54,25 @@ public interface ScreenReagentMapper extends BaseMapperX<ScreenReagentDO> {
                           @Param("specificationUnit") Integer specificationUnit,
                           @Param("packageUnit") Integer packageUnit,
                           @Param("manufacturer") String manufacturer,
-                          @Param("threshold") Integer threshold);
+                          @Param("threshold") Integer threshold);*/
+
+    /**
+     *判断是否已经有这种试剂了
+     */
+    Integer selectIsExist(@Param("name") String name);
 
     /**
      * 获取试剂列表
      */
     List<ScreenReagentDO> getReagentList();
+
+    /**
+     * 获取试剂列表--名称
+     */
+    List<String> getReagentList2();
+
+    /**
+     * 根据试剂名称获取
+     */
+    ScreenReagentDO selectByName(String reagentName);
 }

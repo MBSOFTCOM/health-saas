@@ -9,6 +9,9 @@ import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * 消耗管理 Mapper
  *
@@ -37,4 +40,34 @@ public interface ScreenConsumeMapper extends BaseMapperX<ScreenConsumeDO> {
      */
     Integer decreaseScreenConsume(@Param("id") Long id,
                                   @Param("number") Integer number);
+
+    /**
+     * 根据试剂id，找出消耗管理列表
+     */
+    List<ScreenConsumeDO> selcetByReagentId(Long reagentId);
+
+    /**
+     * 禁用
+     */
+    Integer forbid(Long id);
+
+    /**
+     * 启用
+     */
+    Integer recover(Long id);
+
+    /**
+     * 新增、修改时判断是否已经有相同的记录
+     */
+    Integer isExist(@Param("reagentId") Long reagentId,
+                    @Param("consumeOrder") Integer consumeOrder,
+                    @Param("bathNumber") String bathNumber,
+                    @Param("indate") String indate,
+                    @Param("manufactureDate") LocalDateTime manufactureDate);
+
+    Integer isExist2(@Param("reagentName") String reagentName,
+                     @Param("consumeOrder") Integer consumeOrder,
+                     @Param("bathNumber") String bathNumber,
+                     @Param("indate") String indate,
+                     @Param("manufactureDate") LocalDateTime manufactureDate);
 }

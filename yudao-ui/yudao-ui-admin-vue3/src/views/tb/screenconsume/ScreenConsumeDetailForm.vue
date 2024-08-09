@@ -113,7 +113,7 @@ import { dateFormatter2 } from '@/utils/formatTime'
 
 
 /** 消耗管理 表单 */
-defineOptions({ name: 'ScreenConsumeDetialForm' })
+defineOptions({ name: 'ScreenConsumeDetailForm' })
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
