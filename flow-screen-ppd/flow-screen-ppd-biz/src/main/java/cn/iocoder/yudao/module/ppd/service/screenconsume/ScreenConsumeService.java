@@ -51,4 +51,13 @@ public interface ScreenConsumeService {
      */
     PageResult<ScreenConsumeDO> getScreenConsumePage(ScreenConsumePageReqVO pageReqVO);
 
+    /**
+     * 增加入库量、当前库存
+     */
+    Boolean increaseScreenConsume(Long id, Integer number);
+
+    /**
+     * 减少当前库存
+     */
+    Boolean decreaseScreenConsume(Long id, Integer number);
 }

@@ -17,6 +17,7 @@ import cn.iocoder.yudao.module.ppd.service.screenconsume.ScreenConsumeService;
 import cn.iocoder.yudao.module.ppd.service.screenreagent.ScreenReagentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
@@ -102,6 +103,32 @@ public class ScreenConsumeController {
     public CommonResult<List<ScreenReagentDO>> getReagentList() {
         List<ScreenReagentDO> list = screenReagentService.getReagentList();
         return success(list);
+    }
+
+    @GetMapping("/increase")
+    @Operation(summary = "增加入库量、当前库存")
+    @Parameters({
+            @Parameter(name = "id", description = "消耗管理id", required = true),
+            @Parameter(name = "number", description = "增加的量", required = true)
+    })
+    @PreAuthorize("@ss.hasPermission('tb:screen-consume:update')")
+    public CommonResult<Boolean> increaseScreenConsume(@RequestParam("id") Long id,
+                                                       @RequestParam("number") Integer number) {
+        Boolean isSuccess = screenConsumeService.increaseScreenConsume(id, number);
+        return success(isSuccess);
+    }
+
+    @GetMapping("/decrease")
+    @Operation(summary = "减少当前库存")
+    @Parameters({
+            @Parameter(name = "id", description = "消耗管理id", required = true),
+            @Parameter(name = "number", description = "减少的量", required = true)
+    })
+    @PreAuthorize("@ss.hasPermission('tb:screen-consume:update')")
+    public CommonResult<Boolean> decreaseScreenConsume(@RequestParam("id") Long id,
+                                                       @RequestParam("number") Integer number) {
+        Boolean isSuccess = screenConsumeService.decreaseScreenConsume(id, number);
+        return success(isSuccess);
     }
 
 }

@@ -53,7 +53,15 @@ export const ScreenConsumeApi = {
   // 获取试剂列表
   getReagentList: async () => {
     return await request.get({ url: `/tb/screen-consume/get-reagent-list` })
+  },
+
+  // 增加库存、入库量
+  increaseScreenConsume: async (id: number, number:number) => {
+    return await request.get({ url: `/tb/screen-consume/increase?id=` + id + '&number=' + number })
+  },
+
+  // 减少库存
+  decreaseScreenConsume: async (id: number, number:number) => {
+    return await request.get({ url: `/tb/screen-consume/decrease?id=` + id + '&number=' + number })
   }
-
-
 }

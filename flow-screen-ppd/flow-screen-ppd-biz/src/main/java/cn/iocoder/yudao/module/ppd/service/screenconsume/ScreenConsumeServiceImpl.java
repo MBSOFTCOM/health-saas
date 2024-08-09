@@ -5,13 +5,16 @@ import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumePageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeSaveReqVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsumerecord.ScreenConsumeRecordDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsume.ScreenConsumeMapper;
-import cn.iocoder.yudao.module.ppd.service.screenconsume.ScreenConsumeService;
+import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsume.screenconsumerecord.ScreenConsumeRecordMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
+import static cn.iocoder.yudao.module.cd.enums.ErrorCodeConstants.SCREEN_CONSUME_CURRENT_NUMBER_IS_NOT_ENOUGH;
 import static cn.iocoder.yudao.module.cd.enums.ErrorCodeConstants.SCREEN_CONSUME_NOT_EXISTS;
 
 /**
@@ -25,6 +28,9 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
 
     @Resource
     private ScreenConsumeMapper screenConsumeMapper;
+
+    @Resource
+    private ScreenConsumeRecordMapper screenConsumeRecordMapper;
 
     @Override
     public Long createScreenConsume(ScreenConsumeSaveReqVO createReqVO) {
@@ -66,6 +72,44 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
     @Override
     public PageResult<ScreenConsumeDO> getScreenConsumePage(ScreenConsumePageReqVO pageReqVO) {
         return screenConsumeMapper.selectPage(pageReqVO);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean increaseScreenConsume(Long id, Integer number) {
+
+        Integer count = screenConsumeMapper.increaseScreenConsume(id, number);
+
+        int insertCount =
+                screenConsumeRecordMapper.insert(
+                        new ScreenConsumeRecordDO()
+                                .setConsumeId(id)
+                                .setChangeNumber(number)
+                                .setType(2));
+
+        return count > 0 && insertCount > 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean decreaseScreenConsume(Long id, Integer number) {
+
+        ScreenConsumeDO screenConsumeDO = screenConsumeMapper.selectById(id);
+
+        if (screenConsumeDO.getCurrentNumber() - number >= 0){
+            Integer count = screenConsumeMapper.decreaseScreenConsume(id, number);
+
+            int insertCount =
+                    screenConsumeRecordMapper.insert(
+                            new ScreenConsumeRecordDO()
+                                    .setConsumeId(id)
+                                    .setChangeNumber(number)
+                                    .setType(3));
+
+            return count > 0 && insertCount > 0;
+        }else {
+            throw exception(SCREEN_CONSUME_CURRENT_NUMBER_IS_NOT_ENOUGH);
+        }
     }
 
 }

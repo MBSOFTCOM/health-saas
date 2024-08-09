@@ -82,7 +82,7 @@
       <el-table-column label="当前库存" align="center" prop="currentNumber" width="120"/>
       <el-table-column label="失效日期" align="center" prop="manufactureDate" :formatter="dateFormatter2" width="180px">
         <template #default="scope">
-          {{scope.row.manufactureDate}}-{{scope.row.indate}}
+          {{calculateExpiryDate(scope.row.manufactureDate, scope.row.indate)}}
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center">
@@ -95,6 +95,7 @@
           >
             增加
           </el-button>
+
           <el-button
             link
             type="danger"
@@ -209,7 +210,7 @@ const openForm = (type: string, id?: number) => {
 
 /** 增加、减少库存操作 */
 const formRef2 = ref()
-const openForm2 = (type: string, id?: number) => {
+const openForm2 = (type: string, id: number) => {
   formRef2.value.open(type, id)
 }
 
@@ -248,6 +249,24 @@ const handleExport = async () => {
 const rowClassName = ({ row }) => {
   return row.usable == 1 ? 'row-disabled' : '';
 };
+
+const calculateExpiryDate = (manufactureDateTimestamp, validityDays) => {
+  // 将生产日期时间戳转换为 Date 对象
+  const manufactureDate = new Date(manufactureDateTimestamp);
+
+  // 创建一个新的 Date 对象用于计算失效日期
+  const expiryDate = new Date(manufactureDate);
+
+  // 添加有效期天数
+  expiryDate.setDate(expiryDate.getDate() + parseInt(validityDays, 10));
+
+  // 格式化失效日期为 'YYYY-MM-DD'
+  const year = expiryDate.getFullYear();
+  const month = String(expiryDate.getMonth() + 1).padStart(2, '0');
+  const day = String(expiryDate.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
 
 /** 初始化 **/
 onMounted(() => {

@@ -7,6 +7,7 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsu
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 消耗管理 Mapper
@@ -25,4 +26,15 @@ public interface ScreenConsumeMapper extends BaseMapperX<ScreenConsumeDO> {
                 .orderByDesc(ScreenConsumeDO::getId));
     }
 
+    /**
+     *  增加入库量、当前库存
+     */
+    Integer increaseScreenConsume(@Param("id") Long id,
+                                  @Param("number") Integer number);
+
+    /**
+     * 减少当前库存
+     */
+    Integer decreaseScreenConsume(@Param("id") Long id,
+                                  @Param("number") Integer number);
 }

@@ -3,5 +3,19 @@
 <mapper namespace="cn.iocoder.yudao.module.ppd.dal.mysql.screenconsume.ScreenConsumeMapper">
 
 
+    <update id="increaseScreenConsume">
+        UPDATE tb_screen_consume
+        SET inbound_number = inbound_number + #{number},
+            current_number = current_number + #{number}
+        WHERE id = #{id}
+          AND deleted = 0
+    </update>
 
+
+    <update id="decreaseScreenConsume">
+        UPDATE tb_screen_consume
+        SET current_number = current_number - #{number}
+        WHERE id = #{id}
+          AND deleted = 0
+    </update>
 </mapper>

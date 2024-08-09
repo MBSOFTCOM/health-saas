@@ -67,8 +67,9 @@ const formRef = ref() // 表单 Ref
 const tittle= ref('')
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, id: number) => {
   dialogVisible.value = true
+  resetForm()
   if (type == 'increase'){
     dialogTitle.value = '增加库存';
     text.value = '请输入增加库存数量';
@@ -77,7 +78,6 @@ const open = async (type: string, id?: number) => {
     text.value = '请输入减少库存数量';
   }
   tittle.value = type;
-  resetForm()
   formData.value.id = id;
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
@@ -90,10 +90,12 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
+    console.log(formData.value)
     if (tittle.value == 'increase'){
-      // await ScreenConsumeApi.getScreenConsume(formData.value.id)
+      await ScreenConsumeApi.increaseScreenConsume(formData.value.id, parseInt(formData.value.number, 10));
       message.success("增加成功！")
     }else {
+      await ScreenConsumeApi.decreaseScreenConsume(formData.value.id, parseInt(formData.value.number, 10));
       message.success("减少成功！")
     }
     dialogVisible.value = false
