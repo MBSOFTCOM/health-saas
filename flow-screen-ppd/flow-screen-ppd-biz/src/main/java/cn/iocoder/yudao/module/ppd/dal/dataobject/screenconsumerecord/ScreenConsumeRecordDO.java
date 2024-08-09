@@ -37,7 +37,6 @@ public class ScreenConsumeRecordDO extends BaseDO {
     /**
      * 消耗管理表id
      */
-    @TableId
     private Long consumeId;
 
 }
