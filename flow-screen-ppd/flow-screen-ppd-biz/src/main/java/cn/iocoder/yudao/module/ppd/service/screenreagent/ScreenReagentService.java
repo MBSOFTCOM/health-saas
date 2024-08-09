@@ -1,6 +1,7 @@
 package cn.iocoder.yudao.module.ppd.service.screenreagent;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeImportVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
 import jakarta.validation.Valid;
@@ -82,4 +83,11 @@ public interface ScreenReagentService {
      * 获取试剂列表
      */
     List<ScreenReagentDO> getReagentList();
+
+    /**
+     * 获取试剂列表--名称
+     */
+    List<String> getReagentList2();
+
+
 }

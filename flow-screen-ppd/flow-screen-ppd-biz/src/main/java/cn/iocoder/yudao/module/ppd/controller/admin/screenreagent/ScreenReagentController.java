@@ -98,8 +98,7 @@ public class ScreenReagentController {
     @Operation(summary = "下载试剂导入模板")
     @PreAuthorize("@ss.hasPermission('tb:screen-reagent:export')")
     @ApiAccessLog(operateType = EXPORT)
-    public void getImportTemplateReagentExcel(@Valid ScreenReagentPageReqVO pageReqVO,
-              HttpServletResponse response) throws IOException {
+    public void getImportTemplateReagentExcel(HttpServletResponse response) throws IOException {
 
         // 模板数据
         List<ScreenReagentImportVO> list = screenReagentService.createSampleData();

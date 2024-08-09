@@ -18,8 +18,7 @@
           AND deleted = 0
     </update>
 
-
-    <select id="selectIsExist" resultType="java.lang.Integer">
+    <!--<select id="selectIsExist" resultType="java.lang.Integer">
         SELECT count(*)
         FROM tb_screen_reagent
         WHERE name = #{name}
@@ -32,6 +31,14 @@
           AND package_unit = #{packageUnit}
           AND manufacturer = #{manufacturer}
           AND threshold = #{threshold}
+          AND deleted = 0
+    </select>-->
+
+
+    <select id="selectIsExist" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM tb_screen_reagent
+        WHERE name = #{name}
           AND deleted = 0
     </select>
 
@@ -47,5 +54,22 @@
         FROM tb_screen_reagent
         WHERE usable = 0
           AND deleted = 0
+    </select>
+
+
+    <select id="getReagentList2" resultType="java.lang.String">
+        SELECT name
+        FROM tb_screen_reagent
+        WHERE usable = 0
+          AND deleted = 0
+    </select>
+
+
+    <select id="selectByName"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO">
+        SELECT *
+        FROM tb_screen_reagent
+        WHERE deleted = 0
+          AND name = #{name}
     </select>
 </mapper>

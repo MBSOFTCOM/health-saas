@@ -1,10 +1,14 @@
 package cn.iocoder.yudao.module.ppd.service.screenconsume;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeImportVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumePageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeSaveReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
 import jakarta.validation.Valid;
+
+import java.util.List;
 
 /**
  * 消耗管理 Service 接口
@@ -60,4 +64,11 @@ public interface ScreenConsumeService {
      * 减少当前库存
      */
     Boolean decreaseScreenConsume(Long id, Integer number);
+
+    List<ScreenConsumeImportVO> createSampleData();
+
+    /**
+     * 导入消耗管理
+     */
+    ScreenReagentImportRespVO importScreenConsume(List<ScreenConsumeImportVO> list);
 }

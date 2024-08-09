@@ -3,13 +3,15 @@ package cn.iocoder.yudao.module.ppd.service.screenconsumerecord;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsumerecord.vo.ScreenConsumeRecordPageReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenconsumerecord.vo.ScreenConsumeRecordRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsumerecord.vo.ScreenConsumeRecordSaveReqVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsumerecord.ScreenConsumeRecordDO;
-import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsume.screenconsumerecord.ScreenConsumeRecordMapper;
-import cn.iocoder.yudao.module.ppd.service.screenconsumerecord.ScreenConsumeRecordService;
+import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsumerecord.ScreenConsumeRecordMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.module.cd.enums.ErrorCodeConstants.SCREEN_CONSUME_RECORD_NOT_EXISTS;
@@ -66,6 +68,11 @@ public class ScreenConsumeRecordServiceImpl implements ScreenConsumeRecordServic
     @Override
     public PageResult<ScreenConsumeRecordDO> getScreenConsumeRecordPage(ScreenConsumeRecordPageReqVO pageReqVO) {
         return screenConsumeRecordMapper.selectPage(pageReqVO);
+    }
+
+    @Override
+    public List<ScreenConsumeRecordRespVO> getScreenConsumeRecordList(Long id) {
+        return screenConsumeRecordMapper.getScreenConsumeRecordList(id);
     }
 
 }

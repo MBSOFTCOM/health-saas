@@ -2,9 +2,12 @@ package cn.iocoder.yudao.module.ppd.service.screenconsumerecord;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsumerecord.vo.ScreenConsumeRecordPageReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenconsumerecord.vo.ScreenConsumeRecordRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsumerecord.vo.ScreenConsumeRecordSaveReqVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsumerecord.ScreenConsumeRecordDO;
 import jakarta.validation.Valid;
+
+import java.util.List;
 
 /**
  * 消耗管理记录 Service 接口
@@ -51,4 +54,8 @@ public interface ScreenConsumeRecordService {
      */
     PageResult<ScreenConsumeRecordDO> getScreenConsumeRecordPage(ScreenConsumeRecordPageReqVO pageReqVO);
 
+    /**
+     * 获取库存记录列表
+     */
+    List<ScreenConsumeRecordRespVO> getScreenConsumeRecordList(Long id);
 }
