@@ -107,7 +107,7 @@
           <el-button
             link
             type="success"
-            @click="openForm('update', scope.row.id)"
+            @click="openForm3('update',scope.row.id)"
             v-hasPermi="['tb:screen-consume:delete']"
           >
             详情
@@ -132,12 +132,14 @@
     />
   </ContentWrap>
 
-  <!-- 表单弹窗：添加/修改 -->
+  <!-- 新增批次 -->
   <ScreenConsumeForm ref="formRef" @success="getList" />
 
   <!-- 增加、减少库存 -->
   <ScreenConsumeChangeStockForm ref="formRef2" @success="getList" />
 
+  <!-- 详情 -->
+  <ScreenConsumeDetialForm ref="formRef3" />
 </template>
 
 <script setup lang="ts">
@@ -146,6 +148,7 @@ import download from '@/utils/download'
 import { ScreenConsumeApi, ScreenConsumeVO } from '@/api/tb/screenconsume'
 import ScreenConsumeForm from './ScreenConsumeForm.vue'
 import ScreenConsumeChangeStockForm from './ScreenConsumeChangeStockForm.vue'
+import ScreenConsumeDetialForm from './ScreenConsumeDetialForm.vue'
 import {getIntDictOptions, DICT_TYPE} from '@/utils/dict'
 import {onMounted, ref, reactive} from 'vue'
 
@@ -214,7 +217,11 @@ const openForm2 = (type: string, id: number) => {
   formRef2.value.open(type, id)
 }
 
-
+/** 详情按钮操作 */
+const formRef3 = ref()
+const openForm3 = (type: string, id: number) => {
+  formRef3.value.open(type, id)
+}
 
 /** 删除按钮操作 */
 const handleDelete = async (id: number) => {

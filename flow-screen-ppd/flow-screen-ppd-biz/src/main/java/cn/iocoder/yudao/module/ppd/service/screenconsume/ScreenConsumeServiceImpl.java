@@ -7,7 +7,7 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsu
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsumerecord.ScreenConsumeRecordDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsume.ScreenConsumeMapper;
-import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsume.screenconsumerecord.ScreenConsumeRecordMapper;
+import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsumerecord.ScreenConsumeRecordMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,10 +33,14 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
     private ScreenConsumeRecordMapper screenConsumeRecordMapper;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Long createScreenConsume(ScreenConsumeSaveReqVO createReqVO) {
         // 插入
         ScreenConsumeDO screenConsume = BeanUtils.toBean(createReqVO, ScreenConsumeDO.class);
         screenConsumeMapper.insert(screenConsume);
+        screenConsumeRecordMapper.insert(
+                new ScreenConsumeRecordDO().setConsumeId(screenConsume.getId())
+                        .setType(4).setChangeNumber(screenConsume.getInboundNumber()));
         // 返回
         return screenConsume.getId();
     }

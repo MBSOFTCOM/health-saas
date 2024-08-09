@@ -1,5 +1,5 @@
 <template>
-  <Dialog title="新增批次" v-model="dialogVisible">
+  <Dialog title="批次详情" v-model="dialogVisible">
     <el-form
       ref="formRef"
       :model="formData"
@@ -14,6 +14,7 @@
           clearable
           class="!w-250px"
           @change="selectReagent(formData.reagentId)"
+          disabled
         >
           <el-option
             v-for="item in reagentList"
@@ -44,26 +45,26 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="消耗序位" prop="consumeOrder">
-            <el-input v-model="formData.consumeOrder" placeholder="请输入消耗序位" />
+            <el-input v-model="formData.consumeOrder" placeholder="请输入消耗序位" disabled/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row type="flex" justify="space-between">
         <el-col :span="11">
           <el-form-item label="批次号" prop="bathNumber">
-            <el-input v-model="formData.bathNumber" placeholder="请输入批次号" />
+            <el-input v-model="formData.bathNumber" placeholder="请输入批次号" disabled/>
           </el-form-item>
         </el-col>
         <el-col :span="11">
           <el-form-item label="入库量" prop="inboundNumber">
-            <el-input v-model="formData.inboundNumber" placeholder="请输入入库量" />
+            <el-input v-model="formData.inboundNumber" placeholder="请输入入库量" disabled/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row type="flex" justify="space-between">
         <el-col :span="11">
           <el-form-item label="有效期" prop="indate">
-            <el-input v-model="formData.indate" placeholder="请输入有效期" >
+            <el-input v-model="formData.indate" placeholder="请输入有效期" disabled>
               <template #append>(天)</template>
             </el-input>
 
@@ -76,14 +77,29 @@
               type="date"
               value-format="x"
               placeholder="选择生产日期"
+              disabled
             />
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
+    <div style="font-size: 16px;font-weight: bolder;margin-top: 30px;margin-bottom: 10px">库存记录</div>
+    <el-table v-loading="loading" :data="list" max-height="300px">
+      <el-table-column align="center" prop="changeNumber">
+        <template #default="scope">
+          库存{{scope.row.type == 2 || scope.row.type == 4 ?'+':'-'}}{{scope.row.changeNumber}}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="type">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.STOCK_RECORD_TYPE" :value="scope.row.type"/>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="createTime" :formatter="dateFormatter2"/>
+    </el-table>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
-      <el-button @click="dialogVisible = false">取 消</el-button>
+<!--      <el-button @click="dialogVisible = false">取 消</el-button>-->
     </template>
   </Dialog>
 </template>
@@ -91,14 +107,19 @@
 import { ScreenConsumeApi, ScreenConsumeVO } from '@/api/tb/screenconsume'
 import {getIntDictOptions, DICT_TYPE} from '@/utils/dict'
 import {onMounted, ref, reactive} from 'vue'
-import {DataLine} from "@element-plus/icons-vue";
+import {ScreenConsumeRecordApi} from "@/api/tb/screenconsumerecord";
+import { dateFormatter2 } from '@/utils/formatTime'
+
 
 
 /** 消耗管理 表单 */
-defineOptions({ name: 'ScreenConsumeForm' })
+defineOptions({ name: 'ScreenConsumeDetialForm' })
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
+
+const loading = ref(true) // 列表的加载中
+const list = ref([]) // 列表的数据
 
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
@@ -120,44 +141,16 @@ const formData = ref({
 })
 const reagentList = ref([]) // 试剂列表
 
-// 验证入库量
-const checkInboundNumber = (rule, value) => {
-  if (!value) {
-    return Promise.reject('请输入数字');
-  }
-  const trimmedValue = String(value).trim(); // 去除首尾空格
-  const reagentSpecsNum = parseFloat(trimmedValue); // 使用浮点数转换
-
-  if (isNaN(reagentSpecsNum)) {
-    return Promise.reject('必须为数字');
-  }
-  if (!Number.isInteger(reagentSpecsNum)) {
-    return Promise.reject('必须是整数');
-  }
-  if (reagentSpecsNum <= 0 || reagentSpecsNum > 999999) {
-    return Promise.reject('必须是大于0且不超过999999的整数');
-  }
-  return Promise.resolve();
-};
-
 const formRules = reactive({
-  reagentId: [{ required: true, message: '试剂名称不能为空', trigger: 'change' }],
-  reagentType: [{ required: true, message: '试剂类型不能为空', trigger: 'change' }],
-  consumeOrder: [
-    { required: true, message: '消耗序位不能为空', trigger: 'blur' },
-    { pattern: /^[1-9]$/, message: '消耗序位只能是1到9的整数', trigger: 'blur' }
-  ],
-  bathNumber: [{required: true, message: '批次号不能为空', trigger: 'blur'},
-    {max: 20, message: '批次号长度不能超过20个字符', trigger: 'blur'},
-    { pattern: /^[^\u4e00-\u9fa5]*$/, message: '批次号不能包含汉字', trigger: 'blur' }
-  ],
-  inboundNumber: [{ required: true, message: '入库数量不能为空', trigger: 'blur' },
-    {validator: checkInboundNumber, trigger: 'blur'}
-  ],
-  manufactureDate: [{ required: true, message: '生产日期不能为空', trigger: 'change' }],
-  indate: [{ required: true, message: '有效期不能为空', trigger: 'blur' }],
 });
 const formRef = ref() // 表单 Ref
+
+interface ScreenConsumeRecordVO {
+  id: number // 主键id
+  changeNumber: number // 变化量
+  type: number // 变化类型（1：筛查自动扣减，2：手动增加库存，3：手动减少库存）
+  consumeId: number // 消耗管理表id
+}
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
@@ -170,10 +163,13 @@ const open = async (type: string, id?: number) => {
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
+    loading.value = true
     try {
       formData.value = await ScreenConsumeApi.getScreenConsume(id)
+      list.value = await ScreenConsumeRecordApi.getScreenConsumeRecordList(id)
     } finally {
       formLoading.value = false
+      loading.value = false
     }
   }
 }
@@ -193,8 +189,8 @@ const submitForm = async () => {
       await ScreenConsumeApi.createScreenConsume(data)
       message.success(t('common.createSuccess'))
     } else {
-      await ScreenConsumeApi.updateScreenConsume(data)
-      message.success(t('common.updateSuccess'))
+      /*await ScreenConsumeApi.updateScreenConsume(data)
+      message.success(t('common.updateSuccess'))*/
     }
     dialogVisible.value = false
     // 发送操作成功的事件

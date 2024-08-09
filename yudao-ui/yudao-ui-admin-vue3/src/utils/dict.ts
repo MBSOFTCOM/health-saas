@@ -229,4 +229,5 @@ export enum DICT_TYPE {
   TB_POTENCY_UNIT = 'tb_potency_unit', //效价单位
   TB_SPECIFICATION = 'tb_specification', //规格单位
   TB_PACKAGE = 'tb_package', // 包装单位
+  STOCK_RECORD_TYPE = 'stock_record_type', // 库存记录类型
 }

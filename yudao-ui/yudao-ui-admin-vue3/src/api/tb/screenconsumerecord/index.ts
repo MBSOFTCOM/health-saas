@@ -39,4 +39,9 @@ export const ScreenConsumeRecordApi = {
   exportScreenConsumeRecord: async (params) => {
     return await request.download({ url: `/tb/screen-consume-record/export-excel`, params })
   },
-}
+
+  // 获取库存记录
+  getScreenConsumeRecordList: async (id: number) => {
+    return await request.get({ url: `/tb/screen-consume-record/get-list?id=` + id })
+  }
+}
