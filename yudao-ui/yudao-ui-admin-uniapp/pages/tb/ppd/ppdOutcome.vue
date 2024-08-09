@@ -94,6 +94,15 @@
 					</u-radio-group>
 				</view>
 			</view>
+			<image style="width: 150px;height: 150px;"  :src="selectedImage" mode="aspectFit"></image>
+			<up-button
+				class="custom-style"
+				@click="editImage(0,null)"
+				icon="plus"
+				iconColor="rgba(36, 93, 209, 1)"
+			>
+				<span >采集</span>
+			</up-button>
 			<view class="bom-m">
 				<view>医生签名</view>
 				<view class="sign-bg" v-if="!signBase64" @click="onSign">
@@ -143,6 +152,7 @@ import {
 	getCollectOen,
 	updateCollect
 } from '@/utils/sqlite';
+const imageEditor = uni.requireNativePlugin('Ba-ImageEditor')
 import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
 import {
 	getPpdList,
@@ -151,6 +161,7 @@ import {
 	getBypersonIdAndScreenOrder,
 	getBypersonIdAndScreenOrderOne
 } from '@/utils/ppd.js';
+import {getTimeStamp} from '@/utils/common'
 import { updateOne } from '/utils/screenSum.js';
 import ScreenImages from '../../../utils/screenImages.js';
 import { openTransaction } from '../../../utils/sqlite';
@@ -220,7 +231,8 @@ export default {
 			show: false,
 			signBase64: '',
 			//存储生成的时间
-			markText: ''
+			markText: '',
+			selectedImage:null
 		};
 	},
 	onLoad(e) {
@@ -312,8 +324,40 @@ export default {
 			}
 		},
 		scanId() {},
+		/**
+		 * @param {Object} type 编辑图片的类型 0-硬结 1-红晕
+		 * @param {Object} saveName 保存的文件名
+		 */
+		editImage(type,saveName){
+			if(!saveName){
+				let save=getTimeStamp(null)
+			}
+			imageEditor.selectImage(
+			(ret) => {
+			    if (ret.outputPath) {
+					imageEditor.imageEdit({
+						'isShowSticker': false, //是否展示贴图功能，默认为true
+						'path': ret.outputPath,//原始图片路径
+						'outputPath': `/storage/emulated/0/Pictures/${saveName}.jpg`,//保存图片路径
+					},
+					(res) => {
+						if (res.outputPath && res.isImageEdit) {
+							if(type){ // 红晕
+								
+							}else{
+								this.selectedImage=res.outputPath
+							}
+						}
+					});
+			    }
+			});
+			
+		},
 		//提交保存
 		async newAdd() {
+			
+			// this.FormData.doctorSignature
+			return
 			if (Object.entries(uni.$person).length === 0) {
 				uni.showModal({
 					title: '提示',

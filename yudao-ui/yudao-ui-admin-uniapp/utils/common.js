@@ -13,7 +13,24 @@ import {
   studentFourteen,
   teacher
 } from "./dictData";
+export const TYPE_MS='ms'
+export const TYPE_S='s'
 
+/**
+ * 获取当前时间时间戳
+ * @param type string
+ * @return number
+ */
+export function getTimeStamp(type){
+  if (!type){
+    type=TYPE_MS
+  }
+  let time=new Date().getTime()
+  if (type=='s'){
+    time=Math.floor(time/1000)
+  }
+  return time
+}
 export function toast(content) {
   uni.showToast({
     icon: 'none',
