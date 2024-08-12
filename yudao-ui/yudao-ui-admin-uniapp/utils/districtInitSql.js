@@ -2612,7 +2612,7 @@ export async function selectDistrict(parentCode){
 		console.log("传入父级区划为空");
 		return 
 	}
-	sql = `SELECT * FROM tb_screen_district WHERE parentCode = ${parentCode} `
+	sql = `SELECT * FROM tb_screen_district WHERE parentCode = '${parentCode}' `
 
 	return await promise(dbName,sql)
 }

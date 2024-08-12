@@ -126,27 +126,36 @@ export const tableSqls = [
 	{
 		tableName: 'tb_screen_ppd',
 		sql: `CREATE TABLE "tb_screen_ppd" (
-			"id" INTEGER PRIMARY KEY AUTOINCREMENT ,
-			"screenId" TEXT, --筛查编号
-			"syncId" INTEGER , --同步时唯一编码
-			"personId" INTEGER  , --对应摸底表中id
-			"outcome" INTEGER  , --结果。1-感染 0-未感染
-			"doctorSignature" TEXT , --医生签名
-			"transverseDiameter" REAL , --横径
-			"longitudinalDiameter" REAL , --纵径
-			"bleb" INTEGER , --1-水泡/2-双圈/3-坏死/4-淋巴管炎
-			"injection" INTEGER , --是否注射(1-是 0-否)--是否提交结果
-			"injectionWay" INTEGER , --注射方式（根据字典）
-			"injectionAgency" TEXT , --注射单位
-			"screenOrder" INTEGER,  --筛查次序
-			"screenTime" DATE, --注射时间
-			"updater" TEXT, --更新者-结果提交者
-			"updateTime" DATE, --修改时间-提交时间
-			"creator" TEXT, --创建者
-			"createTime" DATE, --创建时间
-			"screenType" INTEGER, --筛查类型  1--常规、2--新生、3--应急
-			"year" INTEGER --工作年份
-		);`
+				"id" INTEGER PRIMARY KEY AUTOINCREMENT ,--主键
+				"screenId" TEXT , -- 筛查编号(生成的编码)
+				"syncId" INTEGER , -- 同步时唯一编码
+				"personId" INTEGER , -- 对应摸底表中id
+				"idNum" TEXT , -- 身份证号
+				"reagentId" INTEGER , -- 试剂表中的id
+				"reagentSpecsNum" INTEGER , -- 试剂的使用人份
+				"transverseDiameter" INTEGER , -- 硬结的横径 单位mm
+				"longitudinalDiameter" INTEGER , -- 硬结的纵径 单位mm
+				"blushTransverseDiameter" INTEGER , -- 红晕的横径 单位mm
+				"blushLongitudinalDiameter" INTEGER , -- 红晕的纵径 单位mm
+				"bleb" INTEGER , -- 1-水泡 2-双圈 3-坏死 4-淋巴管炎 
+				"injection" INTEGER , -- 是否注射(1-是 0-否)
+				"injectionWay" INTEGER , -- 注射方式（根据字典）
+				"outcome" INTEGER , -- 结果。皮肤反应类型 1-阳性 0-阴性
+				"doctorSignature" TEXT , -- 医生签名
+				"actualPhoto" TEXT , -- ppd注射实拍图
+				"blushPhoto" TEXT , -- 红晕编辑图
+				"scleromaPhoto" TEXT , -- 硬结编辑图
+				"injectionAgency" TEXT , -- 注射单位
+				"screenOrder" INTEGER , -- 筛查次序
+				"screenTime" INTEGER , -- 筛查时间
+				"creator" TEXT , -- 创建者
+				"createTime" INTEGER , -- 创建时间
+				"updater" TEXT , -- 更新者
+				"updateTime" INTEGER , -- 更新时间
+				"deleted" INTEGER , -- 是否删除
+				"year" INTEGER , -- 年份
+				"screenType" INTEGER  -- 筛查类型  1--常规、2--新生、3--应急
+			  );`
 	},
 	{
 		tableName: 'tb_screen_chest_radiograph',
@@ -661,7 +670,7 @@ export async function promise(dataBase, sql) {
  */
 export const emptyData = (tabName) => {
 	let sql=`delete from ${tabName}`
-	console.log(sql);
+	// console.log(sql);
 	return promise(dbName,sql)
 }
 /**
