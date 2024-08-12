@@ -1089,6 +1089,7 @@ export default {
 		//初始化省级区划列表
 		provinceList() {
 			selectDistrict(0).then((res) => {
+				console.log(res);
 				this.province = res;
 				this.permanentAddressProvince = res;
 			});

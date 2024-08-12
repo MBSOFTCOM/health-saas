@@ -670,7 +670,7 @@ export async function promise(dataBase, sql) {
  */
 export const emptyData = (tabName) => {
 	let sql=`delete from ${tabName}`
-	console.log(sql);
+	// console.log(sql);
 	return promise(dbName,sql)
 }
 /**
