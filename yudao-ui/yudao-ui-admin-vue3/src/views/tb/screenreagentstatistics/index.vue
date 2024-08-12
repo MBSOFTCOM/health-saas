@@ -126,6 +126,9 @@ const resetQuery = () => {
 /** 导出按钮操作 */
 const handleExport = async () => {
   try {
+    if (queryParams.createTime.length < 1){
+      return message.error("请选择统计周期！")
+    }
     // 导出的二次确认
     await message.exportConfirm()
     // 发起导出

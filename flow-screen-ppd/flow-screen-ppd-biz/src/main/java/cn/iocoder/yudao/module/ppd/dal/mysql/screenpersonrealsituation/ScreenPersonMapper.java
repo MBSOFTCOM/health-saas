@@ -64,6 +64,7 @@ public interface ScreenPersonMapper extends BaseMapperX<ScreenPersonDO> {
                 .likeIfPresent(ScreenPersonDO::getSchoolOrTemple, reqVO.getSchoolOrTemple())
                 .eqIfPresent(ScreenPersonDO::getClassroom, reqVO.getClassroom())
                 .eqIfPresent(ScreenPersonDO::getIsNew, 1)
+                .eqIfPresent(ScreenPersonDO::getCity, reqVO.getCity())
                 .eqIfPresent(ScreenPersonDO::getTown, reqVO.getTown())
                 .eqIfPresent(ScreenPersonDO::getCounty, reqVO.getCounty())
                 .eqIfPresent(ScreenPersonDO::getScreenType,reqVO.getScreenType())
