@@ -20,11 +20,18 @@ export const tableNameList = [
 	"tb_screen_chest_radiograph",
 	"tb_screen_images"
 ]
-export const tbScreenPpd = "tb_screen_ppd"
 export const tbScreenPerson = "tb_screen_person"
 export const tbScreenDistrict = "tb_screen_district"
 //采集表
 export const tbScreenCollect = "tb_screen_collect"
+//ppd表
+export const tbScreenPpd = "tb_screen_ppd"
+// 试剂配置表
+export const tbScreenReagent = "tb_screen_reagent"
+// 试剂批次明细表
+export const tbScreenConsume = "tb_screen_consume"
+// 消耗量明细
+export const tbScreenConsumeRecord = "tb_screen_consume_record"
 // dr表名
 export const tbScreenChestRadiograph = "tb_screen_chest_radiograph"
 // ct组
@@ -147,15 +154,74 @@ export const tableSqls = [
 				"scleromaPhoto" TEXT , -- 硬结编辑图
 				"injectionAgency" TEXT , -- 注射单位
 				"screenOrder" INTEGER , -- 筛查次序
-				"screenTime" INTEGER , -- 筛查时间
+				"screenTime" DATE , -- 筛查时间
 				"creator" TEXT , -- 创建者
-				"createTime" INTEGER , -- 创建时间
+				"createTime" DATE , -- 创建时间
 				"updater" TEXT , -- 更新者
-				"updateTime" INTEGER , -- 更新时间
+				"updateTime" DATE , -- 更新时间
 				"deleted" INTEGER , -- 是否删除
 				"year" INTEGER , -- 年份
 				"screenType" INTEGER  -- 筛查类型  1--常规、2--新生、3--应急
 			  );`
+	},
+	{
+		tableName:tbScreenReagent,
+		sql: `CREATE TABLE ${tbScreenReagent}(
+			"id" INTEGER PRIMARY KEY AUTOINCREMENT ,--主键
+			"name" TEXT, -- 试剂名称 
+			"type" INTEGER, -- 试剂类型 
+			"reagentSpecsNum" INTEGER, -- 转换系数（人次） 
+			"usable" INTEGER, -- 是否启用（0正常 1停用） 
+			"titer" INTEGER, -- 效价 
+			"potencyUnit" INTEGER, -- 效价单位（1：U，2：IU） 
+			"specification" INTEGER, -- 规格 
+			"specificationUnit" INTEGER, -- 规格单位（1：ml，2：g，3：mg） 
+			"packageUnit" INTEGER, -- 包装单位（1：支，2：瓶，3：份） 
+			"manufacturer" TEXT, -- 供应商 
+			"threshold" INTEGER, -- 库存预警值（按试剂） 
+			"creator" TEXT, -- 创建者 
+			"createTime" DATE, -- 创建时间 
+			"updater" TEXT, -- 更新者 
+			"updateTime" DATE, -- 更新时间 
+			"deleted" INTEGER -- 是否删除 
+		)`
+	},
+	{
+		tableName: tbScreenConsume,
+		sql:`CREATE TABLE "${tbScreenConsume}" (
+			"id" INTEGER PRIMARY KEY AUTOINCREMENT ,--主键
+			"reagentId" INTEGER, --试剂id
+			"reagentName" TEXT, --试剂名称
+			"reagentType" INTEGER, --试剂类型
+			"consumeOrder" INTEGER, --消耗序位
+			"reagentSpecsNum" INTEGER, --转换系数（人次）
+			"threshold" INTEGER, --库存预警值（按试剂）
+			"usable" INTEGER, --是否启用（0正常 1停用）
+			"bathNumber" TEXT, --批次号
+			"currentNumber" INTEGER, --当前库存
+			"inboundNumber" INTEGER, --入库量（按试剂）
+			"indate" TEXT, --有效期
+			"manufactureDate" INTEGER, --生产日期
+			"creator" TEXT, --创建者
+			"createTime" DATE, --创建时间
+			"updater" TEXT, --更新者
+			"updateTime" DATE, --更新时间
+			"deleted" INTEGER --是否删除
+			 )`
+	},
+	{
+		tableName: tbScreenConsumeRecord,
+		sql:`CREATE TABLE "${tbScreenConsumeRecord}" (
+			"id" INTEGER PRIMARY KEY AUTOINCREMENT ,--主键
+			"consumeId" INTEGER, --消耗管理表id
+			"changeNumber" INTEGER, --变化量
+			"type" INTEGER, --变化类型（1：筛查自动扣减，2：手动增加库存，3：手动减少库存，4：入库增加库存）
+			"creator" TEXT, --创建者
+			"createTime" DATE, --创建时间
+			"updater" TEXT, --更新者
+			"updateTime" DATE, --更新时间
+			"deleted" INTEGER --是否删除
+		)`
 	},
 	{
 		tableName: 'tb_screen_chest_radiograph',

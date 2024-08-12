@@ -30,6 +30,29 @@ public interface ScreenConsumeMapper extends BaseMapperX<ScreenConsumeDO> {
     }
 
     /**
+     * 获取所有可用的试剂批号数据，现有库存大于0
+     * @param reqVO ScreenConsumePageReqVO
+     * @return List<ScreenConsumeDO>
+     */
+    default List<ScreenConsumeDO> listUsable(ScreenConsumePageReqVO reqVO) {
+        return selectList(new LambdaQueryWrapperX<ScreenConsumeDO>()
+                .eqIfPresent(ScreenConsumeDO::getReagentId,reqVO.getReagentId())
+                .eqIfPresent(ScreenConsumeDO::getUsable,0)
+                .eqIfPresent(ScreenConsumeDO::getDeleted,0)
+                .gt(ScreenConsumeDO::getCurrentNumber,0)
+                .select(
+                        ScreenConsumeDO::getId,ScreenConsumeDO::getReagentId,
+                        ScreenConsumeDO::getReagentName,ScreenConsumeDO::getReagentType,
+                        ScreenConsumeDO::getReagentSpecsNum,ScreenConsumeDO::getConsumeOrder,
+                        ScreenConsumeDO::getThreshold,ScreenConsumeDO::getUsable,
+                        ScreenConsumeDO::getBathNumber,ScreenConsumeDO::getCurrentNumber,
+                        ScreenConsumeDO::getInboundNumber,ScreenConsumeDO::getIndate,
+                        ScreenConsumeDO::getManufactureDate
+                )
+        );
+    }
+
+    /**
      *  增加入库量、当前库存
      */
     Integer increaseScreenConsume(@Param("id") Long id,
