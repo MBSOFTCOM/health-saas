@@ -3,8 +3,10 @@ package cn.iocoder.yudao.module.ppd.service.screenreagent;
 import cn.hutool.core.util.ObjectUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeImportVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.*;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportRespVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentPageReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentSaveReqVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsume.ScreenConsumeMapper;
@@ -150,6 +152,11 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
     @Override
     public PageResult<ScreenReagentDO> getScreenReagentPage(ScreenReagentPageReqVO pageReqVO) {
         return screenReagentMapper.selectPage(pageReqVO);
+    }
+
+    @Override
+    public List<ScreenReagentDO> getUsableReagent(ScreenReagentPageReqVO pageReqVO) {
+        return screenReagentMapper.selectUsable(pageReqVO);
     }
 
     @Override

@@ -54,6 +54,13 @@ public interface ScreenConsumeService {
      * @return 消耗管理分页
      */
     PageResult<ScreenConsumeDO> getScreenConsumePage(ScreenConsumePageReqVO pageReqVO);
+    /**
+     * 获得可使用的试剂批号，库存数大于0
+     *
+     * @param pageReqVO ScreenConsumePageReqVO
+     * @return List<ScreenConsumeDO>
+     */
+    List<ScreenConsumeDO> getUsableScreenConsume(ScreenConsumePageReqVO pageReqVO);
 
     /**
      * 增加入库量、当前库存

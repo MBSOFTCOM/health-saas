@@ -112,6 +112,11 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
     }
 
     @Override
+    public List<ScreenConsumeDO> getUsableScreenConsume(ScreenConsumePageReqVO pageReqVO) {
+        return screenConsumeMapper.listUsable(pageReqVO);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean increaseScreenConsume(Long id, Integer number) {
 

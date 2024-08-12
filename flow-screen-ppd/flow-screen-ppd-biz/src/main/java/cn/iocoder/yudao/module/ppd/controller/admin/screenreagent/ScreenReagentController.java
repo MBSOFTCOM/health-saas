@@ -1,33 +1,37 @@
 package cn.iocoder.yudao.module.ppd.controller.admin.screenreagent;
 
-import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.*;
-import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
-import cn.iocoder.yudao.module.ppd.service.screenreagent.ScreenReagentService;
-import cn.iocoder.yudao.module.ppd.utils.CustomSheetWriteHandler;
-import io.swagger.v3.oas.annotations.Parameters;
-import org.springframework.web.bind.annotation.*;
-import jakarta.annotation.Resource;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.security.access.prepost.PreAuthorize;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.*;
-import jakarta.servlet.http.*;
-import java.util.*;
-import java.io.IOException;
+import cn.iocoder.yudao.framework.apilog.core.annotation.ApiAccessLog;
+import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
-import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
-import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
-
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
-
-import cn.iocoder.yudao.framework.apilog.core.annotation.ApiAccessLog;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumePageReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.*;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
+import cn.iocoder.yudao.module.ppd.service.screenconsume.ScreenConsumeService;
+import cn.iocoder.yudao.module.ppd.service.screenreagent.ScreenReagentService;
+import cn.iocoder.yudao.module.ppd.utils.CustomSheetWriteHandler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
+import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
 
 
@@ -39,12 +43,21 @@ public class ScreenReagentController {
 
     @Resource
     private ScreenReagentService screenReagentService;
+    @Resource
+    private ScreenConsumeService screenConsumeService;
 
     @PostMapping("/create")
     @Operation(summary = "创建试剂")
     @PreAuthorize("@ss.hasPermission('tb:screen-reagent:create')")
     public CommonResult<Long> createScreenReagent(@Valid @RequestBody ScreenReagentSaveReqVO createReqVO) {
         return success(screenReagentService.createScreenReagent(createReqVO));
+    }
+    @PostMapping("/getRegent")
+    @Operation(summary = "获取所有可用试剂")
+    @PreAuthorize("@ss.hasPermission('tb:screen-reagent:query')")
+    public CommonResult<List<ScreenReagentRespVO>> getReagent(ScreenReagentPageReqVO pageReqVO) {
+        List<ScreenReagentDO> usableReagent = screenReagentService.getUsableReagent(pageReqVO);
+        return success(BeanUtils.toBean(usableReagent,ScreenReagentRespVO.class));
     }
 
     @PutMapping("/update")
@@ -144,4 +157,15 @@ public class ScreenReagentController {
         return success(isForbid);
     }
 
+    @GetMapping("/getObj")
+    public Object get(Object o){
+        ScreenConsumePageReqVO pageReqVO = BeanUtils.toBean(o, ScreenConsumePageReqVO.class);
+        List<ScreenConsumeDO> consume = screenConsumeService.getUsableScreenConsume(pageReqVO);
+        return consume;
+    }
+    @PostMapping("/postObj")
+    public Object post(Object o){
+        ScreenReagentPageReqVO pageReqVO = BeanUtils.toBean(o, ScreenReagentPageReqVO.class);
+        return screenReagentService.getUsableReagent(pageReqVO);
+    }
 }

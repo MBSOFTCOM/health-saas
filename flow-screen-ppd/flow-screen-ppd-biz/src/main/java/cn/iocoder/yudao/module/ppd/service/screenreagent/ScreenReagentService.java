@@ -1,8 +1,10 @@
 package cn.iocoder.yudao.module.ppd.service.screenreagent;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeImportVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.*;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportRespVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentPageReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentSaveReqVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
 import jakarta.validation.Valid;
 
@@ -53,6 +55,13 @@ public interface ScreenReagentService {
      * @return 试剂分页
      */
     PageResult<ScreenReagentDO> getScreenReagentPage(ScreenReagentPageReqVO pageReqVO);
+    /**
+     * 获得可用试剂数据
+     *
+     * @param pageReqVO ScreenReagentPageReqVO
+     * @return 可用试剂的列表
+     */
+     List<ScreenReagentDO> getUsableReagent(ScreenReagentPageReqVO pageReqVO);
 
     /**
      *禁用试剂

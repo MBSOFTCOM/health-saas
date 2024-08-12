@@ -1,16 +1,14 @@
 package cn.iocoder.yudao.module.ppd.dal.mysql.screenreagent;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
-import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
 import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
+import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentPageReqVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -32,6 +30,22 @@ public interface ScreenReagentMapper extends BaseMapperX<ScreenReagentDO> {
                 .orderByDesc(ScreenReagentDO::getId));
     }
 
+    /**
+     * 获取所有启用的试剂
+     * @param reqVO ScreenReagentPageReqVO
+     * @return List<ScreenReagentDO>
+     */
+    default List<ScreenReagentDO> selectUsable(ScreenReagentPageReqVO reqVO){
+      return selectList(new LambdaQueryWrapperX<ScreenReagentDO>()
+              .eqIfPresent(ScreenReagentDO::getUsable,0)
+              .eqIfPresent(ScreenReagentDO::getDeleted,0)
+              .eqIfPresent(ScreenReagentDO::getType,reqVO.getType())
+              .select(ScreenReagentDO::getId,ScreenReagentDO::getType,ScreenReagentDO::getReagentSpecsNum,ScreenReagentDO::getUsable,
+                      ScreenReagentDO::getTiter,ScreenReagentDO::getPotencyUnit,ScreenReagentDO::getSpecification,ScreenReagentDO::getSpecificationUnit,
+                      ScreenReagentDO::getPackageUnit,ScreenReagentDO::getManufacturer,ScreenReagentDO::getThreshold,ScreenReagentDO::getName
+                      )
+      );
+    };
     /**
      *禁用试剂
      */
