@@ -45,12 +45,13 @@
           placeholder="请选择县"
           clearable
           class="!w-200px"
+          @change="getTownList(queryParams.county)"
         >
           <el-option
             v-for="item in countyList"
-            :key="item"
-            :label="item"
-            :value="item"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
           />
         </el-select>
       </el-form-item>
@@ -65,9 +66,9 @@
         >
           <el-option
             v-for="item in townList"
-            :key="item"
-            :label="item"
-            :value="item"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
           />
         </el-select>
       </el-form-item>
@@ -357,8 +358,8 @@ const handleDistriScreenPoint = async () => {
 // 乡
 const townList = ref([])
 const copyTown = reactive([])
-const getTownList = () => {
-  ScreenDistrictApi.getTown().then(data => {
+const getTownList = (countyCode) => {
+  ScreenDistrictApi.getTown(countyCode).then(data => {
     townList.value = data;
     copyTown.splice(0, copyTown.length, ...data);
   })
@@ -383,7 +384,7 @@ const PinyinTown = (val) => {
 const countyList = ref([])
 const copyCounty = reactive([])
 const getCountyList = () => {
-  ScreenDistrictApi.getCounty().then(data => {
+  ScreenDistrictApi.getCounty(500100000000).then(data => {
     countyList.value = data;
     copyCounty.splice(0, copyCounty.length, ...data);
   })

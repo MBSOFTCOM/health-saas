@@ -4,6 +4,7 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeImportVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumePageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeSaveReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeStatisticsRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
 import jakarta.validation.Valid;
@@ -78,4 +79,9 @@ public interface ScreenConsumeService {
      * 导入消耗管理
      */
     ScreenReagentImportRespVO importScreenConsume(List<ScreenConsumeImportVO> list);
+
+    /**
+     * 消耗量管理数据统计
+     */
+    List<ScreenConsumeStatisticsRespVO> getScreenConsumeStatistics(ScreenConsumePageReqVO pageReqVO);
 }

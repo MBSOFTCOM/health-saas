@@ -68,5 +68,15 @@ export const ScreenConsumeApi = {
   // 下载导入模板
   importUserTemplate: async ()  =>{
     return await request.download({url: `/tb/screen-consume/import-template`})
+  },
+
+  // 消耗管理数据统计
+  getScreenConsumeStatistics: async (params: any) => {
+    return await request.get({ url: `/tb/screen-consume/statistics`, params })
+  },
+
+  // 导出消耗管理数据统计
+  exportScreenConsumeStatistics: async (params: any) => {
+  return await request.download({ url: `/tb/screen-consume/export-statistics`, params })
   }
 }

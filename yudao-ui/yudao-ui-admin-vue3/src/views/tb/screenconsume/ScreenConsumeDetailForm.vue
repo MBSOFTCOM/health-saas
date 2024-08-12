@@ -84,7 +84,7 @@
       </el-row>
     </el-form>
     <div style="font-size: 16px;font-weight: bolder;margin-top: 30px;margin-bottom: 10px">库存记录</div>
-    <el-table v-loading="loading" :data="list" max-height="300px">
+    <el-table v-loading="loading" :data="list" :stripe="true" max-height="300px" >
       <el-table-column align="center" prop="changeNumber">
         <template #default="scope">
           库存{{scope.row.type == 2 || scope.row.type == 4 ?'+':'-'}}{{scope.row.changeNumber}}

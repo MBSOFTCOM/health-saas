@@ -93,4 +93,8 @@ public interface ScreenConsumeMapper extends BaseMapperX<ScreenConsumeDO> {
                      @Param("bathNumber") String bathNumber,
                      @Param("indate") String indate,
                      @Param("manufactureDate") LocalDateTime manufactureDate);
+
+    List<ScreenConsumeDO> selectByTime(@Param("startDateTime") LocalDateTime startDateTime,
+                                       @Param("endDateTime") LocalDateTime endDateTime,
+                                       @Param("reagentName") String reagentName);
 }

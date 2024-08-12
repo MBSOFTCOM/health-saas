@@ -51,11 +51,11 @@ public interface ErrorCodeConstants{
 
     // ========== 试剂  ==========
     ErrorCode SCREEN_REAGENT_NOT_EXISTS = new ErrorCode(20001, "试剂不存在");
-    ErrorCode SCREEN_REAGENT_Is_EXISTS = new ErrorCode(20002, "该试剂已存在！");
+    ErrorCode SCREEN_REAGENT_Is_EXISTS = new ErrorCode(20002, "该试剂名称已存在！");
     // ========== 消耗管理记录 ==========
     ErrorCode SCREEN_CONSUME_RECORD_NOT_EXISTS = new ErrorCode(20003, "消耗管理记录不存在");
     ErrorCode SCREEN_CONSUME_CURRENT_NUMBER_IS_NOT_ENOUGH = new ErrorCode(20004, "当前库存不足已减少");
-    ErrorCode SCREEN_CONSUME_IS_EXISTS = new ErrorCode(20005, "消耗管理中有相应的记录了！");
+    ErrorCode SCREEN_CONSUME_IS_EXISTS = new ErrorCode(20005, "消耗管理中有相应的试剂记录了！");
 
 
 }
