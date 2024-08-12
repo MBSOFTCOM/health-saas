@@ -6,10 +6,7 @@ import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeImportVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumePageReqVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeRespVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeSaveReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.*;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentPageReqVO;
@@ -163,6 +160,23 @@ public class ScreenConsumeController {
     public CommonResult<ScreenReagentImportRespVO> importExcel(@RequestParam("file") MultipartFile file) throws Exception {
         List<ScreenConsumeImportVO> list = ExcelUtils.read(file, ScreenConsumeImportVO.class);
         return success(screenConsumeService.importScreenConsume(list));
+    }
+
+    @GetMapping("/statistics")
+    @Operation(summary = "获得消耗管理数据统计")
+    public CommonResult<List<ScreenConsumeStatisticsRespVO>> getScreenConsumeStatistics(@Valid ScreenConsumePageReqVO pageReqVO) {
+        List<ScreenConsumeStatisticsRespVO> pageResult = screenConsumeService.getScreenConsumeStatistics(pageReqVO);
+        return success(pageResult);
+    }
+
+    @GetMapping("/export-statistics")
+    @Operation(summary = "导出消耗管理数据统计")
+    public void exportScreenConsumeStatistics(@Valid ScreenConsumePageReqVO pageReqVO,
+                                         HttpServletResponse response) throws IOException {
+        List<ScreenConsumeStatisticsRespVO> pageResult = screenConsumeService.getScreenConsumeStatistics(pageReqVO);
+        // 导出 Excel
+        ExcelUtils.write2(response, "消耗数据统计.xls", "数据", ScreenConsumeStatisticsRespVO.class,
+                BeanUtils.toBean(pageResult, ScreenConsumeStatisticsRespVO.class));
     }
 
 }

@@ -65,4 +65,21 @@
           AND manufacture_date = #{manufactureDate}
     </select>
 
+
+    <select id="selectByTime"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO">
+        SELECT reagent_name, bath_number, IFNULL(SUM(tscd.change_number), 0) AS currentNumber
+        FROM tb_screen_consume AS tsc
+        LEFT JOIN tb_screen_consume_record AS tscd ON tsc.id = tscd.consume_id
+        WHERE
+            tsc.deleted = 0
+        AND tscd.deleted = 0
+        AND tscd.type in (1, 3)
+        <if test="startDateTime != null and endDateTime != null">
+            AND tscd.create_time BETWEEN #{startDateTime} AND #{endDateTime}
+        </if>
+        <if test="reagentName != null">AND tsc.reagent_name like CONCAT('%', #{reagentName}, '%') </if>
+        GROUP BY reagent_name, bath_number
+    </select>
+
 </mapper>

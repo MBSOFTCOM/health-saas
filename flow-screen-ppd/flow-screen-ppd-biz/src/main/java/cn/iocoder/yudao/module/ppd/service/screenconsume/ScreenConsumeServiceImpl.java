@@ -7,6 +7,7 @@ import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeImportVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumePageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeSaveReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeStatisticsRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsumerecord.ScreenConsumeRecordDO;
@@ -22,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
@@ -56,7 +58,7 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
                         screenConsume.getConsumeOrder(), screenConsume.getBathNumber(),
                         screenConsume.getIndate(), screenConsume.getManufactureDate());
 
-        if (count > 0){
+        if (count > 0) {
             throw exception(SCREEN_CONSUME_IS_EXISTS);
         }
 
@@ -80,7 +82,7 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
                         updateObj.getConsumeOrder(), updateObj.getBathNumber(),
                         updateObj.getIndate(), updateObj.getManufactureDate());
 
-        if (count > 1){
+        if (count > 1) {
             throw exception(SCREEN_CONSUME_IS_EXISTS);
         }
 
@@ -133,7 +135,7 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
 
         ScreenConsumeDO screenConsumeDO = screenConsumeMapper.selectById(id);
 
-        if (screenConsumeDO.getCurrentNumber() - number >= 0){
+        if (screenConsumeDO.getCurrentNumber() - number >= 0) {
             Integer count = screenConsumeMapper.decreaseScreenConsume(id, number);
 
             int insertCount =
@@ -144,7 +146,7 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
                                     .setType(3));
 
             return count > 0 && insertCount > 0;
-        }else {
+        } else {
             throw exception(SCREEN_CONSUME_CURRENT_NUMBER_IS_NOT_ENOUGH);
         }
     }
@@ -182,19 +184,19 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
         }
 
         for (ScreenConsumeImportVO obj : filteredList) {
-            if (ObjectUtil.isNull(obj.getReagentName())){
+            if (ObjectUtil.isNull(obj.getReagentName())) {
                 failureSpecification.put(count, "没有选择试剂");
-            }else if (ObjectUtil.isNull(obj.getConsumeOrder())){
+            } else if (ObjectUtil.isNull(obj.getConsumeOrder())) {
                 failureSpecification.put(count, "消耗序位为空");
-            }else if (ObjectUtil.isNull(obj.getBathNumber())){
+            } else if (ObjectUtil.isNull(obj.getBathNumber())) {
                 failureSpecification.put(count, "批次号为空");
-            }else if (ObjectUtil.isNull(obj.getInboundNumber())){
+            } else if (ObjectUtil.isNull(obj.getInboundNumber())) {
                 failureSpecification.put(count, "入库量为空");
-            }else if (ObjectUtil.isNull(obj.getManufactureDate())){
+            } else if (ObjectUtil.isNull(obj.getManufactureDate())) {
                 failureSpecification.put(count, "生产日期为空");
-            }else if (ObjectUtil.isNull(obj.getIndate())){
+            } else if (ObjectUtil.isNull(obj.getIndate())) {
                 failureSpecification.put(count, "有效期为空");
-            }else {
+            } else {
                 String manufactureDateStr = obj.getManufactureDate();
                 // 创建一个 DateTimeFormatter 对象来解析字符串
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/M/d");
@@ -208,9 +210,9 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
                         screenConsumeMapper.isExist2(obj.getReagentName(),
                                 obj.getConsumeOrder(), obj.getBathNumber(),
                                 obj.getIndate(), localDateTime);
-                if (isExist > 0){
+                if (isExist > 0) {
                     failureSpecification.put(count, "该消耗管理已存在");
-                }else {
+                } else {
                     ScreenReagentDO screenReagentDO =
                             screenReagentMapper.selectByName(obj.getReagentName());
 
@@ -253,5 +255,64 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
         return screenReagentImportRespVO.setCreateSpecification(createSpecification)
                 .setFailureSpecification(failureSpecification);
     }
+
+    @Override
+    public List<ScreenConsumeStatisticsRespVO> getScreenConsumeStatistics(ScreenConsumePageReqVO pageReqVO) {
+        List<ScreenConsumeStatisticsRespVO> resultList = new ArrayList<>();
+
+        if (ObjectUtil.isNotNull(pageReqVO.getCreateTime()) && pageReqVO.getCreateTime().length > 1) {
+            LocalDateTime[] createTime = pageReqVO.getCreateTime();
+            LocalDateTime startDateTime = createTime[0];
+            LocalDateTime endDateTime = createTime[1];
+
+            long periodDays = ChronoUnit.DAYS.between(startDateTime, endDateTime);
+
+            LocalDateTime previousStartDateTime = startDateTime.minusDays(periodDays + 1);
+            LocalDateTime previousEndDateTime = endDateTime.minusDays(periodDays + 1);
+
+            List<ScreenConsumeDO> list = screenConsumeMapper.selectByTime(startDateTime, endDateTime, pageReqVO.getReagentName());
+            List<ScreenConsumeDO> preList = screenConsumeMapper.selectByTime(previousStartDateTime, previousEndDateTime, pageReqVO.getReagentName());
+
+            if (ObjectUtil.isNotNull(list) && !list.isEmpty()) {
+                Map<String, ScreenConsumeDO> preListMap = new HashMap<>();
+                if (ObjectUtil.isNotNull(preList) && !preList.isEmpty()) {
+                    preList.forEach(obj2 -> {
+                        String key = obj2.getReagentName() + "-" + obj2.getBathNumber();
+                        preListMap.put(key, obj2);
+                    });
+                }
+
+                for (ScreenConsumeDO obj1 : list) {
+                    String key = obj1.getReagentName() + "-" + obj1.getBathNumber();
+                    ScreenConsumeStatisticsRespVO respVO = new ScreenConsumeStatisticsRespVO();
+                    respVO.setReagentName(obj1.getReagentName())
+                            .setBathNumber(obj1.getBathNumber())
+                            .setConsumption(obj1.getCurrentNumber());
+
+                    ScreenConsumeDO obj2 = preListMap.get(key);
+                    double percentage = 0.0;
+                    if (obj2 != null) {
+                        if (obj2.getCurrentNumber() != 0) {
+                            percentage = (1.0 * (obj1.getCurrentNumber() - obj2.getCurrentNumber())) / obj2.getCurrentNumber();
+                        }
+                    }
+
+                    // 乘以 100 并保留两位小数
+                    respVO.setConsumptionPercentage(Math.round(percentage * 100 * 100.0) / 100.0);
+
+                    resultList.add(respVO);
+                }
+
+                return resultList.stream().distinct().toList();
+            }
+            return new ArrayList<>();
+        }
+        return new ArrayList<>();
+    }
+
+
+
+
+
 
 }
