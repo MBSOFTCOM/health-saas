@@ -52,7 +52,7 @@ public class ScreenReagentController {
     public CommonResult<Long> createScreenReagent(@Valid @RequestBody ScreenReagentSaveReqVO createReqVO) {
         return success(screenReagentService.createScreenReagent(createReqVO));
     }
-    @PostMapping("/getRegent")
+    @GetMapping("/getRegent")
     @Operation(summary = "获取所有可用试剂")
     @PreAuthorize("@ss.hasPermission('tb:screen-reagent:query')")
     public CommonResult<List<ScreenReagentRespVO>> getReagent(ScreenReagentPageReqVO pageReqVO) {

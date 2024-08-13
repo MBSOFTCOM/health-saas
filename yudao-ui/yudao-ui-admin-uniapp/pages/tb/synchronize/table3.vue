@@ -23,6 +23,16 @@
 						class="custom-sync"
 						text="同步"
 					></up-button>
+					<up-button
+						@click="downloadReagent"
+						style="margin-left: 10px"
+						type="success"
+						icon="download"
+						iconColor="#fff"
+						:plain="true"
+						class="custom-sync"
+						text="同步"
+					></up-button>
 				</view>
 			</view>
 			<view class="top">
@@ -317,6 +327,9 @@ export default {
 		//注射方式
 		injection(value) {
 			return injectionWayMap[value];
+		},
+		downloadReagent(){
+			
 		},
 		// pc到平板
 		PcToPad() {

@@ -264,6 +264,18 @@
 						:plain="true"
 						text="查看筛查流程"
 					></up-button>
+					<up-button
+						@click="coverRegent()"
+						style="width: 115px"
+						type="primary"
+						:plain="true"
+						text="同步试剂"/>
+					<up-button
+						@click="coverConsume()"
+						style="width: 115px"
+						type="primary"
+						:plain="true"
+						text="同步试剂批号"/>
 				</view>
 			</view>
 		</view>
@@ -578,12 +590,12 @@
 </template>
 
 <script>
-import { commitTransaction, openTransaction, rollbackTransaction } from '../../../utils/sqlite';
+import { commitTransaction, openTransaction, rollbackTransaction } from '@/utils/sqlite';
 
 const ocrModule = uni.requireNativePlugin('YY-TomatoOCR');
 const mpaasScanModule = uni.requireNativePlugin('Mpaas-Scan-Module');
-import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
-import { updateOne } from '/utils/screenSum.js';
+import dbUtils from '@/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
+import { updateOne } from '@/utils/screenSum.js';
 import {
 	dbName,
 	tbScreenPerson,
@@ -606,6 +618,8 @@ import { tbScreenImages, splitDecimalIntoList, getCollectOen } from '@/utils/sql
 import { parsePatientType } from '@/utils/common.js';
 import { parseNext } from '../../../utils/common';
 import { personType } from '../../../utils/dictData';
+import * as regentApi from '@/api/screen/regent'
+import * as consumeApi from '@/api/screen/consume'
 export default {
 	data() {
 		return {
@@ -735,6 +749,21 @@ export default {
 			}
 
 			return this.nav;
+		},
+		coverRegent(){
+			// regentApi.getRegentData().then(res=>{
+			// 	console.log(res);
+			// })
+			regentApi.coverDataAuto()
+			regentApi.getDataFromLocal().then((res)=>{
+				console.log(res);
+			})
+		},
+		coverConsume(){
+			// regentApi.getDataFromLocal().then((res)=>{
+			// 	console.log(res);
+			// })
+			consumeApi.coverDataAuto()
 		},
 		reviewProcess() {
 			this.showProcess = true;
