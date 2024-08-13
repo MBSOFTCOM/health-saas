@@ -10,6 +10,7 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsu
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeStatisticsRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportRespVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsumerecord.ScreenConsumeRecordDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
@@ -197,6 +198,9 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
         List<ScreenConsumeImportVO> filteredList = list.stream()
                 .filter(vo -> !vo.isEmpty(vo)).toList();
 
+        // 数据去重
+        List<ScreenConsumeImportVO> distinctImportList = filteredList.stream().distinct().toList();
+
         // 批量导入列表
         List<ScreenConsumeDO> batchInsert = new ArrayList<>();
         // 导入成功的列表
@@ -211,11 +215,11 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
 
         Long myDeptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
 
-        if (filteredList.isEmpty()) {
+        if (distinctImportList.isEmpty()) {
             return screenReagentImportRespVO;
         }
 
-        for (ScreenConsumeImportVO obj : filteredList) {
+        for (ScreenConsumeImportVO obj : distinctImportList) {
             if (ObjectUtil.isNull(obj.getReagentName())) {
                 failureSpecification.put(count, "没有选择试剂");
             } else if (ObjectUtil.isNull(obj.getConsumeOrder())) {

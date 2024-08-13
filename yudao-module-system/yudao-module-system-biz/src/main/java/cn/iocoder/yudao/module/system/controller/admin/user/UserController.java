@@ -178,7 +178,7 @@ public class UserController {
     @Operation(summary = "导入用户")
     @Parameters({
             @Parameter(name = "file", description = "Excel 文件", required = true),
-            @Parameter(name = "updateSupport", description = "是否支持更新，默认为 false", example = "true")
+            @Parameter(name = "updateSupport", description = "是否支持更新，默认为 false")
     })
     @PreAuthorize("@ss.hasPermission('system:user:import')")
     public CommonResult<UserImportRespVO> importExcel(@RequestParam("file") MultipartFile file,

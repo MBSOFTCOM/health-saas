@@ -14,6 +14,7 @@ import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsume.ScreenConsumeMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenreagent.ScreenReagentMapper;
 import cn.iocoder.yudao.module.system.api.dict.DictDataApi;
 import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
+import cn.iocoder.yudao.module.system.controller.admin.user.vo.user.UserImportExcelVO;
 import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import jakarta.annotation.Resource;
@@ -231,6 +232,9 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
         List<ScreenReagentImportVO> filteredList = list.stream()
                 .filter(vo -> !vo.isEmpty(vo)).toList();
 
+        // 数据去重
+        List<ScreenReagentImportVO> distinctImportList = filteredList.stream().distinct().toList();
+
         // 批量导入列表
         List<ScreenReagentDO> batchInsert = new ArrayList<>();
         // 导入成功的列表
@@ -243,11 +247,11 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
 
         Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
 
-        if (filteredList.isEmpty()) {
+        if (distinctImportList.isEmpty()) {
             return screenReagentImportRespVO;
         }
 
-        for (ScreenReagentImportVO obj : filteredList) {
+        for (ScreenReagentImportVO obj : distinctImportList) {
             if (ObjectUtil.isNull(obj.getName())) {
                 failureSpecification.put(count, "试剂名称为空");
             } else if (ObjectUtil.isNull(obj.getType())) {
