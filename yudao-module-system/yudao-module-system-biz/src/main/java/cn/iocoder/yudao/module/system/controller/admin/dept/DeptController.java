@@ -82,11 +82,22 @@ public class DeptController {
         return success(BeanUtils.toBean(dept, DeptRespVO.class));
     }
 
+//    ----------------------------------------------------------------------------------------------
+
     @GetMapping("/get-my-dept")
     @Operation(summary = "获得登录账号部门id")
     public CommonResult<Long> getMyDept() {
         Long loginUserId = SecurityFrameworkUtils.getLoginUserId();
         return success(deptService.getMyDept(loginUserId));
+    }
+
+    @GetMapping("/get-my-deptList")
+    @Operation(summary = "获得本部门及以下的部门列表")
+    public CommonResult<List<DeptSimpleRespVO>> getMyDeptList() {
+        Long loginUserId = SecurityFrameworkUtils.getLoginUserId();
+        List<DeptDO> childDeptList = deptService.getChildDeptList(deptService.getMyDept(loginUserId));
+        childDeptList.add(deptService.getDept(deptService.getMyDept(loginUserId)));
+        return success(BeanUtils.toBean(childDeptList, DeptSimpleRespVO.class));
     }
 
 }

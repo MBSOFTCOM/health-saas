@@ -5,10 +5,13 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
 import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenrepeatperson.vo.ScreenRepeatPersonPageReqVO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenrepeatperson.ScreenRepeatPersonDO;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 重复筛查人员管理 Mapper
@@ -40,6 +43,7 @@ public interface ScreenRepeatPersonMapper extends BaseMapperX<ScreenRepeatPerson
                 .likeIfPresent(ScreenRepeatPersonDO::getName, reqVO.getName())
                 .likeIfPresent(ScreenRepeatPersonDO::getTel, reqVO.getTel())
                 .eqIfPresent(ScreenRepeatPersonDO::getSex, reqVO.getSex())
+                .inIfPresent(ScreenRepeatPersonDO::getDeptId, reqVO.getDeptList())
                 .orderByDesc(ScreenRepeatPersonDO::getIdNum));
     }
 
@@ -59,7 +63,7 @@ public interface ScreenRepeatPersonMapper extends BaseMapperX<ScreenRepeatPerson
      * 查询是否有剩余未处理的重复人员
      * @return 返回剩余未处理的记录条数
      */
-    Integer getIsRemainRepeatPerson();
+    Integer getIsRemainRepeatPerson(List<Long> deptIds);
 
 
     /**

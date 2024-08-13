@@ -77,7 +77,11 @@ public interface ScreenPersonService {
     /**
      * 导入摸底/待筛查人员
      */
-    ScreenPersonImportRespVO importScreenPerson(List<ScreenPersonImportVO> list, Integer year, Integer screenType, LocalDateTime screenStartTime, LocalDateTime screenEndTime);
+    ScreenPersonImportRespVO importScreenPerson(List<ScreenPersonImportVO> list,
+                                                Integer year, Integer screenType,
+                                                LocalDateTime screenStartTime,
+                                                LocalDateTime screenEndTime,
+                                                Long deptId);
 
     /**
      * 摸底人员导入模板

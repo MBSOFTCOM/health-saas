@@ -490,6 +490,7 @@ import {onMounted, ref, reactive, watch} from 'vue'
 import {ScreenDistrictApi} from '@/api/tb/screendistrict'
 import {ScreenPointApi} from "@/api/tb/screenpoint";
 import moment from "moment";
+import * as DeptApi from "@/api/system/dept";
 
 /** 摸底 表单 */
 defineOptions({name: 'ScreenPersonForm'})

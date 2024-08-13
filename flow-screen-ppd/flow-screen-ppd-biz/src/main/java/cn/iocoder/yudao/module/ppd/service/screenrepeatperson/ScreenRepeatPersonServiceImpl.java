@@ -5,6 +5,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
+import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenrepeatperson.vo.ScreenRepeatPersonPageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenrepeatperson.vo.ScreenRepeatPersonSaveReqVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
@@ -14,6 +15,8 @@ import cn.iocoder.yudao.module.ppd.dal.mysql.screenpersonrealsituation.ScreenPer
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenrepeatperson.ScreenRepeatPersonMapper;
 import cn.iocoder.yudao.module.system.api.dict.DictDataApi;
 import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
+import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
+import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +47,8 @@ public class ScreenRepeatPersonServiceImpl implements ScreenRepeatPersonService 
     private ScreenPersonMapper screenPersonMapper;
     @Resource
     private ScreenDistrictMapper screenDistrictMapper;
+    @Resource
+    private DeptService deptService;
 
     @Override
     public Long createScreenRepeatPerson(ScreenRepeatPersonSaveReqVO createReqVO) {
@@ -122,13 +127,39 @@ public class ScreenRepeatPersonServiceImpl implements ScreenRepeatPersonService 
 
     @Override
     public PageResult<ScreenRepeatPersonDO> getScreenRepeatPersonPage(ScreenRepeatPersonPageReqVO pageReqVO) {
+
+        Long loginUserId = SecurityFrameworkUtils.getLoginUserId();
+        Long myDeptId = deptService.getMyDept(loginUserId);
+
+        // 获取所有子部门以及当前部门
+        List<DeptDO> childDeptList = deptService.getChildDeptList(myDeptId);
+        childDeptList.add(deptService.getDept(myDeptId));
+
+        // 提取部门ID
+        List<Long> deptIds = childDeptList.stream()
+                .map(DeptDO::getId)
+                .collect(Collectors.toList());
+
+        pageReqVO.setDeptList(deptIds);
+
         return screenRepeatPersonMapper.selectPage(pageReqVO);
     }
 
     @Override
     public Boolean getIsRemainRepeatPerson() {
-        Integer count = screenRepeatPersonMapper.getIsRemainRepeatPerson();
-        System.out.println(count);
+
+        Long loginUserId = SecurityFrameworkUtils.getLoginUserId();
+        Long myDeptId = deptService.getMyDept(loginUserId);
+
+        // 获取所有子部门以及当前部门
+        List<DeptDO> childDeptList = deptService.getChildDeptList(myDeptId);
+        childDeptList.add(deptService.getDept(myDeptId));
+
+        // 提取部门ID
+        List<Long> deptIds = childDeptList.stream()
+                .map(DeptDO::getId).toList();
+
+        Integer count = screenRepeatPersonMapper.getIsRemainRepeatPerson(deptIds);
         return count != null && count != 0;
     }
 

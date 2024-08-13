@@ -42,7 +42,13 @@ export const deleteDept = async (id: number) => {
   return await request.delete({ url: '/system/dept/delete?id=' + id })
 }
 
+// 获得登录账号部门id
 export async function getMyDeptId() {
   return await request.get({url: `/system/dept/get-my-dept`})
+}
+
+// 获得本部门及以下的部门列表
+export async function getMyDeptList() {
+  return await request.get({url: `/system/dept/get-my-deptList`})
 }
 
