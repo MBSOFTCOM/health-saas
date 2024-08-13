@@ -37,6 +37,24 @@
           class="!w-140px"
         />
       </el-form-item>
+      <el-form-item label="市" prop="city">
+        <el-select
+          v-model="queryParams.city"
+          filterable
+          :filter-method="PinyinCity"
+          placeholder="请选择市"
+          clearable
+          class="!w-240px"
+          @change="getCountyList(queryParams.city)"
+        >
+          <el-option
+            v-for="item in cityList"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="县" prop="county">
         <el-select
           v-model="queryParams.county"
@@ -225,6 +243,7 @@ const queryParams = reactive({
   classroom: undefined,
   town: undefined,
   county: undefined,
+  city: undefined,
   isNew: undefined,
   isNewStudent: undefined,
   isScreened: undefined,
@@ -241,8 +260,10 @@ const screenPointName = ref('')
 const titleType = ref()
 
 interface Ids {
-  id: umnber,
+  id: number,
 }
+
+const cityList = ref([]) //市列表
 
 // 待 分配筛查点的人员id
 const waitScreenIds = ref([])
@@ -267,7 +288,7 @@ defineExpose({open}) // 提供 open 方法，用于打开弹窗
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
-  if (queryParams.name || queryParams.idNum || queryParams.year || queryParams.town || queryParams.county) {
+  if (queryParams.name || queryParams.idNum || queryParams.year || queryParams.town || queryParams.county || queryParams.city) {
     getList()
   }
 }
@@ -312,7 +333,8 @@ const resolveMoreType = (value) => {
     8: '密接者',
     16: '糖尿病',
     32: '僧尼',
-    64: '既往患者'
+    64: '既往患者',
+    128: 'HIV/AIDS'
   }
 
   // 将分类编号进行排序
@@ -383,8 +405,8 @@ const PinyinTown = (val) => {
 // 县
 const countyList = ref([])
 const copyCounty = reactive([])
-const getCountyList = () => {
-  ScreenDistrictApi.getCounty(500100000000).then(data => {
+const getCountyList = (cityCode) => {
+  ScreenDistrictApi.getCounty(cityCode).then(data => {
     countyList.value = data;
     copyCounty.splice(0, copyCounty.length, ...data);
   })
@@ -405,9 +427,34 @@ const PinyinCounty = (val) => {
   }
 }
 
+// 市
+const copyCity = reactive([])
+const getCityList = () => {
+  ScreenDistrictApi.getCity("500000000000").then(data => {
+    cityList.value = data;
+    copyCity.splice(0, copyCity.length, ...data);
+  })
+}
+const PinyinCity = (val) => {
+  if (val) {
+    const result = []
+    cityList.value.forEach((i) => {
+      const m = PinyinMatch.match(i.name, val)
+      if (m) {
+        result.push(i)
+      }
+    })
+    cityList.value.splice(0, cityList.value.length, ...result)
+  } else {
+    // 如果没有输入，则还原列表
+    cityList.value.splice(0, cityList.value.length, ...copyCity)
+  }
+}
+
 /** 初始化 **/
 onMounted(async () => {
-  getTownList()
-  getCountyList()
+  /*getTownList()
+  getCountyList()*/
+  await getCityList()
 })
 </script>

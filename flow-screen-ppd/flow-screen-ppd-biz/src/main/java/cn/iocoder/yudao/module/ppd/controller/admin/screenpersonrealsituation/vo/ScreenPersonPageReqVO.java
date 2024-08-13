@@ -60,6 +60,9 @@ public class ScreenPersonPageReqVO extends PageParam {
     @Schema(description = "现住址-县")
     private String county;
 
+    @Schema(description = "现住址-市")
+    private String city;
+
     @Schema(description = "现住址-乡镇")
     private String town;
 
