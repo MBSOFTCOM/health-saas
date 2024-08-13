@@ -472,9 +472,31 @@
         </el-col>
       </el-row>
 
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="formData.remark" placeholder="请输入备注" type="textarea"/>
-      </el-form-item>
+      <el-row type="flex" justify="space-between">
+        <el-col :span="11">
+          <el-form-item label="所属管理部门:" label-width="120px" prop="deptId">
+            <el-select
+              v-model="formData.deptId"
+              filterable
+              placeholder="请选择"
+              clearable
+              class="!w-170px"
+            >
+              <el-option
+                v-for="item in deptList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="备注" prop="remark">
+            <el-input v-model="formData.remark" placeholder="请输入备注" type="textarea"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -539,6 +561,8 @@ const formData = ref({
   screenEndTime: undefined,
   guardianTel: undefined,
   timeRange: undefined,
+  remark: undefined,
+  deptId: undefined,
 })
 const provinceList = ref([]) //省列表
 const cityList = ref([]) //市列表
@@ -556,6 +580,7 @@ const copyCounty2 = reactive([])
 const copyCity2 = reactive([])
 const copyCity = reactive([])
 
+const deptList = ref([]) // 部门列表
 
 const villageList = ref([]) //村列表
 const ethnicList = ref([]) // 民族列表
@@ -691,24 +716,27 @@ const formRules = reactive({
   // isNewStudent: [{required: true, message: '请选择是否为新生', trigger: 'change'}],
   // screenPoint:[{required: true, message: '请选择筛查点', trigger: 'blur'}],
   year: [{validator: checkYear, trigger: 'blur'},{required: true, message: '请输入年度', trigger: 'blur'}],
-  screenType: [{required: true, message: '请选择筛查类型', trigger: 'blur'}],
-  timeRange: [{required: true, message: '请选择筛查时间', trigger: 'blur'}],
+  screenType: [{required: true, message: '请选择筛查类型', trigger: 'change'}],
+  timeRange: [{required: true, message: '请选择筛查时间', trigger: 'change'}],
   height: [
     {validator: checkHeight, trigger: 'change'}
   ],
   weight: [
     {validator: checkWeight, trigger: 'change'}
   ],
+  deptId: [
+    {required: true, message: '请选择管理部门', trigger: 'change'}
+  ]
 })
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
-
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
+  getDeptList()
   // 新增 时给默认值
   formData.value.year = new Date().getFullYear();
   formData.value.screenType = 1;
@@ -774,6 +802,9 @@ const submitForm = async () => {
         if (formData.value.studentType == undefined){
           message.error('请选择学生类别！')
           return
+        } else if (formData.value.isNewStudent == undefined){
+          message.error('请选择是否为新生！')
+          return
         }
       }
 
@@ -787,6 +818,9 @@ const submitForm = async () => {
       if (formData.value.firstType == 1 && formData.value.moreTempType.includes(1)){
         if (formData.value.studentType == undefined){
           message.error('请选择学生类别！')
+          return
+        }else if (formData.value.isNewStudent == undefined){
+          message.error('请选择是否为新生！')
           return
         }
       }
@@ -1127,6 +1161,10 @@ const formatTime2 = () =>{
   const dateString1 = moment(timestamp1).toISOString(); // 转换为 ISO 8601 格式的日期时间字符串
   const dateString2 = moment(timestamp2).toISOString(); // 转换为 ISO 8601 格式的日期时间字符串
   formData.value.timeRange = [dateString1,dateString2];
+}
+
+const getDeptList = async () => {
+  deptList.value = await DeptApi.getMyDeptList();
 }
 
 /** 初始化 **/

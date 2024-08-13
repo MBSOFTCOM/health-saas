@@ -140,4 +140,7 @@ public class ScreenPersonSaveReqVO {
     @Schema(description = "监护人手机号")
     private String guardianTel;
 
+    @Schema(description = "部门id")
+    private Long deptId;
+
 }

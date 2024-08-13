@@ -171,4 +171,7 @@ public class ScreenPersonRespVO {
 
     @Schema(description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime createTime;
+
+    @Schema(description = "部门id")
+    private Long deptId;
 }

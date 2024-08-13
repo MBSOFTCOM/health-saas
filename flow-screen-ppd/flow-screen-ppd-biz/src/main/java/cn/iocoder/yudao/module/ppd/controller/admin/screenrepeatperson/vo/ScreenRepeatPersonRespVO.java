@@ -164,6 +164,7 @@ public class ScreenRepeatPersonRespVO {
     @Schema(description = "同步时唯一编码")
     private Long syncId;
 
-
+    @Schema(description = "部门id")
+    private Long deptId;
 
 }

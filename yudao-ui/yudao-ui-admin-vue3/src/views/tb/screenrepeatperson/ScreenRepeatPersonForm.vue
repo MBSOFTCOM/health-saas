@@ -470,11 +470,34 @@
         </el-col>
       </el-row>
 
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="formData.remark" placeholder="请输入备注" type="textarea"/>
-      </el-form-item>
+      <el-row type="flex" justify="space-between">
+        <el-col :span="11">
+          <el-form-item label="所属管理部门:" label-width="120px" prop="deptId">
+            <el-select
+              v-model="formData.deptId"
+              filterable
+              placeholder="请选择"
+              clearable
+              class="!w-170px"
+            >
+              <el-option
+                v-for="item in deptList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="备注" prop="remark">
+            <el-input v-model="formData.remark" placeholder="请输入备注" type="textarea"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
-    <template #footer>
+
+      <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
@@ -488,6 +511,7 @@ import PinyinMatch from "pinyin-match";
 import {ScreenPointApi} from "@/api/tb/screenpoint";
 import {ScreenDistrictApi} from "@/api/tb/screendistrict";
 import moment from "moment";
+import * as DeptApi from "@/api/system/dept";
 
 /** 重复筛查人员管理 表单 */
 defineOptions({ name: 'ScreenRepeatPersonForm' })
@@ -540,6 +564,7 @@ const formData = ref({
   screenEndTime: undefined,
   guardianTel: undefined,
   timeRange: undefined,
+  deptId: undefined,
 })
 const ethnicList = ref([]) // 民族列表
 const pointList = ref([]) // 筛查点列表
@@ -561,6 +586,8 @@ const provinceList = ref([]) //省列表
 const cityList = ref([]) //市列表
 const countyList = ref([]) // 县列表
 const townList = ref([]) //乡镇列表
+
+const deptList = ref([]) // 部门列表
 
 const cityList2 = ref([]) //户籍市列表
 const countyList2 = ref([]) // 户籍县列表
@@ -687,7 +714,10 @@ const formRules = reactive({
   // screenPoint:[{required: true, message: '请选择筛查点', trigger: 'blur'}],
   year: [{validator: checkYear, trigger: 'blur'},{required: true, message: '请输入年度', trigger: 'blur'}],
   screenType: [{required: true, message: '请选择筛查类型', trigger: 'blur'}],
-  timeRange: [{required: true, message: '请选择筛查时间', trigger: 'blur'}]
+  timeRange: [{required: true, message: '请选择筛查时间', trigger: 'blur'}],
+  deptId: [
+    {required: true, message: '请选择管理部门', trigger: 'change'}
+  ]
 })
 const formRef = ref() // 表单 Ref
 
@@ -697,6 +727,7 @@ const open = async (type: string, id?: number) => {
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
+  getDeptList()
   // 新增 时给默认值
   formData.value.year = new Date().getFullYear();
   formData.value.screenType = 1;
@@ -754,6 +785,21 @@ const submitForm = async () => {
       await ScreenRepeatPersonApi.createScreenRepeatPerson(data)
       message.success(t('common.createSuccess'))
     } else {
+
+      // 如果选择了非重点人群，则把多人群分类置零
+      if (data.firstType == 2) {
+        data.moreType = 0
+      }
+      if (formData.value.firstType == 1 && formData.value.moreTempType.includes(1)){
+        if (formData.value.studentType == undefined){
+          message.error('请选择学生类别！')
+          return
+        }else if (formData.value.isNewStudent == undefined){
+          message.error('请选择是否为新生！')
+          return
+        }
+      }
+
       await ScreenRepeatPersonApi.updateScreenRepeatPerson(data)
       message.success(t('common.updateSuccess'))
     }
@@ -1088,6 +1134,10 @@ const formatTime2 = () =>{
   const dateString1 = moment(timestamp1).toISOString(); // 转换为 ISO 8601 格式的日期时间字符串
   const dateString2 = moment(timestamp2).toISOString(); // 转换为 ISO 8601 格式的日期时间字符串
   formData.value.timeRange = [dateString1,dateString2];
+}
+
+const getDeptList = async () => {
+  deptList.value = await DeptApi.getMyDeptList();
 }
 
 /** 初始化 **/
