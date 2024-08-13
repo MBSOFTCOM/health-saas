@@ -8,9 +8,6 @@ import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.*;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportRespVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentPageReqVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
 import cn.iocoder.yudao.module.ppd.service.screenconsume.ScreenConsumeService;
@@ -53,7 +50,13 @@ public class ScreenConsumeController {
     public CommonResult<Long> createScreenConsume(@Valid @RequestBody ScreenConsumeSaveReqVO createReqVO) {
         return success(screenConsumeService.createScreenConsume(createReqVO));
     }
-
+    @GetMapping("/getUsable")
+    @Operation(summary = "获取可用的试剂批号明细")
+    @PreAuthorize("@ss.hasPermission('tb:screen-consume:query')")
+    public CommonResult<List<ScreenConsumeDO>> getUsableConsume(ScreenConsumePageReqVO reqVO){
+        List<ScreenConsumeDO> consume = screenConsumeService.getUsableScreenConsume(reqVO);
+        return success(consume);
+    }
     @PutMapping("/update")
     @Operation(summary = "更新消耗管理")
     @PreAuthorize("@ss.hasPermission('tb:screen-consume:update')")
