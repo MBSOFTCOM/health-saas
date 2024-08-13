@@ -263,9 +263,8 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-<!--      <el-table-column type="index" label="序号" align="center" width="65"
-                       :show-overflow-tooltip="false" fixed="left"/>-->
-      <el-table-column label="筛查编号" align="center" prop="screenId" width="190" fixed="left"/>
+      <el-table-column type="index" label="序号" align="center" width="65"
+                       :show-overflow-tooltip="false" fixed="left"/>
       <el-table-column label="操作" align="center" fixed="right" width="160">
         <template #default="scope">
           <el-button link type="primary" @click="openForm('update', scope.row.id)"
@@ -322,6 +321,7 @@
           {{ new Date(scope.row.screenStartTime).toLocaleDateString() }}-{{ new Date(scope.row.screenEndTime).toLocaleDateString() }}
         </template>
       </el-table-column>
+      <el-table-column label="筛查编号" align="center" prop="screenId" width="190"/>
       <el-table-column label="联系电话" align="center" prop="tel" width="120"/>
       <el-table-column label="性别" align="center" prop="sex">
         <template #default="scope">
@@ -374,7 +374,7 @@ import {onMounted, ref, reactive, nextTick} from 'vue'
 import ScreenPersonImportForm from './ScreenPersonImportForm.vue'
 
 /** 摸底 列表 */
-defineOptions({name: 'ScreenedPerson'})
+defineOptions({name: 'PrepareScreenPerson'})
 
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化

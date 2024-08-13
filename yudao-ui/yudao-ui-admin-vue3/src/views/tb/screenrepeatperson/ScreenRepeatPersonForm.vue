@@ -878,6 +878,9 @@ const getCityList = (provinceCode) => {
     cityList.value = data;
     copyCity.splice(0, copyCity.length, ...data);
   })
+  formData.value.city = undefined;
+  formData.value.county = undefined;
+  formData.value.town = undefined;
 }
 const PinyinCity = (val) => {
   if (val) {
@@ -901,6 +904,9 @@ const getCityList2 = (provinceCode) => {
     cityList2.value = data;
     copyCity2.splice(0, copyCity2.length, ...data);
   })
+  formData.value.permanentAddressCity = undefined;
+  formData.value.permanentAddressCounty = undefined;
+  formData.value.permanentAddressTown = undefined;
 }
 const PinyinCity2 = (val) => {
   if (val) {
@@ -925,6 +931,8 @@ const getCountyList = (cityCode) => {
     countyList.value = data;
     copyCounty.splice(0, copyCounty.length, ...data);
   })
+  formData.value.county = undefined;
+  formData.value.town = undefined;
 }
 const PinyinCounty = (val) => {
   if (val) {
@@ -948,6 +956,8 @@ const getCountyList2 = (cityCode) => {
     countyList2.value = data;
     copyCounty2.splice(0, copyCounty2.length, ...data);
   })
+  formData.value.permanentAddressCounty = undefined;
+  formData.value.permanentAddressTown = undefined;
 }
 const PinyinCounty2 = (val) => {
   if (val) {
@@ -972,6 +982,7 @@ const getTownList = (countyCode) => {
     townList.value = data;
     copyTown.splice(0, copyTown.length, ...data);
   })
+  formData.value.town = undefined;
 }
 const PinyinTown = (val) => {
   if (val) {
@@ -996,6 +1007,7 @@ const getTownList2 = (countyCode) => {
     townList2.value = data;
     copyTown2.splice(0, copyTown2.length, ...data);
   })
+  formData.value.permanentAddressTown = undefined;
 }
 const PinyinTown2 = (val) => {
   if (val) {
