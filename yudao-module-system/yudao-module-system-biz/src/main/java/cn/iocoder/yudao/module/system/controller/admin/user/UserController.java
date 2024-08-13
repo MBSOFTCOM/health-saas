@@ -157,6 +157,7 @@ public class UserController {
         Long deptId = userService.getDeptId(loginUserId);
 
         List<DeptDO> childDeptList = deptService.getChildDeptList(deptId);
+        childDeptList.add(deptService.getDept(deptId));
 
         List<String> deptNameList = new ArrayList<>();
 

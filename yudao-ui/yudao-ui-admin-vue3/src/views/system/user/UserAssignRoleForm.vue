@@ -13,7 +13,7 @@
                      :disabled="item.code==='collect_group' || item.code ==='ppd_group'
                      || item.code === 'dr/ct_group' || item.code === 'sputum_group'
                      || item.code === 'electrocardiogram_group' || item.code === 'experiment_group'
-                     || item.code === 'diagnos_group' || item.code === 'capital'"/>
+                     || item.code === 'diagnos_group' || item.code === 'capital' || item.code === 'super_admin'"/>
 <!--          <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.id" />-->
         </el-select>
       </el-form-item>
