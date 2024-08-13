@@ -65,7 +65,10 @@
       v-model:limit="queryParams.pageSize"
       @pagination="getList"
     />
-    <button :v-model="flag" @click="flag = !flag" style="margin-top: 20px">{{flag==true?"隐藏":"显示"}}消耗量同比计算说明</button>
+    <el-button type="info" :v-model="flag" @click="flag = !flag" style="margin-top: 20px">
+      <Icon icon="ep:reading" class="mr-5px"/>
+      {{ flag == true ? "隐藏" : "显示" }}消耗量同比计算说明
+    </el-button>
     <div v-if="flag">
       <p>消耗量同比计算：</p>
       <p>例如所选周期为5月1日~5月7日的库存消耗量(X)，那么同比计算周期为4月24日~4月30日的库存消耗量(Y)。</p>
@@ -123,7 +126,8 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
-  handleQuery()
+  // handleQuery()
+  list.value = []
 }
 
 /** 导出按钮操作 */

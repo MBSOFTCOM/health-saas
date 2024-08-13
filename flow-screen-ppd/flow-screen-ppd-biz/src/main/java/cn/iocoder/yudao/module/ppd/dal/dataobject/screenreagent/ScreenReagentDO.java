@@ -69,5 +69,9 @@ public class ScreenReagentDO extends BaseDO {
      */
     @TableId
     private Long id;
+    /**
+     * 所属部门id
+     */
+    private Long deptId;
 
 }

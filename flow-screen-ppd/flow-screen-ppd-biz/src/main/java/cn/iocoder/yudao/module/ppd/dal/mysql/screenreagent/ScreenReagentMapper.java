@@ -27,6 +27,7 @@ public interface ScreenReagentMapper extends BaseMapperX<ScreenReagentDO> {
                 .eqIfPresent(ScreenReagentDO::getUsable, reqVO.getUsable())
                 .likeIfPresent(ScreenReagentDO::getManufacturer, reqVO.getManufacturer())
                 .eqIfPresent(ScreenReagentDO::getUsable, reqVO.getUsable())
+                .inIfPresent(ScreenReagentDO::getDeptId, reqVO.getDeptList())
                 .orderByDesc(ScreenReagentDO::getId));
     }
 
@@ -73,20 +74,21 @@ public interface ScreenReagentMapper extends BaseMapperX<ScreenReagentDO> {
     /**
      *判断是否已经有这种试剂了
      */
-    Integer selectIsExist(@Param("name") String name);
+    Integer selectIsExist(@Param("name") String name, @Param("deptId") Long deptId);
 
     /**
      * 获取试剂列表
      */
-    List<ScreenReagentDO> getReagentList();
+    List<ScreenReagentDO> getReagentList(@Param("deptId") Long deptId);
 
     /**
      * 获取试剂列表--名称
      */
-    List<String> getReagentList2();
+    List<String> getReagentList2(@Param("deptId") Long deptId);
 
     /**
      * 根据试剂名称获取
      */
-    ScreenReagentDO selectByName(String reagentName);
+    ScreenReagentDO selectByName(@Param("reagentName") String reagentName,
+                                 @Param("deptId") Long deptId);
 }

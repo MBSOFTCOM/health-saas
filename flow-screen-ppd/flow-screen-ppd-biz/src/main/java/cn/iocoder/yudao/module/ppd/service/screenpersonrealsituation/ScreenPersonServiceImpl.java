@@ -160,8 +160,9 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         Long loginUserId = SecurityFrameworkUtils.getLoginUserId();
         Long myDeptId = deptService.getMyDept(loginUserId);
 
-        // 获取所有子部门以及当前部门
+        // 获取所有子部门
         List<DeptDO> childDeptList = deptService.getChildDeptList(myDeptId);
+        // 以及当前部门
         childDeptList.add(deptService.getDept(myDeptId));
 
         // 提取部门ID

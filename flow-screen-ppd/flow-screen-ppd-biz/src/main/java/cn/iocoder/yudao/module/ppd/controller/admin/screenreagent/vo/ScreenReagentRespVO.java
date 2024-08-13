@@ -69,7 +69,10 @@ public class ScreenReagentRespVO {
     @Schema(description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime createTime;
 
-    @Schema(description = "自增主键id", requiredMode = Schema.RequiredMode.REQUIRED, example = "3319")
+    @Schema(description = "自增主键id", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
+
+    @Schema(description = "部门id")
+    private Long deptId;
 
 }

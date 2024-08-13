@@ -249,7 +249,8 @@ const handleExport = async () => {
     // 发起导出
     exportLoading.value = true
     const data = await ScreenReagentApi.exportScreenReagent(queryParams)
-    download.excel(data, '试剂.xls')
+    download.excel(data, '试剂名录.xls')
+    message.success("导出成功！")
   } catch {
   } finally {
     exportLoading.value = false

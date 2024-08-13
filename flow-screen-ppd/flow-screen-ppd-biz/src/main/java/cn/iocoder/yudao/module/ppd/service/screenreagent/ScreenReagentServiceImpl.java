@@ -3,6 +3,7 @@ package cn.iocoder.yudao.module.ppd.service.screenreagent;
 import cn.hutool.core.util.ObjectUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
+import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentPageReqVO;
@@ -13,6 +14,8 @@ import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsume.ScreenConsumeMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenreagent.ScreenReagentMapper;
 import cn.iocoder.yudao.module.system.api.dict.DictDataApi;
 import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
+import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
+import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +44,8 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
     private DictDataApi dictDataApi;
     @Resource
     private ScreenConsumeMapper screenConsumeMapper;
+    @Resource
+    private DeptService deptService;
 
     @Override
     public Long createScreenReagent(ScreenReagentSaveReqVO createReqVO) {
@@ -52,11 +57,13 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
                 screenReagent.getReagentSpecsNum(), screenReagent.getTiter(), screenReagent.getPotencyUnit(),
                 screenReagent.getSpecification(), screenReagent.getSpecificationUnit(), screenReagent.getPackageUnit(),
                 screenReagent.getManufacturer(), screenReagent.getThreshold());*/
-        Integer count = screenReagentMapper.selectIsExist(screenReagent.getName());
+        Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+        Integer count = screenReagentMapper.selectIsExist(screenReagent.getName(), deptId);
         if (count > 0){
             throw exception(SCREEN_REAGENT_Is_EXISTS);
         }
 
+        screenReagent.setDeptId(deptId);
         screenReagentMapper.insert(screenReagent);
         // 返回
         return screenReagent.getId();
@@ -97,7 +104,8 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
                 updateObj.getSpecificationUnit(), updateObj.getPackageUnit(),
                 updateObj.getManufacturer(), updateObj.getThreshold()
         );*/
-        Integer count = screenReagentMapper.selectIsExist(updateObj.getName());
+        Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+        Integer count = screenReagentMapper.selectIsExist(updateObj.getName(), deptId);
         return count > 1;
     }
 
@@ -151,6 +159,19 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
 
     @Override
     public PageResult<ScreenReagentDO> getScreenReagentPage(ScreenReagentPageReqVO pageReqVO) {
+
+        Long myDeptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+
+        List<DeptDO> deptList = new ArrayList<>();
+        deptList.add(deptService.getDept(myDeptId));
+
+        // 提取部门ID
+        List<Long> deptIds = deptList.stream()
+                .map(DeptDO::getId)
+                .collect(Collectors.toList());
+
+        pageReqVO.setDeptList(deptIds);
+
         return screenReagentMapper.selectPage(pageReqVO);
     }
 
@@ -220,6 +241,8 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
         // 记录顺序
         Integer count = 1;
 
+        Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+
         if (filteredList.isEmpty()) {
             return screenReagentImportRespVO;
         }
@@ -249,11 +272,13 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
                 /*Integer isExist = screenReagentMapper.selectIsExist(obj.getName(), obj.getType(), obj.getReagentSpecsNum(),
                         obj.getTiter(), obj.getPotencyUnit(), obj.getSpecification(), obj.getSpecificationUnit(),
                         obj.getPackageUnit(), obj.getManufacturer(), obj.getThreshold());*/
-                Integer isExist = screenReagentMapper.selectIsExist(obj.getName());
+                Integer isExist = screenReagentMapper.selectIsExist(obj.getName(), deptId);
                 if (isExist > 0){
                     failureSpecification.put(count, "该试剂已存在");
                 }else {
-                    batchInsert.add(BeanUtils.toBean(obj, ScreenReagentDO.class));
+                    ScreenReagentDO screenReagentDO = BeanUtils.toBean(obj, ScreenReagentDO.class);
+                    screenReagentDO.setDeptId(deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId()));
+                    batchInsert.add(screenReagentDO);
                     createSpecification.add("");
                 }
             }
@@ -272,12 +297,14 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
 
     @Override
     public List<ScreenReagentDO> getReagentList() {
-        return screenReagentMapper.getReagentList();
+        Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+        return screenReagentMapper.getReagentList(deptId);
     }
 
     @Override
     public List<String> getReagentList2() {
-        return screenReagentMapper.getReagentList2();
+        Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+        return screenReagentMapper.getReagentList2(deptId);
     }
 
 

@@ -40,6 +40,7 @@
         FROM tb_screen_reagent
         WHERE name = #{name}
           AND deleted = 0
+          AND dept_id = #{deptId}
     </select>
 
 
@@ -54,6 +55,7 @@
         FROM tb_screen_reagent
         WHERE usable = 0
           AND deleted = 0
+          AND dept_id = #{deptId}
     </select>
 
 
@@ -62,6 +64,7 @@
         FROM tb_screen_reagent
         WHERE usable = 0
           AND deleted = 0
+          AND dept_id = #{deptId}
     </select>
 
 
@@ -71,5 +74,6 @@
         FROM tb_screen_reagent
         WHERE deleted = 0
           AND name = #{name}
+        AND dept_id = #{deptId}
     </select>
 </mapper>
