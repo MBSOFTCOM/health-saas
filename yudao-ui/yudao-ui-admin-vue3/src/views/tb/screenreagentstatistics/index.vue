@@ -113,6 +113,9 @@ const getList = async () => {
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
+  if (queryParams.createTime.length < 1){
+    return message.error("请选择统计周期！")
+  }
   queryParams.pageNo = 1
   getList()
 }

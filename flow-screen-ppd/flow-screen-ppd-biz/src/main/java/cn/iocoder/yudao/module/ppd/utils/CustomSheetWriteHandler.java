@@ -60,7 +60,7 @@ public class CustomSheetWriteHandler implements SheetWriteHandler {
             }
 
             // 设置关联数据公式，这个格式跟Excel设置有效性数据的表达式是一样的
-            String refers = dictSheetName + "!$A$1:$A$" + entry.getValue().size();
+            String refers = dictSheetName + "!$A$1:$A$" +  (rowLen > 0 ? rowLen : 1);
             Name name = workbook.createName();
             name.setNameName(dictSheetName);
             // 将关联公式和sheet页做关联

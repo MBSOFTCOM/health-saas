@@ -29,6 +29,9 @@ public class UserImportExcelVO {
     @ExcelProperty("部门编号")
     private Long deptId;
 
+    @ExcelProperty("部门名称")
+    private String deptName;
+
     @ExcelProperty("用户邮箱")
     private String email;
 

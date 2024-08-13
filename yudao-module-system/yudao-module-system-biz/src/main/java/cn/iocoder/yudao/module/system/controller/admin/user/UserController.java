@@ -6,6 +6,7 @@ import cn.iocoder.yudao.framework.common.enums.CommonStatusEnum;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.framework.excel.core.util.CustomSheetWriteHandler;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
 import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.system.controller.admin.user.vo.user.*;
@@ -29,9 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
@@ -139,7 +138,7 @@ public class UserController {
         // 输出 Excel
         Map<Long, DeptDO> deptMap = deptService.getDeptMap(
                 convertList(list, AdminUserDO::getDeptId));
-        ExcelUtils.write(response, "用户数据.xls", "数据", UserRespVO.class,
+        ExcelUtils.write2(response, "用户数据.xls", "数据", UserRespVO.class,
                 UserConvert.INSTANCE.convertList(list, deptMap));
     }
 
@@ -148,13 +147,30 @@ public class UserController {
     public void importTemplate(HttpServletResponse response) throws IOException {
         // 手动创建导出 demo
         List<UserImportExcelVO> list = Arrays.asList(
-                UserImportExcelVO.builder().username("yunai").deptId(1L).email("yunai@iocoder.cn").mobile("15601691300")
-                        .nickname("芋道").status(CommonStatusEnum.ENABLE.getStatus()).sex(SexEnum.MALE.getSex()).build(),
-                UserImportExcelVO.builder().username("yuanma").deptId(2L).email("yuanma@iocoder.cn").mobile("15601701300")
+                UserImportExcelVO.builder().username("flow").deptName("下拉选").email("flow@qq.com").mobile("18888888888")
+                        .nickname("福乐云").status(CommonStatusEnum.ENABLE.getStatus()).sex(SexEnum.MALE.getSex()).build(),
+                UserImportExcelVO.builder().username("Flow").deptName("下拉选").email("flow@qq.com").mobile("18888888888")
                         .nickname("源码").status(CommonStatusEnum.DISABLE.getStatus()).sex(SexEnum.FEMALE.getSex()).build()
         );
+        Long loginUserId = SecurityFrameworkUtils.getLoginUserId();
+
+        Long deptId = userService.getDeptId(loginUserId);
+
+        List<DeptDO> childDeptList = deptService.getChildDeptList(deptId);
+
+        List<String> deptNameList = new ArrayList<>();
+
+        for (DeptDO obj : childDeptList) {
+            deptNameList.add(obj.getName());
+        }
+
+        // 存放下拉选列表数据
+        Map<Integer,List<String>> selectedData=new HashMap<>();
+        // 部门名称
+        selectedData.put(3, deptNameList);
+
         // 输出
-        ExcelUtils.write(response, "用户导入模板.xls", "用户列表", UserImportExcelVO.class, list);
+        ExcelUtils.write(response, "用户导入模板.xls", "用户列表", UserImportExcelVO.class, list, new CustomSheetWriteHandler().setMap(selectedData));
     }
 
     @PostMapping("/import")

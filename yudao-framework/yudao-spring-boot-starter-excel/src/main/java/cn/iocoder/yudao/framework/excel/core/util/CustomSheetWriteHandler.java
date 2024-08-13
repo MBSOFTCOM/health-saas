@@ -46,32 +46,34 @@ public class CustomSheetWriteHandler implements SheetWriteHandler {
             // 隐藏字典sheet页
             workbook.setSheetHidden(index++, true);
 
-            // 设置下拉列表覆盖的行数，从第一行开始到最后一行，这里注意，Excel行的
-            // 索引是从0开始的，我这边第0行是标题行，第1行开始时数据化，可根据实
-            // 际业务设置真正的数据开始行，如果要设置到最后一行，那么一定注意，
-            // 最后一行的行索引是1048575，千万别写成1048576，不然会导致下拉列表
-            // 失效，出不来
+            // 取得下拉列表的数据
+            List<String> values = entry.getValue();
+            int rowLen = values.size();
+
+            // 设置下拉列表覆盖的行数，从第一行开始到最后一行
             CellRangeAddressList infoList = new CellRangeAddressList(1, 1048575, entry.getKey(), entry.getKey());
-            int rowLen = entry.getValue().size();
-            for (int i = 0; i < rowLen; i++) {
-                // 向字典sheet写数据，从第一行开始写，此处可根据自己业务需要，自定
-                // 义从第几行还是写，写的时候注意一下行索引是从0开始的即可
-                dictSheet.createRow(i).createCell(0).setCellValue(entry.getValue().get(i));
+
+            if (rowLen > 0) {
+                // 向字典sheet写数据，从第一行开始写
+                for (int i = 0; i < rowLen; i++) {
+                    dictSheet.createRow(i).createCell(0).setCellValue(values.get(i));
+                }
+
+                // 设置关联数据公式
+                String refers = dictSheetName + "!$A$1:$A$" + rowLen;
+                Name name = workbook.createName();
+                name.setNameName(dictSheetName);
+                name.setRefersToFormula(refers);
+
+                // 将上面设置好的下拉列表字典sheet页和目标sheet关联起来
+                DataValidationConstraint constraint = helper.createFormulaListConstraint(dictSheetName);
+                DataValidation dataValidation = helper.createValidation(constraint, infoList);
+                dataValidation.setShowErrorBox(true); // 显示错误提示框
+                dataValidation.setSuppressDropDownArrow(true); // 隐藏下拉箭头，实现多选
+                sheet.addValidationData(dataValidation);
             }
-
-            // 设置关联数据公式，这个格式跟Excel设置有效性数据的表达式是一样的
-            String refers = dictSheetName + "!$A$1:$A$" + entry.getValue().size();
-            Name name = workbook.createName();
-            name.setNameName(dictSheetName);
-            // 将关联公式和sheet页做关联
-            name.setRefersToFormula(refers);
-
-            // 将上面设置好的下拉列表字典sheet页和目标sheet关联起来
-            DataValidationConstraint constraint = helper.createFormulaListConstraint(dictSheetName);
-            DataValidation dataValidation = helper.createValidation(constraint, infoList);
-            dataValidation.setShowErrorBox(true); // 显示错误提示框
-            dataValidation.setSuppressDropDownArrow(true); // 隐藏下拉箭头，实现多选
-            sheet.addValidationData(dataValidation);
         }
     }
+
+
 }
