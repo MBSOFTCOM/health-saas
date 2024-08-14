@@ -10,7 +10,6 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsu
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeStatisticsRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportRespVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsumerecord.ScreenConsumeRecordDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
@@ -141,6 +140,7 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
 
     @Override
     public List<ScreenConsumeDO> getUsableScreenConsume(ScreenConsumePageReqVO pageReqVO) {
+        pageReqVO.setDeptId(deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId()));
         return screenConsumeMapper.listUsable(pageReqVO);
     }
 

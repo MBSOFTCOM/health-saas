@@ -40,6 +40,7 @@ public interface ScreenConsumeMapper extends BaseMapperX<ScreenConsumeDO> {
                 .eqIfPresent(ScreenConsumeDO::getReagentId,reqVO.getReagentId())
                 .eqIfPresent(ScreenConsumeDO::getUsable,0)
                 .eqIfPresent(ScreenConsumeDO::getDeleted,0)
+                .eqIfPresent(ScreenConsumeDO::getDeptId,reqVO.getDeptId())
                 .gt(ScreenConsumeDO::getCurrentNumber,0)
                 .select(
                         ScreenConsumeDO::getId,ScreenConsumeDO::getReagentId,

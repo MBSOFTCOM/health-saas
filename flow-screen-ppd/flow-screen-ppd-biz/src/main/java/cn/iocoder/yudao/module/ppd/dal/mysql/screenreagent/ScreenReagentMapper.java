@@ -41,6 +41,7 @@ public interface ScreenReagentMapper extends BaseMapperX<ScreenReagentDO> {
               .eqIfPresent(ScreenReagentDO::getUsable,0)
               .eqIfPresent(ScreenReagentDO::getDeleted,0)
               .eqIfPresent(ScreenReagentDO::getType,reqVO.getType())
+              .eqIfPresent(ScreenReagentDO::getDeptId,reqVO.getDeptId())
               .select(ScreenReagentDO::getId,ScreenReagentDO::getType,ScreenReagentDO::getReagentSpecsNum,ScreenReagentDO::getUsable,
                       ScreenReagentDO::getTiter,ScreenReagentDO::getPotencyUnit,ScreenReagentDO::getSpecification,ScreenReagentDO::getSpecificationUnit,
                       ScreenReagentDO::getPackageUnit,ScreenReagentDO::getManufacturer,ScreenReagentDO::getThreshold,ScreenReagentDO::getName

@@ -14,7 +14,6 @@ import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsume.ScreenConsumeMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenreagent.ScreenReagentMapper;
 import cn.iocoder.yudao.module.system.api.dict.DictDataApi;
 import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
-import cn.iocoder.yudao.module.system.controller.admin.user.vo.user.UserImportExcelVO;
 import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import jakarta.annotation.Resource;
@@ -178,6 +177,7 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
 
     @Override
     public List<ScreenReagentDO> getUsableReagent(ScreenReagentPageReqVO pageReqVO) {
+        pageReqVO.setDeptId(deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId()));
         return screenReagentMapper.selectUsable(pageReqVO);
     }
 

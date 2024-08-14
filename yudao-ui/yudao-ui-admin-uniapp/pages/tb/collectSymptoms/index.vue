@@ -54,11 +54,8 @@
 		<view class="main-bottom">
 			<view class="bom-t">
 				<view style="width: 95px;margin-top: 5px;">选择症状</view>
-				<view class="bom-mup" v-if="this.isNewStudent == 0" style="width: 70%">
+				<view class="bom-mup"  style="width: 70%">
 					<uni-data-checkbox multiple v-model="checkbox" :localdata="items"></uni-data-checkbox>
-				</view>
-				<view class="bom-stu" v-if="this.isNewStudent == 1">
-					<uni-data-checkbox multiple v-model="checkbox" :localdata="itemStudent"></uni-data-checkbox>
 				</view>
 			</view>
       <view style="width: 95px;margin-top: 5px;">2年内是否有与结核病患者的接触史:</view>
@@ -170,7 +167,7 @@ export default {
 			checkbox: [],
 			items: [
 				{
-					text: '咳嗽、咳痰(超过一周)',
+					text: '咳嗽、咳痰(超过两周)',
 					value: 1
 				},
 				{
@@ -178,15 +175,15 @@ export default {
 					value: 2
 				},
 				{
-					text: '发热',
+					text: '乏力、盗汗',
 					value: 3
 				},
 				{
-					text: '胸痛',
+					text: '体重减轻（超过6斤）',
 					value: 4
 				},
 				{
-					text: '夜间盗汗',
+					text: '发热',
 					value: 5
 				},
 				{
@@ -194,16 +191,8 @@ export default {
 					value: 6
 				},
 				{
-					text: '乏力',
+					text: '胸痛',
 					value: 7
-				},
-				{
-					text: '体重减轻(超过6斤)',
-					value: 8
-				},
-				{
-					text: '有无卡痕',
-					value: 9
 				}
 			],
 			itemStudent: [

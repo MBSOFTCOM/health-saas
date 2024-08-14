@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.MD5;
 import cn.iocoder.yudao.framework.common.enums.CommonStatusEnum;
 import cn.iocoder.yudao.framework.common.exception.ServiceException;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
@@ -101,6 +102,9 @@ public class AdminUserServiceImpl implements AdminUserService {
         AdminUserDO user = BeanUtils.toBean(createReqVO, AdminUserDO.class);
         user.setStatus(CommonStatusEnum.ENABLE.getStatus()); // 默认开启
         user.setPassword(encodePassword(createReqVO.getPassword())); // 加密密码
+
+        // 生成md5密码
+        user.setPwdMd5(md5Encrypt(createReqVO.getPassword()));
         userMapper.insert(user);
         // 2.2 插入关联岗位
         if (CollectionUtil.isNotEmpty(user.getPostIds())) {
@@ -113,6 +117,14 @@ public class AdminUserServiceImpl implements AdminUserService {
         return user.getId();
     }
 
+
+    //对密码进行md5加密
+    public String md5Encrypt(String password){
+        MD5 md5 = new MD5();
+        String md5Pwd = md5.digestHex(password);
+        md5Pwd += "pingban";
+        return md5Pwd;
+    }
     @Override
     @Transactional(rollbackFor = Exception.class)
     @LogRecord(type = SYSTEM_USER_TYPE, subType = SYSTEM_USER_UPDATE_SUB_TYPE, bizNo = "{{#updateReqVO.id}}",
@@ -459,6 +471,9 @@ public class AdminUserServiceImpl implements AdminUserService {
             // 判断如果不存在，在进行插入
             AdminUserDO existUser = userMapper.selectByUsername(importUser.getUsername());
             if (existUser == null) {
+                AdminUserDO adminUserDO = BeanUtils.toBean(importUser, AdminUserDO.class);
+                // 根据默认密码进行MD5加密
+                adminUserDO.setPwdMd5(md5Encrypt(userInitPassword));
                 userMapper.insert(BeanUtils.toBean(importUser, AdminUserDO.class)
                         .setPassword(encodePassword(userInitPassword)).setPostIds(new HashSet<>())); // 设置默认密码及空岗位编号数组
                 respVO.getCreateUsernames().add(importUser.getUsername());

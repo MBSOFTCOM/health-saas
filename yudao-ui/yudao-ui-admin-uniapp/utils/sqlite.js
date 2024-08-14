@@ -354,6 +354,7 @@ export const tableSqls = [
 			  "screenType" INTEGER, --筛查类型  1--常规、2--新生、3--应急
 			  "year" INTEGER ,--年份
 			  "syncId" INTEGER , --同步时唯一编码
+			  "deptId" INTEGER , --部门id
 			  "screenId" TEXT, --筛查编号
 			  "idNum" TEXT  , --身份证号
 			  "name" TEXT , --姓名
