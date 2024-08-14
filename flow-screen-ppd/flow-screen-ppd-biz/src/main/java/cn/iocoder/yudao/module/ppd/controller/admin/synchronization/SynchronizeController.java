@@ -17,12 +17,16 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo
 import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdPageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdSaveReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumPageReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumRespVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.UserLoginInfoVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.WorkTeamVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screensum.ScreenSumDO;
 import cn.iocoder.yudao.module.ppd.service.screenpersonrealsituation.ScreenPersonService;
 import cn.iocoder.yudao.module.ppd.service.synchronization.SynchronizeService;
 import cn.iocoder.yudao.module.system.service.user.AdminUserService;
@@ -146,7 +150,7 @@ public class SynchronizeController {
     }
 
 
-    /*@GetMapping("/get-sum-data")
+    @GetMapping("/get-sum-data")
     @Operation(summary = "获取汇总表数据")
     public CommonResult<List<ScreenSumRespVO>> getSumData(ScreenSumPageReqVO pageReqVO) {
 //        PageResult<ScreenSumDO> pageResult = synchronizeService.getSumPage(pageReqVO);
@@ -160,5 +164,5 @@ public class SynchronizeController {
     public CommonResult<Boolean> updateSumData(@RequestBody List<ScreenSumSaveReqVO> list) {
         synchronizeService.updateSum(list);
         return success(true);
-    }*/
+    }
 }

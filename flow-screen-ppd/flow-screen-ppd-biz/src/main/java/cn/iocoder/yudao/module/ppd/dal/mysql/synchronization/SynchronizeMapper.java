@@ -8,6 +8,8 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ScreenPersonSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screensputumexamination.vo.ScreenSputumExaminationSaveReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumInfo;
+import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.*;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
@@ -245,26 +247,26 @@ public interface SynchronizeMapper {
     String getScreenAgency(Long id);
 
     //============================ 汇总表 ================================
-   /* *//**
+    /**
      * 根据索引 查询汇总表id和当前已完成的分组
      * @param year
      * @param screenType
      * @param screenId
      * @param personId
      * @return
-     *//*
+     */
     ScreenSumInfo selectSumIdByIndex(@Param("year")Integer year, @Param("screenType") Integer screenType, @Param("screenId") String screenId, @Param("personId") Long personId);
 
-    *//**
+    /**
      * 更新汇总表数据
      * @param item
      * @param id
-     *//*
-    void updateSum(@Param("item")ScreenSumSaveReqVO item,@Param("id") Long id);
+     */
+    void updateSum(@Param("item") ScreenSumSaveReqVO item, @Param("id") Long id);
 
-    *//**
+    /**
      * 插入数据到汇总表
      * @param item
-     *//*
-    void insertSum(ScreenSumSaveReqVO item);*/
+     */
+    void insertSum(ScreenSumSaveReqVO item);
 }

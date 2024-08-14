@@ -400,8 +400,8 @@
           AND su.deleted = 0;
     </select>
 
-    <!-- 汇总表   -->
-    <!--<select id="selectSumIdByIndex" resultType="cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumInfo">
+<!--     汇总表-->
+    <select id="selectSumIdByIndex" resultType="cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumInfo">
         select id,cur_finish
         from tb_screen_sum
         <where>
@@ -418,7 +418,7 @@
                 person_id= #{personId}
             </if>
         </where>
-    </select>-->
+    </select>
 
     <update id="updateSum">
         update tb_screen_sum
