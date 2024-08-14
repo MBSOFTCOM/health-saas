@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.iocoder.yudao.module.ppd.dal.mysql.report.ReportMapper">
+
+    <select id="getCollectAndPpdErrorNum" resultType="java.lang.Integer">
+        select IFNULL(count(*),0) num
+        from tb_screen_sum s
+        LEFT JOIN tb_screen_collect c on s.collect_id=c.id
+        LEFT JOIN tb_screen_ppd p on s.ppd_id=p.id
+        <where>
+        ((c.outcome &lt;&gt; 0 <if test="quarter !=null and quarter !=''"> and QUARTER(s.last_collect_time)=#{quarter}</if>)
+        or
+        (p.outcome &lt;&gt; 0 <if test="quarter !=null and quarter !=''"> and QUARTER(s.last_ppd_time)=#{quarter}</if>))
+        <if test="personIds !=null and personIds !=''">and s.person_id in
+            <foreach  item="personId"  collection="personIds"  separator=","  open="("  close=")">
+                #{personId}
+            </foreach>
+        </if>
+        <if test="screenType !=null and screenType !=''"> and s.screen_type=#{screenType}</if>
+        <if test="year !=null and year !=''"> and s.year=#{year}</if>
+        </where>
+    </select>
+    <select id="listPersonByTypeAndMinAge" resultType="java.lang.Long">
+        select id
+        from tb_screen_person
+        <where>
+            <if test="moreType !=null and moreType!=''"> and more_type &amp; #{moreType} &gt; 0</if>
+            <if test="leftAge !=null and leftAge!=''"> and age>=#{leftAge}</if>
+            <if test="screenType !=null and screenType !=''"> and screen_type=#{screenType}</if>
+            <if test="year !=null and year !=''"> and year=#{year}</if>
+        </where>
+    </select>
+    <select id="listPersonByTypeAndAge" resultType="java.lang.Long">
+        select id
+        from tb_screen_person
+        <where>
+            <if test="moreType !=null and moreType!=''"> and more_type &amp; #{moreType} &gt; 0</if>
+            <if test="leftAge !=null and rightAge !=null"> and age BETWEEN #{leftAge} and #{rightAge}</if>
+            <if test="screenType !=null and screenType !=''"> and screen_type=#{screenType}</if>
+            <if test="year !=null and year !=''"> and year=#{year}</if>
+        </where>
+    </select>
+    <select id="getPpdErrorNum" resultType="java.lang.Integer">
+        SELECT IFNULL(COUNT(*),0)
+        FROM tb_screen_sum s
+                 left join tb_screen_ppd p on s.ppd_id=p.id
+        WHERE ppd_id is not NULL and p.outcome=1
+        <if test="quarter !=null and quarter !=''"> and QUARTER(s.last_ppd_time)=#{quarter}</if>
+        <if test="screenType !=null and screenType !=''"> and s.screen_type=#{screenType}</if>
+        <if test="year !=null and year !=''"> and s.year=#{year}</if>
+        <if test="personIds !=null and personIds !=''">and s.person_id in
+            <foreach  item="personId"  collection="personIds"  separator=","  open="("  close=")">
+                #{personId}
+            </foreach>
+        </if>
+    </select>
+    <select id="getActualTakeCtNum" resultType="java.lang.Integer">
+        select IFNULL(COUNT(1),0)
+        FROM tb_screen_sum
+        WHERE ((chest_radiograph_id is not null <if test="quarter !=null and quarter !=''"> and QUARTER(last_chest_radiograph_time)=#{quarter} </if>)
+        or (computed_tomography_id is not null <if test="quarter !=null and quarter !=''"> and QUARTER(last_computed_tomography_time)=#{quarter} </if>))
+        <if test="screenType !=null and screenType !=''"> and screen_type=#{screenType}</if>
+        <if test="year !=null and year !=''"> and year=#{year}</if>
+    </select>
+    <select id="countCtOrDrError" resultType="java.lang.Integer">
+        select IFNULL(COUNT(*),0)
+        FROM tb_screen_sum s
+        LEFT JOIN tb_screen_chest_radiograph r on s.chest_radiograph_id=r.id
+        LEFT JOIN tb_screen_computed_tomography t on s.computed_tomography_id=t.id
+        WHERE (r.outcome &lt;&gt; 0 <if test="quarter !=null and quarter !=''"> and QUARTER(s.last_chest_radiograph_time)=#{quarter} </if>
+        or t.outcome &lt;&gt; 0 <if test="quarter !=null and quarter !=''"> and QUARTER(s.last_computed_tomography_time)=#{quarter} </if>)
+        and s.screen_type=#{screenType}
+        <if test="year !=null and year !=''"> and s.year=#{year}</if>
+        <if test="personIds !=null and personIds !=''">and s.person_id in
+            <foreach  item="personId"  collection="personIds"  separator=","  open="("  close=")">
+                #{personId}
+            </foreach>
+        </if>
+    </select>
+    <select id="countCollectOrCtOrDrError" resultType="java.lang.Integer">
+        select IFNULL(COUNT(*),0)
+        FROM tb_screen_sum s
+        LEFT JOIN tb_screen_collect c on s.collect_id=c.id
+        LEFT JOIN tb_screen_chest_radiograph r on s.chest_radiograph_id=r.id
+        LEFT JOIN tb_screen_computed_tomography t on s.computed_tomography_id=t.id
+        WHERE (
+            (c.outcome is not null <if test="quarter !=null and quarter !=''"> and QUARTER(s.last_collect_time)=#{quarter} </if>)
+            or( t.outcome &lt;&gt; 0 <if test="quarter !=null and quarter !=''"> and QUARTER(s.last_computed_tomography_time)=#{quarter} </if>)
+            or( r.outcome &lt;&gt;0 <if test="quarter !=null and quarter !=''"> and QUARTER(s.last_chest_radiograph_time)=#{quarter} </if>)
+            ) and s.screen_type=#{screenType}
+        <if test="year !=null and year !=''"> and s.year=#{year}</if>
+        <if test="personIds !=null and personIds !=''">and s.person_id in
+            <foreach  item="personId"  collection="personIds"  separator=","  open="("  close=")">
+                #{personId}
+            </foreach>
+        </if>
+    </select>
+    <select id="countCollectOrPpdOrCtOrDrError" resultType="java.lang.Integer">
+        select IFNULL(COUNT(*),0)
+        FROM tb_screen_sum s
+        LEFT JOIN tb_screen_collect c on s.collect_id=c.id
+        LEFT JOIN tb_screen_ppd p on s.ppd_id=p.id
+        LEFT JOIN tb_screen_chest_radiograph r on s.chest_radiograph_id=r.id
+        LEFT JOIN tb_screen_computed_tomography t on s.computed_tomography_id=t.id
+        WHERE (
+        (c.outcome &lt;&gt; 0 <if test="quarter !=null and quarter !=''">and QUARTER(s.last_ppd_time)=#{quarter}</if>)
+        or (p.outcome = 1 <if test="quarter !=null and quarter !=''">and QUARTER(s.last_ppd_time)=#{quarter}</if>)
+        or( t.outcome &lt;&gt; 0 <if test="quarter !=null and quarter !=''">and QUARTER(s.last_computed_tomography_time)=#{quarter}</if>)
+        or( r.outcome &lt;&gt;0 <if test="quarter !=null and quarter !=''">and QUARTER(s.last_chest_radiograph_time)=#{quarter}</if>)
+                  )
+        <if test="year !=null and year !=''"> and s.year=#{year}</if>
+        <if test="personIds !=null and personIds !=''">and s.person_id in
+            <foreach  item="personId"  collection="personIds"  separator=","  open="("  close=")">
+                #{personId}
+            </foreach>
+        </if>
+    </select>
+    <select id="getActualSputumCollectionNum" resultType="java.lang.Integer">
+        select IFNULL(COUNT(*),0)
+        FROM tb_screen_sum s
+        WHERE s.sputum_examination_id is not null and s.screen_type=#{screenType}
+        <if test="year !=null and year !=''"> and s.year=#{year}</if>
+        <if test="quarter !=null and quarter !=''"> and QUARTER(s.last_sputum_examination_time)=#{quarter}</if>
+    </select>
+</mapper>

@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
 
@@ -111,4 +112,7 @@ public class ScreenPersonPageReqVO extends PageParam {
 
     @Schema(description = "监护人手机号")
     private String guardianTel;
+
+    @Schema(description = "部门列表")
+    private List<Long> deptList;
 }

@@ -17,6 +17,10 @@
         SELECT COUNT(*)
         FROM tb_screen_repeat_person
         WHERE deleted = 0
+        AND dept_id in
+        <foreach collection="deptIds" item="item" open="(" separator="," close=")">
+                #{item}
+        </foreach>
     </select>
 
 

@@ -52,6 +52,7 @@ public class ScreenReagentController {
     public CommonResult<Long> createScreenReagent(@Valid @RequestBody ScreenReagentSaveReqVO createReqVO) {
         return success(screenReagentService.createScreenReagent(createReqVO));
     }
+
     @GetMapping("/getRegent")
     @Operation(summary = "获取所有可用试剂")
     @PreAuthorize("@ss.hasPermission('tb:screen-reagent:query')")
@@ -79,7 +80,7 @@ public class ScreenReagentController {
 
     @GetMapping("/get")
     @Operation(summary = "获得试剂")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Parameter(name = "id", description = "编号", required = true)
     @PreAuthorize("@ss.hasPermission('tb:screen-reagent:query')")
     public CommonResult<ScreenReagentRespVO> getScreenReagent(@RequestParam("id") Long id) {
         ScreenReagentDO screenReagent = screenReagentService.getScreenReagent(id);

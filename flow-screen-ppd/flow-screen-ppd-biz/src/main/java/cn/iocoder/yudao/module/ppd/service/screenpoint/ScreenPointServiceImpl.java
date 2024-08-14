@@ -16,11 +16,13 @@ import cn.iocoder.yudao.module.ppd.dal.mysql.screenpoint.ScreenPointMapper;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpoint.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.mysql.userscreenpoint.UserScreenPointMapper;
 import cn.iocoder.yudao.module.system.controller.admin.user.vo.user.UserRespVO;
+import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import cn.iocoder.yudao.module.system.dal.dataobject.permission.UserRoleDO;
 import cn.iocoder.yudao.module.system.dal.dataobject.user.AdminUserDO;
 import cn.iocoder.yudao.module.system.dal.mysql.permission.RoleMapper;
 import cn.iocoder.yudao.module.system.dal.mysql.permission.UserRoleMapper;
 import cn.iocoder.yudao.module.system.dal.mysql.user.AdminUserMapper;
+import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import cn.iocoder.yudao.module.system.service.permission.PermissionService;
 import cn.iocoder.yudao.module.system.service.permission.RoleService;
 import jakarta.annotation.Resource;
@@ -63,6 +65,8 @@ public class ScreenPointServiceImpl implements ScreenPointService {
     private UserScreenPointMapper userScreenPointMapper;
     @Resource
     private RoleService roleService;
+    @Resource
+    private DeptService deptService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -179,8 +183,6 @@ public class ScreenPointServiceImpl implements ScreenPointService {
             userList = parseUserIds((String) usersOrUserId);
         } else if (usersOrUserId instanceof Long) {
             userList.add((Long) usersOrUserId);
-        } else {
-            throw new IllegalArgumentException("Unsupported type for usersOrUserId");
         }
 
         for (Long userId : userList) {
@@ -633,8 +635,12 @@ public class ScreenPointServiceImpl implements ScreenPointService {
             List<ScreenPointDO> filteredList = new ArrayList<>();
             // 如果具有管理角色，则进行部门数据过滤
             if (hasManagerRole) {
-                // 获取当前登录用户所属部门及其子部门列表
+                // 获取当前登录用户子部门列表
                 List<DeptVO> childDeptList = getChildDeptList(screenPointMapper.selectByIdTaskDeptId(loginUserId));
+                Long myDept = deptService.getMyDept(loginUserId);
+                DeptDO dept = deptService.getDept(myDept);
+                // 把所属部门添加进去
+                childDeptList.add(BeanUtils.toBean(dept, DeptVO.class));
                 // 遍历初始分页结果，筛选符合部门条件的数据
                 if (screenPointDOPageResult.getList().size() > 0){
                     for (ScreenPointDO obj : screenPointDOPageResult.getList()) {

@@ -201,4 +201,10 @@ public interface AdminUserService {
      */
     boolean isPasswordMatch(String rawPassword, String encodedPassword);
 
+    /**
+     * 获取登录用户的部门id
+     * @param loginUserId
+     * @return
+     */
+    Long getDeptId(Long loginUserId);
 }

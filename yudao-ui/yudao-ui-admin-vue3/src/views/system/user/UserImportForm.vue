@@ -15,7 +15,7 @@
       drag
     >
       <Icon icon="ep:upload" />
-      <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+      <div class="el-upload__text">将文件拖到此处，或<em style="font-size: 16px">点击上传</em></div>
       <template #tip>
         <div class="el-upload__tip text-center">
           <div class="el-upload__tip">
@@ -25,7 +25,7 @@
           <span>仅允许导入 xls、xlsx 格式文件。</span>
           <el-link
             :underline="false"
-            style="font-size: 12px; vertical-align: baseline"
+            style="font-size: 16px; vertical-align: baseline"
             type="primary"
             @click="importTemplate"
           >
@@ -134,5 +134,6 @@ const handleExceed = (): void => {
 const importTemplate = async () => {
   const res = await UserApi.importUserTemplate()
   download.excel(res, '用户导入模版.xls')
+  return message.success("下载成功！")
 }
 </script>

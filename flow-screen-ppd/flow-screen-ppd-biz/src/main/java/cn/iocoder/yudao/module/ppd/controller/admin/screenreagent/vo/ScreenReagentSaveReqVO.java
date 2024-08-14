@@ -42,7 +42,12 @@ public class ScreenReagentSaveReqVO {
     @Schema(description = "库存预警值（按试剂）")
     private Integer threshold;
 
-    @Schema(description = "自增主键id", requiredMode = Schema.RequiredMode.REQUIRED, example = "3319")
+    @Schema(description = "自增主键id", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
+
+    /**
+     * 所属部门id
+     */
+    private Long deptId;
 
 }

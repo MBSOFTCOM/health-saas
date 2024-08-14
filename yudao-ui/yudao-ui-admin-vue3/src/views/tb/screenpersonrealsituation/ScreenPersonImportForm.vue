@@ -5,7 +5,7 @@
       v-model:file-list="fileList"
       :action="importUrl + '?year=' + formData.year +'&screenType='
       + formData.screenType + '&screenStartTime=' + formData.screenStartTime
-      + '&screenEndTime=' + formData.screenEndTime "
+      + '&screenEndTime=' + formData.screenEndTime  + '&deptId=' + formData.deptId"
       :auto-upload="false"
       :disabled="formLoading"
       :headers="uploadHeaders"
@@ -48,7 +48,7 @@
         />
       </el-form-item>
 
-      <el-form-item label="计划筛查时间:" label-width="120px" prop="screenTime">
+      <el-form-item label="计划筛查时间:" label-width="120px" prop="timeRange">
         <el-date-picker
           v-model="formData.timeRange"
           type="daterange"
@@ -60,6 +60,22 @@
         />
       </el-form-item>
 
+      <el-form-item label="所属管理部门:" label-width="120px" prop="deptId">
+        <el-select
+          v-model="formData.deptId"
+          filterable
+          placeholder="请选择"
+          clearable
+          class="!w-170px"
+        >
+          <el-option
+            v-for="item in deptList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
 
 
@@ -96,6 +112,7 @@ import {getIntDictOptions, DICT_TYPE} from '@/utils/dict';
 import {reactive, ref, computed, onMounted} from "vue";
 import { ScreenRepeatPersonApi} from '@/api/tb/screenrepeatperson'
 import moment from "moment";
+import * as DeptApi from "@/api/system/dept";
 
 
 defineOptions({name: 'ScreenPersonImportForm'})
@@ -115,6 +132,7 @@ const formData = ref({
   screenStartTime: undefined,
   screenEndTime: undefined,
   timeRange: undefined,
+  deptId: undefined,
 })
 const dialogVisible = ref(false) // 弹窗的是否展示
 const formLoading = ref(false) // 表单的加载中
@@ -130,15 +148,19 @@ const formRef = ref() // 表单 Ref
 
 const formRules = reactive({
   screenType: [
-    {required: true, message: '请选择筛查类型', trigger: 'blur'}
+    {required: true, message: '请选择筛查类型', trigger: 'change'}
   ],
   year: [
-    {required: true, message: '请选择工作年度', trigger: 'blur'}
+    {required: true, message: '请选择工作年度', trigger: 'change'}
   ],
   timeRange:[
-    {required: true, message: '请选择计划筛查时间', trigger: 'blur'}
+    {required: true, message: '请选择计划筛查时间', trigger: 'change'}
+  ],
+  deptId:[
+    {required: true, message: '请选择所属管理部门', trigger: 'change'}
   ]
 })
+const deptList = ref([]) // 部门列表
 
 /** 打开弹窗 */
 const open = () => {
@@ -147,6 +169,8 @@ const open = () => {
   fileList.value = [] // 清空文件列表
   formData.value.screenType = undefined
   formData.value.timeRange = undefined
+  formData.value.deptId = undefined
+  getDeptList()
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
@@ -243,6 +267,10 @@ const formatTime = (time) =>{
   formData.value.screenStartTime = moment(dateString1).valueOf();
   formData.value.screenEndTime = moment(dateString2).valueOf();
 
+}
+
+const getDeptList = async () => {
+  deptList.value = await DeptApi.getMyDeptList();
 }
 
 // 使用 onMounted 钩子来设置默认年份

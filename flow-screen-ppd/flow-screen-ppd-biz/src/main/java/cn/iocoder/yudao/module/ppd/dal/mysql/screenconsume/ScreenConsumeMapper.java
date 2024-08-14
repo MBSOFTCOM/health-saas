@@ -26,6 +26,7 @@ public interface ScreenConsumeMapper extends BaseMapperX<ScreenConsumeDO> {
                 .likeIfPresent(ScreenConsumeDO::getReagentName, reqVO.getReagentName())
                 .eqIfPresent(ScreenConsumeDO::getReagentType, reqVO.getReagentType())
                 .likeIfPresent(ScreenConsumeDO::getBathNumber, reqVO.getBathNumber())
+                .inIfPresent(ScreenConsumeDO::getDeptId, reqVO.getDeptList())
                 .orderByDesc(ScreenConsumeDO::getId));
     }
 
@@ -86,15 +87,18 @@ public interface ScreenConsumeMapper extends BaseMapperX<ScreenConsumeDO> {
                     @Param("consumeOrder") Integer consumeOrder,
                     @Param("bathNumber") String bathNumber,
                     @Param("indate") String indate,
-                    @Param("manufactureDate") LocalDateTime manufactureDate);
+                    @Param("manufactureDate") LocalDateTime manufactureDate,
+                    @Param("deptId") Long deptId);
 
     Integer isExist2(@Param("reagentName") String reagentName,
                      @Param("consumeOrder") Integer consumeOrder,
                      @Param("bathNumber") String bathNumber,
                      @Param("indate") String indate,
-                     @Param("manufactureDate") LocalDateTime manufactureDate);
+                     @Param("manufactureDate") LocalDateTime manufactureDate,
+                     @Param("deptId") Long deptId);
 
     List<ScreenConsumeDO> selectByTime(@Param("startDateTime") LocalDateTime startDateTime,
                                        @Param("endDateTime") LocalDateTime endDateTime,
-                                       @Param("reagentName") String reagentName);
+                                       @Param("reagentName") String reagentName,
+                                       @Param("deptId") Long deptId);
 }

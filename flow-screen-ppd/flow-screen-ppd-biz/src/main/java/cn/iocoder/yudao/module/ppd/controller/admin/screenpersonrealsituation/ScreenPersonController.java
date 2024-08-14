@@ -266,11 +266,12 @@ public class ScreenPersonController {
                                                               @RequestParam("year") String year,
                                                               @RequestParam("screenType") Integer screenType,
                                                               @RequestParam("screenStartTime") Long screenStartTime,
-                                                              @RequestParam("screenEndTime") Long screenEndTime) throws Exception {
+                                                              @RequestParam("screenEndTime") Long screenEndTime,
+                                                              @RequestParam("deptId") Long deptId) throws Exception {
         List<ScreenPersonImportVO> list = ExcelUtils.read(file, ScreenPersonImportVO.class);
         LocalDateTime startTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(screenStartTime), ZoneId.systemDefault());
         LocalDateTime endTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(screenEndTime), ZoneId.systemDefault());
-        return success(screenPersonService.importScreenPerson(list, Integer.valueOf(year), screenType, startTime, endTime));
+        return success(screenPersonService.importScreenPerson(list, Integer.valueOf(year), screenType, startTime, endTime, deptId));
     }
 
 

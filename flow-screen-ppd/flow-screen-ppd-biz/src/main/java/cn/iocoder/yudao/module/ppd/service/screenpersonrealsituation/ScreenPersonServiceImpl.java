@@ -4,6 +4,7 @@ import cn.hutool.core.io.IoUtil;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
+import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.infra.api.file.FileApi;
 import cn.iocoder.yudao.module.ppd.controller.admin.screendiagnosis.vo.TBHealthScreening;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
@@ -19,6 +20,8 @@ import cn.iocoder.yudao.module.ppd.dal.mysql.screenrepeatperson.ScreenRepeatPers
 import cn.iocoder.yudao.module.ppd.service.screendiagnosis.ScreenDiagnosisService;
 import cn.iocoder.yudao.module.system.api.dict.DictDataApi;
 import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
+import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
+import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import com.google.common.annotations.VisibleForTesting;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -61,6 +64,8 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
     private ScreenRepeatPersonMapper screenRepeatPersonMapper;
     @Resource
     private ScreenComputedTomographyMapper screenComputedTomographyMapper;
+    @Resource
+    private DeptService deptService;
 
     @Override
     public Long createScreenPerson(ScreenPersonSaveReqVO createReqVO) {
@@ -96,6 +101,9 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         String screenId = makeScreenId(maxScreenId, town.substring(0,9));
 
         screenPerson.setScreenId(screenId);
+
+        Long loginUserId = SecurityFrameworkUtils.getLoginUserId();
+        screenPerson.setDeptId(deptService.getMyDept(loginUserId));
 
         screenPersonMapper.insert(screenPerson);
         // 返回
@@ -149,19 +157,54 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
 
     @Override
     public PageResult<ScreenPersonDO> getScreenPersonPage(ScreenPersonPageReqVO pageReqVO) {
+        Long loginUserId = SecurityFrameworkUtils.getLoginUserId();
+        Long myDeptId = deptService.getMyDept(loginUserId);
+
+        // 获取所有子部门
+        List<DeptDO> childDeptList = deptService.getChildDeptList(myDeptId);
+        // 以及当前部门
+        childDeptList.add(deptService.getDept(myDeptId));
+
+        // 提取部门ID
+        List<Long> deptIds = childDeptList.stream()
+                .map(DeptDO::getId)
+                .collect(Collectors.toList());
+
+        pageReqVO.setDeptList(deptIds);
+
         return screenPersonMapper.selectPage(pageReqVO);
     }
 
 
+
     @Override
     public PageResult<ScreenPersonDO> getScreenedPage(ScreenPersonPageReqVO pageReqVO) {
+
+        Long loginUserId = SecurityFrameworkUtils.getLoginUserId();
+        Long myDeptId = deptService.getMyDept(loginUserId);
+
+        // 获取所有子部门以及当前部门
+        List<DeptDO> childDeptList = deptService.getChildDeptList(myDeptId);
+        childDeptList.add(deptService.getDept(myDeptId));
+
+        // 提取部门ID
+        List<Long> deptIds = childDeptList.stream()
+                .map(DeptDO::getId)
+                .collect(Collectors.toList());
+
+        pageReqVO.setDeptList(deptIds);
+
+
         return screenPersonMapper.selectScreenedPage(pageReqVO);
     }
 
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ScreenPersonImportRespVO importScreenPerson(List<ScreenPersonImportVO> list, Integer year, Integer screenType, LocalDateTime screenStartTime, LocalDateTime screenEndTime) {
+    public ScreenPersonImportRespVO importScreenPerson(List<ScreenPersonImportVO> list, Integer year,
+                                                       Integer screenType, LocalDateTime screenStartTime,
+                                                       LocalDateTime screenEndTime,
+                                                       Long deptId) {
         // 初始化变量
         List<ScreenPersonDO> batchInsert = new ArrayList<>();
         List<ScreenPersonDO> batchUpdate = new ArrayList<>();
@@ -182,7 +225,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
 
         // 使用 Stream 过滤空对象
         List<ScreenPersonImportVO> filteredList = list.stream()
-                .filter(vo -> !vo.isEmpty()).toList();
+                .filter(vo -> !vo.isEmpty(vo)).toList();
         // 创建两个新列表，用于存储重复和非重复数据
         List<ScreenPersonImportVO> duplicateList = new ArrayList<>();
         List<ScreenPersonImportVO> uniqueList = new ArrayList<>();
@@ -297,6 +340,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             obj.setYear(year);
             obj.setScreenStartTime(screenStartTime);
             obj.setScreenEndTime(screenEndTime);
+            obj.setDeptId(deptId);
             processScreenPerson(screenType, year, obj, batchInsert, batchUpdate, createSpecification, failureSpecification);
         }
 
@@ -357,6 +401,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             obj.setYear(year);
             obj.setScreenStartTime(screenStartTime);
             obj.setScreenEndTime(screenEndTime);
+            obj.setDeptId(deptId);
             processScreenPerson2(screenType, year, obj, batchInsert2, batchUpdate2, createRepeatSpecification, failureSpecification);
         }
 

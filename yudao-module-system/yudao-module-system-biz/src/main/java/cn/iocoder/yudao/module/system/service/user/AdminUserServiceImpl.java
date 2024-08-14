@@ -41,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertList;
@@ -57,7 +58,7 @@ import static cn.iocoder.yudao.module.system.enums.LogRecordConstants.*;
 @Slf4j
 public class AdminUserServiceImpl implements AdminUserService {
 
-    @Value("${sys.user.init-password:yudaoyuanma}")
+    @Value("123456")
     private String userInitPassword;
 
     @Resource
@@ -433,7 +434,20 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
         UserImportRespVO respVO = UserImportRespVO.builder().createUsernames(new ArrayList<>())
                 .updateUsernames(new ArrayList<>()).failureUsernames(new LinkedHashMap<>()).build();
-        importUsers.forEach(importUser -> {
+
+        // 数据去重
+        List<UserImportExcelVO> distinctImportUsers = importUsers.stream().distinct().collect(Collectors.toList());
+
+        if (!distinctImportUsers.isEmpty()) {
+            distinctImportUsers.remove(distinctImportUsers.size() - 1);
+        }
+
+        for (UserImportExcelVO obj : distinctImportUsers) {
+            Long deptId = deptService.getDeptId(obj.getDeptName());
+            obj.setDeptId(deptId);
+        }
+
+        distinctImportUsers.forEach(importUser -> {
             // 校验，判断是否有不符合的原因
             try {
                 validateUserForCreateOrUpdate(null, null, importUser.getMobile(), importUser.getEmail(),
@@ -471,6 +485,11 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public boolean isPasswordMatch(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    @Override
+    public Long getDeptId(Long loginUserId) {
+        return userMapper.getDeptId(loginUserId);
     }
 
     /**

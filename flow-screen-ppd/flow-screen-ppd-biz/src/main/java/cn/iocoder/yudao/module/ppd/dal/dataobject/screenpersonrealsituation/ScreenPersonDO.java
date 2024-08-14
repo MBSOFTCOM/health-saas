@@ -188,4 +188,8 @@ public class ScreenPersonDO extends BaseDO {
      * 监护人手机号
      */
     private String guardianTel;
+    /**
+     * 所属部门id
+     */
+    private Long deptId;
 }

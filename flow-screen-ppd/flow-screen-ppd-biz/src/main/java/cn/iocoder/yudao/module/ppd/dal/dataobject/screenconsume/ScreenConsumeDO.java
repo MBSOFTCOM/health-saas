@@ -77,5 +77,9 @@ public class ScreenConsumeDO extends BaseDO {
      * 是否启用
      */
     private Integer usable;
+    /**
+     * 所属部门id
+     */
+    private Long deptId;
 
 }

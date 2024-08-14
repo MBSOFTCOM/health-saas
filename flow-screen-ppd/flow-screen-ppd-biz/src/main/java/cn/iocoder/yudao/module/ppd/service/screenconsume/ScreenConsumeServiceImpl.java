@@ -4,17 +4,21 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
+import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeImportVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumePageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeStatisticsRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportRespVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsumerecord.ScreenConsumeRecordDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsume.ScreenConsumeMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsumerecord.ScreenConsumeRecordMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenreagent.ScreenReagentMapper;
+import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
+import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.module.cd.enums.ErrorCodeConstants.*;
@@ -47,21 +52,27 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
     @Resource
     private ScreenReagentMapper screenReagentMapper;
 
+    @Resource
+    private DeptService deptService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long createScreenConsume(ScreenConsumeSaveReqVO createReqVO) {
         // 插入
         ScreenConsumeDO screenConsume = BeanUtils.toBean(createReqVO, ScreenConsumeDO.class);
 
+        Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+
         Integer count =
                 screenConsumeMapper.isExist(screenConsume.getReagentId(),
                         screenConsume.getConsumeOrder(), screenConsume.getBathNumber(),
-                        screenConsume.getIndate(), screenConsume.getManufactureDate());
+                        screenConsume.getIndate(), screenConsume.getManufactureDate(), deptId);
 
         if (count > 0) {
             throw exception(SCREEN_CONSUME_IS_EXISTS);
         }
 
+        screenConsume.setDeptId(deptId);
         screenConsumeMapper.insert(screenConsume);
         screenConsumeRecordMapper.insert(
                 new ScreenConsumeRecordDO().setConsumeId(screenConsume.getId())
@@ -77,10 +88,12 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
         // 更新
         ScreenConsumeDO updateObj = BeanUtils.toBean(updateReqVO, ScreenConsumeDO.class);
 
+        Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+
         Integer count =
                 screenConsumeMapper.isExist(updateObj.getReagentId(),
                         updateObj.getConsumeOrder(), updateObj.getBathNumber(),
-                        updateObj.getIndate(), updateObj.getManufactureDate());
+                        updateObj.getIndate(), updateObj.getManufactureDate(), deptId);
 
         if (count > 1) {
             throw exception(SCREEN_CONSUME_IS_EXISTS);
@@ -110,6 +123,19 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
 
     @Override
     public PageResult<ScreenConsumeDO> getScreenConsumePage(ScreenConsumePageReqVO pageReqVO) {
+
+        Long myDeptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+
+        List<DeptDO> deptList = new ArrayList<>();
+        deptList.add(deptService.getDept(myDeptId));
+
+        // 提取部门ID
+        List<Long> deptIds = deptList.stream()
+                .map(DeptDO::getId)
+                .collect(Collectors.toList());
+
+        pageReqVO.setDeptList(deptIds);
+
         return screenConsumeMapper.selectPage(pageReqVO);
     }
 
@@ -172,6 +198,9 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
         List<ScreenConsumeImportVO> filteredList = list.stream()
                 .filter(vo -> !vo.isEmpty(vo)).toList();
 
+        // 数据去重
+        List<ScreenConsumeImportVO> distinctImportList = filteredList.stream().distinct().toList();
+
         // 批量导入列表
         List<ScreenConsumeDO> batchInsert = new ArrayList<>();
         // 导入成功的列表
@@ -184,11 +213,13 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
         // 记录顺序
         Integer count = 1;
 
-        if (filteredList.isEmpty()) {
+        Long myDeptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+
+        if (distinctImportList.isEmpty()) {
             return screenReagentImportRespVO;
         }
 
-        for (ScreenConsumeImportVO obj : filteredList) {
+        for (ScreenConsumeImportVO obj : distinctImportList) {
             if (ObjectUtil.isNull(obj.getReagentName())) {
                 failureSpecification.put(count, "没有选择试剂");
             } else if (ObjectUtil.isNull(obj.getConsumeOrder())) {
@@ -214,12 +245,12 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
                 Integer isExist =
                         screenConsumeMapper.isExist2(obj.getReagentName(),
                                 obj.getConsumeOrder(), obj.getBathNumber(),
-                                obj.getIndate(), localDateTime);
+                                obj.getIndate(), localDateTime, myDeptId);
                 if (isExist > 0) {
                     failureSpecification.put(count, "该消耗管理已存在");
                 } else {
                     ScreenReagentDO screenReagentDO =
-                            screenReagentMapper.selectByName(obj.getReagentName());
+                            screenReagentMapper.selectByName(obj.getReagentName(), myDeptId);
 
                     ScreenConsumeDO screenConsumeDO = new ScreenConsumeDO();
                     BeanUtil.copyProperties(obj, screenConsumeDO);
@@ -229,7 +260,8 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
                             .setThreshold(screenReagentDO.getThreshold())
                             .setReagentSpecsNum(screenReagentDO.getReagentSpecsNum())
                             .setCurrentNumber(obj.getInboundNumber())
-                            .setManufactureDate(localDateTime);
+                            .setManufactureDate(localDateTime)
+                            .setDeptId(myDeptId);
 
                     batchInsert.add(screenConsumeDO);
                     createSpecification.add("");
@@ -263,23 +295,36 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
 
     @Override
     public List<ScreenConsumeStatisticsRespVO> getScreenConsumeStatistics(ScreenConsumePageReqVO pageReqVO) {
+        // 创建一个列表来存放结果
         List<ScreenConsumeStatisticsRespVO> resultList = new ArrayList<>();
 
+        // 检查请求参数中的创建时间是否不为空且长度大于1
         if (ObjectUtil.isNotNull(pageReqVO.getCreateTime()) && pageReqVO.getCreateTime().length > 1) {
+            // 获取当前用户的部门ID
+            Long myDeptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+
+            // 获取请求参数中的开始时间和结束时间
             LocalDateTime[] createTime = pageReqVO.getCreateTime();
             LocalDateTime startDateTime = createTime[0];
             LocalDateTime endDateTime = createTime[1];
 
+            // 计算时间区间的天数
             long periodDays = ChronoUnit.DAYS.between(startDateTime, endDateTime);
 
+            // 计算前一个时间区间的开始和结束时间
             LocalDateTime previousStartDateTime = startDateTime.minusDays(periodDays + 1);
             LocalDateTime previousEndDateTime = endDateTime.minusDays(periodDays + 1);
 
-            List<ScreenConsumeDO> list = screenConsumeMapper.selectByTime(startDateTime, endDateTime, pageReqVO.getReagentName());
-            List<ScreenConsumeDO> preList = screenConsumeMapper.selectByTime(previousStartDateTime, previousEndDateTime, pageReqVO.getReagentName());
+            // 查询当前时间区间内的消耗数据
+            List<ScreenConsumeDO> list = screenConsumeMapper.selectByTime(startDateTime, endDateTime, pageReqVO.getReagentName(), myDeptId);
+            // 查询前一个时间区间内的消耗数据
+            List<ScreenConsumeDO> preList = screenConsumeMapper.selectByTime(previousStartDateTime, previousEndDateTime, pageReqVO.getReagentName(), myDeptId);
 
+            // 如果当前时间区间的列表不为空
             if (ObjectUtil.isNotNull(list) && !list.isEmpty()) {
+                // 创建一个用于存储前一个时间区间数据的映射
                 Map<String, ScreenConsumeDO> preListMap = new HashMap<>();
+                // 如果前一个时间区间的列表不为空，将数据存储到映射中
                 if (ObjectUtil.isNotNull(preList) && !preList.isEmpty()) {
                     preList.forEach(obj2 -> {
                         String key = obj2.getReagentName() + "-" + obj2.getBathNumber();
@@ -287,15 +332,19 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
                     });
                 }
 
+                // 遍历当前时间区间的列表
                 for (ScreenConsumeDO obj1 : list) {
                     String key = obj1.getReagentName() + "-" + obj1.getBathNumber();
+                    // 创建一个响应对象并设置相关属性
                     ScreenConsumeStatisticsRespVO respVO = new ScreenConsumeStatisticsRespVO();
                     respVO.setReagentName(obj1.getReagentName())
                             .setBathNumber(obj1.getBathNumber())
                             .setConsumption(obj1.getCurrentNumber());
 
+                    // 从前一个时间区间的映射中获取对应的数据
                     ScreenConsumeDO obj2 = preListMap.get(key);
                     double percentage = 0.0;
+                    // 如果前一个时间区间的数据存在并且当前消耗量不为0，计算消耗百分比
                     if (obj2 != null) {
                         if (obj2.getCurrentNumber() != 0) {
                             percentage = (1.0 * (obj1.getCurrentNumber() - obj2.getCurrentNumber())) / obj2.getCurrentNumber();
@@ -305,15 +354,20 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
                     // 乘以 100 并保留两位小数
                     respVO.setConsumptionPercentage(Math.round(percentage * 100 * 100.0) / 100.0);
 
+                    // 将结果添加到结果列表中
                     resultList.add(respVO);
                 }
 
+                // 返回去重后的结果列表
                 return resultList.stream().distinct().toList();
             }
+            // 如果当前时间区间的列表为空，返回空列表
             return new ArrayList<>();
         }
+        // 如果创建时间参数为空或长度不符合要求，返回空列表
         return new ArrayList<>();
     }
+
 
 
 

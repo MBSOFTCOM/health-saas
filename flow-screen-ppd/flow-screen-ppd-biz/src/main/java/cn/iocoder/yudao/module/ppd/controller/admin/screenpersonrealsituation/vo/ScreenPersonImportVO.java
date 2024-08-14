@@ -138,17 +138,10 @@ public class ScreenPersonImportVO {
 
     private String screenId;
 
-    public boolean isEmpty() {
-        return name == null && idNum == null && isNew == null && isScreened == null
-                && isNewStudent == null && firstType == null && moreTypeStr == null
-                && moreType == null && age == null && sex == null && year == null
-                && screenTime == null && tel == null && nation == null && schoolOrTemple == null
-                && classroom == null && height == null && weight == null
-                && permanentAddress == null && permanentAddressProvince == null
-                && permanentAddressCity == null && permanentAddressCounty == null
-                && permanentAddressTown == null && address == null && province == null
-                && city == null && county == null && town == null && screenPoint == null
-                && remark == null && screenType == null && screenId == null && screenStartTime == null
-                && screenEndTime == null && guardianTel == null;
+    private Long deptId;
+
+    public boolean isEmpty(ScreenPersonImportVO respVO) {
+        ScreenPersonImportVO vo = new ScreenPersonImportVO();
+        return vo.equals(respVO);
     }
 }

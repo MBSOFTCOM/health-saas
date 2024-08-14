@@ -30,7 +30,8 @@ export interface ScreenPersonVO {
   screenTime: Date // 筛查时间
   year: number
   screenType: number,
-  studentType: number
+  studentType: number,
+  deptId: number
 }
 
 // 摸底 API
