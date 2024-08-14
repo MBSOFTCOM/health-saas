@@ -49,6 +49,9 @@ export const coverDataAuto = async (data) => {
 	let local=await getDataFromLocal()
 	console.log(list)
 }
+/**
+ * 获取本地，所有试剂数据
+ */
 export const getDataFromLocal = async () => {
   let sql=`select * from ${tbScreenReagent}`
     return promise(dbName,sql)

@@ -358,6 +358,7 @@
 							>
 								提交结果
 							</u-button>
+							
 							<u-button
 								class="btn-span"
 								style="
@@ -428,8 +429,15 @@
 			<!-- 注射弹窗 -->
 			<u-popup :show="show" mode="center">
 				<view class="injection">
-					<view class="injection-tle">注射方式</view>
-					<u-radio-group style="margin-left: 12vw" v-model="radiovalue1" placement="column">
+					<view class="injection-tle">注射试剂</view>
+					<uni-data-select
+						style="width: 60%;"
+					    v-model="regentId"
+					    :localdata="regentList"
+						:clear="false"
+					    @change="selectRegentList"/>
+					转换系数 {{this.injectionReagent.reagentSpecsNum}} (人次)
+					<u-radio-group style="margin-left: 12vw" v-model="injectionReagent.reagentType" placement="column" disabled>
 						<u-radio
 							v-for="(item, index) in radiolist1"
 							:key="index"
@@ -598,6 +606,7 @@ import dbUtils from '@/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manag
 import { updateOne } from '@/utils/screenSum.js';
 import {
 	dbName,
+  tbScreenConsumeRecord,
 	tbScreenPerson,
 	tbScreenCollect,
 	tbScreenPpd,
@@ -620,6 +629,8 @@ import { parseNext } from '../../../utils/common';
 import { personType } from '../../../utils/dictData';
 import * as regentApi from '@/api/screen/regent'
 import * as consumeApi from '@/api/screen/consume'
+import * as consumeRecordApi from '@/api/screen/consumeRecord'
+import {staticsConsumeById} from "../../../api/screen/consume";
 export default {
 	data() {
 		return {
@@ -667,8 +678,9 @@ export default {
 			lineWith: 30,
 			//扫描弹窗
 			printShow: false,
+			injectionReagent:{},
 			//注射方式
-			radiovalue1: 1,
+			radiovalue1: null,
 			radiolist1: [
 				{
 					name: 'PPD注射',
@@ -708,14 +720,17 @@ export default {
 			//筛查时间
 			dateRange: [],
 			showNextText: false,
-			nextText: []
+			nextText: [],
+			regentId: null,  // 选择的试剂id
+			regentList:[]  // 试剂下拉数据
 		};
 	},
 	//页面加载时自动调用
-	onLoad() {
+	async onLoad() {
+		console.log(uni.$person);
 		this.ethnic = ethnic;
 		this.dateScreening();
-		
+		this.getRegentList()
 		this.getNavItems(uni.$screenType);
 		
 	},
@@ -732,6 +747,16 @@ export default {
 		}
 	},
 	methods: {
+		async getRegentList(){
+			this.regentList=[]
+			let data=await regentApi.getDataFromLocal()
+			for (var i = 0; i < data.length; i++) {
+				let item={}
+				item.text=data[i].name
+				item.value=data[i].id
+				this.regentList.push(item)
+			}
+		},
 		getNavItems(screenType) {
 			switch (screenType) {
 				case 1:
@@ -914,12 +939,18 @@ export default {
 		},
 		//注射
 		gather(val) {
-			// console.log("yh信息",uni.$person);
 			//打开弹窗
 			this.show = true;
-			// console.log(val);
 			//保存本次注射的人员信息
 			this.person = val;
+		},
+		selectRegentList(e){
+			// console.log(e);
+			consumeApi.getFirstConsume(e).then(res=>{
+				this.injectionReagent=res[0]
+				this.radiovalue1=this.injectionReagent.reagentType
+				// console.log(res);
+			})
 		},
 		//已注射点击弹窗确认事件
 		async injectionUpload() {
@@ -951,6 +982,19 @@ export default {
 				.then(async (r) => {
 					//生成注射时间
 					this.refreshMark();
+					// console.log(this.injectionReagent);
+					let record=await consumeRecordApi.selectLocalRecordByRegentId(this.injectionReagent.id)
+					// console.log(record);
+					let recordData={
+						consumeId:this.injectionReagent.id,
+						changeNumber:1,
+						type:4,
+						createTime: this.screenTime,
+						updateTime: this.screenTime,
+						creator: uni.$person.id,
+						updater: uni.$person.id
+					}
+
 					//整理插入数据类
 					const inData = {
 						year: uni.$person.year,
@@ -958,12 +1002,16 @@ export default {
 						screenId: this.person.screenId,
 						personId: this.person.id,
 						injection: 0,
+						idNum:this.person.idNum,
 						injectionWay: this.radiovalue1,
 						screenOrder: '',
 						screenTime: this.screenTime,
 						creator: uni.$person.id
 					};
-
+					inData.reagentId= this.injectionReagent.id
+					inData.reagentSpecsNum= this.injectionReagent.reagentSpecsNum
+					// console.log(inData);
+					// return
 					//获取本次注射次序
 					let order = await getPpdBypersonIdToOrder(this.person.id);
 					inData.screenOrder = order[0].screenOrder == null ? 1 : order[0].screenOrder + 1;
@@ -971,6 +1019,21 @@ export default {
 					// console.log(inData);
 					//插入数据请求
 					await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
+					let staticsConsume = await consumeApi.staticsConsumeById(this.injectionReagent.id)  // 实际统计出已消耗的人次
+					// console.log(staticsConsume);
+					let consumeNum = 0  // 库存中应消耗的试剂人次
+					// console.log(`${staticsConsume.num}-${consumeNum}-${record.num}`)
+					if (!record || record.length==0){  // 第一次消耗一支试剂
+						// console.log(recordData);
+						await dbUtils.addTabItem(dbName,tbScreenConsumeRecord,recordData)
+					}else{
+						consumeNum=record[0].num * this.injectionReagent.reagentSpecsNum
+						// console.log(consumeNum);
+					}
+					
+					if (staticsConsume[0].num>consumeNum){  //
+						consumeRecordApi.updateRecordNum(Math.ceil(staticsConsume[0].num/this.injectionReagent.reagentSpecsNum),this.injectionReagent.id, uni.$person.id,this.screenTime)
+					}
 					//插入数据进入汇总表
 					const gatherData = await getGather(this.person.id, uni.$person.year, uni.$screenType);
 					// console.log("gatherData",gatherData);
@@ -1000,7 +1063,7 @@ export default {
 							lastPpdTime: this.screenTime,
 							curFinish: 'ppd组'
 						};
-						console.log(gather);
+						// console.log(gather);
 						//存在的话修改
 						await updateOne(gather, this.person.id, uni.$person.year, uni.$screenType);
 					}
