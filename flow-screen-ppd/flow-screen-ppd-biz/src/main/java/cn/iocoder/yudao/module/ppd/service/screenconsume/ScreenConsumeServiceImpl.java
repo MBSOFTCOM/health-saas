@@ -124,17 +124,18 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
     @Override
     public PageResult<ScreenConsumeDO> getScreenConsumePage(ScreenConsumePageReqVO pageReqVO) {
 
-        Long myDeptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+        if (pageReqVO.getDeptList() == null){
+            Long myDeptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
 
-        List<DeptDO> deptList = new ArrayList<>();
-        deptList.add(deptService.getDept(myDeptId));
+            /*List<DeptDO> deptList = new ArrayList<>();
+            deptList.add(deptService.getDept(myDeptId));
 
-        // 提取部门ID
-        List<Long> deptIds = deptList.stream()
-                .map(DeptDO::getId)
-                .collect(Collectors.toList());
+            // 提取部门ID
+            List<Long> deptIds = deptList.stream()
+                .map(DeptDO::getId).toList();*/
 
-        pageReqVO.setDeptList(deptIds);
+            pageReqVO.setDeptList(myDeptId);
+        }
 
         return screenConsumeMapper.selectPage(pageReqVO);
     }
@@ -295,13 +296,19 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
 
     @Override
     public List<ScreenConsumeStatisticsRespVO> getScreenConsumeStatistics(ScreenConsumePageReqVO pageReqVO) {
-        // 创建一个列表来存放结果
-        List<ScreenConsumeStatisticsRespVO> resultList = new ArrayList<>();
-
         // 检查请求参数中的创建时间是否不为空且长度大于1
         if (ObjectUtil.isNotNull(pageReqVO.getCreateTime()) && pageReqVO.getCreateTime().length > 1) {
-            // 获取当前用户的部门ID
-            Long myDeptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+            // 创建一个列表来存放结果
+            List<ScreenConsumeStatisticsRespVO> resultList = new ArrayList<>();
+
+            Long deptId;
+
+            if (pageReqVO.getDeptList() == null){
+                // 获取当前用户的部门ID
+                deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+            }else {
+                deptId = pageReqVO.getDeptList();
+            }
 
             // 获取请求参数中的开始时间和结束时间
             LocalDateTime[] createTime = pageReqVO.getCreateTime();
@@ -316,9 +323,14 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
             LocalDateTime previousEndDateTime = endDateTime.minusDays(periodDays + 1);
 
             // 查询当前时间区间内的消耗数据
-            List<ScreenConsumeDO> list = screenConsumeMapper.selectByTime(startDateTime, endDateTime, pageReqVO.getReagentName(), myDeptId);
+            List<ScreenConsumeDO> list =
+                    screenConsumeMapper.selectByTime(startDateTime, endDateTime, pageReqVO.getReagentName(), deptId);
+
+            System.out.println(list);
             // 查询前一个时间区间内的消耗数据
-            List<ScreenConsumeDO> preList = screenConsumeMapper.selectByTime(previousStartDateTime, previousEndDateTime, pageReqVO.getReagentName(), myDeptId);
+            List<ScreenConsumeDO> preList =
+                    screenConsumeMapper.selectByTime(previousStartDateTime, previousEndDateTime, pageReqVO.getReagentName(), deptId);
+            System.out.println(preList);
 
             // 如果当前时间区间的列表不为空
             if (ObjectUtil.isNotNull(list) && !list.isEmpty()) {

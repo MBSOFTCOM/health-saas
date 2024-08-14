@@ -27,7 +27,7 @@ public interface ScreenReagentMapper extends BaseMapperX<ScreenReagentDO> {
                 .eqIfPresent(ScreenReagentDO::getUsable, reqVO.getUsable())
                 .likeIfPresent(ScreenReagentDO::getManufacturer, reqVO.getManufacturer())
                 .eqIfPresent(ScreenReagentDO::getUsable, reqVO.getUsable())
-                .inIfPresent(ScreenReagentDO::getDeptId, reqVO.getDeptList())
+                .eqIfPresent(ScreenReagentDO::getDeptId, reqVO.getDeptList())
                 .orderByDesc(ScreenReagentDO::getId));
     }
 

@@ -1,5 +1,6 @@
 import request from '@/config/axios'
 import {PermissionAssignUserRoleReqVO} from "@/api/system/permission";
+import {DeptVO} from "@/api/system/dept";
 
 // 筛查点 VO
 export interface ScreenPointVO {
@@ -115,6 +116,11 @@ export const ScreenPointApi = {
   // 查询用户拥有的角色数组
   getUserRoleList: async (userId: number) => {
     return await request.get({ url: '/tb/screen-point/list-user-roles?userId=' + userId })
+  },
+
+  // 修改部门
+  updateDept:  async (params: DeptVO) => {
+    return await request.put({ url: '/tb/screen-point/dept-update', data: params })
   }
 
 

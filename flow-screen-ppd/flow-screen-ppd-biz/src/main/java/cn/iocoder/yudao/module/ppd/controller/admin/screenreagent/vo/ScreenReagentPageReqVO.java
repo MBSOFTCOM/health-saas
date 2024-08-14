@@ -57,6 +57,6 @@ public class ScreenReagentPageReqVO extends PageParam {
     private LocalDateTime[] createTime;
 
     @Schema(description = "部门列表")
-    private List<Long> deptList;
+    private Long deptList;
 
 }

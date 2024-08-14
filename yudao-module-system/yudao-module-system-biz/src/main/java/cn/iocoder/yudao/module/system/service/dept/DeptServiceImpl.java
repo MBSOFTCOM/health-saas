@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import jakarta.annotation.Resource;
@@ -36,6 +37,8 @@ public class DeptServiceImpl implements DeptService {
 
     @Resource
     private DeptMapper deptMapper;
+    /*@Resource
+    private ScreenPointMapper screenPointMapper;*/
 
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.DEPT_CHILDREN_ID_LIST,
@@ -58,6 +61,7 @@ public class DeptServiceImpl implements DeptService {
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.DEPT_CHILDREN_ID_LIST,
             allEntries = true) // allEntries 清空所有缓存，因为操作一个部门，涉及到多个缓存
+    @Transactional(rollbackFor = Exception.class)
     public void updateDept(DeptSaveReqVO updateReqVO) {
         if (updateReqVO.getParentId() == null) {
             updateReqVO.setParentId(DeptDO.PARENT_ID_ROOT);
@@ -69,9 +73,28 @@ public class DeptServiceImpl implements DeptService {
         // 校验部门名的唯一性
         validateDeptNameUnique(updateReqVO.getId(), updateReqVO.getParentId(), updateReqVO.getName());
 
+/*        // 1.拿到这个部门信息
+        DeptDO deptDO = deptMapper.selectById(updateReqVO.getId());
+        // 2.拿到 原来的部门名称
+        String deptName = deptDO.getName();
+        // 3.拿到相关联的筛查点
+        List<ScreenPointDO> screenPointList = screenPointMapper.getByDeptName(deptName);
+        Collection<ScreenPointDO> updateBath = new ArrayList<>();
+        if (screenPointList != null && !screenPointList.isEmpty()){
+            for (ScreenPointDO obj : screenPointList) {
+                obj.setScreenDept(updateReqVO.getName());
+                updateBath.add(obj);
+            }
+        }*/
+
         // 更新部门
         DeptDO updateObj = BeanUtils.toBean(updateReqVO, DeptDO.class);
         deptMapper.updateById(updateObj);
+
+     /*   // 4.更新相关的筛查点
+        if (!updateBath.isEmpty()){
+            screenPointMapper.updateBatch(updateBath);
+        }*/
     }
 
     @Override

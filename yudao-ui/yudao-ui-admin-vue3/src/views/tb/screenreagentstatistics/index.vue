@@ -8,6 +8,21 @@
       :inline="true"
       label-width="68px"
     >
+      <el-form-item label="机构部门" prop="deptList">
+        <el-select
+          v-model="queryParams.deptList"
+          placeholder="请选择"
+          clearable
+          class="!w-180px"
+        >
+          <el-option
+            v-for="item in deptList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="试剂名称" prop="reagentName">
         <el-input
           v-model="queryParams.reagentName"
@@ -40,6 +55,7 @@
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
+        {{queryParams.deptList}}
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -82,6 +98,7 @@
 import download from '@/utils/download'
 import { ScreenConsumeApi, ScreenConsumeVO } from '@/api/tb/screenconsume'
 import {onMounted, ref, reactive} from 'vue'
+import * as DeptApi from "@/api/system/dept";
 
 /** 消耗管理 列表 */
 defineOptions({ name: 'ScreenReagentStatistics' })
@@ -97,10 +114,12 @@ const queryParams = reactive({
   pageSize: 10,
   reagentName: undefined,
   createTime: [],
+  deptList: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const flag = ref(false)
+const deptList = ref([]) // 部门列表
 
 /** 查询列表 */
 const getList = async () => {
@@ -179,11 +198,14 @@ const handleDateChange = (dates) => {
   }
 };
 
-
+const getDeptList = async () => {
+  deptList.value = await DeptApi.getMyDeptList();
+}
 
 /** 初始化 **/
 onMounted(() => {
   // getList()
+  getDeptList()
 })
 </script>
 

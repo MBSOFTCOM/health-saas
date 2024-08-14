@@ -14,6 +14,7 @@ import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpoint.ScreenPointDO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpoint.vo.*;
 import cn.iocoder.yudao.module.ppd.service.screenpoint.ScreenPointService;
 import cn.iocoder.yudao.module.ppd.utils.CustomSheetWriteHandler;
+import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptSaveReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.permission.vo.permission.PermissionAssignUserRoleReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.user.vo.user.UserPageReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.user.vo.user.UserRespVO;
@@ -308,6 +309,15 @@ public class ScreenPointController {
     @PreAuthorize("@ss.hasPermission('tb:screen-point:update')")
     public CommonResult<Set<Long>> listAdminRoles(@RequestParam("userId") Long userId) {
         return success(permissionService.getUserRoleIdListByUserId(userId));
+    }
+
+
+    @PutMapping("/dept-update")
+    @Operation(summary = "更新部门")
+    @PreAuthorize("@ss.hasPermission('system:dept:update')")
+    public CommonResult<Boolean> updateDept(@Valid @RequestBody DeptSaveReqVO updateReqVO) {
+        screenPointService.updateDept(updateReqVO);
+        return success(true);
     }
 
 

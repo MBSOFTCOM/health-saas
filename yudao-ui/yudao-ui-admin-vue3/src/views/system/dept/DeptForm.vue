@@ -64,6 +64,7 @@ import * as DeptApi from '@/api/system/dept'
 import * as UserApi from '@/api/system/user'
 import { CommonStatusEnum } from '@/utils/constants'
 import { FormRules } from 'element-plus'
+import {ScreenPointApi} from "@/api/tb/screenpoint";
 
 defineOptions({ name: 'SystemDeptForm' })
 
@@ -136,7 +137,8 @@ const submitForm = async () => {
       await DeptApi.createDept(data)
       message.success(t('common.createSuccess'))
     } else {
-      await DeptApi.updateDept(data)
+      // await DeptApi.updateDept(data)
+      await ScreenPointApi.updateDept(data)
       message.success(t('common.updateSuccess'))
     }
     dialogVisible.value = false
