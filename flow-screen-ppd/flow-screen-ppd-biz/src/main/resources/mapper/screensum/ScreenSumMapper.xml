@@ -43,5 +43,10 @@
         from tb_screen_sum
         where id_num=${idNum} and `year`=${year} and screen_type=${screenType}
     </select>
+    <select id="selectExists" resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screensum.ScreenSumDO">
+        select *
+        from tb_screen_sum
+        where id_num=${idNum} and `year`=${year} and screen_type=${screenType}
+    </select>
 
 </mapper>

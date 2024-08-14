@@ -28,6 +28,14 @@ public interface ScreenComputedTomographyMapper extends BaseMapperX<ScreenComput
 
     List<ComputedTomographyOrderRespVO> getOrderAndTime(@Param("personId") Long personId, @Param("screenType") Integer screenType, @Param("year") Integer year);
 
+
+    /**
+     * 获取某患者在某year、某screenType 的最近的筛查流程
+     * @param idNum 身份证
+     * @param screenType 筛查类型
+     * @param year 年份
+     * @return Integer
+     */
     Integer getMaxOrder(@Param("idNum") String idNum, @Param("screenType") Integer screenType, @Param("year") Integer year);
 
     ScreenComputedTomographyRespVO getOneByPersonIdNum(@Param("idNum") String idNum, @Param("screenOrder") Integer screenOrder, @Param("screenType") Integer screenType, @Param("year") Integer year);
@@ -45,6 +53,12 @@ public interface ScreenComputedTomographyMapper extends BaseMapperX<ScreenComput
                 .orderByDesc(ScreenComputedTomographyDO::getId));
     }
 
+    /**
+     * 获取某患者在某year、某screenType 的最近的筛查流程
+     * @param req CommonReq
+     * @return Integer
+     */
+    Integer selectMaxOrder(CommonReq req);
     /**
      * 计算某患者在某年某筛查类型，某次的ct记录
      * @param req CommonReq{}

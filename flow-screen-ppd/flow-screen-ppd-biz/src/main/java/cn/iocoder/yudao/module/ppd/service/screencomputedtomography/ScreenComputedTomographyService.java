@@ -28,7 +28,6 @@ public interface ScreenComputedTomographyService {
      * @param createReqVO 创建信息
      */
     void createScreenComputedTomographyTrans(@Valid ScreenComputedTomographySaveReqVO createReqVO);
-    Integer getCreateOrder(@Valid ScreenComputedTomographySaveReqVO createReqVO);
 
     /**
      * 更新ct组
