@@ -138,7 +138,7 @@ export default {
 			this.$store.dispatch('GetInfo').then((res) => {
 				SynchronizeApi.getUserInfo(res.user.id).then((resp) => {
 					let temp = resp.data;
-					console.log(temp);
+					// console.log(temp);
 					uni.$person = temp;
 					uni.$user = temp;
 					SynchronizeApi.getYear(temp.name).then((response) => {

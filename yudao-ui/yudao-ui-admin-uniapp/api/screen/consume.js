@@ -1,6 +1,7 @@
 import dbUtils from "@/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils.js" //sqlite-manage插件
 import request from '@/utils/request'
 import {dbName,promise,tbScreenConsume,emptyData} from "@/utils/sqlite";
+import {tbScreenPpd} from "../../utils/sqlite";
 /**
  * 根据类型获取可用的试剂批号数据
  */
@@ -49,5 +50,33 @@ export const coverDataAuto = async () => {
 }
 export const getDataFromLocal = async () => {
     let sql=`select * from ${tbScreenConsume}`
+    return promise(dbName,sql)
+}
+/**
+ * 根据试剂id获取消耗序位最小的试剂批号
+ * @param {number} regentId
+ */
+export const  getFirstConsume=async(regentId)=>{
+	let sql=`select * from ${tbScreenConsume} where reagentId=${regentId} order by consumeOrder ASC limit 1`
+	// console.log(sql);
+	return promise(dbName,sql)
+}
+
+/**
+ * 根据试剂批次明细id分别统计已使用人次
+ * @return {*}
+ */
+export const staticsConsumeGroupByReagentId = () => {
+  let sql=`select p.reagentId,ifnull(count(*)) num,c.currentNumber from ${tbScreenPpd} p left join ${tbScreenConsume} c on p.reagentId = c.id group by p.reagentId`
+    return promise(dbName,sql)
+}
+/**
+ * 根据试剂批次明细id分别统计已使用人次
+ * @param {number} reagentId
+ * @return {*}
+ */
+export const staticsConsumeById = async(reagentId) => {
+	// console.log(111);
+	let sql=`select reagentId,ifnull(count(*),0) num from ${tbScreenPpd} where reagentId=${reagentId}`
     return promise(dbName,sql)
 }
