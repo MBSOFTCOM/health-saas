@@ -795,7 +795,7 @@ updateArray(number) {
 				let screenPoints = screenPointList.map(item => item.name);
 				
 				
-				// console.log(screenPointList);
+				console.log(screenPointList);
 				if (screenPointList.length > 1) {
 					uni.showActionSheet({
 						itemList: screenPoints,
@@ -941,8 +941,9 @@ updateArray(number) {
 								uni.$person.year = screenPointInfo[2];
 
 								// console.log(screenPointList[resp.tapIndex]);
+								console.log(screenPointInfo);
 								//获取pc端 工作队伍信息
-								SynchronizeApi.getWorkTeamInfo(screenPointInfo[0].screenPointId).then((res) => {
+								SynchronizeApi.getWorkTeamInfo(screenPointList[0].screenPointId).then((res) => {
 									if (uni.$user.year) {
 										// 过滤出与当前工作年度不同的数据
 										let differentYears = res.data.filter((item) => item.year != uni.$user.year);

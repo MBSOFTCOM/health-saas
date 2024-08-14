@@ -44,7 +44,8 @@ export default {
 			captchaEnabled: false, // 验证码开关 TODO 芋艿：需要抽到配置里
 			globalConfig: this.$config,
 			loginForm: {
-				username: 'wanzhouqu0001',
+				// username: 'wanzhouqu0001',
+				username: 'zengjw',
 				password: '123456',
 				captchaVerification: ''
 			}

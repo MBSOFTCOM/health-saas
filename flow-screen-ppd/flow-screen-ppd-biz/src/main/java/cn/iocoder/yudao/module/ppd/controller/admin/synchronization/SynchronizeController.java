@@ -4,21 +4,25 @@ package cn.iocoder.yudao.module.ppd.controller.admin.synchronization;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenchestradiograph.vo.*;
+import cn.iocoder.yudao.framework.datapermission.core.annotation.DataPermission;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenchestradiograph.vo.ScreenChestRadiographPageReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenchestradiograph.vo.ScreenChestRadiographRespVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenchestradiograph.vo.ScreenChestRadiographSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screencollect.vo.ScreenCollectPageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screencollect.vo.ScreenCollectRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screencollect.vo.ScreenCollectSaveReqVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ScreenPersonPageReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ScreenPersonRespVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ScreenPersonSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdPageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdSaveReqVO;
-
-import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.*;
+import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.UserLoginInfoVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.WorkTeamVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
-
 import cn.iocoder.yudao.module.ppd.service.screenpersonrealsituation.ScreenPersonService;
 import cn.iocoder.yudao.module.ppd.service.synchronization.SynchronizeService;
 import cn.iocoder.yudao.module.system.service.user.AdminUserService;
@@ -124,6 +128,7 @@ public class SynchronizeController {
 
     @GetMapping("/get-workTeam")
     @Operation(summary = "根据当前用户id 获取所属工作队伍信息")
+    @DataPermission(enable = false)
 //    @PreAuthorize("@ss.hasPermission('tb:synchronization:query')")
     public CommonResult<List<WorkTeamVO>> getWorkTeam(@RequestParam("screenPointId") Long screenPointId) {
         List<WorkTeamVO> list = synchronizeService.getWorkTeam(screenPointId);
