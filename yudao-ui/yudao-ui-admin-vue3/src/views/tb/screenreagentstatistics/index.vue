@@ -8,7 +8,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="机构部门" prop="deptList">
+      <el-form-item label="部门" prop="deptList">
         <el-select
           v-model="queryParams.deptList"
           placeholder="请选择"
@@ -55,7 +55,6 @@
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
-        {{queryParams.deptList}}
       </el-form-item>
     </el-form>
   </ContentWrap>

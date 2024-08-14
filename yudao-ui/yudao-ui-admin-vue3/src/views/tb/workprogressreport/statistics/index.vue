@@ -93,9 +93,9 @@
           class="!w-180px"
         />
       </el-form-item>
-      <el-form-item label="班级" prop="class">
+      <el-form-item label="班级" prop="classroom">
         <el-input
-          v-model="queryParams.class"
+          v-model="queryParams.classroom"
           placeholder="请输入班级"
           clearable
           @keyup.enter="handleQuery"
