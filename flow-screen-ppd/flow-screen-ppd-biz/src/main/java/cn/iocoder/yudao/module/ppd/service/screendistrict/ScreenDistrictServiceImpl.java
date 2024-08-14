@@ -68,13 +68,19 @@ public class ScreenDistrictServiceImpl implements ScreenDistrictService {
         return districtMapper.getTownName2(countyCode);
     }
 
-    @Override
-    public List<ScreenDistrictDO> getVillageName2() {
-        return districtMapper.getVillageName2();
-    }
 
     @Override
     public List<ScreenDistrictRespVO> getAll() {
         return districtMapper.selectAll();
+    }
+
+    @Override
+    public List<ScreenDistrictDO> getDistrictList(Integer level, String parentCode) {
+        return districtMapper.getDistrictList(level, parentCode);
+    }
+
+    @Override
+    public String getDistrictCode(Long deptId) {
+        return districtMapper.getDistrictCode(deptId);
     }
 }

@@ -90,5 +90,19 @@
         select * FROM tb_screen_district
     </select>
 
+    <select id="getDistrictList" resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO">
+        SELECT code, name
+        FROM tb_screen_district
+        WHERE level = #{level}
+          AND parent_code = #{parentCode}
+    </select>
+
+    <select id="getDistrictCode" resultType="java.lang.String">
+        SELECT district_code
+        FROM system_dept
+        WHERE id = #{deptId}
+    </select>
+
+
 
 </mapper>

@@ -1,6 +1,7 @@
 package cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -35,5 +36,11 @@ public class DeptRespVO {
 
     @Schema(description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED, example = "时间戳格式")
     private LocalDateTime createTime;
+
+    @Schema(description = "区划级别")
+    private Integer regionLevel;
+
+    @Schema(description = "所在区划")
+    private String districtCode;
 
 }

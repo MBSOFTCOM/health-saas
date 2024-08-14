@@ -54,11 +54,17 @@ public class ScreenDistrictController {
     }
 
 
+    @GetMapping("/get-district-list")
+    public CommonResult<List<ScreenDistrictDO>> getDistrictList(@RequestParam("level") Integer level,
+                                                                @RequestParam("parentCode") String parentCode){
+        List<ScreenDistrictDO> districtList = screenDistrictService.getDistrictList(level, parentCode);
+        return success(districtList);
+    }
 
-    @GetMapping("/get-village")
-    public CommonResult<List<ScreenDistrictDO>> getVillage(){
-        List<ScreenDistrictDO> villageName = screenDistrictService.getVillageName2();
-        return success(villageName);
+    @GetMapping("/get-district-code")
+    public CommonResult<String> getDistrictCode(@RequestParam("deptId") Long deptId){
+        String districtCode = screenDistrictService.getDistrictCode(deptId);
+        return success(districtCode);
     }
 
     @GetMapping("/all")

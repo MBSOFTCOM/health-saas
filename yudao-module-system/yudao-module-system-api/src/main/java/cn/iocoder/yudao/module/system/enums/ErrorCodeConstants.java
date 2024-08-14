@@ -52,6 +52,8 @@ public interface ErrorCodeConstants {
     ErrorCode DEPT_EXISTS_USER = new ErrorCode(1_002_004_005, "部门中存在员工，无法删除");
     ErrorCode DEPT_NOT_ENABLE = new ErrorCode(1_002_004_006, "部门({})不处于开启状态，不允许选择");
     ErrorCode DEPT_PARENT_IS_CHILD = new ErrorCode(1_002_004_007, "不能设置自己的子部门为父部门");
+    ErrorCode DEPT_PARENT_IS_NOT_RIGHT = new ErrorCode(1_002_004_008, "设置的区划级别应该为上级部门的下一级别");
+    ErrorCode DEPT_PARENT_IS_NOT_HAVE_CHILD = new ErrorCode(1_002_004_008, "选择的上级部门为乡镇级，区划级别无村级");
 
     // ========== 岗位模块 1-002-005-000 ==========
     ErrorCode POST_NOT_FOUND = new ErrorCode(1_002_005_000, "当前岗位不存在");

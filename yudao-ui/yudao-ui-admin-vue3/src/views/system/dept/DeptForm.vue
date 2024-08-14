@@ -16,40 +16,90 @@
           default-expand-all
           placeholder="请选择上级部门"
           value-key="deptId"
+          @change="getDistrictCode(formData.parentId)"
         />
       </el-form-item>
-      <el-form-item label="部门名称" prop="name">
-        <el-input v-model="formData.name" placeholder="请输入部门名称" />
+
+      <el-row type="flex" justify="space-between">
+        <el-col :span="11">
+          <el-form-item label="部门名称" prop="name">
+            <el-input v-model="formData.name" placeholder="请输入部门名称" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="负责人" prop="leaderUserId">
+            <el-select v-model="formData.leaderUserId" clearable placeholder="请输入负责人">
+              <el-option
+                v-for="item in userList"
+                :key="item.id"
+                :label="item.nickname"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row type="flex" justify="space-between">
+        <el-col :span="11">
+          <el-form-item label="显示排序" prop="sort">
+            <el-input-number v-model="formData.sort" :min="0" controls-position="right" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="状态" prop="status">
+            <el-select v-model="formData.status" clearable placeholder="请选择状态">
+              <el-option
+                v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row type="flex" justify="space-between">
+        <el-col :span="11">
+          <el-form-item label="联系电话" prop="phone">
+            <el-input v-model="formData.phone" maxlength="11" placeholder="请输入联系电话" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="formData.email" maxlength="50" placeholder="请输入邮箱" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-form-item label="区划级别" prop="regionLevel">
+        <el-radio-group v-model="formData.regionLevel" @change="getDistrictList(formData.regionLevel, districtCode)">
+          <el-radio :value="0">省级</el-radio>
+          <el-radio :value="1">市、州级</el-radio>
+          <el-radio :value="2">区、县级</el-radio>
+          <el-radio :value="3">乡、镇级</el-radio>
+        </el-radio-group>
       </el-form-item>
-      <el-form-item label="显示排序" prop="sort">
-        <el-input-number v-model="formData.sort" :min="0" controls-position="right" />
-      </el-form-item>
-      <el-form-item label="负责人" prop="leaderUserId">
-        <el-select v-model="formData.leaderUserId" clearable placeholder="请输入负责人">
+
+      <el-form-item label="所在区划" prop="districtCode">
+        <el-select
+          v-model="formData.districtCode"
+          filterable
+          :filter-method="PinyinProvince"
+          placeholder="请选择所在区划"
+          clearable
+          class="!w-240px"
+        >
           <el-option
-            v-for="item in userList"
-            :key="item.id"
-            :label="item.nickname"
-            :value="item.id"
+            v-for="item in districtList"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="联系电话" prop="phone">
-        <el-input v-model="formData.phone" maxlength="11" placeholder="请输入联系电话" />
-      </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="formData.email" maxlength="50" placeholder="请输入邮箱" />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="formData.status" clearable placeholder="请选择状态">
-          <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
+
     </el-form>
     <template #footer>
       <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -65,6 +115,9 @@ import * as UserApi from '@/api/system/user'
 import { CommonStatusEnum } from '@/utils/constants'
 import { FormRules } from 'element-plus'
 import {ScreenPointApi} from "@/api/tb/screenpoint";
+import PinyinMatch from "pinyin-match";
+import {reactive} from "vue";
+import {ScreenDistrictApi} from "@/api/tb/screendistrict";
 
 defineOptions({ name: 'SystemDeptForm' })
 
@@ -84,17 +137,27 @@ const formData = ref({
   leaderUserId: undefined,
   phone: undefined,
   email: undefined,
-  status: CommonStatusEnum.ENABLE
+  status: CommonStatusEnum.ENABLE,
+
+  regionLevel: undefined,
+  districtCode: undefined
 })
+const districtList = ref([]) // 区划列表
+const copyDistrictList = reactive([])
+const districtCode = ref()
+
 const formRules = reactive<FormRules>({
-  parentId: [{ required: true, message: '上级部门不能为空', trigger: 'blur' }],
-  name: [{ required: true, message: '部门名称不能为空', trigger: 'blur' }],
-  sort: [{ required: true, message: '显示排序不能为空', trigger: 'blur' }],
-  email: [{ type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }],
+  parentId: [{required: true, message: '上级部门不能为空', trigger: 'blur'}],
+  name: [{required: true, message: '部门名称不能为空', trigger: 'blur'}],
+  sort: [{required: true, message: '显示排序不能为空', trigger: 'blur'}],
+  email: [{type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change']}],
   phone: [
-    { pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }
+    {pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur'}
   ],
-  status: [{ required: true, message: '状态不能为空', trigger: 'blur' }]
+  status: [{required: true, message: '状态不能为空', trigger: 'blur'}],
+
+  regionLevel: [{required: true, message: '区划级别不能为空', trigger: ['blur', 'change']}],
+  districtCode: [{required: true, message: '所在区划不能为空', trigger: ['blur', 'change']}]
 })
 const formRef = ref() // 表单 Ref
 const deptTree = ref() // 树形结构
@@ -102,6 +165,10 @@ const userList = ref<UserApi.UserVO[]>([]) // 用户列表
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
+  // 还原区划列表
+  districtList.value = []
+  copyDistrictList.length = 0
+
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
@@ -111,8 +178,17 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       formData.value = await DeptApi.getDept(id)
+      // 开始
+      const code = formData.value.districtCode
+      await getDistrictCode(formData.value.parentId)
+      await getDistrictList(formData.value.regionLevel, districtCode.value)
+      formData.value.districtCode = code
+      // 结束
     } finally {
-      formLoading.value = false
+      setTimeout(() => {
+        // 在此处放置需要延迟执行的代码
+        formLoading.value = false
+      }, 100); // 1000 毫秒 = 1 秒
     }
   }
   // 获得用户列表
@@ -160,7 +236,9 @@ const resetForm = () => {
     leaderUserId: undefined,
     phone: undefined,
     email: undefined,
-    status: CommonStatusEnum.ENABLE
+    status: CommonStatusEnum.ENABLE,
+    regionLevel: undefined,
+    districtCode: undefined
   }
   formRef.value?.resetFields()
 }
@@ -172,5 +250,33 @@ const getTree = async () => {
   let dept: Tree = { id: 0, name: '顶级部门', children: [] }
   dept.children = handleTree(data)
   deptTree.value.push(dept)
+}
+
+
+const getDistrictList = async (level, parentCode) => {
+  formData.value.districtCode = undefined;
+  districtList.value = await ScreenDistrictApi.getDistrictList(level, parentCode)
+  copyDistrictList.splice(0, copyDistrictList.length, ...districtList.value);
+}
+
+const PinyinProvince = (val) => {
+  if (val) {
+    const result = []
+    districtList.value.forEach((i) => {
+      const m = PinyinMatch.match(i.name, val)
+      if (m) {
+        result.push(i)
+      }
+    })
+    districtList.value.splice(0, districtList.value.length, ...result)
+  } else {
+    // 如果没有输入，则还原列表
+    districtList.value.splice(0, districtList.value.length, ...copyDistrictList)
+  }
+}
+
+
+const getDistrictCode = async (deptId) => {
+  districtCode.value = await ScreenDistrictApi.getDistrictCode(deptId)
 }
 </script>
