@@ -15,6 +15,12 @@ import jakarta.validation.Valid;
  */
 public interface ScreenSumService {
 
+    String COLLECT="采集组";
+    String PPD="ppd组";
+    String CT="胸片组";
+    String DR="胸片组";
+
+
     /**
      * 创建汇总
      *

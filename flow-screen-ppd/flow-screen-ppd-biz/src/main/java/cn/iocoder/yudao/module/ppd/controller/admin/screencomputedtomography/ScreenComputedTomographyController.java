@@ -52,7 +52,7 @@ public class ScreenComputedTomographyController {
     @Operation(summary = "获取创建ct组时的次序")
     @PreAuthorize("@ss.hasPermission('tb:screen-chest-radiograph:create')")
     public CommonResult<Integer> getCreateOrder(@Valid @RequestBody ScreenComputedTomographySaveReqVO createReqVO) {
-        return success(screenComputedTomographyService.getCreateOrder(createReqVO));
+        return success(screenComputedTomographyService.getMaxOrder(createReqVO.getIdNum(),createReqVO.getScreenType(),createReqVO.getYear()));
     }
 
     @PostMapping("/update")

@@ -21,6 +21,9 @@ public class ScreenSumSaveReqVO {
     @Schema(description = "筛查类型", example = "1")
     private Integer screenType;
 
+    @Schema(description = "身份证")
+    private String idNum;
+
     @Schema(description = "对应摸底表中id", example = "4623")
     private Long personId;
 

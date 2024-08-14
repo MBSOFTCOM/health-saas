@@ -53,4 +53,12 @@ public interface ScreenSumMapper extends BaseMapperX<ScreenSumDO> {
 
     Integer countExists(CommonReq reqVO);
 
+    /**
+     *
+     * 获取某患者在某year、某screenType 的最近的筛查流程
+     * @param reqVO {idNum:String ,year:String ,screenType :Integer}
+     * @return ScreenSumDO
+     */
+    List<ScreenSumDO> selectExists(CommonReq reqVO);
+
 }

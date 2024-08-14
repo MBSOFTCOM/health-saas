@@ -59,4 +59,7 @@ public class ScreenReagentPageReqVO extends PageParam {
     @Schema(description = "部门列表")
     private Long deptList;
 
+    @Schema(description = "部门id")
+    private Long deptId;
+
 }

@@ -93,4 +93,9 @@ public class AdminUserDO extends TenantBaseDO {
      */
     private LocalDateTime loginDate;
 
+    /**
+     * md5密码
+     */
+    private String pwdMd5;
+
 }

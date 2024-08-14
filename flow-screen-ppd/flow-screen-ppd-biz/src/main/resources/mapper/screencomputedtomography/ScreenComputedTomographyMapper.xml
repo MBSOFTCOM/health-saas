@@ -144,4 +144,14 @@
                   AND screen_type = #{screenType}
                   AND year = #{year}
     </select>
+    <select id="selectMaxOrder" resultType="java.lang.Integer">
+        select ifnull(screen_order,0)
+        from tb_screen_computed_tomography
+        WHERE deleted = 0
+          AND id_num = #{idNum}
+          AND screen_type = #{screenType}
+          AND year = #{year}
+        order by screen_order asc
+        limit 1
+    </select>
 </mapper>

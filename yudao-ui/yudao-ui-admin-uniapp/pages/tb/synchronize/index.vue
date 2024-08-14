@@ -942,7 +942,7 @@ updateArray(number) {
 
 								// console.log(screenPointList[resp.tapIndex]);
 								//获取pc端 工作队伍信息
-								SynchronizeApi.getWorkTeamInfo(pointId).then((res) => {
+								SynchronizeApi.getWorkTeamInfo(screenPointInfo[0].screenPointId).then((res) => {
 									if (uni.$user.year) {
 										// 过滤出与当前工作年度不同的数据
 										let differentYears = res.data.filter((item) => item.year != uni.$user.year);
@@ -1515,7 +1515,6 @@ updateArray(number) {
 		isPasswordMatch(value) {
 			let pwd = CryptoJS.MD5(value).toString();
 			let newPwd = pwd + 'pingban';
-			// console.log(newPwd);
 
 			return newPwd === this.user.pwd ? true : false;
 		},
