@@ -28,9 +28,12 @@ export const ScreenDistrictApi = {
     return await request.get({url: `/tb/screen-district/get-town?countyCode=` + countyCode})
   },
 
-  getVillage: async () => {
-    return await request.get({url: `/tb/screen-district/get-village`})
+  getDistrictList: async (level: number, parentCode: string) => {
+    return await request.get({url: `/tb/screen-district/get-district-list?level=` + level + '&parentCode=' + parentCode})
   },
 
+  getDistrictCode: async (deptId: number) => {
+    return await request.get({url: `/tb/screen-district/get-district-code?deptId=` + deptId})
+  },
 
 }

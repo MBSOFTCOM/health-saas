@@ -737,6 +737,7 @@ const open = async (type: string, id?: number) => {
   formType.value = type
   resetForm()
   getDeptList()
+  clearList()
   // 新增 时给默认值
   formData.value.year = new Date().getFullYear();
   formData.value.screenType = 1;
@@ -1166,6 +1167,25 @@ const formatTime2 = () =>{
 const getDeptList = async () => {
   deptList.value = await DeptApi.getMyDeptList();
 }
+
+const clearList = () => {
+  cityList.value = []
+  countyList.value = []
+  townList.value = []
+
+  cityList2.value = []
+  countyList2.value = []
+  townList2.value = []
+
+
+  copyTown2.length = 0
+  copyTown.length = 0
+  copyCounty.length = 0
+  copyCounty2.length = 0
+  copyCity2.length = 0
+  copyCity.length = 0
+}
+
 
 /** 初始化 **/
 onMounted(async () => {

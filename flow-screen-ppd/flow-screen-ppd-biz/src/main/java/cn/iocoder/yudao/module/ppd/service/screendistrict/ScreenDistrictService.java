@@ -63,14 +63,18 @@ public interface ScreenDistrictService {
     List<ScreenDistrictDO> getTownName2(String countyCode);
 
     /**
-     * 获取 村 名称 列表
-     */
-    List<ScreenDistrictDO> getVillageName2();
-    /**
      * 获取 所有区划数据
      */
     List<ScreenDistrictRespVO> getAll();
 
 
+    /**
+     * 根据区划级别、父级区划编码获取 区划列表
+     */
+    List<ScreenDistrictDO> getDistrictList(Integer level, String parentCode);
 
+    /**
+     * 根据部门id，获取所在区划编码
+     */
+    String getDistrictCode(Long deptId);
 }

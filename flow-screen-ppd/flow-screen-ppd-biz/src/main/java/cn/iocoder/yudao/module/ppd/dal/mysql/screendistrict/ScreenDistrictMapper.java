@@ -5,6 +5,8 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screendistrict.vo.ScreenDist
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 
@@ -39,10 +41,6 @@ public interface ScreenDistrictMapper extends BaseMapperX<ScreenDistrictDO> {
     List<ScreenDistrictDO> getTownName2(String countyCode);
 
     /**
-     * 获取 村 名称 列表
-     */
-    List<ScreenDistrictDO> getVillageName2();
-    /**
      * 获取 所有区划数据
      */
     List<ScreenDistrictRespVO> selectAll();
@@ -76,4 +74,15 @@ public interface ScreenDistrictMapper extends BaseMapperX<ScreenDistrictDO> {
     String selectByName(String name);
 
     String getNameByCode(String code);
+
+    /**
+     * 根据区划级别获取 区划列表
+     */
+    List<ScreenDistrictDO> getDistrictList(@Param("level") Integer level,
+                                           @Param("parentCode") String parentCode);
+
+    /**
+     * 根据部门id，获取所在区划编码
+     */
+    String getDistrictCode(Long deptId);
 }

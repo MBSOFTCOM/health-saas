@@ -732,6 +732,7 @@ const open = async (type: string, id?: number) => {
   formData.value.year = new Date().getFullYear();
   formData.value.screenType = 1;
   formData.value.isNew = 1;
+  clearList()
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
@@ -1138,6 +1139,24 @@ const formatTime2 = () =>{
 
 const getDeptList = async () => {
   deptList.value = await DeptApi.getMyDeptList();
+}
+
+const clearList = () => {
+  cityList.value = []
+  countyList.value = []
+  townList.value = []
+
+  cityList2.value = []
+  countyList2.value = []
+  townList2.value = []
+
+
+  copyTown2.length = 0
+  copyTown.length = 0
+  copyCounty.length = 0
+  copyCounty2.length = 0
+  copyCity2.length = 0
+  copyCity.length = 0
 }
 
 /** 初始化 **/

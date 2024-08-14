@@ -52,11 +52,18 @@ public class DeptServiceImpl implements DeptService {
         // 校验部门名的唯一性
         validateDeptNameUnique(null, createReqVO.getParentId(), createReqVO.getName());
 
+
+        // 校验区划级别是否正确
+        validateDistrict(createReqVO.getParentId(), createReqVO);
+
+
         // 插入部门
         DeptDO dept = BeanUtils.toBean(createReqVO, DeptDO.class);
         deptMapper.insert(dept);
         return dept.getId();
     }
+
+
 
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.DEPT_CHILDREN_ID_LIST,
@@ -73,28 +80,9 @@ public class DeptServiceImpl implements DeptService {
         // 校验部门名的唯一性
         validateDeptNameUnique(updateReqVO.getId(), updateReqVO.getParentId(), updateReqVO.getName());
 
-/*        // 1.拿到这个部门信息
-        DeptDO deptDO = deptMapper.selectById(updateReqVO.getId());
-        // 2.拿到 原来的部门名称
-        String deptName = deptDO.getName();
-        // 3.拿到相关联的筛查点
-        List<ScreenPointDO> screenPointList = screenPointMapper.getByDeptName(deptName);
-        Collection<ScreenPointDO> updateBath = new ArrayList<>();
-        if (screenPointList != null && !screenPointList.isEmpty()){
-            for (ScreenPointDO obj : screenPointList) {
-                obj.setScreenDept(updateReqVO.getName());
-                updateBath.add(obj);
-            }
-        }*/
-
         // 更新部门
         DeptDO updateObj = BeanUtils.toBean(updateReqVO, DeptDO.class);
         deptMapper.updateById(updateObj);
-
-     /*   // 4.更新相关的筛查点
-        if (!updateBath.isEmpty()){
-            screenPointMapper.updateBatch(updateBath);
-        }*/
     }
 
     @Override
@@ -169,6 +157,20 @@ public class DeptServiceImpl implements DeptService {
         }
         if (ObjectUtil.notEqual(dept.getId(), id)) {
             throw exception(DEPT_NAME_DUPLICATE);
+        }
+    }
+
+    private void validateDistrict(Long parentId, DeptSaveReqVO createReqVO) {
+        DeptDO deptDO = deptMapper.selectById(parentId);
+
+        // 选择的上级部门为乡镇级，区划级别无村级
+        if (deptDO.getRegionLevel() == 3){
+            throw exception(DEPT_PARENT_IS_NOT_HAVE_CHILD);
+        }
+
+        // 设置的区划级别应该为上级部门的下一级别
+        if (createReqVO.getRegionLevel() - 1 != deptDO.getRegionLevel()){
+            throw exception(DEPT_PARENT_IS_NOT_RIGHT);
         }
     }
 

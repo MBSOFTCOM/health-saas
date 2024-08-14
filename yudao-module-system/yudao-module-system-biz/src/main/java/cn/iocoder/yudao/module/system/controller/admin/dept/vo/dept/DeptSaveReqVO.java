@@ -46,4 +46,12 @@ public class DeptSaveReqVO {
     @InEnum(value = CommonStatusEnum.class, message = "修改状态必须是 {value}")
     private Integer status;
 
+    @Schema(description = "区划级别")
+    @NotNull(message = "区划级别不能为空")
+    private Integer regionLevel;
+
+    @Schema(description = "所在区划")
+    @NotNull(message = "所在区划不能为空")
+    private String districtCode;
+
 }
