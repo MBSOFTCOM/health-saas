@@ -5,6 +5,7 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ScreenPersonImportRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpoint.ScreenPointDO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpoint.vo.*;
+import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptSaveReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.user.vo.user.UserRespVO;
 import jakarta.validation.Valid;
 
@@ -140,4 +141,6 @@ public interface ScreenPointService {
      * @param oldCapId
      */
     void setCap(Long newCapId, Long oldCapId, Long screenPointId);
+
+    void updateDept(DeptSaveReqVO updateReqVO);
 }

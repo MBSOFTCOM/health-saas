@@ -159,19 +159,11 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
 
     @Override
     public PageResult<ScreenReagentDO> getScreenReagentPage(ScreenReagentPageReqVO pageReqVO) {
-
-        Long myDeptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
-
-        List<DeptDO> deptList = new ArrayList<>();
-        deptList.add(deptService.getDept(myDeptId));
-
-        // 提取部门ID
-        List<Long> deptIds = deptList.stream()
-                .map(DeptDO::getId)
-                .collect(Collectors.toList());
-
-        pageReqVO.setDeptList(deptIds);
-
+        // 如果没有选择机构部门，就默认选择了自己的部门
+        if (pageReqVO.getDeptList() == null){
+            Long myDeptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+            pageReqVO.setDeptList(myDeptId);
+        }
         return screenReagentMapper.selectPage(pageReqVO);
     }
 

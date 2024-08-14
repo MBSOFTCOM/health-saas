@@ -66,4 +66,7 @@ public class ScreenConsumeRespVO {
     @ExcelProperty("有效期(天)")
     private String indate;
 
+    @Schema(description = "部门id")
+    private Long deptId;
+
 }

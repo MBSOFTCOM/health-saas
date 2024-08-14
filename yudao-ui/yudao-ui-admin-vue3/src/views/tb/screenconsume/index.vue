@@ -8,6 +8,21 @@
       :inline="true"
       label-width="68px"
     >
+      <el-form-item label="部门" prop="deptList">
+        <el-select
+          v-model="queryParams.deptList"
+          placeholder="请选择"
+          clearable
+          class="!w-180px"
+        >
+          <el-option
+            v-for="item in deptList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="试剂名称" prop="reagentName">
         <el-input
           v-model="queryParams.reagentName"
@@ -101,6 +116,7 @@
             @click="openForm2('increase', scope.row.id)"
             v-hasPermi="['tb:screen-consume:update']"
             v-if="scope.row.usable == 0"
+            :disabled="scope.row.deptId != loginUserId ? true : false"
           >
             增加
           </el-button>
@@ -111,6 +127,7 @@
             @click="openForm2('decrease', scope.row.id)"
             v-hasPermi="['tb:screen-consume:update']"
             v-if="scope.row.usable == 0"
+            :disabled="scope.row.deptId != loginUserId ? true : false"
           >
             减少
           </el-button>
@@ -165,6 +182,7 @@ import ScreenConsumeDetailForm from './ScreenConsumeDetailForm.vue'
 import ScreenConsumeImportForm from './ScreenConsumeImportForm.vue'
 import {getIntDictOptions, DICT_TYPE} from '@/utils/dict'
 import {onMounted, ref, reactive} from 'vue'
+import * as DeptApi from "@/api/system/dept";
 
 /** 消耗管理 列表 */
 defineOptions({ name: 'ScreenConsume' })
@@ -191,9 +209,12 @@ const queryParams = reactive({
   threshold: undefined,
   indate: [],
   usable: undefined,
+  deptList: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+const deptList = ref([]) // 部门列表
+
 
 /** 查询列表 */
 const getList = async () => {
@@ -304,9 +325,20 @@ const rowClassName = ({ row }) => {
   return ''
 };
 
+const getDeptList = async () => {
+  deptList.value = await DeptApi.getMyDeptList();
+}
+
+const loginUserId = ref()
+const getMyDeptId = async () => {
+  loginUserId.value = await DeptApi.getMyDeptId();
+}
+
 /** 初始化 **/
 onMounted(() => {
   getList()
+  getDeptList()
+  getMyDeptId()
 })
 </script>
 <style scoped lang="scss">

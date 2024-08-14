@@ -26,7 +26,7 @@ public interface ScreenConsumeMapper extends BaseMapperX<ScreenConsumeDO> {
                 .likeIfPresent(ScreenConsumeDO::getReagentName, reqVO.getReagentName())
                 .eqIfPresent(ScreenConsumeDO::getReagentType, reqVO.getReagentType())
                 .likeIfPresent(ScreenConsumeDO::getBathNumber, reqVO.getBathNumber())
-                .inIfPresent(ScreenConsumeDO::getDeptId, reqVO.getDeptList())
+                .eqIfPresent(ScreenConsumeDO::getDeptId, reqVO.getDeptList())
                 .orderByDesc(ScreenConsumeDO::getId));
     }
 
@@ -98,6 +98,9 @@ public interface ScreenConsumeMapper extends BaseMapperX<ScreenConsumeDO> {
                      @Param("manufactureDate") LocalDateTime manufactureDate,
                      @Param("deptId") Long deptId);
 
+    /**
+     * 查询时间区间内的消耗数据
+     */
     List<ScreenConsumeDO> selectByTime(@Param("startDateTime") LocalDateTime startDateTime,
                                        @Param("endDateTime") LocalDateTime endDateTime,
                                        @Param("reagentName") String reagentName,

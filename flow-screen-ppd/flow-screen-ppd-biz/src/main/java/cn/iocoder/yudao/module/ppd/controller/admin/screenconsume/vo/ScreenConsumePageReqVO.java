@@ -59,7 +59,7 @@ public class ScreenConsumePageReqVO extends PageParam {
     private String[] indate;
 
     @Schema(description = "部门列表")
-    private List<Long> deptList;
+    private Long deptList;
 
     @Schema(description = "部门id")
     private Long deptId;

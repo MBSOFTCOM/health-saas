@@ -123,4 +123,7 @@ public interface ScreenPointMapper extends BaseMapperX<ScreenPointDO> {
 
     @Select("SELECT id FROM tb_screen_point WHERE name = #{name} AND deleted = 0")
     Long getIdByName2(String name);
+
+    @Select("SELECT id, screen_dept FROM tb_screen_point WHERE screen_dept = #{deptName} AND deleted = 0")
+    List<ScreenPointDO> getByDeptName(String deptName);
 }

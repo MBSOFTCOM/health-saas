@@ -8,6 +8,21 @@
       :inline="true"
       label-width="68px"
     >
+      <el-form-item label="部门" prop="deptList">
+        <el-select
+          v-model="queryParams.deptList"
+          placeholder="请选择"
+          clearable
+          class="!w-180px"
+        >
+          <el-option
+            v-for="item in deptList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="试剂名称" prop="name">
         <el-input
           v-model="queryParams.name"
@@ -113,13 +128,13 @@
       <el-table-column label="供应商" align="center" prop="manufacturer" />
       <el-table-column label="操作" align="center">
         <template #default="scope">
-            <!-- 你的操作按钮 -->
             <el-button
               link
               type="primary"
               @click="openForm('update', scope.row.id)"
               v-hasPermi="['tb:screen-reagent:update']"
               v-if="scope.row.usable == 0"
+              :disabled="scope.row.deptId != loginUserId ? true : false"
             >
               编辑
             </el-button>
@@ -129,6 +144,7 @@
               @click="handleStatusChange(scope.row.id, 'forbid')"
               v-hasPermi="['tb:screen-reagent:delete']"
               v-if="scope.row.usable == 0"
+              :disabled="scope.row.deptId != loginUserId ? true : false"
             >
               禁用
             </el-button>
@@ -138,6 +154,7 @@
               @click="handleStatusChange(scope.row.id, 'recover')"
               v-hasPermi="['tb:screen-reagent:delete']"
               v-if="scope.row.usable == 1"
+              :disabled="scope.row.deptId != loginUserId ? true : false"
             >
               启用
             </el-button>
@@ -167,6 +184,7 @@ import ScreenReagentForm from './ScreenReagentForm.vue'
 import {getIntDictOptions, DICT_TYPE} from '@/utils/dict'
 import {onMounted, ref, reactive} from 'vue'
 import ReagentImportForm from './ReagentImportForm.vue';
+import * as DeptApi from "@/api/system/dept";
 
 
 
@@ -194,9 +212,13 @@ const queryParams = reactive({
   manufacturer: undefined,
   threshold: undefined,
   createTime: [],
+  deptList: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+const deptList = ref([]) // 部门列表
+
 
 /** 查询列表 */
 const getList = async () => {
@@ -303,9 +325,20 @@ const rowClassName = ({ row }) => {
   return row.usable == 1 ? 'row-disabled' : '';
 };
 
+const getDeptList = async () => {
+  deptList.value = await DeptApi.getMyDeptList();
+}
+
+const loginUserId = ref()
+const getMyDeptId = async () => {
+  loginUserId.value = await DeptApi.getMyDeptId();
+}
+
 /** 初始化 **/
 onMounted(() => {
   getList()
+  getDeptList()
+  getMyDeptId()
 })
 </script>
 

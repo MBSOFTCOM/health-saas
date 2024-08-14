@@ -15,18 +15,23 @@ import cn.iocoder.yudao.module.ppd.dal.mysql.screenpersonrealsituation.ScreenPer
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenpoint.ScreenPointMapper;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpoint.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.mysql.userscreenpoint.UserScreenPointMapper;
+import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptSaveReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.user.vo.user.UserRespVO;
 import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import cn.iocoder.yudao.module.system.dal.dataobject.permission.UserRoleDO;
 import cn.iocoder.yudao.module.system.dal.dataobject.user.AdminUserDO;
+import cn.iocoder.yudao.module.system.dal.mysql.dept.DeptMapper;
 import cn.iocoder.yudao.module.system.dal.mysql.permission.RoleMapper;
 import cn.iocoder.yudao.module.system.dal.mysql.permission.UserRoleMapper;
 import cn.iocoder.yudao.module.system.dal.mysql.user.AdminUserMapper;
+import cn.iocoder.yudao.module.system.dal.redis.RedisKeyConstants;
 import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import cn.iocoder.yudao.module.system.service.permission.PermissionService;
 import cn.iocoder.yudao.module.system.service.permission.RoleService;
+import com.google.common.annotations.VisibleForTesting;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -39,6 +44,8 @@ import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionU
 import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertSet;
 import static cn.iocoder.yudao.module.cd.enums.ErrorCodeConstants.SCREEN_POINT_EXISTS2;
 import static cn.iocoder.yudao.module.cd.enums.ErrorCodeConstants.SCREEN_POINT_NOT_EXISTS;
+import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.*;
+import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.DEPT_PARENT_IS_CHILD;
 
 /**
  * 筛查点 Service 实现类
@@ -67,6 +74,8 @@ public class ScreenPointServiceImpl implements ScreenPointService {
     private RoleService roleService;
     @Resource
     private DeptService deptService;
+    @Resource
+    private DeptMapper deptMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -695,5 +704,106 @@ public class ScreenPointServiceImpl implements ScreenPointService {
             workerStr.setLength(workerStr.length() - 2);
         }
         return workerStr.toString();
+    }
+
+
+    @Override
+    @CacheEvict(cacheNames = RedisKeyConstants.DEPT_CHILDREN_ID_LIST,
+            allEntries = true) // allEntries 清空所有缓存，因为操作一个部门，涉及到多个缓存
+    @Transactional(rollbackFor = Exception.class)
+    public void updateDept(DeptSaveReqVO updateReqVO) {
+        if (updateReqVO.getParentId() == null) {
+            updateReqVO.setParentId(DeptDO.PARENT_ID_ROOT);
+        }
+        // 校验自己存在
+        validateDeptExists(updateReqVO.getId());
+        // 校验父部门的有效性
+        validateParentDept(updateReqVO.getId(), updateReqVO.getParentId());
+        // 校验部门名的唯一性
+        validateDeptNameUnique(updateReqVO.getId(), updateReqVO.getParentId(), updateReqVO.getName());
+
+        // 1.拿到这个部门信息
+        DeptDO deptDO = deptMapper.selectById(updateReqVO.getId());
+        // 2.拿到 原来的部门名称
+        String deptName = deptDO.getName();
+        // 3.拿到相关联的筛查点
+        List<ScreenPointDO> screenPointList = screenPointMapper.getByDeptName(deptName);
+        Collection<ScreenPointDO> updateBath = new ArrayList<>();
+        if (screenPointList != null && !screenPointList.isEmpty()){
+            for (ScreenPointDO obj : screenPointList) {
+                obj.setScreenDept(updateReqVO.getName());
+                updateBath.add(obj);
+            }
+        }
+
+        // 更新部门
+        DeptDO updateObj = BeanUtils.toBean(updateReqVO, DeptDO.class);
+        deptMapper.updateById(updateObj);
+
+        // 4.更新相关的筛查点
+        if (!updateBath.isEmpty()){
+            screenPointMapper.updateBatch(updateBath);
+        }
+    }
+
+    @VisibleForTesting
+    void validateDeptExists(Long id) {
+        if (id == null) {
+            return;
+        }
+        DeptDO dept = deptMapper.selectById(id);
+        if (dept == null) {
+            throw exception(DEPT_NOT_FOUND);
+        }
+    }
+
+    @VisibleForTesting
+    void validateParentDept(Long id, Long parentId) {
+        if (parentId == null || DeptDO.PARENT_ID_ROOT.equals(parentId)) {
+            return;
+        }
+        // 1. 不能设置自己为父部门
+        if (Objects.equals(id, parentId)) {
+            throw exception(DEPT_PARENT_ERROR);
+        }
+        // 2. 父部门不存在
+        DeptDO parentDept = deptMapper.selectById(parentId);
+        if (parentDept == null) {
+            throw exception(DEPT_PARENT_NOT_EXITS);
+        }
+        // 3. 递归校验父部门，如果父部门是自己的子部门，则报错，避免形成环路
+        if (id == null) { // id 为空，说明新增，不需要考虑环路
+            return;
+        }
+        for (int i = 0; i < Short.MAX_VALUE; i++) {
+            // 3.1 校验环路
+            parentId = parentDept.getParentId();
+            if (Objects.equals(id, parentId)) {
+                throw exception(DEPT_PARENT_IS_CHILD);
+            }
+            // 3.2 继续递归下一级父部门
+            if (parentId == null || DeptDO.PARENT_ID_ROOT.equals(parentId)) {
+                break;
+            }
+            parentDept = deptMapper.selectById(parentId);
+            if (parentDept == null) {
+                break;
+            }
+        }
+    }
+
+    @VisibleForTesting
+    void validateDeptNameUnique(Long id, Long parentId, String name) {
+        DeptDO dept = deptMapper.selectByParentIdAndName(parentId, name);
+        if (dept == null) {
+            return;
+        }
+        // 如果 id 为空，说明不用比较是否为相同 id 的部门
+        if (id == null) {
+            throw exception(DEPT_NAME_DUPLICATE);
+        }
+        if (ObjectUtil.notEqual(dept.getId(), id)) {
+            throw exception(DEPT_NAME_DUPLICATE);
+        }
     }
 }
