@@ -54,6 +54,7 @@
       <view style="width: 95px;margin-top: 5px;">2年内是否有与结核病患者的接触史:</view>
       <up-radio-group
           v-model="contacted"
+		  disabled
           placement="column">
         <up-radio
             :customStyle="{marginBottom: '8px'}"

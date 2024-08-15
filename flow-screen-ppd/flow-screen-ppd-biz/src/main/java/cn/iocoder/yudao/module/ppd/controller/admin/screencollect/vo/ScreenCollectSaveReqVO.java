@@ -15,6 +15,15 @@ public class ScreenCollectSaveReqVO {
     @Schema(description = "筛查编号", example = "10874")
     private String screenId;
 
+    @Schema(description = "身份证")
+    private String idNum;
+
+    private Integer age;
+    private Integer contacted;
+    private String schoolName;
+    private String classroom;
+    private String tel;
+
     @Schema(description = "同步时唯一编码", example = "13599")
     private Long syncId;
 

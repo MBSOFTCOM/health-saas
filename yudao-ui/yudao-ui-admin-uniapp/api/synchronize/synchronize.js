@@ -160,7 +160,7 @@ export function selectMaxId(tableName) {
 // ========================== 采集表 ==========================
 // 获取平板端采集组分页数据
 export function getCollectData(screenId,screenPoint,pageNo,pageSize){
-	let sql = `select sc.screenId,sc.year,sc.screenType,sp.name,sc.outcome,sc.doctorSignature,sc.screenTime,sc.screenOrder,sp.screenPoint,sc.personId
+	let sql = `select sc.*,sp.name,sp.screenPoint
 			   from ${tbScreenCollect} sc
 			   left join ${tbScreenPerson} sp on sc.personId=sp.id
 			   where sp.screenPoint = '${screenPoint}'
@@ -615,6 +615,7 @@ export function updateTableData6(params) {
 // ========================== 汇总表-统计 ==========================
 // 上传数据到服务器
 export function uploadSumData(params) {
+	console.log(222);
 	return request({
 		url: '/tb/synchronize/update-sum-data',
 		'method': 'PUT',
@@ -825,16 +826,16 @@ export function getElectrocardiogramStatistic(){
 
 
 // 统计痰检组数据
-export function getLocalSumData(screenId,screenType,year,personId){
+export function getLocalSumData(screenId,screenType,year,personId,idNum){
 	let sql = `
 				SELECT *
 				from ${tbScreenSum}
-				where screenId='${screenId}'
+				where 
+				idNum=${idNum}
 				and screenType=${screenType}
 				and year=${year}
-				and personId=${personId}
 			   `
-	// console.log("SQL:" + sql);
+	console.log("SQL:" + sql);
 	 return promise(dbName,sql)
 	 // console.log(data);
 }
@@ -1166,6 +1167,7 @@ export function uploadOfflineImage(type) {
 									screenId: item.screenId,
 									personId: item.personId,
 									type: item.type,
+									idNum:item.idNum,
 									path: item.path,
 									url: url,
 									screenTime: item.screenTime,
@@ -1174,7 +1176,7 @@ export function uploadOfflineImage(type) {
 									createTime: item.createTime,
 									// 筛查年份、类型
 									year: currentYear,
-									screenType: uni.$screenType
+									screenType: item.screenType
 								};
 
 								// 创建移动端各组离线图片信息

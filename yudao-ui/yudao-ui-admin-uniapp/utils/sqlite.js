@@ -319,6 +319,7 @@ export const tableSqls = [
 			"year" INTEGER, -- 筛查年份
 			"screenType" INTEGER, -- 筛查类型
 			"screenId" TEXT, -- 筛查编号
+			"idNum" TEXT , -- 身份证
 			"personId" INTEGER, -- 对应摸底表中id
 			"syncId" INTEGER, -- 同步时唯一编码
 			"lastCollectTime" INTEGER, -- 最近一次采集时间
