@@ -350,6 +350,7 @@ export default {
 										// 获取全部数据，不分页
 										self.queryParams.pageSize = -1;
 										SynchronizeApi.getTableData2(self.queryParams).then((resp) => {
+											// console.log(resp);
 											self.SyncData = resp.data.list;
 											if (uni.$user.year) {
 												// 过滤出与当前工作年度不同的数据
