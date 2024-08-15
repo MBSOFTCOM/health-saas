@@ -168,6 +168,7 @@ export const tableSqls = [
 		tableName:tbScreenReagent,
 		sql: `CREATE TABLE ${tbScreenReagent}(
 			"id" INTEGER PRIMARY KEY AUTOINCREMENT ,--主键
+			"deptId" INTEGER , --部门id
 			"name" TEXT, -- 试剂名称 
 			"type" INTEGER, -- 试剂类型 
 			"reagentSpecsNum" INTEGER, -- 转换系数（人次） 
@@ -191,6 +192,7 @@ export const tableSqls = [
 		sql:`CREATE TABLE "${tbScreenConsume}" (
 			"id" INTEGER PRIMARY KEY AUTOINCREMENT ,--主键
 			"reagentId" INTEGER, --试剂id
+			"deptId" INTEGER , --部门id
 			"reagentName" TEXT, --试剂名称
 			"reagentType" INTEGER, --试剂类型
 			"consumeOrder" INTEGER, --消耗序位
@@ -317,6 +319,7 @@ export const tableSqls = [
 			"year" INTEGER, -- 筛查年份
 			"screenType" INTEGER, -- 筛查类型
 			"screenId" TEXT, -- 筛查编号
+			"idNum" TEXT , -- 身份证
 			"personId" INTEGER, -- 对应摸底表中id
 			"syncId" INTEGER, -- 同步时唯一编码
 			"lastCollectTime" INTEGER, -- 最近一次采集时间

@@ -78,7 +78,7 @@
 					</view>
 				</up-col>
 				<up-col span="5">
-					<image style="width: 150px;height: 150px;"  v-if="actualPhoto" :src="actualPhoto" mode="aspectFit"/>
+					<image style="width: 150px;height: 150px;"  v-if="FormData.actualPhoto" :src="FormData.actualPhoto" mode="aspectFit"/>
 					<up-button
 						class="custom-style"
 						@click="chooseImg()"
@@ -119,7 +119,7 @@
 							</view>
 						</up-col>
 						<up-col span="5">
-							<image style="width: 250rpx;height: 250rpx;"  v-if="scleromaPhoto" :src="scleromaPhoto" mode="aspectFit"/>
+							<image style="width: 250rpx;height: 250rpx;"  v-if="FormData.scleromaPhoto" :src="FormData.scleromaPhoto" mode="aspectFit"/>
 							<up-button
 								class="custom-style"
 								@click="editImage(0,null)"
@@ -159,7 +159,7 @@
 							</view>
 						</up-col>
 						<up-col span="5">
-							<image style="width: 150rpx;height: 150rpx;"  v-if="blushPhoto" :src="blushPhoto" mode="aspectFit"/>
+							<image style="width: 150rpx;height: 150rpx;"  v-if="FormData.blushPhoto" :src="FormData.blushPhoto" mode="aspectFit"/>
 							<up-button
 								class="custom-style"
 								@click="editImage(1,null)"
@@ -174,15 +174,15 @@
 			
 			<view class="bom-m">
 				<view>医生签名</view>
-				<view class="sign-bg" v-if="!signBase64" @click="onSign">
+				<view class="sign-bg" v-if="!FormData.doctorSignature" @click="onSign">
 					<view class="sign-text">
 						<image class="sign-img" src="../../../static/images/tb/sign.png" mode=""></image>
 						<span>点击签名</span>
 					</view>
 				</view>
-				<view class="sign-imgbg" v-if="doctorSignature">
+				<view class="sign-imgbg" v-if="FormData.doctorSignature">
 					<view style="margin-left: -50px">
-						<image class="sign-image" :src="doctorSignature" mode="widthFix"></image>
+						<image class="sign-image" :src="FormData.doctorSignature" mode="widthFix"></image>
 					</view>
 					<up-button @click="onSign" class="custom-reset" :plain="true" text="重写"></up-button>
 				</view>
@@ -311,12 +311,13 @@ export default {
 		//isNew 为0表示修改
 		if (e.isNew == 0) {
 			getBypersonIdAndScreenOrderOne(e.order, e.id).then((res) => {
-				// console.log(res);
-				this.FormData.transverseDiameter = res[0].transverseDiameter;
-				this.FormData.longitudinalDiameter = res[0].longitudinalDiameter;
+				console.log(res);
+				this.FormData=res[0]
+				// this.FormData.transverseDiameter = res[0].transverseDiameter;
+				// this.FormData.longitudinalDiameter = res[0].longitudinalDiameter;
 				this.FormData.bleb = res[0].bleb.toString();
-				this.FormData.outcome = res[0].outcome;
-				this.FormData.doctorSignature = res[0].doctorSignature;
+				// this.FormData.outcome = res[0].outcome;
+				// this.FormData.doctorSignature = res[0].doctorSignature;
 				this.crowdArr = this.FormData.bleb.split('').map(Number);
 			});
 		}
@@ -449,7 +450,7 @@ export default {
 		async newAdd() {
 			console.log(this.FormData);
 			// this.FormData.doctorSignature
-			return
+			// return
 			if (Object.entries(uni.$person).length === 0) {
 				uni.showModal({
 					title: '提示',
@@ -490,12 +491,18 @@ export default {
 				injection: this.FormData.injection, //状态
 				transverseDiameter: this.FormData.transverseDiameter, //横泾
 				longitudinalDiameter: this.FormData.longitudinalDiameter, //纵径
+				blushTransverseDiameter: this.FormData.blushTransverseDiameter,
+				blushLongitudinalDiameter: this.FormData.blushLongitudinalDiameter,
+				actualPhoto: this.FormData.actualPhoto,
+				blushPhoto: this.FormData.blushPhoto,
+				scleromaPhoto: this.FormData.scleromaPhoto,
 				outcome: this.FormData.outcome, //结果
 				bleb: this.FormData.bleb, //症状
 				doctorSignature: this.FormData.doctorSignature, //签名
 				updater: this.FormData.updater, //修改者
 				updateTime: this.FormData.updateTime //修改时间
 			};
+			console.log(data);
 			const isNull = this.ifNull(data);
 			if (!isNull) {
 				uni.$u.toast('表单数据存在空,请检查表单,并填写完整!');

@@ -380,7 +380,7 @@ export default {
 					content: '当前未勾选数据，是否上传全部数据？',
 					cancelText: '取消',
 					confirmText: '确认',
-					success: function (res) {
+					success: async (res)=> {
 						if (res.confirm) {
 							if (self.pageData.length == 0) {
 								uni.showToast({
@@ -391,44 +391,38 @@ export default {
 								});
 							} else {
 								// 获取本地数据 上传到pc端
-								SynchronizeApi.getPersonData(
-									self.queryParams.screenId,
-									self.queryParams.screenPoint,
-									-1,
-									self.pageSize
-								).then((res) => {
-									self.SyncData = res;
-									// console.log(self.SyncData);
+								let local=await SynchronizeApi.getPersonData(self.queryParams.screenId, self.queryParams.screenPoint, -1, self.pageSize)
+								self.SyncData = local;
+								// console.log(self.SyncData);
 
-									// 筛查时间转换成时间戳
-									self.SyncData.forEach((item) => {
-										let date = new Date(item.screenTime);
-										item.screenTime = date.getTime();
-									});
-									// console.log(self.SyncData);
+								// 筛查时间转换成时间戳
+								self.SyncData.forEach((item) => {
+								  let date = new Date(item.screenTime);
+								  item.screenTime = date.getTime();
+								});
+								// console.log(self.SyncData);
 
-									// 上传
-									SynchronizeApi.updateTableData1(self.SyncData).then((res) => {
-										if (res.data) {
-											uni.showToast({
-												title: '上传成功',
-												mask: true,
-												icon: 'success',
-												duration: 1500
-											});
-											// 记录本次同步时间(存缓存)
-											let time = self.getCurrentTime()
-											uni.setStorage({
-												key:'personPad',
-												data:time
-											})
-											self.synchronizeTime=time
-											uni.setStorage({
-												key:'person',
-												data:time
-											})
-										}
+								// 上传
+								await SynchronizeApi.updateTableData1(self.SyncData).then((res) => {
+								  if (res.data) {
+									uni.showToast({
+									  title: '上传成功',
+									  mask: true,
+									  icon: 'success',
+									  duration: 1500
 									});
+									// 记录本次同步时间(存缓存)
+									let time = self.getCurrentTime()
+									uni.setStorage({
+									  key:'personPad',
+									  data:time
+									})
+									self.synchronizeTime=time
+									uni.setStorage({
+									  key:'person',
+									  data:time
+									})
+								  }
 								});
 							}
 						} else if (res.cancel) {

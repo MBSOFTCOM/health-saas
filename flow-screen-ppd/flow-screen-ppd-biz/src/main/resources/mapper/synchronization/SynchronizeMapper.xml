@@ -157,10 +157,10 @@
 
     <insert id="insertCollect">
         INSERT INTO tb_screen_collect
-                (id, screen_id, person_id, outcome, doctor_signature,
+                (id, screen_id,id_num, person_id, age,school_name,classroom,tel,outcome,contacted, doctor_signature,
                  screen_agency, screen_time, screen_order, screen_point,screen_type,year)
         VALUES
-               (#{id},#{screenId},#{personId},#{outcome},#{doctorSignature},
+               (#{id},#{screenId},#{idNum},#{personId}, #{age}, #{schoolName}, #{classroom}, #{tel},#{outcome},#{contacted},#{doctorSignature},
                 #{screenAgency},#{screenTime},#{screenOrder},#{screenPoint},#{screenType},#{year})
     </insert>
 
@@ -400,8 +400,8 @@
           AND su.deleted = 0;
     </select>
 
-    <!-- 汇总表   -->
-    <!--<select id="selectSumIdByIndex" resultType="cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumInfo">
+<!--     汇总表-->
+    <select id="selectSumIdByIndex" resultType="cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumInfo">
         select id,cur_finish
         from tb_screen_sum
         <where>
@@ -418,7 +418,7 @@
                 person_id= #{personId}
             </if>
         </where>
-    </select>-->
+    </select>
 
     <update id="updateSum">
         update tb_screen_sum
@@ -453,13 +453,13 @@
     </update>
     <insert id="insertSum">
         insert into tb_screen_sum
-        (id, person_id, screen_id,screen_type,year,last_collect_time,collect_num,last_ppd_time,ppd_num,
+        (id, person_id,id_num, screen_id,screen_type,year,last_collect_time,collect_num,last_ppd_time,ppd_num,
          last_chest_radiograph_time,chest_radiograph_num,last_computed_tomography_time,computed_tomography_num,
          last_sputum_examination_time,sputum_examination_num,last_experiment_time,experiment_num,
          last_electrocardiogram_time,electrocardiogram_num,last_diagnosis_time,diagnosis_num,cur_finish,
          collect_id,ppd_id,chest_radiograph_id,computed_tomography_id,sputum_examination_id,
          experiment_id,electrocardiogram_id,diagnosis_id)
-        values (#{id},#{personId},#{screenId},#{screenType},#{year},#{lastCollectTime},#{collectNum},#{lastPpdTime},
+        values (#{id},#{personId},#{idNum},#{screenId},#{screenType},#{year},#{lastCollectTime},#{collectNum},#{lastPpdTime},
                 #{ppdNum},#{lastChestRadiographTime},#{chestRadiographNum},#{lastComputedTomographyTime},#{computedTomographyNum},
                 #{lastSputumExaminationTime},#{sputumExaminationNum},#{lastExperimentTime},#{experimentNum},
                 #{lastElectrocardiogramTime},#{electrocardiogramNum},#{lastDiagnosisTime},#{diagnosisNum},#{curFinish},

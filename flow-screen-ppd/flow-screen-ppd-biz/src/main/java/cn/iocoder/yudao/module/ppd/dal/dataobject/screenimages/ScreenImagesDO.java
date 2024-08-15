@@ -36,6 +36,10 @@ public class ScreenImagesDO {
      */
     private String screenId;
     /**
+     * 身份证
+     */
+    private String idNum;
+    /**
      * 对应摸底表中id
      */
     private Long personId;

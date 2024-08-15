@@ -10,17 +10,22 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ScreenPersonSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdPageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdSaveReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumInfo;
+import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumPageReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screensum.ScreenSumDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenchestradiograph.ScreenChestRadiographMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screencollect.ScreenCollectMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screendistrict.ScreenDistrictMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenpersonrealsituation.ScreenPersonMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenppd.ScreenPpdMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screensputumexamination.ScreenSputumExaminationMapper;
+import cn.iocoder.yudao.module.ppd.dal.mysql.screensum.ScreenSumMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.synchronization.SynchronizeMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -53,8 +58,8 @@ public class SynchronizeServiceImpl implements SynchronizeService{
     private ScreenSputumExaminationMapper screenSputumExaminationMapper;
     @Resource
     private ScreenDistrictMapper screenDistrictMapper;
-    /*@Resource
-    private ScreenSumMapper screenSumMapper;*/
+    @Resource
+    private ScreenSumMapper screenSumMapper;
 
 
 
@@ -387,7 +392,7 @@ public class SynchronizeServiceImpl implements SynchronizeService{
     }
 
 
-    /*@Override
+    @Override
     public List<ScreenSumDO> getSumPage(ScreenSumPageReqVO pageReqVO) {
 //        pageReqVO.setPageSize(-1);
         return screenSumMapper.selectSumDataForSynchronize(pageReqVO);
@@ -409,7 +414,7 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                 "诊断组",6
         );
         list.forEach(item->{
-            ScreenSumInfo info = synchronizeMapper.selectSumIdByIndex(item.getYear(), item.getScreenType(), item.getScreenId(), item.getPersonId());
+            ScreenSumInfo info = synchronizeMapper.selectSumIdByIndex(Integer.parseInt(item.getYear()), item.getScreenType(), item.getScreenId(), item.getPersonId());
             if(info!=null){
                 // 当前已完成分组的值小于数据库中已完成分组的值时，不更新这个字段值
                 if (item.getCurFinish()!=null && !"null".equals(item.getCurFinish())){
@@ -433,7 +438,7 @@ public class SynchronizeServiceImpl implements SynchronizeService{
             }
         });
 
-    }*/
+    }
 
     // 找到该乡镇最大的筛查编号
     public static String constructMaxScreenId(List<String> screenIdList, String code, int year, int screenType) {

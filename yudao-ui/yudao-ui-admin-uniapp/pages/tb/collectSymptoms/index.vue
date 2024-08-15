@@ -214,7 +214,7 @@ export default {
 				}
 			],
 			contacted:null,
-			radiolist1:[{name:'是',value: 1},{name:'否',value:0}],
+			radiolist1:[{name:'是',value: '1'},{name:'否',value:'0'}],
 			isNewStudent: null
 		};
 	},
@@ -238,7 +238,7 @@ export default {
 			});
 			getCollectOen(e.id, e.order, parseInt(e.year), uni.$screenType).then((res) => {
 				const str = res[0].outcome.toString();
-				this.contacted=res[0].contacted
+				this.contacted=''+res[0].contacted
 				this.checkbox = str.split('').map(Number);
 				this.formData.doctorSignature = res[0].doctorSignature;
 			});
@@ -483,6 +483,7 @@ export default {
 
 						//插入离线图片表
 						const screenImagesData = {
+							idNum:this.patient.idNum,
 							personId: this.patient.id,
 							screenId: this.patient.screenId,
 							type: 8, //八代表采集组签名
@@ -501,6 +502,7 @@ export default {
 							year: parseInt(this.patient.year),
 							screenType: uni.$screenType,
 							screenId: this.patient.screenId,
+							idNum:this.patient.idNum,
 							personId: parseInt(this.patient.id),
 							collectId: collectId[0].id,
 							collectNum: this.orderAndTime.order,
