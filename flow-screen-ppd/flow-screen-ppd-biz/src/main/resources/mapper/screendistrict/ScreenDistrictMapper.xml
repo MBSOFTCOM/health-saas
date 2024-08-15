@@ -103,6 +103,25 @@
         WHERE id = #{deptId}
     </select>
 
+    <select id="getSameAndLowDistrictList"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO">
+        SELECT *
+        FROM tb_screen_district
+        WHERE parent_code = #{districtCode}
+           OR code = #{districtCode}
+    </select>
+
+
+    <select id="getDeptList" resultType="java.lang.String">
+        SELECT name
+        FROM system_dept
+        WHERE deleted = 0
+        AND status = 0
+        AND district_code IN
+        <foreach collection="codeList" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 
 
 </mapper>

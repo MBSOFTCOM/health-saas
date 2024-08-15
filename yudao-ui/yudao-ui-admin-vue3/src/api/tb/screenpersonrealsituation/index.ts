@@ -120,4 +120,8 @@ export const ScreenPersonApi = {
       data: data,
     })
   },
+
+  exportSchoolSummary: async (params: any) => {
+    return await request.download({url: `/tb/screen-report/exportSchoolSummary`, params})
+  }
 }

@@ -250,4 +250,9 @@ public class DeptServiceImpl implements DeptService {
         return deptMapper.getMyDept(loginUserId);
     }
 
+    @Override
+    public List<DeptDO> getListByDistrictCode(String districtCode) {
+        return deptMapper.getListByDistrictCode(districtCode);
+    }
+
 }

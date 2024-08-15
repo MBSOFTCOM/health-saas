@@ -43,4 +43,7 @@ public class DeptRespVO {
     @Schema(description = "所在区划")
     private String districtCode;
 
+    @Schema(description = "部门类型")
+    private Integer type;
+
 }

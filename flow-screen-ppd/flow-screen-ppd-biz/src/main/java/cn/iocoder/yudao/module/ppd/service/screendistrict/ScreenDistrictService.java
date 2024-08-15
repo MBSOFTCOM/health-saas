@@ -77,4 +77,8 @@ public interface ScreenDistrictService {
      * 根据部门id，获取所在区划编码
      */
     String getDistrictCode(Long deptId);
+
+    List<ScreenDistrictDO> getDistrictList2();
+
+    List<String> getDeptList(List<String> codeList);
 }

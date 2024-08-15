@@ -16,6 +16,10 @@
         SELECT distinct name
         FROM tb_screen_point
         WHERE deleted = 0
+        AND screen_dept IN
+        <foreach collection="deptNameList" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
     </select>
 
 

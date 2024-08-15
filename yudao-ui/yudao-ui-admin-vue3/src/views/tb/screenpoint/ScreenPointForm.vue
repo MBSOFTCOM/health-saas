@@ -108,7 +108,6 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="PPD组" name="ppdGroup" v-if="formType=='update'">
-
             <div style="margin-bottom: 20px">
               <el-button
                 type="primary"

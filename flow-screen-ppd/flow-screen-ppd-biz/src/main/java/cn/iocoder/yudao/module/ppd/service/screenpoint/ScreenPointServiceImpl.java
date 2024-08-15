@@ -305,7 +305,18 @@ public class ScreenPointServiceImpl implements ScreenPointService {
 
     @Override
     public List<String> getScreenPointList() {
-        List<String> list = screenPointMapper.getScreenPointList();
+        Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+        // 获取所有子部门
+        List<DeptDO> deptList = deptService.getChildDeptList(deptId);
+        // 以及当前部门
+        deptList.add(deptService.getDept(deptId));
+
+        // 提取部门名称并存储到列表中
+        List<String> deptNameList = deptList.stream()
+                .map(DeptDO::getName).toList();
+
+        List<String> list = screenPointMapper.getScreenPointList(deptNameList);
+
         return list;
     }
 
@@ -627,7 +638,7 @@ public class ScreenPointServiceImpl implements ScreenPointService {
             boolean hasCaptainRole = false;
             // 判断是否具有县级、市级或省级管理角色
             for (String role : roleCode) {
-                if ("county_manager".equals(role) || "city_manager".equals(role) || "province_manager".equals(role)) {
+                if ("county_manager".equals(role) || "city_manager".equals(role) || "province_manager".equals(role) ||"teacher".equals(role)) {
                     hasManagerRole = true;
                     break;
                 }

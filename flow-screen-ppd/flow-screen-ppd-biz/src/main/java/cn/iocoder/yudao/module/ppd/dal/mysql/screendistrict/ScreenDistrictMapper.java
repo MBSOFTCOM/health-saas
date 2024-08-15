@@ -85,4 +85,11 @@ public interface ScreenDistrictMapper extends BaseMapperX<ScreenDistrictDO> {
      * 根据部门id，获取所在区划编码
      */
     String getDistrictCode(Long deptId);
+
+    /**
+     * 获取本部门及以下的区划
+     */
+    List<ScreenDistrictDO> getSameAndLowDistrictList(String districtCode);
+
+    List<String> getDeptList(List<String> codeList);
 }

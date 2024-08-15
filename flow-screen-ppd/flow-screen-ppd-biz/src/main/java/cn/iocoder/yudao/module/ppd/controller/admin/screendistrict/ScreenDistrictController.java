@@ -73,4 +73,13 @@ public class ScreenDistrictController {
         return success(list);
     }
 
+    /**
+     *  获取本部门及以下的部门
+     */
+    @GetMapping("/get-district-list2")
+    public CommonResult<List<ScreenDistrictDO>> getDistrictList2(){
+        List<ScreenDistrictDO> districtList = screenDistrictService.getDistrictList2();
+        return success(districtList);
+    }
+
 }

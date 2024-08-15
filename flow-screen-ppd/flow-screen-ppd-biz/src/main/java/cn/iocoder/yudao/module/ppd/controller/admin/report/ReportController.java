@@ -4,10 +4,13 @@ package cn.iocoder.yudao.module.ppd.controller.admin.report;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.FilmingReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.Index;
+import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.SummaryReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.SummaryRespVO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.report.ReportMapper;
 import cn.iocoder.yudao.module.ppd.service.report.ReportService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,4 +46,42 @@ public class ReportController {
         reportService.setSomeData(data.get(0),filmingReqVO);
         return success(data);
     }
+
+
+    /**
+     * 学校肺结核筛查结果统计表
+     */
+    @GetMapping("/getSchoolSummary")
+    public CommonResult<List<SummaryRespVO>> getSchoolSummary(@Validated SummaryReqVO summaryReqVO) {
+        List<SummaryRespVO> list = reportService.getSchoolSummary(summaryReqVO.getDistrictCode(),
+                summaryReqVO.getYear(), summaryReqVO.getScreenPoint(), summaryReqVO.getType());
+        return success(list);
+    }
+
+
+    /**
+     * 导出学校肺结核筛查结果统计表
+     */
+    @GetMapping("/exportSchoolSummary")
+    public void exportSchoolSummary(@Validated SummaryReqVO summaryReqVO,
+                                                              HttpServletResponse response) {
+        List<SummaryRespVO> list = reportService.getSchoolSummary(summaryReqVO.getDistrictCode(),
+                summaryReqVO.getYear(), summaryReqVO.getScreenPoint(), summaryReqVO.getType());
+        reportService.exportSchoolSummary(response, list);
+    }
+
+
+
+
+
+    @GetMapping("/getAgencySummary")
+    public CommonResult<Boolean> getAgencySummary(@RequestParam(value = "districtCode", required = false) String districtCode,
+                                                  @RequestParam("year") Integer year,
+                                                  @RequestParam("screenPoint") String screenPoint,
+                                                  @RequestParam("type") Integer type) {
+
+        return success(true);
+    }
+
+
 }

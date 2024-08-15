@@ -151,33 +151,6 @@
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
-<!--        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['tb:screen-person:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px"/>
-          新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExportTemplate"
-          :loading="importTemplateLoading"
-        >
-          <Icon icon="ep:link" class="mr-5px"/>
-          下载导入模板
-        </el-button>
-        <el-button
-          type="info"
-          plain
-          @click="handleImport"
-          :loading="importLoading"
-          v-hasPermi="['tb:screen-person:create']"
-        >
-          <Icon icon="ep:finished" class="mr-5px" /> 导入
-        </el-button>-->
         <el-button
           type="warning"
           plain
@@ -210,23 +183,11 @@
                        :show-overflow-tooltip="false" fixed="left"/>
       <el-table-column label="操作" align="center" fixed="right" width="120">
         <template #default="scope">
-<!--          <el-button link type="primary" @click="openForm('update', scope.row.id)"
-                     v-hasPermi="['tb:screen-person:update']">
-            修改
-          </el-button>-->
           <el-button link type="primary"
                      @click="openNewForm( scope.row.id, scope.row.year, scope.row.screenType)"
                      v-hasPermi="['tb:screen-person:update']">
             查看
           </el-button>
-<!--          <el-button
-            link
-            type="danger"
-            @click="handleDelete(scope.row.id)"
-            v-hasPermi="['tb:screen-person:delete']"
-          >
-            删除
-          </el-button>-->
         </template>
       </el-table-column>
       <el-table-column label="姓名" align="center" prop="name" width="120" fixed="left"/>
@@ -431,7 +392,7 @@ const handleExport = async () => {
     // 发起导出
     exportLoading.value = true
     const data = await ScreenPersonApi.exportScreenedPerson(queryParams)
-    download.excel(data, '待筛查人员表.xls')
+    download.excel(data, '统计表.xls')
   } catch {
   } finally {
     exportLoading.value = false

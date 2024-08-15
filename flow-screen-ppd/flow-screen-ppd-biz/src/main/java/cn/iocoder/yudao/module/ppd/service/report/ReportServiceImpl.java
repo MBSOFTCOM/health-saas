@@ -1,16 +1,31 @@
 package cn.iocoder.yudao.module.ppd.service.report;
 
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
+import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.CollectUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.FilmingReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.Index;
+import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.SummaryRespVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpoint.vo.DeptVO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.report.ReportMapper;
+import cn.iocoder.yudao.module.ppd.dal.mysql.screendistrict.ScreenDistrictMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenpersonrealsituation.ScreenPersonMapper;
 import cn.iocoder.yudao.module.system.api.dict.DictDataApi;
 import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
+import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptRespVO;
+import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
+import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -24,11 +39,18 @@ import java.util.stream.Collectors;
 public class ReportServiceImpl implements ReportService {
     @Resource
     private DictDataApi dictDataApi;
+
     @Resource
     private ScreenPersonMapper screenPersonMapper;
 
     @Resource
     private ReportMapper reportMapper;
+
+    @Resource
+    private DeptService deptService;
+
+    @Resource
+    private ScreenDistrictMapper districtMapper;
 
     @Override
     public List<Index> getReportData(Integer moreType, Integer currentYear,
@@ -834,4 +856,88 @@ public class ReportServiceImpl implements ReportService {
         }
         return typeMap.keySet().stream().filter(s -> (moreType & s) == s).collect(Collectors.toList());
     }
+
+
+    @Override
+    public List<SummaryRespVO> getSchoolSummary(String districtCode, Integer year, String screenPoint, Integer type) {
+        // 如果没有选择行政区划，默认为当前所在部门的行政区划
+        if (ObjectUtil.isNull(districtCode)){
+            Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+            districtCode = districtMapper.getDistrictCode(deptId);
+        }
+
+        List<SummaryRespVO> list = reportMapper.getSchoolSummary(year, districtCode, type);
+        List<SummaryRespVO> list2 = reportMapper.getSchoolSummary2(year, districtCode, type);
+        List<SummaryRespVO> list3 = reportMapper.getSchoolSummary3(year, districtCode, type);
+
+
+        System.out.println(list);
+
+        return list;
+    }
+
+    @Override
+    public void exportSchoolSummary(HttpServletResponse response, List<SummaryRespVO> list) {
+
+        try{
+
+            // 通过工具类创建writer，默认创建xls格式
+            ExcelWriter writer = ExcelUtil.getWriter();
+
+            writer.merge(0,0,4,12,"筛查情况",true);
+            writer.passCurrentRow();
+            writer.merge(1, 1, 7, 8, "PPD试验结果", true);
+            writer.passCurrentRow();
+            writer.merge(1, 1, 10, 12, "X线胸片检查人数", true);
+
+            writer.setColumnWidth(1,15);
+            writer.setColumnWidth(0,15);
+            writer.setColumnWidth(2,10);
+            writer.setColumnWidth(3,15);
+
+            writer.setColumnWidth(4,35);
+            writer.setColumnWidth(5,35);
+            writer.setColumnWidth(6,15);
+            writer.setColumnWidth(7,15);
+            writer.setColumnWidth(9,30);
+
+
+/*            writer.setColumnWidth(16,25);
+            writer.setColumnWidth(17,25);*/
+
+
+
+            List<SummaryRespVO> rows = CollUtil.newArrayList(list);
+            // 一次性写出内容，使用默认样式，强制输出标题
+            writer.write(rows, true);
+//            writer.merge(0,2,0,0,"序号",true);
+            writer.merge(0,2,0,0,"学校所在区划",true);
+            writer.merge(0,2,1,1,"学校全称",true);
+            writer.merge(0,2,2,2,"学生类别",true);
+            writer.merge(0,2,3,3,"实际招生人数",true);
+            writer.merge(1,2,4,4,"有肺结核可以症状或密切接触史人数",true);
+            writer.merge(1,2,5,5,"PPD皮试人数",true);
+            writer.merge(1,2,6,6,"PPD复验人数",true);
+            writer.merge(1,2,9,9,"不适宜PPD筛查人数（禁忌症）",true);
+/*            writer.merge(1,2,16,16,"活动性肺结核人数",true);
+            writer.merge(1,2,17,17,"预防性治疗人数",true);*/
+
+            //response为HttpServletResponse对象
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            //test.xls是弹出下载对话框的文件名，不能为中文，中文请自行编码
+            response.setHeader("Content-Disposition","attachment;filename=test.xls");
+            ServletOutputStream out=response.getOutputStream();
+
+
+            writer.flush(out, true);
+            // 关闭writer，释放内存
+            writer.close();
+            //此处记得关闭输出Servlet流
+            IoUtil.close(out);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

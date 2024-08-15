@@ -3,6 +3,8 @@ package cn.iocoder.yudao.module.ppd.service.report;
 
 import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.FilmingReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.Index;
+import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.SummaryRespVO;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
@@ -69,4 +71,9 @@ public interface ReportService {
      * @return Integer
      */
     Integer getActualSputumCollectionNum(FilmingReqVO reqVO);
+
+
+    List<SummaryRespVO> getSchoolSummary(String districtCode, Integer year, String screenPoint, Integer type);
+
+    void exportSchoolSummary(HttpServletResponse response, List<SummaryRespVO> list);
 }

@@ -2,8 +2,10 @@ package cn.iocoder.yudao.module.ppd.dal.mysql.report;
 
 
 import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.FilmingReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.SummaryRespVO;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -69,4 +71,15 @@ public interface ReportMapper {
      */
     Integer countCollectOrPpdOrCtOrDrError(FilmingReqVO reqVO);
 
+    List<SummaryRespVO> getSchoolSummary(@Param("year") Integer year,
+                                         @Param("districtCode") String districtCode,
+                                         @Param("type") Integer type);
+
+    List<SummaryRespVO> getSchoolSummary2(@Param("year") Integer year,
+                                          @Param("districtCode") String districtCode,
+                                          @Param("type") Integer type);
+
+    List<SummaryRespVO> getSchoolSummary3(@Param("year") Integer year,
+                                          @Param("districtCode") String districtCode,
+                                          @Param("type") Integer type);
 }

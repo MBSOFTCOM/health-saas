@@ -42,4 +42,6 @@ public interface DeptMapper extends BaseMapperX<DeptDO> {
     @Select("SELECT name FROM system_dept WHERE deleted = 0 AND status = 0")
     List<String> getDeptList();
 
+    @Select("SELECT id, name, district_code FROM system_dept WHERE deleted = 0 AND status = 0 AND district_code = #{districtCode}")
+    List<DeptDO> getListByDistrictCode(String districtCode);
 }
