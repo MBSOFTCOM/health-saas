@@ -25,8 +25,7 @@ public class SummaryRespSchoolExportVO {
     /**
      * 学生类别
      */
-    @ExcelProperty(value = "学生类别", converter = DictConvert.class)
-    @DictFormat("student_type")
+    @ExcelProperty("学生类别")
     private String studentType;
     /**
      * 实际招生总数

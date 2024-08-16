@@ -74,31 +74,29 @@ public class ReportController {
     }
 
 
-
-
-
     /**
      * 医疗结构结核菌素皮肤试验开展情况统计表
      */
-    /*@GetMapping("/getAgencySummary")
+    @GetMapping("/getAgencySummary")
     public CommonResult<List<SummaryRespAgencyVO>> getAgencySummary(@Validated SummaryReqVO summaryReqVO) {
         List<SummaryRespAgencyVO> list = reportService.getAgencySummary(summaryReqVO.getDistrictCode(),
                 summaryReqVO.getYear(), summaryReqVO.getScreenPoint(), summaryReqVO.getType());
+        System.out.println(summaryReqVO);
         return success(list);
     }
 
-    *//**
+    /**
      * 导出医疗结构结核菌素皮肤试验开展情况统计表
-     *//*
-    @GetMapping("/getAgencySummary")
+     */
+    @GetMapping("/exportAgencySummary")
     @Operation(summary = "导出医疗结构结核菌素皮肤试验开展情况统计表")
     @ApiAccessLog(operateType = EXPORT)
     public void exportAgencySummary(@Validated SummaryReqVO summaryReqVO,
-                                    HttpServletResponse response)  throws IOException {
-        List<SummaryRespAgencyVO> list = reportService.exportAgencySummary(summaryReqVO.getDistrictCode(),
+                                    HttpServletResponse response) {
+        List<SummaryRespAgencyVO> list = reportService.getAgencySummary(summaryReqVO.getDistrictCode(),
                 summaryReqVO.getYear(), summaryReqVO.getScreenPoint(), summaryReqVO.getType());
-        reportService.exportSchoolSummary(response, list);
-    }*/
+        reportService.exportAgencySummary(response, list);
+    }
 
 
 }

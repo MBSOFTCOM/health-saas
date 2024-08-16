@@ -166,6 +166,7 @@
                             GROUP BY id_num, ppd_id, screen_type) AS tss
                            ON tsp.id_num = tss.id_num AND tsp.screen_type = tss.screen_type
         WHERE tsp.year = #{year}
+          AND tsp.student_type != 0
           AND sd.district_code = #{districtCode}
           AND sd.type = #{type}
           AND tsp.deleted = 0
@@ -174,6 +175,33 @@
         GROUP BY tsd.name,
                  sd.name,
                  tsp.student_type
+    </select>
+
+
+    <select id="getAgencySummary"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.report.vo.SummaryRespAgencyVO">
+        SELECT tsd.name                                                    AS districtName,
+               sd.name                                                     AS deptName,
+               COUNT(CASE WHEN latest_ppd.injection = 1 THEN 1 END)        AS ppdNumber,
+               COUNT(CASE WHEN latest_ppd.max_screen_order > 1 THEN 1 END) AS ppdReNumber,
+               COUNT(CASE WHEN latest_ppd.outcome = 0 THEN 1 END)          AS feminine,
+               COUNT(CASE WHEN latest_ppd.outcome = 1 THEN 1 END)          AS masculine
+        FROM tb_screen_person AS tsp
+                 LEFT JOIN system_dept AS sd ON sd.id = tsp.dept_id
+                 LEFT JOIN tb_screen_district AS tsd ON tsd.CODE = sd.district_code
+                 LEFT JOIN (SELECT id_num, injection, outcome, screen_type, MAX(screen_order) AS max_screen_order
+                            FROM tb_screen_ppd
+                            WHERE year = #{year}
+                            GROUP BY id_num, injection, outcome, screen_type) AS latest_ppd
+                           ON tsp.id_num = latest_ppd.id_num AND tsp.screen_type = latest_ppd.screen_type
+        WHERE tsp.year = #{year}
+          AND sd.district_code = #{districtCode}
+          AND sd.type = #{type}
+          AND tsp.deleted = 0
+          AND sd.deleted = 0
+          AND sd.status = 0
+        GROUP BY tsd.name,
+                 sd.name
     </select>
 
 </mapper>

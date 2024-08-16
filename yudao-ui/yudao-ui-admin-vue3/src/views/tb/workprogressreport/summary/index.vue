@@ -82,7 +82,7 @@
       @tab-click="handleClick">
 
       <el-tab-pane label="学校肺结核筛查结果统计表" name="schoolStatistics">
-        <el-table :data="list" show-header :stripe="true" :show-overflow-tooltip="true">
+        <el-table :data="list" v-loading="loading" show-header :stripe="true" :show-overflow-tooltip="true">
           <el-table-column label="序号" type="index" align="center" width="80"/>
           <el-table-column label="学校所在区划" align="center"  prop="districtName" width="130"/>
           <el-table-column label="学校全称" align="center" prop="schoolName" width="130"/>
@@ -111,17 +111,16 @@
         </el-table>
       </el-tab-pane>
 
-
       <el-tab-pane label="医疗结构结核菌素皮肤试验开展情况统计表" name="agencyStatistics">
         <el-table :data="list2" :stripe="true" :show-overflow-tooltip="true">
           <el-table-column label="序号" type="index" align="center" width="80"/>
-          <el-table-column label="筛查机构所在区划" align="center" />
-          <el-table-column label="筛查机构全称" align="center" />
-          <el-table-column label="PPD试验人数" align="center" />
+          <el-table-column label="筛查机构所在区划" align="center" prop="districtName"/>
+          <el-table-column label="筛查机构全称" align="center" prop="deptName"/>
+          <el-table-column label="PPD试验人数" align="center" prop="ppdNumber"/>
           <el-table-column label="PPD试验结果" align="center">
-            <el-table-column label="复验结果人数" align="center" />
-            <el-table-column label="阴性" align="center" />
-            <el-table-column label="阳性" align="center" />
+            <el-table-column label="复验结果人数" align="center" prop="ppdReNumber"/>
+            <el-table-column label="阴性" align="center" prop="feminine"/>
+            <el-table-column label="阳性" align="center" prop="masculine"/>
           </el-table-column>
         </el-table>
       </el-tab-pane>
@@ -149,6 +148,7 @@ defineOptions({name: 'Summary'})
 const message = useMessage() // 消息弹窗
 const {t} = useI18n() // 国际化
 
+const loading = ref(false) // 列表的加载中
 const list = ref([]) // 列表的数据
 const list2 = ref([]) // 列表的数据
 const queryParams = reactive({
@@ -171,16 +171,18 @@ const getList = async () => {
   if (queryParams.year == null){
     return message.error("请选择工作年度！")
   }
-
+  loading.value = true
   try {
     if (activeName.value == 'schoolStatistics'){
       list.value = await ReportApi.getSchoolSummary(queryParams)
-      console.log(list.value)
     }else if (activeName.value == 'agencyStatistics'){
       list2.value = await ReportApi.getAgencySummary(queryParams)
     }
-  }catch (e) {
-    console.log(e);
+  }finally {
+    loading.value = false;
+    /*setTimeout(() => {
+      loading.value = false;
+    }, 400);*/
   }
 }
 
@@ -203,27 +205,46 @@ const resetQuery = () => {
 
 /** 导出按钮操作 */
 const handleExport = async () => {
+  exportLoading.value = true; // 设置加载状态
   try {
     // 导出的二次确认
-    await message.exportConfirm()
-    // 发起导出
-    exportLoading.value = true
-    const data = await ScreenPersonApi.exportSchoolSummary(queryParams)
-    download.excel(data, '学校肺结核筛查结果统计表.xls')
-    message.success("导出成功！")
-  } catch {
+    await message.exportConfirm();
+
+    // 准备数据和文件名
+    let data;
+    let fileName;
+
+    if (activeName.value === 'schoolStatistics') {
+      data = await ReportApi.exportSchoolSummary(queryParams);
+      fileName = '学校肺结核筛查结果统计表.xls';
+    } else if (activeName.value === 'agencyStatistics') {
+      data = await ReportApi.exportAgencySummary(queryParams);
+      fileName = '医疗结构结核菌素皮肤试验开展情况统计表.xls';
+    } else {
+      message.error('无效的统计类型');
+    }
+
+    // 执行下载
+    download.excel(data, fileName);
+    message.success("导出成功！");
+  } catch (error) {
+    // 处理错误信息
+    message.error("导出失败，请重试！");
   } finally {
-    exportLoading.value = false
+    exportLoading.value = false; // 清除加载状态
   }
-}
+};
+
 
 // 切换 Tab标签页
 const handleClick = (tab: TabsPaneContext, event: Event) => {
   activeName.value = tab.props.name
   if (activeName.value == 'schoolStatistics'){
     queryParams.type = 1
+    getList()
   }else if (activeName.value == 'agencyStatistics'){
     queryParams.type = 2
+    getList()
   }
 }
 

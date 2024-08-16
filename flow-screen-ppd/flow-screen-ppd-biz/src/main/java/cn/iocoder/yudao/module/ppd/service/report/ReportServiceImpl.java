@@ -959,5 +959,60 @@ public class ReportServiceImpl implements ReportService {
         }
     }
 
+    @Override
+    public List<SummaryRespAgencyVO> getAgencySummary(String districtCode, Integer year, String screenPoint, Integer type) {
+
+        // 如果没有选择行政区划，默认为当前所在部门的行政区划
+        if (ObjectUtil.isNull(districtCode)) {
+            Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+            districtCode = districtMapper.getDistrictCode(deptId);
+        }
+
+        List<SummaryRespAgencyVO> list = reportMapper.getAgencySummary(year, districtCode, type);
+
+        return list;
+    }
+
+    @Override
+    public void exportAgencySummary(HttpServletResponse response, List<SummaryRespAgencyVO> list) {
+
+        try{
+            // 通过工具类创建writer，默认创建xls格式
+            ExcelWriter writer = ExcelUtil.getWriter();
+
+            writer.merge(0,0,3,5,"PPD试验结果",true);
+            writer.passCurrentRow();
+
+            writer.setColumnWidth(1, 20);
+            writer.setColumnWidth(0, 20);
+            writer.setColumnWidth(2, 15);
+            writer.setColumnWidth(3, 15);
+
+            List<SummaryRespAgencyVO> rows = CollUtil.newArrayList(list);
+            // 一次性写出内容，使用默认样式，强制输出标题
+            writer.write(rows, true);
+//            writer.merge(0,1,0,0,"序号",true);
+            writer.merge(0,1,0,0,"筛查机构所在区",true);
+            writer.merge(0,1,1,1,"筛查机构全称",true);
+            writer.merge(0,1,2,2,"PPD试验人数",true);
+
+            //response为HttpServletResponse对象
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            //test.xls是弹出下载对话框的文件名，不能为中文，中文请自行编码
+            response.setHeader("Content-Disposition", "attachment;filename=test.xls");
+
+            ServletOutputStream out = response.getOutputStream();
+
+            writer.flush(out, true);
+            // 关闭writer，释放内存
+            writer.close();
+            //此处记得关闭输出Servlet流
+            IoUtil.close(out);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 }
