@@ -867,11 +867,6 @@ public class ReportServiceImpl implements ReportService {
         }
 
         List<SummaryRespVO> list = reportMapper.getSchoolSummary(year, districtCode, type);
-        List<SummaryRespVO> list2 = reportMapper.getSchoolSummary2(year, districtCode, type);
-        List<SummaryRespVO> list3 = reportMapper.getSchoolSummary3(year, districtCode, type);
-
-
-        System.out.println(list);
 
         return list;
     }
@@ -880,7 +875,6 @@ public class ReportServiceImpl implements ReportService {
     public void exportSchoolSummary(HttpServletResponse response, List<SummaryRespVO> list) {
 
         try{
-
             // 通过工具类创建writer，默认创建xls格式
             ExcelWriter writer = ExcelUtil.getWriter();
 
@@ -900,10 +894,6 @@ public class ReportServiceImpl implements ReportService {
             writer.setColumnWidth(6,15);
             writer.setColumnWidth(7,15);
             writer.setColumnWidth(9,30);
-
-
-/*            writer.setColumnWidth(16,25);
-            writer.setColumnWidth(17,25);*/
 
 
 
@@ -926,8 +916,8 @@ public class ReportServiceImpl implements ReportService {
             response.setContentType("application/vnd.ms-excel;charset=utf-8");
             //test.xls是弹出下载对话框的文件名，不能为中文，中文请自行编码
             response.setHeader("Content-Disposition","attachment;filename=test.xls");
-            ServletOutputStream out=response.getOutputStream();
 
+            ServletOutputStream out=response.getOutputStream();
 
             writer.flush(out, true);
             // 关闭writer，释放内存
