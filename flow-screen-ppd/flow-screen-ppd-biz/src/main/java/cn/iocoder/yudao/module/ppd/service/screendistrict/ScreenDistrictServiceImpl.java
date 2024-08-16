@@ -5,6 +5,7 @@ import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screendistrict.vo.ScreenDistrictRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screendistrict.ScreenDistrictMapper;
+import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -91,8 +92,10 @@ public class ScreenDistrictServiceImpl implements ScreenDistrictService {
     @Override
     public List<ScreenDistrictDO> getDistrictList2() {
         Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
-        String districtCode = districtMapper.getDistrictCode(deptId);
-        List<ScreenDistrictDO> list = districtMapper.getSameAndLowDistrictList(districtCode);
+        List<DeptDO> childDeptList = deptService.getChildDeptList(deptId);
+        childDeptList.add(deptService.getDept(deptId));
+        List<String> districtCodeList = childDeptList.stream().map(DeptDO::getDistrictCode).toList();
+        List<ScreenDistrictDO> list = districtMapper.getSameAndLowDistrictList(districtCodeList);
         return list;
     }
 

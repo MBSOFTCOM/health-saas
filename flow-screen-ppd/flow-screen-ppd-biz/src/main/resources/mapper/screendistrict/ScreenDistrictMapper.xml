@@ -105,10 +105,17 @@
 
     <select id="getSameAndLowDistrictList"
             resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO">
-        SELECT *
+        SELECT DISTINCT *
         FROM tb_screen_district
-        WHERE parent_code = #{districtCode}
-           OR code = #{districtCode}
+        WHERE code IN
+        <foreach collection="districtCodeList" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        OR parent_code IN
+        <foreach collection="districtCodeList" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY level
     </select>
 
 

@@ -89,7 +89,7 @@ public interface ScreenDistrictMapper extends BaseMapperX<ScreenDistrictDO> {
     /**
      * 获取本部门及以下的区划
      */
-    List<ScreenDistrictDO> getSameAndLowDistrictList(String districtCode);
+    List<ScreenDistrictDO> getSameAndLowDistrictList(List<String> districtCodeList);
 
     List<String> getDeptList(List<String> codeList);
 }

@@ -107,6 +107,4 @@ public interface DeptService {
      * @return
      */
     Long getMyDept(Long loginUserId);
-
-    List<DeptDO> getListByDistrictCode(String districtCode);
 }

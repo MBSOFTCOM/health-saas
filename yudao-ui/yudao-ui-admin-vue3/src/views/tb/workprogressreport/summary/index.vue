@@ -15,7 +15,7 @@
           :filter-method="PinyinMatchFun"
           placeholder="请选择区划"
           clearable
-          class="!w-120px"
+          class="!w-150px"
         >
           <el-option
             v-for="item in districtList"
@@ -25,7 +25,6 @@
           />
         </el-select>
       </el-form-item>
-      {{queryParams.districtCode}}
       <el-form-item label="工作年度" prop="year">
         <el-input
           v-model="queryParams.year"
@@ -35,7 +34,6 @@
           class="!w-140px"
         />
       </el-form-item>
-      {{queryParams.year}}
 <!--      <el-form-item label="筛查点" prop="screenPoint">
         <el-select v-model="queryParams.screenPoint"
                    :filter-method="PinyinScreenPoint"
@@ -51,7 +49,6 @@
             :value="item"/>
         </el-select>
       </el-form-item>-->
-      {{queryParams.screenPoint}}
 
       <el-form-item>
         <el-button @click="handleQuery">
@@ -117,7 +114,15 @@
 
       <el-tab-pane label="医疗结构结核菌素皮肤试验开展情况统计表" name="agencyStatistics">
         <el-table :data="list2" :stripe="true" :show-overflow-tooltip="true">
-          <el-table-column label="备注" align="center" prop="remark" width="200"/>
+          <el-table-column label="序号" type="index" align="center" width="80"/>
+          <el-table-column label="筛查机构所在区划" align="center" />
+          <el-table-column label="筛查机构全称" align="center" />
+          <el-table-column label="PPD试验人数" align="center" />
+          <el-table-column label="PPD试验结果" align="center">
+            <el-table-column label="复验结果人数" align="center" />
+            <el-table-column label="阴性" align="center" />
+            <el-table-column label="阳性" align="center" />
+          </el-table-column>
         </el-table>
       </el-tab-pane>
     </el-tabs>
@@ -187,11 +192,12 @@ const handleQuery = () => {
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-  queryParams.year = undefined,
-  queryParams.districtCode = undefined,
-  queryParams.screenPoint = undefined,
-  queryParams.type = 1,
+  queryParams.year = undefined
+  queryParams.districtCode = undefined
+  queryParams.screenPoint = undefined
+  // queryParams.type = 1
   list.value = []
+  // activeName.value = 'schoolStatistics'
 }
 
 
@@ -204,6 +210,7 @@ const handleExport = async () => {
     exportLoading.value = true
     const data = await ScreenPersonApi.exportSchoolSummary(queryParams)
     download.excel(data, '学校肺结核筛查结果统计表.xls')
+    message.success("导出成功！")
   } catch {
   } finally {
     exportLoading.value = false

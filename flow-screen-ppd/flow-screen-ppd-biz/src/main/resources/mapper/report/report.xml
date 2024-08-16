@@ -125,7 +125,7 @@
 
 
     <select id="getSchoolSummary"
-            resultType="cn.iocoder.yudao.module.ppd.controller.admin.report.vo.SummaryRespVO">
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.report.vo.SummaryRespSchoolVO">
         SELECT tsd.name                                                                                       AS districtName,
                sd.name                                                                                        AS schoolName,
                tsp.student_type                                                                               AS studentType,
