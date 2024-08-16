@@ -436,7 +436,9 @@
               </template>
             </el-table-column>
             <el-table-column label="筛查单位" align="center" prop="screenAgency"/>
-            <el-table-column label="筛查时间" align="center" prop="screenTime"/>
+            <el-table-column
+              label="筛查时间" align="center" prop="screenTime"
+              :formatter="dateFormatter"/>
           </el-table>
           <el-table
             :data="checkList" :stripe="true" max-height="400px"

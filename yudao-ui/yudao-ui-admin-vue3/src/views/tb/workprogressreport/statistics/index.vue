@@ -142,7 +142,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item style="display:flex;margin-left: 950px">
+      <el-form-item style="display:flex;margin-left: 65%">
         <el-button @click="handleQuery">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
@@ -154,8 +154,7 @@
         <el-button
           type="warning"
           plain
-          @click="handleExport"
-          :loading="exportLoading"
+          @click="openExportForm( )"
           v-hasPermi="['tb:screen-person:export']"
         >
           <Icon icon="ep:download" class="mr-5px"/>
@@ -164,7 +163,7 @@
         <el-button
           type="warning"
           plain
-          @click="handleExport"
+          @click="openExportArchivesForm( )"
           :loading="exportLoading"
           v-hasPermi="['tb:screen-person:export']"
         >
@@ -257,6 +256,8 @@
   </ContentWrap>
 
   <ScreenPersonDetail ref="newRef"/>
+  <ScreenPersonExport ref="exportRef"/>
+  <ScreenPersonExportArchives ref="exportArchivesRef"/>
 
 </template>
 
@@ -265,8 +266,10 @@ import PinyinMatch from 'pinyin-match'
 import {getIntDictOptions, DICT_TYPE} from '@/utils/dict'
 import download from '@/utils/download'
 import {ScreenPersonApi, ScreenPersonVO} from '@/api/tb/screenpersonrealsituation'
+import ScreenPersonExport from './ScreenPersonExport.vue'
 import ScreenPersonDetail from './ScreenPersonDetail.vue'
-import {onMounted, ref, reactive, nextTick} from 'vue'
+import ScreenPersonExportArchives from './ScreenPersonExportArchives.vue'
+import {onMounted, ref, reactive} from 'vue'
 
 /** 摸底 列表 */
 defineOptions({name: 'Statistics'})
@@ -305,9 +308,8 @@ const queryParams = reactive({
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const importLoading = ref(false) // 导入的加载中
-const importTemplateLoading = ref(false) // 下载模板的加载中
 const ethnicList = ref([]) // 民族
-
+const copycommonAddr = reactive([])
 
 /** 查询列表 */
 const getList = async () => {
@@ -316,51 +318,21 @@ const getList = async () => {
     const data = await ScreenPersonApi.getScreenedPage(queryParams)
     list.value = data.list
     total.value = data.total
-
     // 处理 多人群分类 问题
     if (queryParams.moreTempType.length !== 0) {
       list.value = list.value.filter(item => resolveMoreType(item.moreType).some(value => queryParams.moreTempType.includes(value)));
       total.value = list.value.length
     }
-
   } finally {
     loading.value = false
   }
 }
-
-
-const getEthnicList = () => {
-  const data = getIntDictOptions(DICT_TYPE.NATION)
-  ethnicList.value = data
-  copycommonAddr.splice(0, copycommonAddr.length, ...data)
-}
-
-
-const copycommonAddr = reactive([])
-// 拼音插件
-const PinyinMatchFun = (val) => {
-  if (val) {
-    const result = []
-    ethnicList.value.forEach((i) => {
-      const m = PinyinMatch.match(i.label, val)
-      if (m) {
-        result.push(i)
-      }
-    })
-    ethnicList.value.splice(0, ethnicList.value.length, ...result)
-  } else {
-    // 如果没有输入，则还原列表
-    ethnicList.value.splice(0, ethnicList.value.length, ...copycommonAddr)
-  }
-}
-
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
   getList()
 }
-
 
 /** 重置按钮操作 */
 const resetQuery = () => {
@@ -369,22 +341,25 @@ const resetQuery = () => {
   handleQuery()
 }
 
-
-/** 添加/修改操作 对话框 */
-const formRef = ref()
-const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
-}
-
-
 /** 查看 对话框*/
 const newRef = ref()
 const openNewForm = ( id: number, year: number, screenType: number) => {
   newRef.value.open( id, year, screenType)
 }
 
+/** 导出表格 对话框*/
+const exportRef = ref()
+const openExportForm = ( ) => {
+  exportRef.value.open( )
+}
 
-/** 摸底人员导出按钮操作 */
+/** 导出档案 对话框*/
+const exportArchivesRef = ref()
+const openExportArchivesForm = ( ) => {
+  exportArchivesRef.value.open( )
+}
+
+/** 导出按钮操作 */
 const handleExport = async () => {
   try {
     // 导出的二次确认
@@ -399,7 +374,7 @@ const handleExport = async () => {
   }
 }
 
-
+// 解决多人群分类问题
 const resolveMoreType = (value) => {
   const groups = {
     1: '学生',
@@ -426,46 +401,29 @@ const resolveMoreType = (value) => {
   return result
 }
 
-/** 删除按钮操作 */
-const handleDelete = async (id: number) => {
-  try {
-    // 删除的二次确认
-    await message.delConfirm()
-    // 发起删除
-    await ScreenPersonApi.deleteScreenPerson(id)
-    message.success(t('common.delSuccess'))
-    // 刷新列表
-    await getList()
-  } catch {
-  }
+// 获取民族列表
+const getEthnicList = () => {
+  const data = getIntDictOptions(DICT_TYPE.NATION)
+  ethnicList.value = data
+  copycommonAddr.splice(0, copycommonAddr.length, ...data)
 }
 
-/** 下载待筛查人员导入模板按钮操作 */
-const handleExportTemplate = async () => {
-  try {
-    // 导出的二次确认
-    await message.confirm("是否确认下载待筛查人员导入模板？")
-    // 发起导出
-    importTemplateLoading.value = true
-    const data = await ScreenPersonApi.importScreenPersonTemplate2()
-    download.excel(data, '待筛查人员导入模板.xls')
-  } catch {
-  } finally {
-    importTemplateLoading.value = false
+// 拼音插件
+const PinyinMatchFun = (val) => {
+  if (val) {
+    const result = []
+    ethnicList.value.forEach((i) => {
+      const m = PinyinMatch.match(i.label, val)
+      if (m) {
+        result.push(i)
+      }
+    })
+    ethnicList.value.splice(0, ethnicList.value.length, ...result)
+  } else {
+    // 如果没有输入，则还原列表
+    ethnicList.value.splice(0, ethnicList.value.length, ...copycommonAddr)
   }
 }
-
-/** 导入*/
-const importFormRef = ref()
-const handleImport = () => {
-  try {
-    importLoading.value = true
-    importFormRef.value.open()
-  }finally {
-    importLoading.value = false
-  }
-}
-
 
 /** 初始化 **/
 onMounted(() => {
