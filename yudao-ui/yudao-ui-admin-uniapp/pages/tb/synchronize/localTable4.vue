@@ -328,7 +328,7 @@ export default {
 					content: '当前未勾选数据，是否上传全部数据？',
 					cancelText: '取消',
 					confirmText: '确认',
-					success: function (res) {
+					success: async (res) =>{
 						if (res.confirm) {
 							if (self.pageData.length == 0) {
 								uni.showToast({
@@ -339,14 +339,8 @@ export default {
 								});
 							} else {
 								// 获取本地数据 上传到pc端
-								SynchronizeApi.getDrCtData(
-									self.queryParams.screenId,
-									self.queryParams.outcome,
-									self.queryParams.screenPoint,
-									-1,
-									self.pageSize
-								).then((res) => {
-									self.SyncData = res;
+								let local=await SynchronizeApi.getDrCtData(self.queryParams.screenId,self.queryParams.outcome,self.queryParams.screenPoint,-1,self.pageSize)
+									self.SyncData = local;
 
 									self.SyncData.forEach((item) => {
 										// 筛查时间转换成时间戳
@@ -361,7 +355,7 @@ export default {
 									
 									//上传汇总表
 									for (let i = 0; i < self.SyncData.length; i++) {
-										SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId).then(res=>{
+										await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId,self.SyncData[i].idNum).then(res=>{
 											res.forEach(item=>{
 												if(item.lastCollectTime){
 													item.lastCollectTime = new Date(item.lastCollectTime).getTime();
@@ -385,7 +379,7 @@ export default {
 									}
 
 									// 上传
-									SynchronizeApi.updateTableData4(self.SyncData).then((res) => {
+									await SynchronizeApi.updateTableData4(self.SyncData).then((res) => {
 										// 上传dr/ct组图片
 										SynchronizeApi.uploadOfflineImage(3);
 										if (res.data) {
@@ -408,7 +402,7 @@ export default {
 											})
 										}
 									});
-								});
+								
 							}
 						} else if (res.cancel) {
 							uni.showToast({

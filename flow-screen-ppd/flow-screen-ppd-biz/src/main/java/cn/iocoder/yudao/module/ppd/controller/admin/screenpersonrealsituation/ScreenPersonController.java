@@ -7,7 +7,6 @@ import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
-
 import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
@@ -29,7 +28,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.io.IOException;
 import java.time.Instant;
@@ -356,6 +354,22 @@ public class ScreenPersonController {
             e.printStackTrace();
         }
         return success("success");
+    }
+    @PostMapping(value = "/update-ct-image")
+    @Operation(summary = "更换ct照片")
+    @PreAuthorize("@ss.hasPermission('tb:screen-person:create')")
+    public CommonResult<String> updateCtImage2(@RequestParam("file") MultipartFile file,
+                                             @RequestParam("personId") Long personId,
+                                             @RequestParam("screenOrder") Integer screenOrder,
+                                             @RequestParam("screenId") String screenId,
+                                             @RequestParam("idNum") String idNum,
+                                             @RequestParam("imageType") Integer imageType,
+                                             @RequestParam("year") Integer year,
+                                             @RequestParam("screenType") Integer screenType
+                                             ) throws IOException {
+        String image = screenPersonService.updateCtImage(personId, screenId, idNum,imageType, screenOrder, year, screenType, file.getInputStream());
+        return success(image);
+
     }
 
 

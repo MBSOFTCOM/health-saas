@@ -245,9 +245,9 @@
 
     <insert id="insertChestRadiograph">
         insert into tb_screen_chest_radiograph
-            (id, screen_id, person_id, chest_radiograph_code, chest_radiograph,photo_time,
+            (id, screen_id, id_num, person_id, chest_radiograph_code, chest_radiograph,photo_time,
              doctor_signature, outcome, screen_order, screen_time, remark,screen_type,year)
-        values (#{id},#{screenId},#{personId},#{chestRadiographCode},#{chestRadiograph},#{photoTime},
+        values (#{id},#{screenId},#{idNum},#{personId},#{chestRadiographCode},#{chestRadiograph},#{photoTime},
                 #{doctorSignature},#{outcome},#{screenOrder},#{screenTime},#{remark},#{screenType},#{year})
     </insert>
 

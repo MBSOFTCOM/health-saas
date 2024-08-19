@@ -19,6 +19,15 @@ public class ScreenCollectRespVO {
     @Schema(description = "筛查编号", example = "10874")
     @ExcelProperty("筛查编号")
     private String screenId;
+    /**
+     * 身份证
+     */
+    private String idNum;
+    private Integer age;
+    private Integer contacted;
+    private String schoolName;
+    private String classroom;
+    private String tel;
 
     @Schema(description = "同步时唯一编码", example = "13599")
     @ExcelProperty("同步时唯一编码")

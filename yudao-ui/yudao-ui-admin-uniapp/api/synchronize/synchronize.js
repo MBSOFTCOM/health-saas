@@ -615,7 +615,6 @@ export function updateTableData6(params) {
 // ========================== 汇总表-统计 ==========================
 // 上传数据到服务器
 export function uploadSumData(params) {
-	console.log(222);
 	return request({
 		url: '/tb/synchronize/update-sum-data',
 		'method': 'PUT',
@@ -835,7 +834,7 @@ export function getLocalSumData(screenId,screenType,year,personId,idNum){
 				and screenType=${screenType}
 				and year=${year}
 			   `
-	console.log("SQL:" + sql);
+	// console.log("SQL:" + sql);
 	 return promise(dbName,sql)
 	 // console.log(data);
 }

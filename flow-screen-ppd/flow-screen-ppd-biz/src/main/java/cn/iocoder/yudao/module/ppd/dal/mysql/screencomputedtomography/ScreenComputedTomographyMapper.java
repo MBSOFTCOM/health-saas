@@ -96,4 +96,9 @@ public interface ScreenComputedTomographyMapper extends BaseMapperX<ScreenComput
                     @Param("screenOrder") Integer screenOrder,
                     @Param("screenType") Integer screenType,
                     @Param("year") Integer year);
+    Long getCtIsExist(
+                    @Param("idNum") String idNum,
+                    @Param("screenOrder") Integer screenOrder,
+                    @Param("screenType") Integer screenType,
+                    @Param("year") Integer year);
 }

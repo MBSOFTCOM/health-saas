@@ -53,9 +53,33 @@ public class ScreenCollectDO extends BaseDO {
      */
     private Integer screenOrder;
     /**
+     * 身份证
+     */
+    private String idNum;
+    /**
      * 对应摸底表中id
      */
     private Long personId;
+    /**
+     * 年龄
+     */
+    private Integer age;
+    /**
+     * 2年内是否有与结核病患者的接触史 0-否, 1-是
+     */
+    private Integer contacted;
+    /**
+     * 填写问卷时学校名称
+     */
+    private String schoolName;
+    /**
+     * 填写问卷时班级
+     */
+    private String classroom;
+    /**
+     * 填写问卷时联系电话
+     */
+    private String tel;
     /**
      * 对应摸底表中患者姓名
      */

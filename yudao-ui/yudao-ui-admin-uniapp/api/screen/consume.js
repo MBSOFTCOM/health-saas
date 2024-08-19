@@ -1,6 +1,6 @@
 import dbUtils from "@/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils.js" //sqlite-manage插件
 import request from '@/utils/request'
-import {dbName,promise,tbScreenConsume,emptyData} from "@/utils/sqlite";
+import {dbName,promise,tbScreenConsume,emptyData, tbScreenConsumeRecord} from "@/utils/sqlite";
 import {tbScreenPpd} from "../../utils/sqlite";
 /**
  * 根据类型获取可用的试剂批号数据
@@ -57,7 +57,7 @@ export const getDataFromLocal = async () => {
  * @param {number} regentId
  */
 export const  getFirstConsume=async(regentId)=>{
-	let sql=`select * from ${tbScreenConsume} where reagentId=${regentId} order by consumeOrder ASC limit 1`
+	let sql=`select c.*,r.changeNumber from ${tbScreenConsume} c left join ${tbScreenConsumeRecord} r on r.consumeId=c.id where reagentId=${regentId} order by consumeOrder ASC limit 1`
 	// console.log(sql);
 	return promise(dbName,sql)
 }

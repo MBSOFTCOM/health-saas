@@ -29,7 +29,7 @@
     </select>
     <select id="getCollectData"
             resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO">
-        select sc.id,sc.person_id, sc.screen_id, sc.outcome, sc.doctor_signature, sc.screen_agency, sc.screen_time, sc.screen_order, sc.year, sc.screen_type,sp.screen_point,sp.name
+        select sc.*,sp.screen_point,sp.name
         from tb_screen_collect sc
         left join tb_screen_person sp on sc.person_id = sp.id
         where sp.screen_point=#{screenPoint}

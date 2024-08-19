@@ -53,16 +53,10 @@
 		<view class="main-bottom">
 			<up-row>
 				<up-col span="7">
-					<view class="bom-t" style="margin: 15px 0">
-						<view style="width: 95px">局部症状</view>
-						<view class="bom-mup">
-							<uni-data-checkbox multiple v-model="crowdArr" :localdata="items"></uni-data-checkbox>
-						</view>
-					</view>
 					<view class="bom-t">
-						<view style="width: 95px">皮肤反应类型</view>
+						<view style="width: 250rpx">皮肤反应类型</view>
 						<view class="bom-mup">
-							<u-radio-group v-model="FormData.outcome" placement="row">
+							<u-radio-group v-model="FormData.outcome" placement="row" @change="changeOutcome">
 								<u-radio
 									:customStyle="{ marginRight: '5vw' }"
 									v-for="(item, index) in outcomes"
@@ -76,28 +70,37 @@
 							</u-radio-group>
 						</view>
 					</view>
+					<view class="bom-t" style="margin: 15px 0" v-if="FormData.outcome">
+						<view style="width: 250rpx">局部症状</view>
+						<view class="bom-mup">
+							<uni-data-checkbox multiple v-model="crowdArr" :localdata="items"></uni-data-checkbox>
+						</view>
+					</view>
 				</up-col>
-				<up-col span="5">
+				
+			</up-row>
+			
+			<up-row gutter="10">
+				<up-col span="4">
+					<view style="width: 250rpx">图像采集</view>
 					<image style="width: 150px;height: 150px;"  v-if="FormData.actualPhoto" :src="FormData.actualPhoto" mode="aspectFit"/>
 					<up-button
 						class="custom-style"
 						@click="chooseImg()"
 						icon="plus"
 						iconColor="rgba(36, 93, 209, 1)">
-						<span >采集照片</span>
+						<span v-if="!FormData.actualPhoto">采集照片</span>
+						<span v-else>修改照片</span>
 					</up-button>
 				</up-col>
-			</up-row>
-			
-			<up-row gutter="10">
 				<!-- 硬结 -->
-				<up-col span="6">
+				<up-col span="4">
 					<up-row>
 						<up-col span="7">
 							<view >
 								<span>硬结</span>
 								<view class="bom-t">
-									<view>横经(mm)</view>
+									<view style="width: 250rpx;">横经(mm)</view>
 									<input
 										style="border: 1rpx silver solid;height: 50rpx;margin-left: 15rpx; border-radius: 5rpx;"
 										v-model="FormData.transverseDiameter"
@@ -107,7 +110,7 @@
 									/>
 								</view>
 								<view class="bom-t">
-									纵经(mm)
+									<view style="width: 250rpx;">纵经(mm)</view>
 									<input
 										style="border: 1rpx silver solid;height: 50rpx;margin-left: 15rpx; border-radius: 5rpx;margin-top: 10rpx;"
 										v-model="FormData.longitudinalDiameter"
@@ -131,13 +134,13 @@
 					</up-row>
 				</up-col>
 				<!-- 红晕 -->
-				<up-col span="6">
+				<up-col span="4">
 					<up-row>
 						<up-col span="7">
 							<view >
 								红晕
 								<view class="bom-t">
-									<view>横经(mm)</view>
+									<view style="width: 250rpx;">横经(mm)</view>
 									<input
 										style="border: 1rpx silver solid;height: 50rpx;margin-left: 15rpx; border-radius: 5rpx;"
 										v-model="FormData.blushTransverseDiameter"
@@ -147,7 +150,7 @@
 									/>
 								</view>
 								<view class="bom-t">
-									纵经(mm)
+									<view style="width: 250rpx;">纵经(mm)</view>
 									<input
 										style="border: 1rpx silver solid;height: 50rpx;margin-left: 15rpx; border-radius: 5rpx;margin-top: 10rpx;"
 										v-model="FormData.blushLongitudinalDiameter"
@@ -173,7 +176,7 @@
 			</up-row>
 			
 			<view class="bom-m">
-				<view>医生签名</view>
+				<view style="width: 250rpx;">医生签名</view>
 				<view class="sign-bg" v-if="!FormData.doctorSignature" @click="onSign">
 					<view class="sign-text">
 						<image class="sign-img" src="../../../static/images/tb/sign.png" mode=""></image>
@@ -230,7 +233,7 @@ import {
 } from '@/utils/ppd.js';
 import {getTimeStamp} from '@/utils/common'
 import { updateOne } from '/utils/screenSum.js';
-import ScreenImages from '../../../utils/screenImages.js';
+import ScreenImages, { tbScreenImages } from '../../../utils/screenImages.js';
 import { openTransaction } from '../../../utils/sqlite';
 export default {
 	data() {
@@ -307,7 +310,7 @@ export default {
 	},
 	onLoad(e) {
 		this.patient = e;
-		// console.log(this.patient);
+		console.log(this.patient);
 		//isNew 为0表示修改
 		if (e.isNew == 0) {
 			getBypersonIdAndScreenOrderOne(e.order, e.id).then((res) => {
@@ -436,6 +439,12 @@ export default {
 			});
 			
 		},
+		changeOutcome(){
+			if(this.FormData.outcome==0){
+				this.FormData.bleb=null
+				this.crowdArr=[]
+			}
+		},
 		chooseImg(){
 			uni.chooseImage({
 				count: 1, // 最多可以选择的图片张数
@@ -449,7 +458,6 @@ export default {
 		//提交保存
 		async newAdd() {
 			console.log(this.FormData);
-			// this.FormData.doctorSignature
 			// return
 			if (Object.entries(uni.$person).length === 0) {
 				uni.showModal({
@@ -488,7 +496,7 @@ export default {
 			//非空校验
 			// console.log(this.FormData);
 			const data = {
-				injection: this.FormData.injection, //状态
+				
 				transverseDiameter: this.FormData.transverseDiameter, //横泾
 				longitudinalDiameter: this.FormData.longitudinalDiameter, //纵径
 				blushTransverseDiameter: this.FormData.blushTransverseDiameter,
@@ -503,11 +511,11 @@ export default {
 				updateTime: this.FormData.updateTime //修改时间
 			};
 			console.log(data);
-			const isNull = this.ifNull(data);
-			if (!isNull) {
-				uni.$u.toast('表单数据存在空,请检查表单,并填写完整!');
-				return;
-			}
+			// const isNull = this.ifNull(data);
+			// if (!isNull) {
+			// 	uni.$u.toast('表单数据存在空,请检查表单,并填写完整!');
+			// 	return;
+			// }
 
 			openTransaction()
 				.then(async (r) => {
@@ -525,14 +533,34 @@ export default {
 					const setScreenImagesData = {
 						path: this.FormData.doctorSignature
 					};
-					await ScreenImages.updateOne(
-						setScreenImagesData,
-						this.patient.id,
+					console.log(this.patient);
+					await ScreenImages.deleteOne(
+						this.patient.idNum,
 						uni.$person.year,
 						uni.$screenType,
 						this.patient.order,
-						9
-					);
+						9)
+					let imageData={
+						idNum:this.patient.idNum,
+						screenType:uni.$screenType,
+						year:this.patient.year,
+						screenOrder:this.patient.order,
+						path:this.FormData.doctorSignature,
+						personId:this.patient.id,
+						screenId:this.patient.screenId,
+						type:8
+					}
+					console.log(imageData);
+					await dbUtils.addTabItem(dbName,tbScreenImages,imageData)
+					
+					// await ScreenImages.updateOne(
+					// 	setScreenImagesData,
+					// 	this.patient.id,
+					// 	uni.$person.year,
+					// 	uni.$screenType,
+					// 	this.patient.order,
+					// 	9
+					// );
 
 					//返回上一页
 					uni.navigateBack({

@@ -60,9 +60,11 @@ export function updateBypersonIdAndScreenOrder(setData,screenOrder,personId) {
 		let dataKeys = Object.keys(setData)
 		dataKeys.forEach((item, index) => {
 			// console.log(setData[item])
-			setStr += (
-				`${item}=${JSON.stringify(setData[item])}${dataKeys.length - 1 !== index ? "," : ""}`
-			)
+			if(setData[item]){
+				setStr += (
+					`${item}=${JSON.stringify(setData[item])}${dataKeys.length - 1 !== index ? "," : ""}`
+				)	
+			}
 		})
 		
 		

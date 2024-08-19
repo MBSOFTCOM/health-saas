@@ -591,6 +591,7 @@ export default {
 				let param = {};
 				param.personId = this.formData.personId;
 				param.screenId = this.formData.screenId;
+				param.idNum=this.patient.idNum
 				param.screenType = uni.$screenType;
 				param.lastChestRadiographTime = this.formData.screenTime;
 				let last = await getCTById(this.formData.personId, null);

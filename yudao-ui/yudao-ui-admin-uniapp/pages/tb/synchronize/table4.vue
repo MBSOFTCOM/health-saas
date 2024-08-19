@@ -335,6 +335,7 @@ export default {
 										self.queryParams.pageSize = -1;
 										SynchronizeApi.getTableData4(self.queryParams).then((resp) => {
 											self.SyncData = resp.data.list;
+											// console.log(resp);
 											if (uni.$user.year) {
 												// 过滤出与当前工作年度不同的数据
 												let differentYears = self.SyncData.filter(
@@ -450,6 +451,7 @@ export default {
 										//下拉汇总表
 										SynchronizeApi.getSumData(self.queryParams).then((res) => {
 											let sumData = res.data;
+											// console.log(sumData);
 											// 先清除再插入（覆盖）
 											if (sumData.length > 0) {
 												SynchronizeApi.truncateTable(tbScreenSum);
@@ -493,7 +495,7 @@ export default {
 															item.lastDiagnosisTime
 														);
 													}
-													
+													// console.log(item);
 													// 插入数据
 													dbUtils.addTabItem(dbName, tbScreenSum, item);
 												});

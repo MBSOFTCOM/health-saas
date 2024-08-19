@@ -775,7 +775,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String updateImag2(Long personId, String screenId, Integer imageType, Integer screenOrder, Integer year, Integer screenType, InputStream file) {
+    public String updateImag2(Long personId, String screenId,Integer imageType, Integer screenOrder, Integer year, Integer screenType, InputStream file) {
 
         // 存储文件
         String imageStr = fileApi.createFile(IoUtil.readBytes(file));
@@ -802,6 +802,44 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             screenComputedTomographyDO.setPersonId(personId).setScreenId(screenId)
                     .setYear(year).setScreenOrder(screenOrder).setScreenType(screenType).setComputedTomography(imageStr);
             Long ctId = screenComputedTomographyMapper.getIsExist(personId, screenId, screenOrder, screenType, year);
+            if (ctId != null){
+                screenComputedTomographyDO.setId(ctId);
+                screenComputedTomographyMapper.updateById(screenComputedTomographyDO);
+            }
+        }
+
+        return imageStr;
+    }
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String updateCtImage(Long personId, String screenId,String idNum,Integer imageType, Integer screenOrder, Integer year, Integer screenType, InputStream file) {
+
+        // 存储文件
+        String imageStr = fileApi.createFile(IoUtil.readBytes(file));
+
+        Long id = screenImagesMapper.selectCtIsNull(idNum, imageType, screenOrder, year, screenType);
+
+        ScreenImagesDO screenImagesDO = new ScreenImagesDO();
+        screenImagesDO.setPersonId(personId)
+                .setScreenId(screenId)
+                .setIdNum(idNum)
+                .setUrl(imageStr)
+                .setScreenOrder(screenOrder)
+                .setType(imageType);
+
+        if (id == null) {
+            screenImagesDO.setYear(year).setScreenType(screenType).setScreenTime(LocalDateTime.now());
+            screenImagesMapper.insert(screenImagesDO);
+        } else {
+            screenImagesDO.setId(id);
+            screenImagesMapper.updateById(screenImagesDO);
+        }
+
+        if (imageType == 2){
+            ScreenComputedTomographyDO screenComputedTomographyDO = new ScreenComputedTomographyDO();
+            screenComputedTomographyDO.setPersonId(personId).setScreenId(screenId).setIdNum(idNum)
+                    .setYear(year).setScreenOrder(screenOrder).setScreenType(screenType).setComputedTomography(imageStr);
+            Long ctId = screenComputedTomographyMapper.getCtIsExist( idNum, screenOrder, screenType, year);
             if (ctId != null){
                 screenComputedTomographyDO.setId(ctId);
                 screenComputedTomographyMapper.updateById(screenComputedTomographyDO);

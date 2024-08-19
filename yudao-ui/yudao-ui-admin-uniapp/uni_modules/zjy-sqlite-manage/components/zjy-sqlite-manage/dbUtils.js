@@ -104,7 +104,7 @@ const updateSQL = (name, tabName, setData, setName, setVal) => {
 			setStr += (
 				`${item} = ${JSON.stringify(setData[item])}${dataKeys.length - 1 !== index ? "," : ""}`)
 		})
-		// console.log(`update ${tabName} set ${setStr} where ${setName} = "${setVal}"`);
+		console.log(`update ${tabName} set ${setStr} where ${setName} = "${setVal}"`);
 		return new Promise((resolve, reject) => {
 			plus.sqlite.executeSql({
 				name: name,

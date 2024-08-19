@@ -313,7 +313,7 @@
 					</view>
 					<view class="bom-bm">
 						<view class="bom-se">
-							<span>单位</span>
+							<span style="width: 230rpx;">单位(学校)</span>
 							<input
 								class="address-input"
 								confirm-type="search"
@@ -383,8 +383,8 @@ export default {
 			//存储当前操作时间
 			single: '',
 			//人群类型
-			crowdVal: '',
-			crowdArr: [],
+			crowdVal: '1',
+			crowdArr: ['1'],
 			//第一人群分类
 			items1: [
 				{
@@ -490,7 +490,7 @@ export default {
 				town: undefined,
 				screenPoint: undefined,
 				isNew: 1,
-				isNewStudent: 0,
+				isNewStudent: 1,
 				screenTime: undefined,
 				createTime: null,
 				remark: undefined
@@ -913,11 +913,29 @@ export default {
 		},
 		//提交时数据非空校验
 		dataCheck(obj, classroom) {
-			for (let key in obj) {
+			let checkData={
+				name:obj.name??null,
+				age:obj.age??null,
+				tel:obj.tel??null,
+				province:obj.province??null,
+				city:obj.city??null,
+				county:obj.county??null,
+				town:obj.town??null,
+				address:obj.address??null,
+				firstType:obj.firstType??null,
+				moreType:obj.moreType??null,
+				screenTime:obj.screenTime??null
+			}
+			if(this.showStudent){
+				checkData.schoolOrTemple=obj.schoolOrTemple??null
+				checkData.classroom=obj.classroom??null
+			}
+			console.log(checkData);
+			for (let key in checkData) {
 				// console.log(key);
 				if (obj.hasOwnProperty(key)) {
 					if (obj[key] === null || obj[key] === undefined || obj[key] === '') {
-						// console.log(key, '有问题');
+						console.log(key, '有问题');
 						return false;
 					}
 				}
@@ -1042,6 +1060,9 @@ export default {
 			this.FormData.city = '';
 			this.FormData.county = '';
 			this.FormData.town = '';
+			this.city = null;
+			this.county = null;
+			this.town = null;
 			selectDistrict(val.code).then((res) => {
 				this.city = res;
 			});
@@ -1050,6 +1071,8 @@ export default {
 		selectCity(val) {
 			this.FormData.county = '';
 			this.FormData.town = '';
+			this.county = null;
+			this.town = null;
 			selectDistrict(val.code).then((res) => {
 				this.county = res;
 			});
@@ -1057,6 +1080,7 @@ export default {
 		//选择县级区划
 		selectCounty(val) {
 			this.FormData.town = '';
+			this.town = null;
 			selectDistrict(val.code).then((res) => {
 				this.town = res;
 			});
@@ -1067,6 +1091,9 @@ export default {
 			this.FormData.permanentAddressCity = '';
 			this.FormData.permanentAddressCounty = '';
 			this.FormData.permanentAddressTown = '';
+			this.permanentAddressCity = null;
+			this.permanentAddressCounty = null;
+			this.permanentAddressTown = null;
 			selectDistrict(val.code).then((res) => {
 				this.permanentAddressCity = res;
 			});
@@ -1075,6 +1102,8 @@ export default {
 		selectpermanentAddressCity(val) {
 			this.FormData.permanentAddressCounty = '';
 			this.FormData.permanentAddressTown = '';
+			this.permanentAddressCounty = null;
+			this.permanentAddressTown = null;
 			selectDistrict(val.code).then((res) => {
 				this.permanentAddressCounty = res;
 			});
@@ -1082,6 +1111,7 @@ export default {
 		//选择县级区划
 		selectpermanentAddressCounty(val) {
 			this.FormData.permanentAddressTown = '';
+			this.permanentAddressTown = null;
 			selectDistrict(val.code).then((res) => {
 				this.permanentAddressTown = res;
 			});

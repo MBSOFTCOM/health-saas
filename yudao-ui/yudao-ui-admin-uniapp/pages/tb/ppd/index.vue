@@ -431,24 +431,35 @@
 				<view class="injection">
 					<view class="injection-tle">注射试剂</view>
 					<uni-data-select
-						style="width: 60%;"
+						style="width: 100%;"
 					    v-model="regentId"
 					    :localdata="regentList"
 						:clear="false"
 					    @change="selectRegentList"/>
-					转换系数 {{this.injectionReagent.reagentSpecsNum}} (人次)
-					<u-radio-group style="margin-left: 12vw" v-model="injectionReagent.reagentType" placement="column" disabled>
-						<u-radio
-							v-for="(item, index) in radiolist1"
-							:key="index"
-							:label="item.name"
-							:name="item.value"
-							labelSize="20px"
-							iconSize="23px"
-							size="25px"
-						></u-radio>
-					</u-radio-group>
-				</view>
+						<up-row>
+							<up-col span="7">
+								<u-radio-group style="margin-left: 20rpx;" v-model="injectionReagent.reagentType" placement="column" disabled>
+									<u-radio
+										v-for="(item, index) in radiolist1"
+										:key="index"
+										:label="item.name"
+										:name="item.value"
+										labelSize="20px"
+										iconSize="23px"
+										size="25px"
+									></u-radio>
+								</u-radio-group>
+							</up-col>
+							<up-col span="5" >
+								<view v-if="injectionReagent.reagentSpecsNum">
+									<up-row>转换系数 ：{{this.injectionReagent.reagentSpecsNum}} (人次)</up-row>
+									<up-row>现有库存 ：{{this.injectionReagent.currentNumber}}</up-row>
+									<up-row>已消耗数量 ：{{this.injectionReagent.changeNumber}}</up-row>
+								</view>
+							</up-col>
+						</up-row>
+					
+					</view>
 				<view class="injection-btn">
 					<up-button class="btn-1" @click="show = false">取消</up-button>
 					<up-button class="btn-2" @click="injectionUpload()">保存</up-button>
@@ -598,7 +609,7 @@
 </template>
 
 <script>
-import { commitTransaction, openTransaction, rollbackTransaction } from '@/utils/sqlite';
+import { commitTransaction, openTransaction, rollbackTransaction, tbScreenConsume } from '@/utils/sqlite';
 
 const ocrModule = uni.requireNativePlugin('YY-TomatoOCR');
 const mpaasScanModule = uni.requireNativePlugin('Mpaas-Scan-Module');
@@ -727,7 +738,7 @@ export default {
 	},
 	//页面加载时自动调用
 	async onLoad() {
-		console.log(uni.$person);
+		// console.log(uni.$person);
 		this.ethnic = ethnic;
 		this.dateScreening();
 		this.getRegentList()
@@ -749,6 +760,7 @@ export default {
 	methods: {
 		async getRegentList(){
 			this.regentList=[]
+			this.injectionReagent={}
 			let data=await regentApi.getDataFromLocal()
 			for (var i = 0; i < data.length; i++) {
 				let item={}
@@ -943,13 +955,22 @@ export default {
 			this.show = true;
 			//保存本次注射的人员信息
 			this.person = val;
+			this.getRegentList()
 		},
 		selectRegentList(e){
 			// console.log(e);
 			consumeApi.getFirstConsume(e).then(res=>{
-				this.injectionReagent=res[0]
-				this.radiovalue1=this.injectionReagent.reagentType
 				// console.log(res);
+				this.injectionReagent=res[0]
+				if(this.injectionReagent.currentNumber - this.injectionReagent.changeNumber<=0){
+					uni.showToast({
+						title: '注意：当前试剂的现有库存已为0',
+						icon: 'none',
+						duration: 2000
+					})
+				// this.injectionReagent={}
+				}
+				this.radiovalue1=this.injectionReagent.reagentType
 			})
 		},
 		//已注射点击弹窗确认事件
@@ -974,6 +995,7 @@ export default {
 				});
 				return;
 			}
+			
 			uni.showLoading({
 				title: '保存中',
 				mask: true
@@ -1001,7 +1023,7 @@ export default {
 						screenType: uni.$screenType,
 						screenId: this.person.screenId,
 						personId: this.person.id,
-						injection: 0,
+						injection: 1,
 						idNum:this.person.idNum,
 						injectionWay: this.radiovalue1,
 						screenOrder: '',
@@ -1017,34 +1039,55 @@ export default {
 					inData.screenOrder = order[0].screenOrder == null ? 1 : order[0].screenOrder + 1;
 
 					// console.log(inData);
-					//插入数据请求
-					await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
+					
 					let staticsConsume = await consumeApi.staticsConsumeById(this.injectionReagent.id)  // 实际统计出已消耗的人次
 					// console.log(staticsConsume);
 					let consumeNum = 0  // 库存中应消耗的试剂人次
 					// console.log(`${staticsConsume.num}-${consumeNum}-${record.num}`)
 					if (!record || record.length==0){  // 第一次消耗一支试剂
 						// console.log(recordData);
+						//插入数据请求
+						await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
 						await dbUtils.addTabItem(dbName,tbScreenConsumeRecord,recordData)
+						// await dbUtils.updateSQL(dbName,tbScreenConsume,{currentNumber:this.injectionReagent.currentNumber-1},"id",this.injectionReagent.id)
 					}else{
 						consumeNum=record[0].num * this.injectionReagent.reagentSpecsNum
 						// console.log(consumeNum);
 					}
-					
-					if (staticsConsume[0].num>consumeNum){  //
-						consumeRecordApi.updateRecordNum(Math.ceil(staticsConsume[0].num/this.injectionReagent.reagentSpecsNum),this.injectionReagent.id, uni.$person.id,this.screenTime)
+					// console.log(`${staticsConsume[0].num}==${consumeNum}`);
+					if (staticsConsume[0].num<consumeNum){
+						//插入数据请求
+						await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
+						await consumeRecordApi.updateRecordNum(Math.ceil(staticsConsume[0].num/this.injectionReagent.reagentSpecsNum),this.injectionReagent.id, uni.$person.id,this.screenTime)
+					}else if(staticsConsume[0].num==consumeNum){
+						if(this.injectionReagent.currentNumber - this.injectionReagent.changeNumber==0){
+							uni.showToast({
+								title: '请重新选择试剂',
+								icon: 'none',
+								duration: 2000
+							}) 
+							return
+						}
+						//插入数据请求
+						await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
+						await consumeRecordApi.updateRecordNum(Math.ceil(staticsConsume[0].num/this.injectionReagent.reagentSpecsNum),this.injectionReagent.id, uni.$person.id,this.screenTime)
+					}else if (staticsConsume[0].num>consumeNum){  //
+						await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
+						await consumeRecordApi.updateRecordNum(Math.ceil(staticsConsume[0].num/this.injectionReagent.reagentSpecsNum),this.injectionReagent.id, uni.$person.id,this.screenTime)
+						// await dbUtils.updateSQL(dbName,tbScreenConsume,{currentNumber:this.injectionReagent.currentNumber-Math.ceil(staticsConsume[0].num/this.injectionReagent.reagentSpecsNum)},"id",this.injectionReagent.id)
 					}
+				
 					//插入数据进入汇总表
 					const gatherData = await getGather(this.person.id, uni.$person.year, uni.$screenType);
 					// console.log("gatherData",gatherData);
 					const pddId = await getPddToId(this.person.id);
 					// console.log("pddId",pddId);
-
 				
 					if (gatherData == null || gatherData.length == 0) {
 						//获取初始汇总表插入信息
 						const gather = {
 							year: uni.$person.year,
+							idNum:this.person.idNum,
 							screenType: uni.$screenType,
 							screenId: this.person.screenId,
 							personId: this.person.id,
@@ -1108,7 +1151,7 @@ export default {
 		},
 		//提交结果
 		async submitOutcome(val) {
-			console.log('val', val);
+			// console.log('val', val);
 
 			if (val.orderTime.length == 0) {
 				uni.$u.toast('该人员还未进行过注射，请先注射！');

@@ -154,4 +154,13 @@
         order by screen_order asc
         limit 1
     </select>
+    <select id="getCtIsExist" resultType="java.lang.Long">
+        SELECT id
+        FROM tb_screen_computed_tomography
+        WHERE deleted = 0
+          AND id_num = #{idNum}
+          AND screen_order = #{screenOrder}
+          AND screen_type = #{screenType}
+          AND year = #{year}
+    </select>
 </mapper>
