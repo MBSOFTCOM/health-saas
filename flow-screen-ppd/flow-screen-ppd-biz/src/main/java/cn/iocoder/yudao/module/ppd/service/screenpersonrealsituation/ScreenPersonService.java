@@ -117,6 +117,10 @@ public interface ScreenPersonService {
      * 更新照片
      */
     String updateImag2(Long personId, String screenId, Integer imageType, Integer screenOrder,Integer year, Integer screenType, InputStream file);
+    /**
+     * 更新ct照片
+     */
+    String updateCtImage(Long personId, String screenId, String idNum,Integer imageType, Integer screenOrder,Integer year, Integer screenType, InputStream file);
 
 
     void resolveDistrict(ScreenPersonDO obj);

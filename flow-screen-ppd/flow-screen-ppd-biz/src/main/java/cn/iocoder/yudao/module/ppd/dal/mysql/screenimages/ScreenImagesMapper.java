@@ -27,4 +27,10 @@ public interface ScreenImagesMapper extends BaseMapperX<ScreenImagesDO> {
                       @Param("screenOrder")Integer screenOrder,
                       @Param("year")Integer year,
                       @Param("screenType")Integer screenType);
+    Long selectCtIsNull(
+                      @Param("idNum")String idNum,
+                      @Param("imageType")Integer imageType,
+                      @Param("screenOrder")Integer screenOrder,
+                      @Param("year")Integer year,
+                      @Param("screenType")Integer screenType);
 }

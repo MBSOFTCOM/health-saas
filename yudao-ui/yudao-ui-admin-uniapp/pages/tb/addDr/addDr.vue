@@ -397,7 +397,7 @@ export default {
 			console.log('localPath=', localPath);
 			if (localPath) {
 				return upload({
-					url: '/admin-api/tb/screen-person/update-image2',
+					url: '/admin-api/tb/screen-person/update-ct-image',
 					filePath: localPath,
 					name: 'file',
 					formData: data
@@ -497,7 +497,10 @@ export default {
 			})
             .then(async (res) => {
 				console.log(res);
-              imgForm.screenOrder = res.data
+				imgForm.screenOrder = res.data
+				if(this.stateFlag == '新增'){
+					imgForm.screenOrder++
+				}
               // 判断是否以http开头，以http开头时不需要上传，否则需要上传
 			  console.log(this.formData);
               if (this.formData.computedTomography) {

@@ -53,16 +53,10 @@
 		<view class="main-bottom">
 			<up-row>
 				<up-col span="7">
-					<view class="bom-t" style="margin: 15px 0">
-						<view style="width: 95px">局部症状</view>
-						<view class="bom-mup">
-							<uni-data-checkbox multiple v-model="crowdArr" :localdata="items"></uni-data-checkbox>
-						</view>
-					</view>
 					<view class="bom-t">
-						<view style="width: 95px">皮肤反应类型</view>
+						<view style="width: 250rpx">皮肤反应类型</view>
 						<view class="bom-mup">
-							<u-radio-group v-model="FormData.outcome" placement="row">
+							<u-radio-group v-model="FormData.outcome" placement="row" @change="changeOutcome">
 								<u-radio
 									:customStyle="{ marginRight: '5vw' }"
 									v-for="(item, index) in outcomes"
@@ -76,28 +70,37 @@
 							</u-radio-group>
 						</view>
 					</view>
+					<view class="bom-t" style="margin: 15px 0" v-if="FormData.outcome">
+						<view style="width: 250rpx">局部症状</view>
+						<view class="bom-mup">
+							<uni-data-checkbox multiple v-model="crowdArr" :localdata="items"></uni-data-checkbox>
+						</view>
+					</view>
 				</up-col>
-				<up-col span="5">
+				
+			</up-row>
+			
+			<up-row gutter="10">
+				<up-col span="4">
+					<view style="width: 250rpx">图像采集</view>
 					<image style="width: 150px;height: 150px;"  v-if="FormData.actualPhoto" :src="FormData.actualPhoto" mode="aspectFit"/>
 					<up-button
 						class="custom-style"
 						@click="chooseImg()"
 						icon="plus"
 						iconColor="rgba(36, 93, 209, 1)">
-						<span >采集照片</span>
+						<span v-if="!FormData.actualPhoto">采集照片</span>
+						<span v-else>修改照片</span>
 					</up-button>
 				</up-col>
-			</up-row>
-			
-			<up-row gutter="10">
 				<!-- 硬结 -->
-				<up-col span="6">
+				<up-col span="4">
 					<up-row>
 						<up-col span="7">
 							<view >
 								<span>硬结</span>
 								<view class="bom-t">
-									<view>横经(mm)</view>
+									<view style="width: 250rpx;">横经(mm)</view>
 									<input
 										style="border: 1rpx silver solid;height: 50rpx;margin-left: 15rpx; border-radius: 5rpx;"
 										v-model="FormData.transverseDiameter"
@@ -107,7 +110,7 @@
 									/>
 								</view>
 								<view class="bom-t">
-									纵经(mm)
+									<view style="width: 250rpx;">纵经(mm)</view>
 									<input
 										style="border: 1rpx silver solid;height: 50rpx;margin-left: 15rpx; border-radius: 5rpx;margin-top: 10rpx;"
 										v-model="FormData.longitudinalDiameter"
@@ -131,13 +134,13 @@
 					</up-row>
 				</up-col>
 				<!-- 红晕 -->
-				<up-col span="6">
+				<up-col span="4">
 					<up-row>
 						<up-col span="7">
 							<view >
 								红晕
 								<view class="bom-t">
-									<view>横经(mm)</view>
+									<view style="width: 250rpx;">横经(mm)</view>
 									<input
 										style="border: 1rpx silver solid;height: 50rpx;margin-left: 15rpx; border-radius: 5rpx;"
 										v-model="FormData.blushTransverseDiameter"
@@ -147,7 +150,7 @@
 									/>
 								</view>
 								<view class="bom-t">
-									纵经(mm)
+									<view style="width: 250rpx;">纵经(mm)</view>
 									<input
 										style="border: 1rpx silver solid;height: 50rpx;margin-left: 15rpx; border-radius: 5rpx;margin-top: 10rpx;"
 										v-model="FormData.blushLongitudinalDiameter"
@@ -173,7 +176,7 @@
 			</up-row>
 			
 			<view class="bom-m">
-				<view>医生签名</view>
+				<view style="width: 250rpx;">医生签名</view>
 				<view class="sign-bg" v-if="!FormData.doctorSignature" @click="onSign">
 					<view class="sign-text">
 						<image class="sign-img" src="../../../static/images/tb/sign.png" mode=""></image>
@@ -435,6 +438,12 @@ export default {
 			    }
 			});
 			
+		},
+		changeOutcome(){
+			if(this.FormData.outcome==0){
+				this.FormData.bleb=null
+				this.crowdArr=[]
+			}
 		},
 		chooseImg(){
 			uni.chooseImage({

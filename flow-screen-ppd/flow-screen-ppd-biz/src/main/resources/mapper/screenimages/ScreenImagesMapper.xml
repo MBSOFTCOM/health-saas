@@ -44,4 +44,14 @@
           AND screen_type = #{ screenType}
           AND deleted = 0
     </select>
+    <select id="selectCtIsNull" resultType="java.lang.Long">
+        SELECT id
+        FROM tb_screen_images
+        WHERE id_num=#{idNum}
+            AND type = #{imageType}
+            AND screen_order = #{ screenOrder}
+            AND year = #{ year}
+            AND screen_type = #{ screenType}
+            AND deleted = 0
+    </select>
 </mapper>
