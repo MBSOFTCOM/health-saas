@@ -37,6 +37,11 @@
 				"navigationBarTitleText": "我的",
 				"navigationStyle": "custom"
 			}
+		},{
+			"path": "pages/tb/SQLiteManager/index",
+			"style": {
+				"navigationBarTitleText": "SQLite数据"
+			}
 		},
 
 

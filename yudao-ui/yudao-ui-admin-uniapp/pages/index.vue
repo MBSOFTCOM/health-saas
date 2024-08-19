@@ -4,7 +4,10 @@
 			<image class="logo-image" src="/static/images/tb/logo.png"></image>
 			<view class="main-title">校园筛查管理系统</view>
 		</view>
-		<view class="circle-container">
+    <view>
+      <span @click="navToSQLiteManager">SQLiteManager</span>
+    </view>
+    <view class="circle-container">
 			<image class="bgimg" @click="btn1" src="../static/images/tb/mian-1.png" mode="" disabled></image>
 			<image class="bgimg" @click="btn2" style="margin: 0 20px;" src="../static/images/tb/mian-3.png" mode=""></image>
 			<image class="bgimg" @click="btn3" src="../static/images/tb/mian-2.png" mode="" disabled></image>
@@ -24,6 +27,11 @@ export default {
 		};
 	},
 	methods:{
+    navToSQLiteManager(){
+      uni.navigateTo({
+        url:'/pages/tb/SQLiteManager/index'
+      })
+    },
 		btn1(){
 			let item = {
 				label:'常规筛查',
