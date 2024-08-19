@@ -107,5 +107,4 @@ public interface DeptService {
      * @return
      */
     Long getMyDept(Long loginUserId);
-
 }

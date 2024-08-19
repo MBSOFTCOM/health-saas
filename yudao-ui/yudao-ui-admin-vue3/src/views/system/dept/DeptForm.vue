@@ -82,23 +82,37 @@
         </el-radio-group>
       </el-form-item>
 
-      <el-form-item label="所在区划" prop="districtCode">
-        <el-select
-          v-model="formData.districtCode"
-          filterable
-          :filter-method="PinyinProvince"
-          placeholder="请选择所在区划"
-          clearable
-          class="!w-240px"
-        >
-          <el-option
-            v-for="item in districtList"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          />
-        </el-select>
-      </el-form-item>
+
+      <el-row type="flex" justify="space-between">
+        <el-col :span="11">
+          <el-form-item label="所在区划" prop="districtCode">
+            <el-select
+              v-model="formData.districtCode"
+              filterable
+              :filter-method="PinyinProvince"
+              placeholder="请选择所在区划"
+              clearable
+              class="!w-240px"
+            >
+              <el-option
+                v-for="item in districtList"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="是否为学校" prop="type" label-width="120">
+            <el-radio-group v-model="formData.type">
+              <el-radio :value="1">是</el-radio>
+              <el-radio :value="2">否</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
 
     </el-form>
     <template #footer>
@@ -140,7 +154,8 @@ const formData = ref({
   status: CommonStatusEnum.ENABLE,
 
   regionLevel: undefined,
-  districtCode: undefined
+  districtCode: undefined,
+  type: undefined
 })
 const districtList = ref([]) // 区划列表
 const copyDistrictList = reactive([])
@@ -157,7 +172,8 @@ const formRules = reactive<FormRules>({
   status: [{required: true, message: '状态不能为空', trigger: 'blur'}],
 
   regionLevel: [{required: true, message: '区划级别不能为空', trigger: ['blur', 'change']}],
-  districtCode: [{required: true, message: '所在区划不能为空', trigger: ['blur', 'change']}]
+  districtCode: [{required: true, message: '所在区划不能为空', trigger: ['blur', 'change']}],
+  type: [{required: true, message: '是否为学校不能为空', trigger: ['blur', 'change']}],
 })
 const formRef = ref() // 表单 Ref
 const deptTree = ref() // 树形结构
@@ -238,7 +254,8 @@ const resetForm = () => {
     email: undefined,
     status: CommonStatusEnum.ENABLE,
     regionLevel: undefined,
-    districtCode: undefined
+    districtCode: undefined,
+    type: undefined
   }
   formRef.value?.resetFields()
 }

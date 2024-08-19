@@ -40,7 +40,7 @@ public interface ScreenPointMapper extends BaseMapperX<ScreenPointDO> {
     /**
      * 筛查点列表
      */
-    List<String> getScreenPointList();
+    List<String> getScreenPointList(@Param("deptNameList") List<String> deptNameList);
 
     Long getIdByName(@Param("name") String name,
                      @Param("year") Integer year,

@@ -9,9 +9,12 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.datapermission.core.annotation.DataPermission;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
+import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ScreenPersonImportRespVO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpoint.ScreenPointDO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpoint.vo.*;
+import cn.iocoder.yudao.module.ppd.service.screendistrict.ScreenDistrictService;
 import cn.iocoder.yudao.module.ppd.service.screenpoint.ScreenPointService;
 import cn.iocoder.yudao.module.ppd.utils.CustomSheetWriteHandler;
 import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptSaveReqVO;
@@ -39,10 +42,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
@@ -68,6 +68,8 @@ public class ScreenPointController {
     private DeptService deptService;
     @Resource
     private PermissionService permissionService;
+    @Resource
+    private ScreenDistrictService districtService;
 
     @PostMapping("/create")
     @Operation(summary = "创建筛查点")
@@ -165,8 +167,12 @@ public class ScreenPointController {
         List<ScreenPointImportVO> list = screenPointService.createSampleData();
         // 存放下拉选列表数据
         Map<Integer, List<String>> selectedData = new HashMap<>();
-        List<String> deptList = deptMapper.getDeptList();
-        if (ObjectUtil.isNotNull(deptList) || ObjectUtil.isEmpty(deptList)){
+
+        List<ScreenDistrictDO> districtList = districtService.getDistrictList2();
+        List<String> codeList = districtList.stream().map(ScreenDistrictDO::getCode).toList();
+        List<String> deptList = districtService.getDeptList(codeList);
+
+        if (ObjectUtil.isNotNull(deptList) && ObjectUtil.isEmpty(deptList)){
             selectedData.put(1, deptList);
         }
         // 导出 Excel 模板

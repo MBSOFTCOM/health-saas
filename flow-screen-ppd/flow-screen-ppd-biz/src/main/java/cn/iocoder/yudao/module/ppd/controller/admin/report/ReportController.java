@@ -1,21 +1,25 @@
 package cn.iocoder.yudao.module.ppd.controller.admin.report;
 
 
+import cn.iocoder.yudao.framework.apilog.core.annotation.ApiAccessLog;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
-import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.FilmingReqVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.Index;
+import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.mysql.report.ReportMapper;
 import cn.iocoder.yudao.module.ppd.service.report.ReportService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 
+import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
 @Tag(name = "管理后台 - 报表数据")
@@ -43,4 +47,56 @@ public class ReportController {
         reportService.setSomeData(data.get(0),filmingReqVO);
         return success(data);
     }
+
+
+    /**
+     * 学校肺结核筛查结果统计表
+     */
+    @GetMapping("/getSchoolSummary")
+    public CommonResult<List<SummaryRespSchoolVO>> getSchoolSummary(@Validated SummaryReqVO summaryReqVO) {
+        List<SummaryRespSchoolVO> list = reportService.getSchoolSummary(summaryReqVO.getDistrictCode(),
+                summaryReqVO.getYear(), summaryReqVO.getScreenPoint(), summaryReqVO.getType());
+        return success(list);
+    }
+
+
+    /**
+     * 导出学校肺结核筛查结果统计表
+     */
+    @GetMapping("/exportSchoolSummary")
+    @Operation(summary = "导出学校肺结核筛查结果统计表")
+    @ApiAccessLog(operateType = EXPORT)
+    public void exportSchoolSummary(@Validated SummaryReqVO summaryReqVO,
+                                                              HttpServletResponse response) {
+        List<SummaryRespSchoolVO> list = reportService.getSchoolSummary(summaryReqVO.getDistrictCode(),
+                summaryReqVO.getYear(), summaryReqVO.getScreenPoint(), summaryReqVO.getType());
+        reportService.exportSchoolSummary(response, list);
+    }
+
+
+    /**
+     * 医疗结构结核菌素皮肤试验开展情况统计表
+     */
+    @GetMapping("/getAgencySummary")
+    public CommonResult<List<SummaryRespAgencyVO>> getAgencySummary(@Validated SummaryReqVO summaryReqVO) {
+        List<SummaryRespAgencyVO> list = reportService.getAgencySummary(summaryReqVO.getDistrictCode(),
+                summaryReqVO.getYear(), summaryReqVO.getScreenPoint(), summaryReqVO.getType());
+        System.out.println(summaryReqVO);
+        return success(list);
+    }
+
+    /**
+     * 导出医疗结构结核菌素皮肤试验开展情况统计表
+     */
+    @GetMapping("/exportAgencySummary")
+    @Operation(summary = "导出医疗结构结核菌素皮肤试验开展情况统计表")
+    @ApiAccessLog(operateType = EXPORT)
+    public void exportAgencySummary(@Validated SummaryReqVO summaryReqVO,
+                                    HttpServletResponse response) {
+        List<SummaryRespAgencyVO> list = reportService.getAgencySummary(summaryReqVO.getDistrictCode(),
+                summaryReqVO.getYear(), summaryReqVO.getScreenPoint(), summaryReqVO.getType());
+        reportService.exportAgencySummary(response, list);
+    }
+
+
 }

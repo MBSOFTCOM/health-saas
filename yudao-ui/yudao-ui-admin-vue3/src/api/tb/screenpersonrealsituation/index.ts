@@ -120,4 +120,6 @@ export const ScreenPersonApi = {
       data: data,
     })
   },
+
+
 }

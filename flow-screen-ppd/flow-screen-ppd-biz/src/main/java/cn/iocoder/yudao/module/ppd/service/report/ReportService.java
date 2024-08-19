@@ -3,6 +3,9 @@ package cn.iocoder.yudao.module.ppd.service.report;
 
 import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.FilmingReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.Index;
+import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.SummaryRespAgencyVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.report.vo.SummaryRespSchoolVO;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
@@ -69,4 +72,25 @@ public interface ReportService {
      * @return Integer
      */
     Integer getActualSputumCollectionNum(FilmingReqVO reqVO);
+
+
+    /**
+     * 学校肺结核筛查结果统计表
+     */
+    List<SummaryRespSchoolVO> getSchoolSummary(String districtCode, Integer year, String screenPoint, Integer type);
+
+    /**
+     * 导出学校肺结核筛查结果统计表
+     */
+    void exportSchoolSummary(HttpServletResponse response, List<SummaryRespSchoolVO> list);
+
+    /**
+     * 医疗结构结核菌素皮肤试验开展情况统计表
+     */
+    List<SummaryRespAgencyVO> getAgencySummary(String districtCode, Integer year, String screenPoint, Integer type);
+
+    /**
+     * 导出医疗结构结核菌素皮肤试验开展情况统计表
+     */
+    void exportAgencySummary(HttpServletResponse response, List<SummaryRespAgencyVO> list);
 }

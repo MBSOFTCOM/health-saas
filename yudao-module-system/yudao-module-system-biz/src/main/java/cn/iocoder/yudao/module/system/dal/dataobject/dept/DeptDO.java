@@ -75,5 +75,9 @@ public class DeptDO extends TenantBaseDO {
      * "所在区划"
      */
     private String districtCode;
+    /**
+     * 机构类型（1：学校、2：医疗、3：管理机构（待定））
+     */
+    private Integer type;
 
 }

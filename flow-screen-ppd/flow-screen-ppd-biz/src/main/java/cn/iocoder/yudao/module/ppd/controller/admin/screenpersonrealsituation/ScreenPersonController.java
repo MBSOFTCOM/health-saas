@@ -9,12 +9,15 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
 
+import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screendistrict.ScreenDistrictMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenpoint.ScreenPointMapper;
 import cn.iocoder.yudao.module.ppd.service.screenpersonrealsituation.ScreenPersonService;
 import cn.iocoder.yudao.module.ppd.utils.CustomSheetWriteHandler;
+import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
+import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -58,6 +61,9 @@ public class ScreenPersonController {
 
     @Resource
     private ScreenPointMapper screenPointMapper;
+
+    @Resource
+    private DeptService deptService;
 
 
     @PostMapping("/create")
@@ -153,8 +159,18 @@ public class ScreenPersonController {
             selectedData.put(23,townName);
         }
 
+        Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+        // 获取所有子部门
+        List<DeptDO> deptList = deptService.getChildDeptList(deptId);
+        // 以及当前部门
+        deptList.add(deptService.getDept(deptId));
+
+        // 提取部门名称并存储到列表中
+        List<String> deptNameList = deptList.stream()
+                .map(DeptDO::getName).toList();
+
         // 筛查点列表
-        List<String> screenPointList = screenPointMapper.getScreenPointList();
+        List<String> screenPointList = screenPointMapper.getScreenPointList(deptNameList);
         if (screenPointList.size()>0){
             selectedData.put(24, screenPointList);
         }
@@ -203,8 +219,18 @@ public class ScreenPersonController {
             selectedData.put(22,townName);
         }
 
+        Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+        // 获取所有子部门
+        List<DeptDO> deptList = deptService.getChildDeptList(deptId);
+        // 以及当前部门
+        deptList.add(deptService.getDept(deptId));
+
+        // 提取部门名称并存储到列表中
+        List<String> deptNameList = deptList.stream()
+                .map(DeptDO::getName).toList();
+
         // 筛查点列表
-        List<String> screenPointList = screenPointMapper.getScreenPointList();
+        List<String> screenPointList = screenPointMapper.getScreenPointList(deptNameList);
         if (screenPointList.size()>0){
             selectedData.put(24, screenPointList);
         }

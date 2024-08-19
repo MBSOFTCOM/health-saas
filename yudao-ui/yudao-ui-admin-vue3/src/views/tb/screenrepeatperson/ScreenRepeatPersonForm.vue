@@ -739,12 +739,24 @@ const open = async (type: string, id?: number) => {
     try {
       formData.value = await ScreenRepeatPersonApi.getScreenRepeatPerson(id)
       formData.value.moreTempType = resolveMoreType(formData.value.moreType)
-      getCityList(formData.value.province)
-      getCityList2(formData.value.permanentAddressProvince)
-      getCountyList(formData.value.city)
-      getCountyList2(formData.value.permanentAddressCity)
+      const tempCity = formData.value.city
+      const tempPermanentAddressCity = formData.value.permanentAddressCity
+      const tempCounty = formData.value.county
+      const tempPermanentAddressCounty = formData.value.permanentAddressCounty
+      const tempTown = formData.value.town
+      const tempPermanentAddressTown = formData.value.permanentAddressTown
       getTownList(formData.value.county)
       getTownList2(formData.value.permanentAddressCounty)
+      getCountyList(formData.value.city)
+      getCountyList2(formData.value.permanentAddressCity)
+      getCityList(formData.value.province)
+      getCityList2(formData.value.permanentAddressProvince)
+      formData.value.city = tempCity
+      formData.value.permanentAddressCity = tempPermanentAddressCity
+      formData.value.county = tempCounty
+      formData.value.permanentAddressCounty = tempPermanentAddressCounty
+      formData.value.town = tempTown
+      formData.value.permanentAddressTown = tempPermanentAddressTown
       if(formData.value.firstType == 4){
         formData.value.moreTempType = resolveMoreType(formData.value.moreType).filter(item => item !== 4)
       }

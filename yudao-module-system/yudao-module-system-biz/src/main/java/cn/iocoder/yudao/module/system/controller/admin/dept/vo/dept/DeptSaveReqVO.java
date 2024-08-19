@@ -54,4 +54,8 @@ public class DeptSaveReqVO {
     @NotNull(message = "所在区划不能为空")
     private String districtCode;
 
+    @Schema(description = "部门类型")
+    @NotNull(message = "是否为学校不能为空")
+    private Integer type;
+
 }

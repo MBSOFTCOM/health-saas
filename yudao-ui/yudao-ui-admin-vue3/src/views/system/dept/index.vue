@@ -70,6 +70,11 @@
           <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />
         </template>
       </el-table-column>
+      <el-table-column label="所在区划" prop="districtCode">
+        <template #default="scope">
+          {{ getNameByCode(scope.row.districtCode) }}
+        </template>
+      </el-table-column>
       <el-table-column
         label="创建时间"
         align="center"
@@ -110,6 +115,7 @@ import { handleTree } from '@/utils/tree'
 import * as DeptApi from '@/api/system/dept'
 import DeptForm from './DeptForm.vue'
 import * as UserApi from '@/api/system/user'
+import { ref, onMounted } from 'vue';
 
 defineOptions({ name: 'SystemDept' })
 
@@ -193,8 +199,20 @@ const getUserRole  = async () => {
   userRole.value = await UserApi.getUserRole();
 }
 
+const deptList = ref()
+const getDeptList = async () =>{
+  deptList.value = await DeptApi.getAll();
+}
+
+// 根据代码获取对应的名称
+const getNameByCode = (code) => {
+  const item = deptList.value.find(d => d.code === code);
+  return item ? item.name : '未知'; // 默认值为 '未知'
+};
+
 /** 初始化 **/
 onMounted(async () => {
+  await getDeptList()
   await getList()
   await getMyDeptId()
   await getUserRole()
