@@ -1,7 +1,6 @@
 package cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation;
 
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.iocoder.yudao.framework.apilog.core.annotation.ApiAccessLog;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.pojo.PageParam;
@@ -358,6 +357,18 @@ public class ScreenPersonController {
         }
         return success("success");
     }
+
+
+    @GetMapping("/statistics-export")
+    @Operation(summary = "工作进展报告--统计表--导出表格")
+    @ApiAccessLog(operateType = EXPORT)
+    public void exportScreenPersonExcel(@Valid ScreenPersonStatisticsReqVO reqVO,
+                                        HttpServletResponse response) {
+
+        System.out.println(reqVO);
+    }
+
+
 
 
 

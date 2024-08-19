@@ -121,5 +121,13 @@ export const ScreenPersonApi = {
     })
   },
 
+  // 工作进展报告--统计表--导出表格
+  exportStatistics: async (params: any) => {
+    return await request.download({url: `/tb/screen-person/statistics-export`, params})
+  },
 
+  // 工作进展报告--统计表--导出档案
+  exportArchives: async (params: any) => {
+    return await request.download({url: `/tb/screen-person/archives-export`, params})
+  },
 }
