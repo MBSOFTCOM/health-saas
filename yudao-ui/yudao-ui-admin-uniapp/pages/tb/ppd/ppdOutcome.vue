@@ -230,7 +230,7 @@ import {
 } from '@/utils/ppd.js';
 import {getTimeStamp} from '@/utils/common'
 import { updateOne } from '/utils/screenSum.js';
-import ScreenImages from '../../../utils/screenImages.js';
+import ScreenImages, { tbScreenImages } from '../../../utils/screenImages.js';
 import { openTransaction } from '../../../utils/sqlite';
 export default {
 	data() {
@@ -307,7 +307,7 @@ export default {
 	},
 	onLoad(e) {
 		this.patient = e;
-		// console.log(this.patient);
+		console.log(this.patient);
 		//isNew 为0表示修改
 		if (e.isNew == 0) {
 			getBypersonIdAndScreenOrderOne(e.order, e.id).then((res) => {
@@ -449,7 +449,6 @@ export default {
 		//提交保存
 		async newAdd() {
 			console.log(this.FormData);
-			// this.FormData.doctorSignature
 			// return
 			if (Object.entries(uni.$person).length === 0) {
 				uni.showModal({
@@ -488,7 +487,7 @@ export default {
 			//非空校验
 			// console.log(this.FormData);
 			const data = {
-				injection: this.FormData.injection, //状态
+				
 				transverseDiameter: this.FormData.transverseDiameter, //横泾
 				longitudinalDiameter: this.FormData.longitudinalDiameter, //纵径
 				blushTransverseDiameter: this.FormData.blushTransverseDiameter,
@@ -503,11 +502,11 @@ export default {
 				updateTime: this.FormData.updateTime //修改时间
 			};
 			console.log(data);
-			const isNull = this.ifNull(data);
-			if (!isNull) {
-				uni.$u.toast('表单数据存在空,请检查表单,并填写完整!');
-				return;
-			}
+			// const isNull = this.ifNull(data);
+			// if (!isNull) {
+			// 	uni.$u.toast('表单数据存在空,请检查表单,并填写完整!');
+			// 	return;
+			// }
 
 			openTransaction()
 				.then(async (r) => {
@@ -525,14 +524,34 @@ export default {
 					const setScreenImagesData = {
 						path: this.FormData.doctorSignature
 					};
-					await ScreenImages.updateOne(
-						setScreenImagesData,
-						this.patient.id,
+					console.log(this.patient);
+					await ScreenImages.deleteOne(
+						this.patient.idNum,
 						uni.$person.year,
 						uni.$screenType,
 						this.patient.order,
-						9
-					);
+						9)
+					let imageData={
+						idNum:this.patient.idNum,
+						screenType:uni.$screenType,
+						year:this.patient.year,
+						screenOrder:this.patient.order,
+						path:this.FormData.doctorSignature,
+						personId:this.patient.id,
+						screenId:this.patient.screenId,
+						type:8
+					}
+					console.log(imageData);
+					await dbUtils.addTabItem(dbName,tbScreenImages,imageData)
+					
+					// await ScreenImages.updateOne(
+					// 	setScreenImagesData,
+					// 	this.patient.id,
+					// 	uni.$person.year,
+					// 	uni.$screenType,
+					// 	this.patient.order,
+					// 	9
+					// );
 
 					//返回上一页
 					uni.navigateBack({

@@ -16,7 +16,7 @@
     </select>
     <select id="selectSumDataForSynchronize"
             resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screensum.ScreenSumDO">
-        select *
+        select tss.*
         from tb_screen_sum tss
         left join tb_screen_person tsp on tss.person_id = tsp.id
         where tsp.screen_point=#{screenPoint}

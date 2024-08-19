@@ -35,7 +35,8 @@ public interface ScreenConsumeMapper extends BaseMapperX<ScreenConsumeDO> {
      * @param reqVO ScreenConsumePageReqVO
      * @return List<ScreenConsumeDO>
      */
-    default List<ScreenConsumeDO> listUsable(ScreenConsumePageReqVO reqVO) {
+     List<ScreenConsumeDO> listUsable(ScreenConsumePageReqVO reqVO);
+     /*{
         return selectList(new LambdaQueryWrapperX<ScreenConsumeDO>()
                 .eqIfPresent(ScreenConsumeDO::getReagentId,reqVO.getReagentId())
                 .eqIfPresent(ScreenConsumeDO::getUsable,0)
@@ -52,7 +53,7 @@ public interface ScreenConsumeMapper extends BaseMapperX<ScreenConsumeDO> {
                         ScreenConsumeDO::getManufactureDate
                 )
         );
-    }
+    }*/
 
     /**
      *  增加入库量、当前库存

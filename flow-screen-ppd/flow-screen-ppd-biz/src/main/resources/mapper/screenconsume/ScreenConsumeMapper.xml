@@ -84,5 +84,12 @@
         <if test="reagentName != null">AND tsc.reagent_name like CONCAT('%', #{reagentName}, '%') </if>
         GROUP BY reagent_name, bath_number
     </select>
+    <select id="listUsable"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO">
+        select c.*
+        from tb_screen_reagent r left join tb_screen_consume c on c.reagent_id=r.id
+        where c.current_number >0 and c.deleted=0 and c.dept_id=#{deptId} and r.deleted=0 and c.usable=0
+        <if test="reagentId !=null"> and c.reagent_id=#{reagentId}</if>
+    </select>
 
 </mapper>

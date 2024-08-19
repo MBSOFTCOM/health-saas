@@ -15,6 +15,9 @@ public class ScreenChestRadiographSaveReqVO {
     @Schema(description = "筛查编号", example = "665")
     private String screenId;
 
+    @Schema(description = "身份证")
+    private String idNum;
+
     @Schema(description = "同步时唯一编码", example = "2243")
     private Long syncId;
 

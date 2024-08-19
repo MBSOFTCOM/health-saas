@@ -420,7 +420,10 @@ import {
 	tbScreenElectrocardiogram,
 	tbScreenUser,
 	tbScreenSum,
-	tbScreenImages
+	tbScreenImages,
+	tbScreenReagent,
+	tbScreenConsume,
+	tbScreenConsumeRecord
 } from '@/utils/sqlite';
 import {
 	collectSymptoms,
@@ -1511,6 +1514,9 @@ updateArray(number) {
 			SynchronizeApi.truncateTable(tbScreenElectrocardiogram);
 			SynchronizeApi.truncateTable(tbScreenSum);
 			SynchronizeApi.truncateTable(tbScreenImages);
+			SynchronizeApi.truncateTable(tbScreenReagent);
+			SynchronizeApi.truncateTable(tbScreenConsume);
+			SynchronizeApi.truncateTable(tbScreenConsumeRecord);
 			this.search(this.activeItem);
 		},
 		isPasswordMatch(value) {

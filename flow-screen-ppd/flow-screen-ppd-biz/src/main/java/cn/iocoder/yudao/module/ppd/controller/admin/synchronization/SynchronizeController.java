@@ -18,7 +18,6 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdPageRe
 import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumPageReqVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.UserLoginInfoVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.WorkTeamVO;
@@ -152,11 +151,11 @@ public class SynchronizeController {
 
     @GetMapping("/get-sum-data")
     @Operation(summary = "获取汇总表数据")
-    public CommonResult<List<ScreenSumRespVO>> getSumData(ScreenSumPageReqVO pageReqVO) {
+    public CommonResult<List<ScreenSumDO>> getSumData(ScreenSumPageReqVO pageReqVO) {
 //        PageResult<ScreenSumDO> pageResult = synchronizeService.getSumPage(pageReqVO);
 //        return success(BeanUtils.toBean(pageResult, ScreenSumRespVO.class));
         List<ScreenSumDO> sumPage = synchronizeService.getSumPage(pageReqVO);
-        return success(BeanUtils.toBean(sumPage, ScreenSumRespVO.class));
+        return success(sumPage);
     }
 
     @PutMapping("/update-sum-data")

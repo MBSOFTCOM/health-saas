@@ -33,6 +33,10 @@ public class ScreenChestRadiographDO extends BaseDO {
      */
     private String screenId;
     /**
+     * 身份证
+     */
+    private String idNum;
+    /**
      * 同步时唯一编码
      */
     private Long syncId;
