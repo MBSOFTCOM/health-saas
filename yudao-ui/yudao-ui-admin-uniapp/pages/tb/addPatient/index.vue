@@ -1,5 +1,8 @@
 <template>
 	<view style="margin: 10px; font-size: 18px">
+		<navigator url="/pages/tb/SQLiteManager/index" hover-class="navigator-hover">
+			<button type="default">SQLiteManager</button>
+		</navigator>
 		<view class="top1">
 			<view class="top1-left">
 				<yile-breadcrumb
@@ -136,62 +139,38 @@
 					<view class="bom-add">
 						<view class="select">
 							<span class="se-sp" style="margin-left: 50px">省</span>
-							<w-select
-								v-model="FormData.permanentAddressProvince"
-								:list="permanentAddressProvince"
-								valueName="name"
-								keyName="code"
-								height="35px"
-								width="186px"
-								class="seach"
-								filterable
-								showClose
-								@change="selectpermanentAddressProvince"
-							></w-select>
+						<uni-data-select
+							v-model="FormData.permanentAddressProvince"
+							:localdata="permanentAddressProvince"
+              class="districtSelect"
+              placeholder="请选择户籍地址"
+							@change="selectpermanentAddressProvince"/>
 						</view>
 						<view class="select">
 							<span class="se-sp">市</span>
-							<w-select
-								v-model="FormData.permanentAddressCity"
-								:list="permanentAddressCity"
-								valueName="name"
-								keyName="code"
-								height="35px"
-								width="186px"
-								class="seach"
-								filterable
-								showClose
-								@change="selectpermanentAddressCity"
-							></w-select>
+						<uni-data-select
+							v-model="FormData.permanentAddressCity"
+							:localdata="permanentAddressCity"
+              class="districtSelect"
+              placeholder="请选择户籍地址"
+							@change="selectpermanentAddressCity"/>
 						</view>
 						<view class="select">
 							<span class="se-sp">县</span>
-							<w-select
-								v-model="FormData.permanentAddressCounty"
-								:list="permanentAddressCounty"
-								valueName="name"
-								keyName="code"
-								height="35px"
-								width="186px"
-								class="seach"
-								filterable
-								showClose
-								@change="selectpermanentAddressCounty"
-							></w-select>
+						<uni-data-select
+							v-model="FormData.permanentAddressCounty"
+							:localdata="permanentAddressCounty"
+              class="districtSelect"
+              placeholder="请选择户籍地址"
+							@change="selectpermanentAddressCounty"/>
 						</view>
 						<view class="select">
 							<span class="se-sp">乡镇</span>
-							<w-select
-								v-model="FormData.permanentAddressTown"
-								:list="permanentAddressTown"
-								valueName="name"
-								keyName="code"
-								height="35px"
-								width="186px"
-								class="seach"
-								filterable
-								showClose
-							></w-select>
+						<uni-data-select
+							v-model="FormData.permanentAddressTown"
+              class="districtSelect"
+              placeholder="请选择户籍地址"
+							:localdata="permanentAddressTown"/>
 						</view>
 					</view>
 				</view>
@@ -209,62 +188,40 @@
 					<view class="bom-add">
 						<view class="select">
 							<span class="se-sp" style="margin-left: 50px">省</span>
-							<w-select
-								v-model="FormData.province"
-								:list="province"
-								valueName="name"
-								keyName="code"
-								height="35px"
-								width="186px"
-								class="seach"
-								filterable
-								showClose
-								@change="selectProvince"
-							></w-select>
+						<uni-data-select
+							v-model="FormData.province"
+              class="districtSelect"
+              placeholder="请选择现住地址"
+							:localdata="province"
+							@change="selectProvince"/>
 						</view>
 						<view class="select">
 							<span class="se-sp">市</span>
-							<w-select
-								v-model="FormData.city"
-								:list="city"
-								valueName="name"
-								keyName="code"
-								height="35px"
-								width="186px"
-								class="seach"
-								filterable
-								showClose
-								@change="selectCity"
-							></w-select>
+						<uni-data-select
+							v-model="FormData.city"
+              class="districtSelect"
+              placeholder="请选择现住地址"
+							:localdata="city"
+							@change="selectCity"/>
 						</view>
 						<view class="select">
 							<span class="se-sp">县</span>
-							<w-select
-								v-model="FormData.county"
-								:list="county"
-								valueName="name"
-								keyName="code"
-								height="35px"
-								width="186px"
-								class="seach"
-								filterable
-								showClose
-								@change="selectCounty"
-							></w-select>
+						<uni-data-select
+							v-model="FormData.county"
+              class="districtSelect"
+              placeholder="请选择现住地址"
+							:localdata="county"
+							@change="selectCounty"
+						></uni-data-select>
 						</view>
 						<view class="select">
 							<span class="se-sp">乡镇</span>
-							<w-select
-								v-model="FormData.town"
-								:list="town"
-								valueName="name"
-								keyName="code"
-								height="35px"
-								width="186px"
-								class="seach"
-								filterable
-								showClose
-							></w-select>
+						<uni-data-select
+							v-model="FormData.town"
+              class="districtSelect"
+              placeholder="请选择现住地址"
+							:localdata="town"
+						></uni-data-select>
 						</view>
 					</view>
 				</view>
@@ -357,7 +314,7 @@ const ocrModule = uni.requireNativePlugin('YY-TomatoOCR');
 const modal = uni.requireNativePlugin('modal');
 import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
 import { count, dbName, tbScreenPerson, updatePerson, repeatCheck } from '@/utils/sqlite';
-import { selectDistrict, selectDistrictName } from '@/utils/districtInitSql.js';
+import { selectDistrict, selectDistrictName,selectDistrictForSelect } from '@/utils/districtInitSql.js';
 import { ethnic } from '@/utils/dict.js';
 
 export default {
@@ -1001,22 +958,22 @@ export default {
 		async uData(e) {
 			this.FormData = JSON.parse(e.val);
 			console.log('p', this.FormData);
-			selectDistrict(this.FormData.province).then((res) => {
+			selectDistrictForSelect(this.FormData.province).then((res) => {
 				this.city = res;
 			});
-			selectDistrict(this.FormData.city).then((res) => {
+			selectDistrictForSelect(this.FormData.city).then((res) => {
 				this.county = res;
 			});
-			selectDistrict(this.FormData.county).then((res) => {
+			selectDistrictForSelect(this.FormData.county).then((res) => {
 				this.town = res;
 			});
-			selectDistrict(this.FormData.permanentAddressProvince).then((res) => {
+			selectDistrictForSelect(this.FormData.permanentAddressProvince).then((res) => {
 				this.permanentAddressCity = res;
 			});
-			selectDistrict(this.FormData.permanentAddressCity).then((res) => {
+			selectDistrictForSelect(this.FormData.permanentAddressCity).then((res) => {
 				this.permanentAddressCounty = res;
 			});
-			selectDistrict(this.FormData.permanentAddressCounty).then((res) => {
+			selectDistrictForSelect(this.FormData.permanentAddressCounty).then((res) => {
 				this.permanentAddressTown = res;
 			});
 
@@ -1057,13 +1014,15 @@ export default {
 		//现住址
 		//选择省级区划
 		selectProvince(val) {
+			// console.log(val);
 			this.FormData.city = '';
 			this.FormData.county = '';
 			this.FormData.town = '';
-			this.city = null;
-			this.county = null;
-			this.town = null;
-			selectDistrict(val.code).then((res) => {
+			this.city = [];
+			this.county = [];
+			this.town = [];
+			selectDistrictForSelect(val).then((res) => {
+				console.log(this.city);
 				this.city = res;
 			});
 		},
@@ -1071,17 +1030,17 @@ export default {
 		selectCity(val) {
 			this.FormData.county = '';
 			this.FormData.town = '';
-			this.county = null;
-			this.town = null;
-			selectDistrict(val.code).then((res) => {
+			this.county = [];
+			this.town = [];
+			selectDistrictForSelect(val).then((res) => {
 				this.county = res;
 			});
 		},
 		//选择县级区划
 		selectCounty(val) {
 			this.FormData.town = '';
-			this.town = null;
-			selectDistrict(val.code).then((res) => {
+			this.town = [];
+			selectDistrictForSelect(val).then((res) => {
 				this.town = res;
 			});
 		},
@@ -1091,10 +1050,10 @@ export default {
 			this.FormData.permanentAddressCity = '';
 			this.FormData.permanentAddressCounty = '';
 			this.FormData.permanentAddressTown = '';
-			this.permanentAddressCity = null;
-			this.permanentAddressCounty = null;
-			this.permanentAddressTown = null;
-			selectDistrict(val.code).then((res) => {
+			this.permanentAddressCity = [];
+			this.permanentAddressCounty = [];
+			this.permanentAddressTown = [];
+			selectDistrictForSelect(val).then((res) => {
 				this.permanentAddressCity = res;
 			});
 		},
@@ -1102,23 +1061,23 @@ export default {
 		selectpermanentAddressCity(val) {
 			this.FormData.permanentAddressCounty = '';
 			this.FormData.permanentAddressTown = '';
-			this.permanentAddressCounty = null;
-			this.permanentAddressTown = null;
-			selectDistrict(val.code).then((res) => {
+			this.permanentAddressCounty = [];
+			this.permanentAddressTown = [];
+			selectDistrictForSelect(val).then((res) => {
 				this.permanentAddressCounty = res;
 			});
 		},
 		//选择县级区划
 		selectpermanentAddressCounty(val) {
 			this.FormData.permanentAddressTown = '';
-			this.permanentAddressTown = null;
-			selectDistrict(val.code).then((res) => {
+			this.permanentAddressTown = [];
+			selectDistrictForSelect(val).then((res) => {
 				this.permanentAddressTown = res;
 			});
 		},
 		//初始化省级区划列表
 		provinceList() {
-			selectDistrict(0).then((res) => {
+			selectDistrictForSelect(0).then((res) => {
 				console.log(res);
 				this.province = res;
 				this.permanentAddressProvince = res;
@@ -1242,5 +1201,8 @@ export default {
 	margin: 25px 0;
 	background: rgba(36, 93, 209, 1);
 	color: #fff;
+}
+.districtSelect{
+  width: 300rpx;
 }
 </style>
