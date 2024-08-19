@@ -373,6 +373,18 @@ public class ScreenPersonController {
     }
 
 
+    @GetMapping("/statistics-export")
+    @Operation(summary = "工作进展报告--统计表--导出表格")
+    @ApiAccessLog(operateType = EXPORT)
+    public void exportScreenPersonExcel(@Valid ScreenPersonStatisticsReqVO reqVO,
+                                        HttpServletResponse response) {
+
+        System.out.println(reqVO);
+    }
+
+
+
+
 
 
 

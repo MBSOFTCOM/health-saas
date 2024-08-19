@@ -1,53 +1,42 @@
 <template>
-  <Dialog v-model="dialogVisible" style="min-width: 1400px; " :show-overflow-tooltip="true">
+  <Dialog v-model="dialogVisible" :show-overflow-tooltip="true">
     <template #title>
-      <span style="font-weight: bold">患者信息</span>
+      <span style="font-weight: bold">导出档案</span>
     </template>
     <el-form
       ref="formRef"
       :model="formData"
-      :rules="formRules"
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-row type="flex" justify="start">
-        <el-col :span="8">
-          <el-form-item label="姓名" prop="name">
-            <el-input v-model="formData.name" disabled style="width: auto"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="年龄" prop="age">
-            <el-input v-model.number="formData.age" disabled style="width: auto"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="性别" prop="sex">
-            <dict-tag :type="DICT_TYPE.PATIENT_SEX" :value="formData.sex"/>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <div style="margin-left: -100px; margin-top: 10px">
+        <el-form-item v-model="formData.exportType">
+          <el-radio-group v-model="formData.exportType">
+            <el-radio value="1">导出体检表</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item style="margin-top: -20px">
+          <el-radio-group v-model="formData.exportType">
+            <el-radio value="2">导出知情同意书</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </div>
 
-      <el-row type="flex" justify="start">
-        <el-col :span="8">
-          <el-form-item label="联系电话" prop="tel">
-            <el-input v-model="formData.tel" disabled style="width: auto"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="第一人群分类" prop="firstType">
-            <dict-tag :type="DICT_TYPE.FIRST_TYPE" :value="formData.firstType" style="width: auto"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="多人群分类" prop="moreType" v-if="formData.firstType != 2">
-            <div v-for="item in resolveMoreType(formData.moreType)" :key="item">
-              <dict-tag :type="DICT_TYPE.MORE_TYPE" :value="item" style="width: auto"/>
-            </div>
-          </el-form-item>
-        </el-col>
-      </el-row>
     </el-form>
+
+    <div style="margin-top: 30px">
+      <span style="color: #2A82E4">*批量导出档案将以压缩包形式下载所选档案图片。</span>
+    </div>
+
+    <div style="margin-top: 10px;margin-left: 45%">
+      <el-button
+        type="primary"
+        size="default"
+        style="width: 70px"
+      >
+        确定
+      </el-button>
+    </div>
 
   </Dialog>
 
@@ -64,7 +53,7 @@ import DictTag from "@/components/DictTag/src/DictTag.vue"
 const activeName = ref('first')
 
 /** 摸底患者信息 */
-defineOptions({name: 'ScreenPersonDetail'})
+defineOptions({name: 'ScreenPersonExportArchives'})
 
 const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
@@ -76,18 +65,7 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const screenPersonData = ref([])
 const formData = ref({
-  id: undefined,
-  idNum: undefined,
-  name: undefined,
-  age: undefined,
-  tel: undefined,
-  sex: undefined,
-  firstType: undefined,
-  moreType: undefined,
-  isNewStudent: undefined,
-  year: undefined,
-  screenId: undefined,
-  screenType: undefined
+  exportType: undefined,
 })
 
 const formRef = ref() // 表单 Ref
@@ -96,57 +74,22 @@ const checkList = ref([]) //采集组数据
 const electList = ref([]) // 心电图组数据
 
 
-
-
 /** 打开弹窗 */
-const open = async (id: number, year: number, screenType: number) => {
-  activeName.value = 'first'
+const open = async ( ids: any) => {
+  console.log(ids)
   dialogVisible.value = true
   // 修改时，设置数据
-  if (id) {
-    formLoading.value = true
-    try {
-      formData.value = await ScreenPersonApi.getScreenPerson(id)
-      const data = await ScreenPersonApi.getPatientInfoList(id, year, screenType)
 
-    } finally {
-      formLoading.value = false
-    }
+
+  try {
+
+
+  } finally {
+    formLoading.value = false
   }
+
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
-
-// 多人群分类
-const resolveMoreType = (value) => {
-  const groups = {
-    1: '学生',
-    2: '老年人',
-    4: '教职工',
-    8: '密接者',
-    16: '糖尿病',
-    32: '僧尼',
-    64: '既往患者',
-    128: 'HIV/AIDS'
-  }
-  // 将分类编号进行排序
-  const keys = Object.keys(groups).map(Number).sort((a, b) => b - a)
-  const result = []
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i]
-    if ((value & key) === key) {
-      result.push(key)
-      value -= key
-    }
-  }
-  return result
-}
-
-
-
-
-
-
-
 
 
 </script>

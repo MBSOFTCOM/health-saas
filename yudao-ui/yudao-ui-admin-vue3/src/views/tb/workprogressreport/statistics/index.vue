@@ -154,7 +154,7 @@
         <el-button
           type="warning"
           plain
-          @click="openExportForm( )"
+          @click="openExportForm(ids)"
           v-hasPermi="['tb:screen-person:export']"
         >
           <Icon icon="ep:download" class="mr-5px"/>
@@ -163,7 +163,7 @@
         <el-button
           type="warning"
           plain
-          @click="openExportArchivesForm( )"
+          @click="openExportArchivesForm(ids)"
           :loading="exportLoading"
           v-hasPermi="['tb:screen-person:export']"
         >
@@ -177,7 +177,10 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <el-table v-loading="loading" :data="list" :stripe="true"
+              @selection-change="handleSelectionChange"
+              :show-overflow-tooltip="true">
+      <el-table-column type="selection" width="55" />
       <el-table-column type="index" label="序号" align="center" width="65"
                        :show-overflow-tooltip="false" fixed="left"/>
       <el-table-column label="操作" align="center" fixed="right" width="120">
@@ -263,13 +266,13 @@
 
 <script setup lang="ts">
 import PinyinMatch from 'pinyin-match'
-import {getIntDictOptions, DICT_TYPE} from '@/utils/dict'
+import {DICT_TYPE, getIntDictOptions} from '@/utils/dict'
 import download from '@/utils/download'
 import {ScreenPersonApi, ScreenPersonVO} from '@/api/tb/screenpersonrealsituation'
 import ScreenPersonExport from './ScreenPersonExport.vue'
 import ScreenPersonDetail from './ScreenPersonDetail.vue'
 import ScreenPersonExportArchives from './ScreenPersonExportArchives.vue'
-import {onMounted, ref, reactive} from 'vue'
+import {onMounted, reactive, ref, UnwrapRef} from 'vue'
 
 /** 摸底 列表 */
 defineOptions({name: 'Statistics'})
@@ -310,6 +313,7 @@ const exportLoading = ref(false) // 导出的加载中
 const importLoading = ref(false) // 导入的加载中
 const ethnicList = ref([]) // 民族
 const copycommonAddr = reactive([])
+const ids= ref([]) // 选中的待筛查人员id
 
 /** 查询列表 */
 const getList = async () => {
@@ -349,14 +353,21 @@ const openNewForm = ( id: number, year: number, screenType: number) => {
 
 /** 导出表格 对话框*/
 const exportRef = ref()
-const openExportForm = ( ) => {
-  exportRef.value.open( )
+const openExportForm = (ids: any ) => {
+  if (ids.length < 1){
+    return message.error("请先勾选人员！再进行导出。")
+  }
+  exportRef.value.open( ids )
 }
 
 /** 导出档案 对话框*/
 const exportArchivesRef = ref()
-const openExportArchivesForm = ( ) => {
-  exportArchivesRef.value.open( )
+const openExportArchivesForm = (ids: any) => {
+  console.log(typeof ids)
+  if (ids.length < 1){
+    return message.error("请先勾选人员！再进行导出。")
+  }
+  exportArchivesRef.value.open( ids )
 }
 
 /** 导出按钮操作 */
@@ -408,7 +419,7 @@ const getEthnicList = () => {
   copycommonAddr.splice(0, copycommonAddr.length, ...data)
 }
 
-// 拼音插件
+// 民族拼音
 const PinyinMatchFun = (val) => {
   if (val) {
     const result = []
@@ -423,6 +434,16 @@ const PinyinMatchFun = (val) => {
     // 如果没有输入，则还原列表
     ethnicList.value.splice(0, ethnicList.value.length, ...copycommonAddr)
   }
+}
+
+// 勾选
+const handleSelectionChange = (val: any[]) => {
+  ids.value = val.map(item => ({
+    id: item.id,
+/*    year: item.year,
+    idNum: item.idNum,
+    screenType: item.screenType,*/
+  }));
 }
 
 /** 初始化 **/
