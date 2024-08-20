@@ -116,6 +116,7 @@ import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlit
 import { dbName, tbScreenPpd, tbScreenSum } from '@/utils/sqlite';
 import { screenType, getLabelByValue, commonMap, injectionWayMap, ppdOutcome } from '@/utils/dict.js';
 import * as SynchronizeApi from '@/api/synchronize/synchronize';
+import * as ConsumeRecordApi from '@/api/screen/consumeRecord';
 
 export default {
 	data() {
@@ -347,7 +348,7 @@ export default {
 					content: '当前未勾选数据，是否上传全部数据？',
 					cancelText: '取消',
 					confirmText: '确认',
-					success: function (res) {
+					success: async (res)=> {
 						if (res.confirm) {
 							if (self.pageData.length == 0) {
 								uni.showToast({
@@ -358,77 +359,75 @@ export default {
 								});
 							} else {
 								// 获取本地数据 上传到pc端
-								SynchronizeApi.getPpdData(
+								let ppdData=await SynchronizeApi.getPpdData(
 									self.queryParams.screenId,
 									self.queryParams.injection,
 									self.queryParams.screenPoint,
 									-1,
 									self.pageSize
-								).then((res) => {
-									// console.log(self.SyncData);
+								)
+								// console.log(self.SyncData);
 									// return
-									self.SyncData = res.map((item) => ({
-										...item,
-										injectionAgency: self.agency
-									}));
-
-									// 筛查时间转换成时间戳
-									self.SyncData.forEach((item) => {
-										let date = new Date(item.screenTime);
-										item.screenTime = date.getTime();
-									});
-									// console.log(self.SyncData);
-
-									// 上传
-									SynchronizeApi.updateTableData3(self.SyncData).then((res) => {
-										// 上传ppd组图片
-										SynchronizeApi.uploadOfflineImage(2);
-										if (res.data) {
-											uni.showToast({
-												title: '上传成功',
-												mask: true,
-												icon: 'success',
-												duration: 1500
-											});
-											// 记录本次同步时间(存缓存)
-											let time = self.getCurrentTime()
-											uni.setStorage({
-												key:'ppdPad',
-												data:time
-											})
-											self.synchronizeTime=time
-											uni.setStorage({
-												key:'ppd',
-												data:time
-											})
-										}
-									});
-									
-									//上传汇总表
-									for (let i = 0; i < self.SyncData.length; i++) {
-										SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId).then(res=>{
-											res.forEach(item=>{
-												if(item.lastCollectTime){
-													item.lastCollectTime = new Date(item.lastCollectTime).getTime();
-												}
-												if(item.lastPpdTime){
-													item.lastPpdTime = new Date(item.lastPpdTime).getTime();
-												}
-												if(item.lastChestRadiographTime){
-													item.lastChestRadiographTime = new Date(item.lastChestRadiographTime).getTime();
-												}
-												if(item.lastSputumExaminationTime){
-													item.lastSputumExaminationTime = new Date(item.lastSputumExaminationTime).getTime();
-												}
-												if(item.lastElectrocardiogramTime){
-													item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
-												}
-												
-											})
-											SynchronizeApi.uploadSumData(res);
-										})
-									}
+								self.SyncData = ppdData.map((item) => ({
+									...item,
+									injectionAgency: self.agency
+								}));
+							
+								// 筛查时间转换成时间戳
+								self.SyncData.forEach((item) => {
+									let date = new Date(item.screenTime);
+									item.screenTime = date.getTime();
 								});
+								// console.log(self.SyncData);
+							
+								// 上传
+								let updatePpd=await SynchronizeApi.updateTableData3(self.SyncData)
+								
+								// 上传ppd组图片
+								await SynchronizeApi.uploadOfflineImage(2);
+								//上传汇总表
+								for (let i = 0; i < self.SyncData.length; i++) {
+									let sumData=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId)
+									sumData.forEach(item=>{
+										if(item.lastCollectTime){
+											item.lastCollectTime = new Date(item.lastCollectTime).getTime();
+										}
+										if(item.lastPpdTime){
+											item.lastPpdTime = new Date(item.lastPpdTime).getTime();
+										}
+										if(item.lastChestRadiographTime){
+											item.lastChestRadiographTime = new Date(item.lastChestRadiographTime).getTime();
+										}
+										if(item.lastSputumExaminationTime){
+											item.lastSputumExaminationTime = new Date(item.lastSputumExaminationTime).getTime();
+										}
+										if(item.lastElectrocardiogramTime){
+											item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
+										}
+										})
+									await SynchronizeApi.uploadSumData(sumData);
+								}
+								let consume=await ConsumeRecordApi.selectLocalData()
+									if(consume.data){
+										uni.showToast({
+										title: '上传成功',
+										mask: true,
+										icon: 'success',
+										duration: 1500
+									});
+									// 记录本次同步时间(存缓存)
+									let time = self.getCurrentTime()
+									uni.setStorage({
+										key:'ppdPad',
+										data:time
+									})
+									self.synchronizeTime=time
+									uni.setStorage({
+										key:'ppd',
+										data:time
+									})
+								}
+								
 							}
 						} else if (res.cancel) {
 							uni.showToast({

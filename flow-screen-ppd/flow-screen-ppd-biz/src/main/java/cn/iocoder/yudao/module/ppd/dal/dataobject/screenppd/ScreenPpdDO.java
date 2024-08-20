@@ -4,6 +4,7 @@ import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -45,14 +46,36 @@ public class ScreenPpdDO extends BaseDO {
      * 对应摸底表中患者姓名
      */
     private String name;
-    /**
-     * 横径 单位mm
-     */
+
+    @Schema(description = "身份证")
+    private String idNum;
+
+    @Schema(description = "试剂批次id", example = "9954")
+    private Long reagentId;
+
+    @Schema(description = "转换系数")
+    private Integer reagentSpecsNum;
+
+    @Schema(description = "ppd实拍图")
+    private String actualPhoto;
+
+    @Schema(description = "红晕编辑图")
+    private String blushPhoto;
+
+    @Schema(description = "硬结编辑图")
+    private String scleromaPhoto;
+
+    @Schema(description = "硬结横径 单位mm")
     private BigDecimal transverseDiameter;
-    /**
-     * 纵径 单位mm
-     */
+
+    @Schema(description = "硬结纵径 单位mm")
     private BigDecimal longitudinalDiameter;
+
+    @Schema(description = "红晕横径 单位mm")
+    private BigDecimal blushTransverseDiameter;
+
+    @Schema(description = "纵径纵径 单位mm")
+    private BigDecimal blushLongitudinalDiameter;
     /**
      * 是否含有水泡/双圈/坏死/淋巴管炎/ 1-是 0-否
      */

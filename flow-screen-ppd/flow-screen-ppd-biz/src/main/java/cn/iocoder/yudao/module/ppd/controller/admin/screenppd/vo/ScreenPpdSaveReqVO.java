@@ -16,8 +16,17 @@ public class ScreenPpdSaveReqVO {
     @Schema(description = "筛查编号(生成的编码)", example = "2195")
     private String screenId;
 
+    @Schema(description = "身份证")
+    private String idNum;
+
     @Schema(description = "同步时唯一编码", example = "9954")
     private Long syncId;
+
+    @Schema(description = "试剂批次id", example = "9954")
+    private Long reagentId;
+
+    @Schema(description = "转换系数")
+    private Integer reagentSpecsNum;
 
     @Schema(description = "对应摸底表中id", example = "2249")
     private Long personId;
@@ -37,6 +46,16 @@ public class ScreenPpdSaveReqVO {
     @Schema(description = "医生签名")
     private String doctorSignature;
 
+    @Schema(description = "ppd实拍图")
+    private String actualPhoto;
+
+    @Schema(description = "红晕编辑图")
+    private String blushPhoto;
+
+    @Schema(description = "硬结编辑图")
+    private String scleromaPhoto;
+
+
     @Schema(description = "注射单位")
     private String injectionAgency;
 
@@ -52,10 +71,16 @@ public class ScreenPpdSaveReqVO {
     @Schema(description = "筛查类型")
     private Integer screenType;
 
-    @Schema(description = "横径 单位mm")
+    @Schema(description = "硬结横径 单位mm")
     private BigDecimal transverseDiameter;
 
-    @Schema(description = "纵径 单位mm")
+    @Schema(description = "硬结纵径 单位mm")
     private BigDecimal longitudinalDiameter;
+
+    @Schema(description = "红晕横径 单位mm")
+    private BigDecimal blushTransverseDiameter;
+
+    @Schema(description = "纵径纵径 单位mm")
+    private BigDecimal blushLongitudinalDiameter;
 
 }

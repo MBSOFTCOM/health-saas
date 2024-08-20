@@ -1071,9 +1071,7 @@ export default {
 					
 					//插入数据进入汇总表
 					const gatherData = await getGather(this.person.id, uni.$person.year, uni.$screenType);
-					// console.log("gatherData",gatherData);
 					const pddId = await getPddToId(this.person.id);
-					// console.log("pddId",pddId);
 				
 					if (gatherData == null || gatherData.length == 0) {
 						//获取初始汇总表插入信息
@@ -1102,20 +1100,6 @@ export default {
 						//存在的话修改
 						await updateOne(gather, this.person.id, uni.$person.year, uni.$screenType);
 					}
-
-					//插入离线图片表
-					const screenImagesData = {
-						personId: this.person.id,
-						screenId: this.person.screenId,
-						type: 9, //八代表采集组签名
-						screenOrder: inData.screenOrder,
-						screenTime: inData.screenTime,
-						screenPoint: uni.$person.screenPoint,
-						year: uni.$person.year,
-						screenType: uni.$screenType
-					};
-
-					await dbUtils.addTabItem(dbName, tbScreenImages, screenImagesData);
 
 					//关闭出口
 					this.show = false;

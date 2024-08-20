@@ -310,17 +310,13 @@ export default {
 	},
 	onLoad(e) {
 		this.patient = e;
-		console.log(this.patient);
+		// console.log(this.patient);
 		//isNew 为0表示修改
 		if (e.isNew == 0) {
 			getBypersonIdAndScreenOrderOne(e.order, e.id).then((res) => {
-				console.log(res);
+				// console.log(res);
 				this.FormData=res[0]
-				// this.FormData.transverseDiameter = res[0].transverseDiameter;
-				// this.FormData.longitudinalDiameter = res[0].longitudinalDiameter;
 				this.FormData.bleb = res[0].bleb.toString();
-				// this.FormData.outcome = res[0].outcome;
-				// this.FormData.doctorSignature = res[0].doctorSignature;
 				this.crowdArr = this.FormData.bleb.split('').map(Number);
 			});
 		}
@@ -457,7 +453,7 @@ export default {
 		},
 		//提交保存
 		async newAdd() {
-			console.log(this.FormData);
+			// console.log(this.FormData);
 			// return
 			if (Object.entries(uni.$person).length === 0) {
 				uni.showModal({
@@ -509,7 +505,7 @@ export default {
 				updater: this.FormData.updater, //修改者
 				updateTime: this.FormData.updateTime //修改时间
 			};
-			console.log(data);
+			// console.log(data);
 			const isNull = this.ifNull(data);
 			if (!isNull) {
 				uni.$u.toast('表单数据存在空,请检查表单,并填写完整!');
@@ -532,7 +528,7 @@ export default {
 					const setScreenImagesData = {
 						path: this.FormData.doctorSignature
 					};
-					console.log(this.patient);
+					// console.log(this.patient);
 					// 签名
 					await ScreenImages.deleteOne(
 						this.patient.idNum,
@@ -550,7 +546,7 @@ export default {
 						screenId:this.patient.screenId,
 						type:9
 					}
-					console.log(imageData);
+					// console.log(imageData);
 					await dbUtils.addTabItem(dbName,tbScreenImages,imageData)
 					// 实拍
 					await ScreenImages.deleteOne(
@@ -582,14 +578,6 @@ export default {
 					imageData.type=17
 					imageData.path=this.FormData.scleromaPhoto
 					await dbUtils.addTabItem(dbName,tbScreenImages,imageData)
-					// await ScreenImages.updateOne(
-					// 	setScreenImagesData,
-					// 	this.patient.id,
-					// 	uni.$person.year,
-					// 	uni.$screenType,
-					// 	this.patient.order,
-					// 	9
-					// );
 
 					//返回上一页
 					uni.navigateBack({

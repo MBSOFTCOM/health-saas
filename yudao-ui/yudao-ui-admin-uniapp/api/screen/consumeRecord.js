@@ -3,6 +3,16 @@ import request from '@/utils/request'
 import {dbName,promise,tbScreenConsume,tbScreenConsumeRecord,emptyData} from "@/utils/sqlite";
 
 /**
+ * @param {[]} data
+ */
+export const upload=(data)=>{
+	return request({
+		url:`/tb/synchronize/upload/consume-record`,
+		method:'POST',
+		data:data
+	})
+}
+/**
  * 批量向本地数据插入试剂消耗明细数据
  * @param {[]}data
  */
@@ -39,6 +49,6 @@ export const selectLocalRecordByRegentId=async (reagentId)=>{
  */
 export const updateRecordNum=async(num,reagentId,updater,updateTime)=>{
 	let sql=`update ${tbScreenConsumeRecord} set changeNumber=${num} ,updater=${updater} ,updateTime='${updateTime}' where consumeId=${reagentId}`
-	console.log(sql);
+	// console.log(sql);
 	return promise(dbName,sql)
 }

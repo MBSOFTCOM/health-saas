@@ -23,9 +23,11 @@ import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.UserLogin
 import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.WorkTeamVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsumerecord.ScreenConsumeRecordDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screensum.ScreenSumDO;
+import cn.iocoder.yudao.module.ppd.service.screenconsume.ScreenConsumeService;
 import cn.iocoder.yudao.module.ppd.service.screenpersonrealsituation.ScreenPersonService;
 import cn.iocoder.yudao.module.ppd.service.synchronization.SynchronizeService;
 import cn.iocoder.yudao.module.system.service.user.AdminUserService;
@@ -51,7 +53,8 @@ public class SynchronizeController {
     private ScreenPersonService screenPersonService;
     @Resource
     private AdminUserService adminUserService;
-
+    @Resource
+    private ScreenConsumeService screenConsumeService;
 
 
 //    @GetMapping("/get-tableLists")
@@ -107,11 +110,16 @@ public class SynchronizeController {
     @Operation(summary = "更新ppd表数据")
 //    @PreAuthorize("@ss.hasPermission('tb:synchronization:query')")
     public CommonResult<Boolean> updateTableData3(@RequestBody List<ScreenPpdSaveReqVO> list) {
-
         synchronizeService.updatePpd(list);
         return success(true);
     }
 
+    @PostMapping("/upload/consume-record")
+    @Operation(summary = "更新试剂消耗")
+    public CommonResult<Integer> uploadConsumeRecord(List<ScreenConsumeRecordDO> data){
+        Integer batch = screenConsumeService.decreaseScreenConsumeBatch(data);
+        return success(batch);
+    }
     @GetMapping("/get-tableData4")
     @Operation(summary = "获取dr/ct组数据")
 //    @PreAuthorize("@ss.hasPermission('tb:synchronization:query')")

@@ -7,6 +7,7 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsu
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumeStatisticsRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.ScreenReagentImportRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsumerecord.ScreenConsumeRecordDO;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -84,4 +85,8 @@ public interface ScreenConsumeService {
      * 消耗量管理数据统计
      */
     List<ScreenConsumeStatisticsRespVO> getScreenConsumeStatistics(ScreenConsumePageReqVO pageReqVO);
+    /**
+     * 上传数据时，批量减少当前库存
+     */
+    Integer decreaseScreenConsumeBatch(List<ScreenConsumeRecordDO> list);
 }

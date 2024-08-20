@@ -16,7 +16,6 @@ import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsume.ScreenConsumeMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsumerecord.ScreenConsumeRecordMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenreagent.ScreenReagentMapper;
-import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.module.cd.enums.ErrorCodeConstants.*;
@@ -380,10 +378,21 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
         return new ArrayList<>();
     }
 
-
-
-
-
-
-
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer decreaseScreenConsumeBatch(List<ScreenConsumeRecordDO> list) {
+        if (list.isEmpty() || list == null) {
+            throw exception(SCREEN_CONSUME_RECORD_LIST_NULL);
+        }
+        Integer successNum = 0;
+        for (ScreenConsumeRecordDO screenConsumeRecordDO : list) {
+            ScreenConsumeDO screenConsumeDO = screenConsumeMapper.selectById(screenConsumeRecordDO.getConsumeId());
+            if (screenConsumeDO.getCurrentNumber() - screenConsumeRecordDO.getChangeNumber() >= 0) {
+                screenConsumeMapper.decreaseScreenConsume(screenConsumeRecordDO.getConsumeId(), screenConsumeRecordDO.getChangeNumber());
+                screenConsumeRecordMapper.insert(screenConsumeRecordDO);
+                successNum++;
+            }
+        }
+        return successNum;
+    }
 }
