@@ -39,5 +39,4 @@ export const ScreenDistrictApi = {
   getDistrictCode: async (deptId: number) => {
     return await request.get({url: `/tb/screen-district/get-district-code?deptId=` + deptId})
   },
-
 }

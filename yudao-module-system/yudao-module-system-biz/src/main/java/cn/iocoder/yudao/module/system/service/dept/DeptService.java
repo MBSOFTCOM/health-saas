@@ -3,6 +3,7 @@ package cn.iocoder.yudao.module.system.service.dept;
 import cn.iocoder.yudao.framework.common.util.collection.CollectionUtils;
 import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptListReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptSaveReqVO;
+import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptStasticList;
 import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 
 import java.util.Collection;
@@ -107,4 +108,9 @@ public interface DeptService {
      * @return
      */
     Long getMyDept(Long loginUserId);
+
+    /**
+     * 获取本部门及以下的学校、医疗机构列表
+     */
+    DeptStasticList getDdeptList();
 }

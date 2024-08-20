@@ -4,10 +4,7 @@ import cn.iocoder.yudao.framework.common.enums.CommonStatusEnum;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
-import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptListReqVO;
-import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptRespVO;
-import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptSaveReqVO;
-import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptSimpleRespVO;
+import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.*;
 import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -91,6 +88,7 @@ public class DeptController {
         return success(deptService.getMyDept(loginUserId));
     }
 
+
     @GetMapping("/get-my-deptList")
     @Operation(summary = "获得本部门及以下的部门列表")
     public CommonResult<List<DeptSimpleRespVO>> getMyDeptList() {
@@ -99,5 +97,16 @@ public class DeptController {
         childDeptList.add(deptService.getDept(deptService.getMyDept(loginUserId)));
         return success(BeanUtils.toBean(childDeptList, DeptSimpleRespVO.class));
     }
+
+
+    @GetMapping("/get-dept-list")
+    @Operation(summary = "获取本部门及以下的学校、医疗机构列表")
+    public CommonResult<DeptStasticList> getDdeptList() {
+        DeptStasticList deptStasticList = deptService.getDdeptList();
+        return success(deptStasticList);
+    }
+
+
+
 
 }

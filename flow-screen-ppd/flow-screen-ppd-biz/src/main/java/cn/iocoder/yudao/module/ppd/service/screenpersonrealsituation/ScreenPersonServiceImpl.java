@@ -1,7 +1,12 @@
 package cn.iocoder.yudao.module.ppd.service.screenpersonrealsituation;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
@@ -23,15 +28,23 @@ import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
 import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import com.google.common.annotations.VisibleForTesting;
+import com.mchange.v2.beans.swing.TestBean;
 import jakarta.annotation.Resource;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.dromara.hutool.core.bean.BeanUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.StandardSocketOptions;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
@@ -895,5 +908,188 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         }
 
     }
+
+    @Override
+    public void exportStatistics(ScreenPersonStatisticsReqVO reqVO, HttpServletResponse response) {
+        try  {
+            // 通过工具类创建writer，默认创建xls格式
+            ExcelWriter writer = ExcelUtil.getWriter();
+
+            String hospital = ObjectUtil.isNull(reqVO.getHospital()) ? "" : reqVO.getHospital();
+            String schoolName = ObjectUtil.isNull(reqVO.getSchool()) ? "" : reqVO.getSchool();
+            String district = ObjectUtil.isNull(reqVO.getDistrict()) ? "" : reqVO.getDistrict();
+            String concat = ObjectUtil.isNull(reqVO.getContact()) ? "" : reqVO.getContact();
+            String concatPhone = ObjectUtil.isNull(reqVO.getContactPhone()) ? "" : reqVO.getContactPhone();
+            String injectionPeople = ObjectUtil.isNull(reqVO.getInjectionPeople()) ? "" : reqVO.getInjectionPeople();
+            String checkPeople = ObjectUtil.isNull(reqVO.getCheckPeople()) ? "" : reqVO.getCheckPeople();
+            writer.merge(19, reqVO.getTableTittle());
+            writer.merge(19, "学校：" + schoolName + "     " + "医院：" + hospital + "     " + "（区县："
+                    + district + "）" + "联系人：" + concat  + "     " + "联系电话：" + concatPhone + "注射人："
+                    + injectionPeople + "     " + "查验人：" + checkPeople  );
+            writer.merge(2, 2, 0, 5, "基本信息", true);
+            writer.merge(2, 2, 6, 13, "EC检查", true);
+            writer.merge(2, 2, 14, 16, "X光胸片", true);
+            writer.writeCellValue(17, 2, "结果", true);
+            writer.merge(2, 2, 18, 19, "备注", true);
+            writer.writeCellValue(19, 2, "其他备注", true);
+
+            writer.setColumnWidth(1, 20);
+            writer.setColumnWidth(2, 15);
+            writer.setColumnWidth(5, 25);
+            writer.setColumnWidth(6, 15);
+            writer.setColumnWidth(7, 15);
+            writer.setColumnWidth(10, 30);
+            writer.setColumnWidth(11, 15);
+            writer.setColumnWidth(12, 25);
+            writer.setColumnWidth(13, 20);
+            writer.setColumnWidth(14, 20);
+            writer.setColumnWidth(15, 15);
+            writer.setColumnWidth(18, 55);
+            //跳过当前行，非必须，在此演示用
+            writer.passCurrentRow();
+
+            // 人员
+            List<PatientInfoReqVO> personInfo = reqVO.getPersonInfo();
+            // 勾选数据
+            List<Integer> infoList = reqVO.getInfoList();
+
+            List<StatisticExportVO2> list = new ArrayList<>();
+
+            // 序号
+            Integer index = 1;
+
+            for (PatientInfoReqVO obj : personInfo) {
+                // 查找单个人员信息
+                StatisticExportVO statisticExportVO = screenPersonMapper.getByPatientInfo(obj);
+                // 处理勾选数据
+                resolveExportData(statisticExportVO,infoList);
+
+                StatisticExportVO2 statisticExportVO2 = new StatisticExportVO2();
+                // 将statisticExportVO的数据复制给statisticExportVO2
+                BeanUtil.copyProperties(statisticExportVO, statisticExportVO2, false);
+                // 使用辅助方法设置属性
+                setIsDoPpd(statisticExportVO, statisticExportVO2);
+                setBleb(statisticExportVO, statisticExportVO2);
+                setDiameterFlag(statisticExportVO, statisticExportVO2);
+                setOutcomePpd(statisticExportVO, statisticExportVO2);
+                setIsDoX(statisticExportVO, statisticExportVO2);
+                setOutcomeDr(statisticExportVO, statisticExportVO2);
+
+                statisticExportVO2.setId(index);
+                list.add(statisticExportVO2);
+                index++;
+            }
+
+
+            List<StatisticExportVO2> rows = CollUtil.newArrayList(list);
+            // 一次性写出内容，使用默认样式，强制输出标题
+            writer.write(rows, true);
+            if (ObjectUtil.isNotNull(infoList) && infoList.size() < 20){
+                Workbook workbook = writer.getWorkbook();
+                Sheet sheetAt = workbook.getSheetAt(0);
+                // 处理勾选数据，没勾则隐藏
+                for (int i = 0; i < 20; i++) {
+                    if (!infoList.contains(i)) {
+                        sheetAt.setColumnHidden(i, true);
+                    }
+                }
+            }
+
+            //response为HttpServletResponse对象
+            response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            //test.xls是弹出下载对话框的文件名，不能为中文，中文请自行编码
+            response.setHeader("Content-Disposition","attachment;filename=test.xls");
+
+            ServletOutputStream out=response.getOutputStream();
+
+            writer.flush(out, true);
+            // 关闭writer，释放内存
+            writer.close();
+            //此处记得关闭输出Servlet流
+            IoUtil.close(out);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    // 处理勾选数据
+    private void resolveExportData(StatisticExportVO statisticExportVO, List<Integer> infoList) {
+        // 创建一个 Set 来提高 contains 操作的效率
+        Set<Integer> infoSet = new HashSet<>(infoList);
+
+        for (int i = 0; i <= infoSet.size(); i++) {
+            if (!infoSet.contains(i)) {
+                switch (i) {
+                    case 0 -> statisticExportVO.setId(null);
+                    case 2 -> statisticExportVO.setClassroom(null);
+                    case 3 -> statisticExportVO.setName(null);
+                    case 4 -> statisticExportVO.setAge(null);
+                    case 5 -> statisticExportVO.setIdNum(null);
+                    case 6 -> statisticExportVO.setPpdScreenTime(null);
+                    case 7 -> statisticExportVO.setIsDoPpd(null);
+                    case 8 -> statisticExportVO.setTransverseDiameter(null);
+                    case 9 -> statisticExportVO.setLongitudinalDiameter(null);
+                    case 10 -> statisticExportVO.setBleb(null);
+                    case 13 -> statisticExportVO.setOutcomePpd(null);
+                    case 12 -> statisticExportVO.setDiameterFlag(null);
+                    case 14 -> statisticExportVO.setPhotoTime(null);
+                    case 15 -> statisticExportVO.setIsDoX(null);
+                    case 16 -> statisticExportVO.setOutcomeDr(null);
+                    case 17 -> statisticExportVO.setIsDia(null);
+                    case 18 -> statisticExportVO.setRemark(null);
+                    case 19 -> statisticExportVO.setOtherRemark(null);
+                    case 1 -> statisticExportVO.setSchool(null);
+                    case 11 -> statisticExportVO.setAverageDiameter(null);
+                    default -> {
+                    }
+                }
+            }
+        }
+    }
+
+    private void setIsDoPpd(StatisticExportVO source, StatisticExportVO2 target) {
+        if (ObjectUtil.isNotNull(source.getIsDoPpd())) {
+            target.setIsDoPpd(source.getIsDoPpd() == 1 ? " √ " : " × ");
+        }
+    }
+
+    private void setBleb(StatisticExportVO source, StatisticExportVO2 target) {
+        if (ObjectUtil.isNotNull(source.getBleb()) && !StrUtil.isEmptyIfStr(source.getBleb())) {
+            target.setBleb(" √ ");
+        }
+    }
+
+    private void setDiameterFlag(StatisticExportVO source, StatisticExportVO2 target) {
+        target.setDiameterFlag(source.getDiameterFlag() == 1 ? " √ " : " × ");
+    }
+
+    private void setOutcomePpd(StatisticExportVO source, StatisticExportVO2 target) {
+        if (ObjectUtil.isNotNull(source.getOutcomePpd())) {
+            switch (source.getOutcomePpd()) {
+                case 1 -> target.setOutcomePpd("阳性");
+                case 2 -> target.setOutcomePpd("阴性");
+                default -> target.setOutcomePpd("无");
+            }
+        }
+    }
+
+    private void setIsDoX(StatisticExportVO source, StatisticExportVO2 target) {
+        if (ObjectUtil.isNotNull(source.getIsDoX())) {
+            target.setIsDoX(source.getIsDoX() == 1 ? " √ " : " × ");
+        }
+    }
+
+    private void setOutcomeDr(StatisticExportVO source, StatisticExportVO2 target) {
+        if (ObjectUtil.isNotNull(source.getOutcomeDr())) {
+            switch (source.getOutcomeDr()) {
+                case 1 -> target.setOutcomeDr("疑似结合");
+                case 2 -> target.setOutcomeDr("其他异常");
+                case 0 -> target.setOutcomeDr("无异常");
+                default -> target.setOutcomeDr("无结果");
+            }
+        }
+    }
+
 
 }

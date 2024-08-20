@@ -5,8 +5,11 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.iocoder.yudao.framework.common.enums.CommonStatusEnum;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.datapermission.core.annotation.DataPermission;
+import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptListReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptSaveReqVO;
+import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptSimpleRespVO;
+import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptStasticList;
 import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import cn.iocoder.yudao.module.system.dal.mysql.dept.DeptMapper;
 import cn.iocoder.yudao.module.system.dal.redis.RedisKeyConstants;
@@ -248,6 +251,39 @@ public class DeptServiceImpl implements DeptService {
     @Override
     public Long getMyDept(Long loginUserId) {
         return deptMapper.getMyDept(loginUserId);
+    }
+
+    @Override
+    public DeptStasticList getDdeptList() {
+        // 获取当前登录用户的ID
+        Long loginUserId = SecurityFrameworkUtils.getLoginUserId();
+
+        // 根据用户ID获取子部门列表，并将当前部门加入列表
+        List<DeptDO> childDeptList = getChildDeptList(getMyDept(loginUserId));
+        childDeptList.add(getDept(getMyDept(loginUserId)));
+
+        // 初始化两个列表，用于存储不同类型的部门
+        List<DeptDO> schoolList = new ArrayList<>();
+        List<DeptDO> hospitalList = new ArrayList<>();
+
+        // 遍历子部门列表，根据部门类型将部门对象分别添加到对应的列表中
+        for (DeptDO obj : childDeptList) {
+            if (obj.getType() == 1) {
+                // 类型为1的部门添加到schoolList
+                schoolList.add(obj);
+            } else if (obj.getType() == 2) {
+                // 类型为2的部门添加到hospitalList
+                hospitalList.add(obj);
+            }
+        }
+
+        // 创建DeptStasticList对象，并将学校和医院列表转换为DeptSimpleRespVO类型
+        DeptStasticList deptStasticList = new DeptStasticList();
+        deptStasticList.setSchoolList(BeanUtils.toBean(schoolList, DeptSimpleRespVO.class))
+                .setHospitalList(BeanUtils.toBean(hospitalList, DeptSimpleRespVO.class));
+
+        // 返回包含部门统计信息的对象
+        return deptStasticList;
     }
 
 }

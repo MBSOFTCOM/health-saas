@@ -440,9 +440,13 @@ const PinyinMatchFun = (val) => {
 const handleSelectionChange = (val: any[]) => {
   ids.value = val.map(item => ({
     id: item.id,
-/*    year: item.year,
+    year: item.year,
     idNum: item.idNum,
-    screenType: item.screenType,*/
+    screenType: item.screenType,
+/*    school: item.schoolOrTemple,
+    classroom: item.classroom,
+    name: item.name,
+    age: item.age*/
   }));
 }
 

@@ -5,6 +5,7 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenrepeatperson.ScreenRepeatPersonDO;
 import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 
@@ -123,7 +124,18 @@ public interface ScreenPersonService {
     String updateCtImage(Long personId, String screenId, String idNum,Integer imageType, Integer screenOrder,Integer year, Integer screenType, InputStream file);
 
 
+    /**
+     * 省市县乡转化
+     */
     void resolveDistrict(ScreenPersonDO obj);
 
+    /**
+     * 省市县乡转化
+     */
     void resolveDistrict2(ScreenRepeatPersonDO obj);
+
+    /**
+     * 统计表--导出表格
+     */
+    void exportStatistics(ScreenPersonStatisticsReqVO reqVO, HttpServletResponse response);
 }

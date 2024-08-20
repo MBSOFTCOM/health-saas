@@ -50,10 +50,10 @@
                         style="width: auto; min-width: 200px;margin-left: -100px"
                       >
                         <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
+                          v-for="item in schoolList"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.name"
                         />
                       </el-select>
                     </el-form-item>
@@ -72,10 +72,10 @@
                         style="width: auto; min-width: 200px;margin-left: -100px"
                       >
                         <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
+                          v-for="item in hospitalList"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.name"
                         />
                       </el-select>
                     </el-form-item>
@@ -94,10 +94,10 @@
                         style="width: auto; min-width: 200px;margin-left: -100px"
                       >
                         <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
+                          v-for="item in districtList"
+                          :key="item.code"
+                          :label="item.name"
+                          :value="item.name"
                         />
                       </el-select>
                     </el-form-item>
@@ -109,19 +109,10 @@
                   <el-checkbox label="联系人" :value="1"/>
                   <div style="margin-left: 32px">
                     <el-form-item prop="contact">
-                      <el-select
-                        v-model="formData.contact"
-                        placeholder="请选择，不选则留空"
-                        size="large"
-                        style="width: auto; min-width: 200px;margin-left: -100px"
-                      >
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        />
-                      </el-select>
+                      <el-input v-model="formData.contact"
+                                placeholder="输入联系人"
+                                clearable
+                                style="margin-left: -100px;min-width: 200px"/>
                     </el-form-item>
                   </div>
                 </div>
@@ -131,19 +122,10 @@
                   <el-checkbox label="联系电话" :value="1"/>
                   <div style="margin-left: 20px">
                     <el-form-item prop="contactPhone">
-                      <el-select
-                        v-model="formData.contactPhone"
-                        placeholder="请选择，不选则留空"
-                        size="large"
-                        style="width: auto;min-width: 200px;margin-left: -100px;"
-                      >
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        />
-                      </el-select>
+                      <el-input v-model="formData.contactPhone"
+                                placeholder="输入联系电话"
+                                clearable
+                                style="margin-left: -100px;min-width: 200px"/>
                     </el-form-item>
                   </div>
                 </div>
@@ -153,19 +135,10 @@
                   <el-checkbox label="注射人" :value="1"/>
                   <div style="margin-left: 32px">
                     <el-form-item prop="injectionPeople">
-                      <el-select
-                        v-model="formData.injectionPeople"
-                        placeholder="请选择，不选则留空"
-                        size="large"
-                        style="width: auto; min-width: 200px;margin-left: -100px;"
-                      >
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        />
-                      </el-select>
+                      <el-input v-model="formData.injectionPeople"
+                                placeholder="输入注射人"
+                                clearable
+                                style="margin-left: -100px;min-width: 200px"/>
                     </el-form-item>
                   </div>
                 </div>
@@ -180,7 +153,6 @@
                                 clearable
                                 style="margin-left: -100px;min-width: 200px"/>
                     </el-form-item>
-
                   </div>
                 </div>
               </el-checkbox-group>
@@ -193,46 +165,46 @@
             <div>
               <h5>基本信息</h5>
               <el-checkbox-group v-model="formData.infoList">
-                <el-checkbox label="序号" :value="1"/>
-                <el-checkbox label="单位(学校)" :value="2"/>
-                <el-checkbox label="班级" :value="3"/>
-                <el-checkbox label="姓名" :value="4"/>
-                <el-checkbox label="年龄" :value="5"/>
-                <el-checkbox label="身份证号码" :value="6"/>
+                <el-checkbox label="序号" :value="0"/>
+                <el-checkbox label="单位(学校)" :value="1"/>
+                <el-checkbox label="班级" :value="2"/>
+                <el-checkbox label="姓名" :value="3"/>
+                <el-checkbox label="年龄" :value="4"/>
+                <el-checkbox label="身份证号码" :value="5"/>
               </el-checkbox-group>
             </div>
             <div>
               <h5>PPD/EC检查</h5>
-              <el-checkbox-group v-model="formData.ppdList">
-                <el-checkbox label="时间" :value="1"/>
-                <el-checkbox label="是否已做" :value="2"/>
-                <el-checkbox label="横径mm" :value="3"/>
-                <el-checkbox label="纵径mm" :value="4"/>
-                <el-checkbox label="硬结平均直径mm" :value="5"/>
-                <el-checkbox label="硬结平均直径是否<15mm" :value="6"/>
-                <el-checkbox label="双拳、水泡、坏死或淋巴炎" :value="7"/>
-                <el-checkbox label="PPD判读结果" :value="8"/>
+              <el-checkbox-group v-model="formData.infoList">
+                <el-checkbox label="时间" :value="6"/>
+                <el-checkbox label="是否已做" :value="7"/>
+                <el-checkbox label="横径mm" :value="8"/>
+                <el-checkbox label="纵径mm" :value="9"/>
+                <el-checkbox label="双拳、水泡、坏死或淋巴炎" :value="10"/>
+                <el-checkbox label="硬结平均直径mm" :value="11"/>
+                <el-checkbox label="硬结平均直径是否<15mm" :value="12"/>
+                <el-checkbox label="PPD判读结果" :value="13"/>
               </el-checkbox-group>
             </div>
             <div>
               <h5>X光胸片</h5>
-              <el-checkbox-group v-model="formData.xRayList">
-                <el-checkbox label="时间" :value="1"/>
-                <el-checkbox label="是否已做" :value="2"/>
-                <el-checkbox label="结果" :value="3"/>
+              <el-checkbox-group v-model="formData.infoList">
+                <el-checkbox label="时间" :value="14"/>
+                <el-checkbox label="是否已做" :value="15"/>
+                <el-checkbox label="结果" :value="16"/>
               </el-checkbox-group>
             </div>
             <div>
               <h5>最终结果</h5>
-              <el-checkbox-group v-model="formData.result">
-                <el-checkbox label="是否确诊" :value="1"/>
+              <el-checkbox-group v-model="formData.infoList">
+                <el-checkbox label="是否确诊" :value="17"/>
               </el-checkbox-group>
             </div>
             <div>
               <h5>备注</h5>
-              <el-checkbox-group v-model="formData.remark">
-                <el-checkbox label="未筛查原因：1.近1月打了疫苗；2.过敏体质；3：其它疾病(详述)" :value="1"/>
-                <el-checkbox label="其他备注" :value="2"/>
+              <el-checkbox-group v-model="formData.infoList">
+                <el-checkbox label="未筛查原因：1.近1月打了疫苗；2.过敏体质；3：其它疾病(详述)" :value="18"/>
+                <el-checkbox label="其他备注" :value="19"/>
               </el-checkbox-group>
             </div>
           </el-col>
@@ -261,6 +233,8 @@
 import {ScreenPersonApi} from '@/api/tb/screenpersonrealsituation'
 import {onMounted, ref, reactive, computed} from 'vue'
 import download from "@/utils/download";
+import * as DeptApi from "@/api/system/dept";
+import {ScreenDistrictApi} from "@/api/tb/screendistrict";
 
 
 const activeName = ref('first')
@@ -303,10 +277,22 @@ const personInfo = ref([]) // 所选人员列表
 
 const formRef = ref() // 表单 Ref
 const exportLoading = ref(false) // 导出的加载中
+const schoolList = ref([]) // 学校列表
+const hospitalList = ref([]) // 医院列表
+const districtList = ref([]) // 行政区划列表
 
 
 const formRules = reactive({
-
+  tableTittle:[{required: true, message: '请输入表格标题', trigger: 'blur'},
+              {max: 20, message: '表格标题过长', trigger: 'blur'},
+              ],
+  contact: [{max: 10, message: '联系人名字过长', trigger: 'blur'},
+            {pattern: /^[\u4e00-\u9fa5]+$/, message: '请输入汉字', trigger: 'blur'}],
+  contactPhone: [{pattern: /^[0-9]{11}$/, message: '必须为11位数字', trigger: 'blur'}],
+  injectionPeople: [{max: 10, message: '注射人名字过长', trigger: 'blur'},
+                    {pattern: /^[\u4e00-\u9fa5]+$/, message: '请输入汉字', trigger: 'blur'}],
+  checkPeople: [{max: 10, message: '查验人名字过长', trigger: 'blur'},
+                {pattern: /^[\u4e00-\u9fa5]+$/, message: '请输入汉字', trigger: 'blur'}],
 });
 
 /** 打开弹窗 */
@@ -314,40 +300,80 @@ const open = async (ids: any) => {
   personInfo.value = ids
   dialogVisible.value = true
   resetFormData()
-  // 修改时，设置数据
-  try {
+  await getDeptList()
+  await getDistrictList()
+  formLoading.value = false
 
-
-  } finally {
-    formLoading.value = false
-  }
 
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
 /** 导出按钮操作 */
 const handleExport = async () => {
+  // 校验表单
+  await formRef.value.validate()
+  // 验证表单数据
+  const validateFormData = () => {
+    const {
+      selectSchool, school, selectHospital,
+      hospital, selectDistrict, district,
+      selectContact, contact, selectContactPhone,
+      contactPhone, selectInjectionPeople, injectionPeople,
+      selectCheckPeople, checkPeople
+    } = formData.value;
+
+    // 定义验证规则
+    const validationRules = [
+      { condition: selectSchool.includes(1), field: school, message: "勾选学校名称之后，请选择学校！" },
+      { condition: selectHospital.includes(1), field: hospital, message: "勾选医院名称之后，请选择医院！" },
+      { condition: selectDistrict.includes(1), field: district, message: "勾选行政区划名称之后，请选择行政区划！" },
+      { condition: selectContact.includes(1), field: contact, message: "勾选联系人之后，请输入联系人！" },
+      { condition: selectContactPhone.includes(1), field: contactPhone, message: "勾选联系电话之后，请输入联系电话！" },
+      { condition: selectInjectionPeople.includes(1), field: injectionPeople, message: "勾选注射人之后，请输入注射人员！" },
+      { condition: selectCheckPeople.includes(1), field: checkPeople, message: "勾选查验人之后，请输入查验人员！" }
+    ];
+
+    // 遍历验证规则并返回第一个不通过的错误消息
+    for (const rule of validationRules) {
+      if (rule.condition && !rule.field) {
+        return rule.message;
+      }
+    }
+    return null;
+  };
+
+  // 执行表单数据验证
+  const errorMessage = validateFormData();
+  if (errorMessage) {
+    return message.error(errorMessage);
+  }
 
   try {
-    // 导出的二次确认
-    await message.exportConfirm()
+    // 确认导出操作
+    await message.exportConfirm();
     // 合并 formData 和 personInfo
     const params = {
       ...formData.value,
-      personInfo: personInfo.value
+      personInfo: personInfo.value,
     };
-    console.log("params:", params)
-
-    // 发起导出
-    exportLoading.value = true
-    const data = await ScreenPersonApi.exportStatistics(params)
-    download.excel(data, '统计表.xls')
+    // 设置导出状态为加载中
+    exportLoading.value = true;
+    // 执行导出操作
+    const data = await ScreenPersonApi.exportStatistics(params);
+    // 下载导出文件
+    download.excel(data, '统计表.xls');
+    // 提示导出成功
+    message.success("导出成功！");
   } catch (error) {
-    message.error(error);
+    // 提示导出失败
+    message.error(`导出失败: ${error.message}`);
   } finally {
-    exportLoading.value = false
+    // 恢复导出状态
+    exportLoading.value = false;
   }
-}
+};
+
+
 
 // 基本数据、报表数据动态计算
 const calculateLength = (type) => {
@@ -406,6 +432,20 @@ const resetFormData = () => {
     result: [],
     remark: []
   };
+}
+
+// 获取学校、医院列表
+const getDeptList = async () => {
+  const data = await DeptApi.getDeptList();
+  console.log(data)
+  schoolList.value = data.schoolList
+  hospitalList.value = data.hospitalList
+}
+
+// 获取行政区划列表
+const getDistrictList = async () => {
+  districtList.value = await ScreenDistrictApi.getDistrictList2()
+  console.log(districtList.value)
 }
 
 /** 初始化 **/

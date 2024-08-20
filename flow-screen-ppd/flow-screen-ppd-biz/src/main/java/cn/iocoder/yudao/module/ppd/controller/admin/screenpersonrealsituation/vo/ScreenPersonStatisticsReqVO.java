@@ -19,7 +19,7 @@ public class ScreenPersonStatisticsReqVO implements Serializable {
     /**
      * 是否勾选学校名称
      */
-    private List<Integer> selectSchool;
+//    private List<Integer> selectSchool;
     /**
      * 学校名称
      */
@@ -27,7 +27,7 @@ public class ScreenPersonStatisticsReqVO implements Serializable {
     /**
      * 是否勾选医院
      */
-    private List<Integer> selectHospital;
+//    private List<Integer> selectHospital;
     /**
      * 医院名称
      */
@@ -35,7 +35,7 @@ public class ScreenPersonStatisticsReqVO implements Serializable {
     /**
      * 是否勾选行政区划
      */
-    private List<Integer> selectDistrict;
+//    private List<Integer> selectDistrict;
     /**
      * 行政区划名称
      */
@@ -43,7 +43,7 @@ public class ScreenPersonStatisticsReqVO implements Serializable {
     /**
      * 是否勾选联系人
      */
-    private List<Integer> selectContact;
+//    private List<Integer> selectContact;
     /**
      * 联系人
      */
@@ -51,7 +51,7 @@ public class ScreenPersonStatisticsReqVO implements Serializable {
     /**
      * 是否勾选联系电话
      */
-    private List<Integer> selectContactPhone;
+//    private List<Integer> selectContactPhone;
     /**
      * 联系电话
      */
@@ -59,7 +59,7 @@ public class ScreenPersonStatisticsReqVO implements Serializable {
     /**
      * 是否勾选注射人
      */
-    private List<Integer> selectInjectionPeople;
+//    private List<Integer> selectInjectionPeople;
     /**
      * 注射人
      */
@@ -67,7 +67,7 @@ public class ScreenPersonStatisticsReqVO implements Serializable {
     /**
      * 是否勾选查验人
      */
-    private List<Integer> selectCheckPeople;
+//    private List<Integer> selectCheckPeople;
     /**
      * 查验人
      */
@@ -76,21 +76,25 @@ public class ScreenPersonStatisticsReqVO implements Serializable {
      * 基本信息勾选数据
      */
     private List<Integer> infoList;
-    /**
+/*    *//**
      * PPD/EC检查勾选数据
-     */
+     *//*
     private List<Integer> ppdList;
-    /**
+    *//**
      * X光胸片勾选数据
-     */
+     *//*
     private List<Integer> xRayList;
-    /**
+    *//**
      * 最终结果勾选
-     */
+     *//*
     private List<Integer> result;
-    /**
+    *//**
      * 备注勾选
+     *//*
+    private List<Integer> remark;*/
+    /**
+     * 导出人员列表
      */
-    private List<Integer> remark;
+    private List<PatientInfoReqVO> personInfo;
 
 }

@@ -95,8 +95,7 @@ public class ScreenDistrictServiceImpl implements ScreenDistrictService {
         List<DeptDO> childDeptList = deptService.getChildDeptList(deptId);
         childDeptList.add(deptService.getDept(deptId));
         List<String> districtCodeList = childDeptList.stream().map(DeptDO::getDistrictCode).toList();
-        List<ScreenDistrictDO> list = districtMapper.getSameAndLowDistrictList(districtCodeList);
-        return list;
+        return districtMapper.getSameAndLowDistrictList(districtCodeList);
     }
 
     @Override

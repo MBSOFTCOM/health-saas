@@ -261,4 +261,11 @@ public interface ScreenPersonMapper extends BaseMapperX<ScreenPersonDO> {
     List<ScreenPersonDO> getDiabetesAndHivList(@Param("year") Integer year,
                                                @Param("quarter") Integer quarter,
                                                @Param("screenType") Integer screenType);
+
+    /**
+     * 统计表--统计表格--获取表格一行的数据
+     * @param obj
+     * @return
+     */
+    StatisticExportVO getByPatientInfo(PatientInfoReqVO obj);
 }
