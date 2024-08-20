@@ -46,7 +46,7 @@ export default {
       objKey:[],
       total:0,
       pageParams:{
-        pageSize:2,
+        pageSize:10,
         pageNo:1
       },
       tableList:[],

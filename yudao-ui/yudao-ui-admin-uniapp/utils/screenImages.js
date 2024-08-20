@@ -43,6 +43,7 @@ const  updateOne = (setData,id,year,screenType,order,type)=> {
  */
 const deleteOne=(idNum,year,screenType,order,type)=>{
 	let sql=`delete from ${tbScreenImages} WHERE idNum = ${idNum} AND year= ${year} AND screenType= ${screenType} AND screenOrder = ${order} AND type=${type}`
+	// console.log(sql);
 	return promise(dbName,sql)
 }
 

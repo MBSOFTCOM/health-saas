@@ -39,6 +39,6 @@ export const selectLocalRecordByRegentId=async (reagentId)=>{
  */
 export const updateRecordNum=async(num,reagentId,updater,updateTime)=>{
 	let sql=`update ${tbScreenConsumeRecord} set changeNumber=${num} ,updater=${updater} ,updateTime='${updateTime}' where consumeId=${reagentId}`
-	// console.log(sql);
+	console.log(sql);
 	return promise(dbName,sql)
 }

@@ -496,7 +496,6 @@ export default {
 			//非空校验
 			// console.log(this.FormData);
 			const data = {
-				
 				transverseDiameter: this.FormData.transverseDiameter, //横泾
 				longitudinalDiameter: this.FormData.longitudinalDiameter, //纵径
 				blushTransverseDiameter: this.FormData.blushTransverseDiameter,
@@ -511,11 +510,11 @@ export default {
 				updateTime: this.FormData.updateTime //修改时间
 			};
 			console.log(data);
-			// const isNull = this.ifNull(data);
-			// if (!isNull) {
-			// 	uni.$u.toast('表单数据存在空,请检查表单,并填写完整!');
-			// 	return;
-			// }
+			const isNull = this.ifNull(data);
+			if (!isNull) {
+				uni.$u.toast('表单数据存在空,请检查表单,并填写完整!');
+				return;
+			}
 
 			openTransaction()
 				.then(async (r) => {
@@ -534,6 +533,7 @@ export default {
 						path: this.FormData.doctorSignature
 					};
 					console.log(this.patient);
+					// 签名
 					await ScreenImages.deleteOne(
 						this.patient.idNum,
 						uni.$person.year,
@@ -543,16 +543,45 @@ export default {
 					let imageData={
 						idNum:this.patient.idNum,
 						screenType:uni.$screenType,
-						year:this.patient.year,
+						year:uni.$person.year,
 						screenOrder:this.patient.order,
 						path:this.FormData.doctorSignature,
 						personId:this.patient.id,
 						screenId:this.patient.screenId,
-						type:8
+						type:9
 					}
 					console.log(imageData);
 					await dbUtils.addTabItem(dbName,tbScreenImages,imageData)
-					
+					// 实拍
+					await ScreenImages.deleteOne(
+						this.patient.idNum,
+						uni.$person.year,
+						uni.$screenType,
+						this.patient.order,
+						16)
+					imageData.type=16
+					imageData.path=this.FormData.actualPhoto
+					await dbUtils.addTabItem(dbName,tbScreenImages,imageData)
+					// 红晕
+					await ScreenImages.deleteOne(
+						this.patient.idNum,
+						uni.$person.year,
+						uni.$screenType,
+						this.patient.order,
+						18)
+					imageData.type=18
+					imageData.path=this.FormData.blushPhoto
+					await dbUtils.addTabItem(dbName,tbScreenImages,imageData)
+					// 硬结
+					await ScreenImages.deleteOne(
+						this.patient.idNum,
+						uni.$person.year,
+						uni.$screenType,
+						this.patient.order,
+						17)
+					imageData.type=17
+					imageData.path=this.FormData.scleromaPhoto
+					await dbUtils.addTabItem(dbName,tbScreenImages,imageData)
 					// await ScreenImages.updateOne(
 					// 	setScreenImagesData,
 					// 	this.patient.id,
@@ -591,7 +620,7 @@ export default {
 			for (let key in obj) {
 				// console.log(key);
 				if (obj.hasOwnProperty(key)) {
-					if (obj[key] === null || obj[key] === undefined || obj[key] === '') {
+					if (obj[key] === null || obj[key] === undefined ) {
 						return false;
 					}
 				}
