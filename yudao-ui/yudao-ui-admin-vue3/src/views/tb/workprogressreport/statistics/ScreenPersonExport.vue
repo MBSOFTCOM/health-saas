@@ -47,6 +47,7 @@
                         v-model="formData.school"
                         placeholder="请选择，不选则留空"
                         size="large"
+                        clearable
                         style="width: auto; min-width: 200px;margin-left: -100px"
                       >
                         <el-option
@@ -69,6 +70,7 @@
                         v-model="formData.hospital"
                         placeholder="请选择，不选则留空"
                         size="large"
+                        clearable
                         style="width: auto; min-width: 200px;margin-left: -100px"
                       >
                         <el-option
@@ -91,6 +93,7 @@
                         v-model="formData.district"
                         placeholder="请选择，不选则留空"
                         size="large"
+                        clearable
                         style="width: auto; min-width: 200px;margin-left: -100px"
                       >
                         <el-option

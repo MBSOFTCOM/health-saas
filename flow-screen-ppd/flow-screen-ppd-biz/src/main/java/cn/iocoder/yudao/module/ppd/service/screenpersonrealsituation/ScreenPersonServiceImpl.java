@@ -923,9 +923,9 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             String injectionPeople = ObjectUtil.isNull(reqVO.getInjectionPeople()) ? "" : reqVO.getInjectionPeople();
             String checkPeople = ObjectUtil.isNull(reqVO.getCheckPeople()) ? "" : reqVO.getCheckPeople();
             writer.merge(19, reqVO.getTableTittle());
-            writer.merge(19, "学校：" + schoolName + "     " + "医院：" + hospital + "     " + "（区县："
-                    + district + "）" + "联系人：" + concat  + "     " + "联系电话：" + concatPhone + "注射人："
-                    + injectionPeople + "     " + "查验人：" + checkPeople  );
+            writer.merge(19, "学校：" + schoolName + "        " + "医院：" + hospital + "        " + "（区县："
+                    + district + "）" + "        "  +   "联系人：" + concat  + "        " + "联系电话：" + concatPhone + "        " +  "注射人："
+                    + injectionPeople + "        " + "查验人：" + checkPeople  );
             writer.merge(2, 2, 0, 5, "基本信息", true);
             writer.merge(2, 2, 6, 13, "EC检查", true);
             writer.merge(2, 2, 14, 16, "X光胸片", true);

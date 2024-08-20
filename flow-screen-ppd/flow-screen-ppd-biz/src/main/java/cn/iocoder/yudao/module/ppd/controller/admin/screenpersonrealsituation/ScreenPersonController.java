@@ -379,7 +379,6 @@ public class ScreenPersonController {
     public void exportScreenPersonExcel(@Valid ScreenPersonStatisticsReqVO reqVO,
                                         HttpServletResponse response) {
         screenPersonService.exportStatistics(reqVO, response);
-        System.out.println("接收成功！" + reqVO);
     }
 
 
