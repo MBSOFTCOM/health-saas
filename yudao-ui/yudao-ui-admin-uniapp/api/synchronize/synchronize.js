@@ -1137,7 +1137,6 @@ export function uploadOfflineImage(type) {
 			inType = ' IN (4, 15) '
 			break;
 	}
-
 	plus.sqlite.selectSql({
 		name: dbName,
 		sql: `SELECT
@@ -1176,7 +1175,6 @@ export function uploadOfflineImage(type) {
 									year: currentYear,
 									screenType: item.screenType
 								};
-
 								// 创建移动端各组离线图片信息
 								const createResult = request({
 									url: '/tb/screen-images/create',

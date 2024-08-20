@@ -358,6 +358,9 @@ export default {
 									duration: 1500
 								});
 							} else {
+								uni.showLoading({
+									title: '上传中...'
+								})
 								// 获取本地数据 上传到pc端
 								let ppdData=await SynchronizeApi.getPpdData(
 									self.queryParams.screenId,
@@ -388,7 +391,7 @@ export default {
 								//上传汇总表
 								for (let i = 0; i < self.SyncData.length; i++) {
 									let sumData=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId,self.SyncData[i].idNum)
-									console.log(sumData);
+									// console.log(sumData);
 									sumData.forEach(item=>{
 										if(item.lastCollectTime){
 											item.lastCollectTime = new Date(item.lastCollectTime).getTime();
@@ -417,10 +420,11 @@ export default {
 										consume[i].updateTime = new Date(consume[i].updateTime).getTime();
 									}
 								}
-								console.log(consume);
+								// console.log(consume);
 								let consumeResult=await ConsumeRecordApi.upload(consume)
-								console.log(3);
 									if(consumeResult.data){
+										
+										uni.hideLoading();
 										uni.showToast({
 										title: '上传成功',
 										mask: true,

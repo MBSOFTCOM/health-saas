@@ -42,18 +42,21 @@ public class ScreenImagesServiceImpl implements ScreenImagesService {
 
         // 判断插入是否重复
         List<ScreenImagesDO> screenImagesDOS = screenImagesMapper.selectList(new LambdaQueryWrapperX<ScreenImagesDO>()
-                .eq(ScreenImagesDO::getScreenId, screenImages.getScreenId())
-                .eq(ScreenImagesDO::getPersonId, screenImages.getPersonId())
+//                .eq(ScreenImagesDO::getScreenId, screenImages.getScreenId())
+//                .eq(ScreenImagesDO::getPersonId, screenImages.getPersonId())
                 .eq(ScreenImagesDO::getType, screenImages.getType())
-                .eq(ScreenImagesDO::getPath, screenImages.getPath())
-                .eq(ScreenImagesDO::getUrl, screenImages.getUrl())
+                .eq(ScreenImagesDO::getIdNum, screenImages.getIdNum())
+//                .eq(ScreenImagesDO::getPath, screenImages.getPath())
+//                .eq(ScreenImagesDO::getUrl, screenImages.getUrl())
                 .eq(ScreenImagesDO::getScreenOrder, screenImages.getScreenOrder())
-                .eq(ScreenImagesDO::getScreenPoint, screenImages.getScreenPoint())
+//                .eq(ScreenImagesDO::getScreenPoint, screenImages.getScreenPoint())
                 .eq(ScreenImagesDO::getYear, screenImages.getYear())
                 .eq(ScreenImagesDO::getScreenType, screenImages.getScreenType())
         );
         // 重复插入则返回-1
         if(screenImagesDOS != null && screenImagesDOS.size() > 0){
+            screenImages.setId(screenImagesDOS.get(0).getId());
+            screenImagesMapper.updateById(screenImages);
             return -1L;
         }
         screenImagesMapper.insert(screenImages);
