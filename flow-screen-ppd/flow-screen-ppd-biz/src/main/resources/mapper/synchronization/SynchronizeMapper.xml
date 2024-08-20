@@ -186,7 +186,15 @@
         <set>
             <if test="item.transverseDiameter != null">transverse_diameter = #{item.transverseDiameter},</if>
             <if test="item.longitudinalDiameter != null">longitudinal_diameter = #{item.longitudinalDiameter},</if>
+            <if test="item.blushTransverseDiameter != null">blush_transverse_diameter = #{item.blushTransverseDiameter},</if>
+            <if test="item.blushLongitudinalDiameter != null">blush_longitudinal_diameter = #{item.blushLongitudinalDiameter},</if>
             <if test="item.bleb != null">bleb = #{item.bleb},</if>
+            <if test="item.idNum != null">id_num = #{item.idNum},</if>
+            <if test="item.reagentId != null">reagent_id = #{item.reagentId},</if>
+            <if test="item.reagentSpecsNum != null">reagent_specs_num = #{item.reagentSpecsNum},</if>
+            <if test="item.actualPhoto != null">actual_photo = #{item.actualPhoto},</if>
+            <if test="item.blushPhoto != null">blush_photo = #{item.blushPhoto},</if>
+            <if test="item.scleromaPhoto != null">scleroma_photo = #{item.scleromaPhoto},</if>
             <if test="item.injection != null">injection = #{item.injection},</if>
             <if test="item.injectionWay != null">injection_way = #{item.injectionWay},</if>
             <if test="item.outcome != null">outcome = #{item.outcome},</if>

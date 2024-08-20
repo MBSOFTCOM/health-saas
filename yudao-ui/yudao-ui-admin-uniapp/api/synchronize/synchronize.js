@@ -1,7 +1,7 @@
 import upload from '@/utils/upload'
 import request from '@/utils/request'
 import dbUtils from '/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
-import { count,promise } from '../../utils/sqlite';
+import { count,promise } from '@/utils/sqlite';
 import { login } from '../login';
 
 const dbName = 'tb_screen'
@@ -297,8 +297,7 @@ export function getPpdData(screenId,injection,screenPoint,pageNo,pageSize){
 	let sql = `select sp1.*,sp2.name
 			   from ${tbScreenPpd} sp1
 			   left join ${tbScreenPerson} sp2 on sp1.personId=sp2.id
-			   where sp2.screenPoint = '${screenPoint}'
-			   `
+			   where sp2.screenPoint = '${screenPoint}'`
 	if(screenId){
 		sql+=` and sp1.screenId like '%${screenId}%' `
 	}
@@ -1126,7 +1125,7 @@ export function uploadOfflineImage(type) {
 			inType = ' IN (8) '
 			break;
 		case 2:
-			inType = ' IN (9)'
+			inType = ' IN (9,16,17,18)'
 			break;
 		case 3:
 			inType = ' IN (1, 2, 10, 11) '
@@ -1138,7 +1137,6 @@ export function uploadOfflineImage(type) {
 			inType = ' IN (4, 15) '
 			break;
 	}
-
 	plus.sqlite.selectSql({
 		name: dbName,
 		sql: `SELECT
@@ -1177,7 +1175,6 @@ export function uploadOfflineImage(type) {
 									year: currentYear,
 									screenType: item.screenType
 								};
-
 								// 创建移动端各组离线图片信息
 								const createResult = request({
 									url: '/tb/screen-images/create',

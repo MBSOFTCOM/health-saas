@@ -1032,56 +1032,46 @@ export default {
 					};
 					inData.reagentId= this.injectionReagent.id
 					inData.reagentSpecsNum= this.injectionReagent.reagentSpecsNum
-					// console.log(inData);
-					// return
 					//获取本次注射次序
 					let order = await getPpdBypersonIdToOrder(this.person.id);
 					inData.screenOrder = order[0].screenOrder == null ? 1 : order[0].screenOrder + 1;
 
-					// console.log(inData);
-					
 					let staticsConsume = await consumeApi.staticsConsumeById(this.injectionReagent.id)  // 实际统计出已消耗的人次
-					// console.log(staticsConsume);
 					let consumeNum = 0  // 库存中应消耗的试剂人次
-					// console.log(`${staticsConsume.num}-${consumeNum}-${record.num}`)
 					if (!record || record.length==0){  // 第一次消耗一支试剂
 						// console.log(recordData);
 						//插入数据请求
 						await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
 						await dbUtils.addTabItem(dbName,tbScreenConsumeRecord,recordData)
-						// await dbUtils.updateSQL(dbName,tbScreenConsume,{currentNumber:this.injectionReagent.currentNumber-1},"id",this.injectionReagent.id)
 					}else{
 						consumeNum=record[0].num * this.injectionReagent.reagentSpecsNum
-						// console.log(consumeNum);
-					}
-					// console.log(`${staticsConsume[0].num}==${consumeNum}`);
-					if (staticsConsume[0].num<consumeNum){
+						console.log(consumeNum);
+						console.log(staticsConsume[0].num);
+						if (consumeNum>staticsConsume[0].num){
 						//插入数据请求
-						await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
-						await consumeRecordApi.updateRecordNum(Math.ceil(staticsConsume[0].num/this.injectionReagent.reagentSpecsNum),this.injectionReagent.id, uni.$person.id,this.screenTime)
-					}else if(staticsConsume[0].num==consumeNum){
-						if(this.injectionReagent.currentNumber - this.injectionReagent.changeNumber==0){
-							uni.showToast({
-								title: '请重新选择试剂',
-								icon: 'none',
-								duration: 2000
-							}) 
-							return
+							await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
+						}else if(consumeNum==staticsConsume[0].num){
+							if(this.injectionReagent.currentNumber - this.injectionReagent.changeNumber==0){
+								uni.showToast({
+									title: '请重新选择试剂',
+									icon: 'none',
+									duration: 2000
+								}) 
+								return
+							}
+							//插入数据请求
+							await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
+							await consumeRecordApi.updateRecordNum(Math.ceil((staticsConsume[0].num+1)/this.injectionReagent.reagentSpecsNum),this.injectionReagent.id, uni.$person.id,this.screenTime)
+						}else if (consumeNum<staticsConsume[0].num){  //
+							await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
+							await consumeRecordApi.updateRecordNum(Math.ceil((staticsConsume[0].num+1)/this.injectionReagent.reagentSpecsNum),this.injectionReagent.id, uni.$person.id,this.screenTime)
 						}
-						//插入数据请求
-						await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
-						await consumeRecordApi.updateRecordNum(Math.ceil(staticsConsume[0].num/this.injectionReagent.reagentSpecsNum),this.injectionReagent.id, uni.$person.id,this.screenTime)
-					}else if (staticsConsume[0].num>consumeNum){  //
-						await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
-						await consumeRecordApi.updateRecordNum(Math.ceil(staticsConsume[0].num/this.injectionReagent.reagentSpecsNum),this.injectionReagent.id, uni.$person.id,this.screenTime)
-						// await dbUtils.updateSQL(dbName,tbScreenConsume,{currentNumber:this.injectionReagent.currentNumber-Math.ceil(staticsConsume[0].num/this.injectionReagent.reagentSpecsNum)},"id",this.injectionReagent.id)
-					}
 				
+					}
+					
 					//插入数据进入汇总表
 					const gatherData = await getGather(this.person.id, uni.$person.year, uni.$screenType);
-					// console.log("gatherData",gatherData);
 					const pddId = await getPddToId(this.person.id);
-					// console.log("pddId",pddId);
 				
 					if (gatherData == null || gatherData.length == 0) {
 						//获取初始汇总表插入信息
@@ -1110,20 +1100,6 @@ export default {
 						//存在的话修改
 						await updateOne(gather, this.person.id, uni.$person.year, uni.$screenType);
 					}
-
-					//插入离线图片表
-					const screenImagesData = {
-						personId: this.person.id,
-						screenId: this.person.screenId,
-						type: 9, //八代表采集组签名
-						screenOrder: inData.screenOrder,
-						screenTime: inData.screenTime,
-						screenPoint: uni.$person.screenPoint,
-						year: uni.$person.year,
-						screenType: uni.$screenType
-					};
-
-					await dbUtils.addTabItem(dbName, tbScreenImages, screenImagesData);
 
 					//关闭出口
 					this.show = false;

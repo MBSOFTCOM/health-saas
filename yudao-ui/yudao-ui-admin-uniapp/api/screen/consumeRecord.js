@@ -3,6 +3,16 @@ import request from '@/utils/request'
 import {dbName,promise,tbScreenConsume,tbScreenConsumeRecord,emptyData} from "@/utils/sqlite";
 
 /**
+ * @param {[]} data
+ */
+export const upload=(data)=>{
+	return request({
+		url:`/tb/synchronize/upload/consume-record`,
+		method:'POST',
+		data:data
+	})
+}
+/**
  * 批量向本地数据插入试剂消耗明细数据
  * @param {[]}data
  */
