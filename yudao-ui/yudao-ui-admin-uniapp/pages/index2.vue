@@ -1,5 +1,8 @@
 <template>
 	<view class="page-container">
+			<navigator url="/pages/tb/SQLiteManager/index" hover-class="navigator-hover">
+				<button type="default">SQLiteManager</button>
+			</navigator>
 		<view class="circle-container">
 			<view class="top-circles">
 				<view hover-class="none" v-for="(item, index) in topMenuItems" :key="index + 'a'" @click="btnTo(item)">

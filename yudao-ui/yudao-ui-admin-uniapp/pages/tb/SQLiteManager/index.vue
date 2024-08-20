@@ -75,7 +75,7 @@ export default {
       this.data=await SQLiteManager.getPage(table,this.pageParams)
       let count=await SQLiteManager.countPage(table,this.pageParams)
       this.total=count[0].num
-      console.log(this.data)
+      // console.log(this.data)
       if (this.data && this.data.length>0){
         this.objKey=Object.keys(this.data[0])
       }

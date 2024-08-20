@@ -86,7 +86,7 @@
 							placeholder="请填写电话"
 							v-model="FormData.tel"
 							maxlength="11"
-							@blur="telCheck"
+							@blur="telCheck(FormData.tel)"
 						/>
 					</view>
 					<view class="top-1">
@@ -120,17 +120,17 @@
 					<view class="top-1">
 						<span style="margin-left: 37px; display: inline-block">计划筛查时间</span>
 						<view style="width: 213px; margin-left: 15px">
-							<uni-datetime-picker type="date" :clear-icon="false" v-model="FormData.screenTime" />
+							<uni-datetime-picker type="daterange" :clear-icon="false" v-model="FormData.screenTime" @change="maskClick" />
 						</view>
 					</view>
-					<view class="top-1">
+					<!-- <view class="top-1">
 						<span style="margin-left: 80px; display: inline-block">是否新增</span>
 						<uni-data-select
 							style="width: 210px; margin-left: 15px"
 							v-model="FormData.isNew"
 							:localdata="dataRadio"
 						></uni-data-select>
-					</view>
+					</view> -->
 				</view>
 			</view>
 			<view class="bom-1">
@@ -287,10 +287,24 @@
 								v-model="FormData.classroom"
 							/>
 						</view>
-						<view class="bom-se" v-if="showStudent == true">
+					</view>
+					<view class="bom-bm" v-if="showStudent">
+						<view class="bom-se">
+							<span style="display: inline-block;font-size: 18px">监护人电话</span>
+							<input
+								style="margin-left: 15px;border: 1px solid rgba(204, 204, 204, 1);height: 35px;"
+								class="uni-input"
+								confirm-type="search"
+								placeholder="请填写电话"
+								v-model="FormData.guardianTel"
+								maxlength="11"
+								@blur="telCheck(FormData.guardianTel)"
+							/>
+						</view>
+						<view class="bom-se">
 							<span style="font-size: 18px">是否新生</span>
 							<uni-data-select
-								style="width: 210px; margin-left: 15px"
+								style="width: 250rpx; margin-left: 15px"
 								v-model="FormData.isNewStudent"
 								:localdata="dataRadio"
 							></uni-data-select>
@@ -602,6 +616,7 @@ export default {
 			openTransaction()
 				.then(async (r) => {
 					if (this.isNew == true) {
+						console.log(this.FormData);
 						//新增患者数据
 						const FormData1 = {
 							screenType: uni.$screenType,
@@ -611,13 +626,13 @@ export default {
 							tel: this.FormData.tel,
 							age: genderAndAge.age,
 							sex: genderAndAge.sex,
-							height: this.FormData.height,
-							weight: this.FormData.weight,
-							permanentAddress: this.FormData.permanentAddress,
-							permanentAddressProvince: this.FormData.permanentAddressProvince,
-							permanentAddressCity: this.FormData.permanentAddressCity,
-							permanentAddressCounty: this.FormData.permanentAddressCounty,
-							permanentAddressTown: this.FormData.permanentAddressTown,
+							height: this.FormData.height??'',
+							weight: this.FormData.weight??'',
+							permanentAddress: this.FormData.permanentAddress??'',
+							permanentAddressProvince: this.FormData.permanentAddressProvince??'',
+							permanentAddressCity: this.FormData.permanentAddressCity??'',
+							permanentAddressCounty: this.FormData.permanentAddressCounty??'',
+							permanentAddressTown: this.FormData.permanentAddressTown??'',
 							address: this.FormData.address,
 							nation: this.FormData.nation,
 							province: this.FormData.province,
@@ -632,10 +647,13 @@ export default {
 							isNewStudent: this.FormData.isNewStudent,
 							screenPoint: uni.$person.screenPoint,
 							screenTime: this.FormData.screenTime,
+							screenStartTime: this.FormData.screenStartTime,
+							screenEndTime: this.FormData.screenEndTime,
+							guardianTel: this.FormData.guardianTel??'',
 							creator: uni.$person.id,
-							remark: this.FormData.remark
+							remark: this.FormData.remark??''
 						};
-
+						console.log(FormData1);
 						//生成时间
 						this.conversionDate();
 						FormData1.year = uni.$person.year;
@@ -707,12 +725,12 @@ export default {
 							tel: this.FormData.tel,
 							age: genderAndAge.age,
 							sex: genderAndAge.sex,
-							height: this.FormData.height,
-							weight: this.FormData.weight,
-							permanentAddress: this.FormData.permanentAddress,
-							permanentAddressProvince: this.FormData.permanentAddressProvince,
-							permanentAddressCounty: this.FormData.permanentAddressCounty,
-							permanentAddressTown: this.FormData.permanentAddressTown,
+							height: this.FormData.height??'',
+							weight: this.FormData.weight??'',
+							permanentAddress: this.FormData.permanentAddress??'',
+							permanentAddressProvince: this.FormData.permanentAddressProvince??'',
+							permanentAddressCounty: this.FormData.permanentAddressCounty??'',
+							permanentAddressTown: this.FormData.permanentAddressTown??'',
 							address: this.FormData.address,
 							nation: this.FormData.nation,
 							province: this.FormData.province,
@@ -725,9 +743,11 @@ export default {
 							isNew: this.FormData.isNew,
 							isNewStudent: this.FormData.isNewStudent,
 							// screenPoint: this.FormData.screenPoint,
-							screenTime: this.FormData.screenTime,
+							guardianTel: this.FormData.guardianTel??'',
+							screenStartTime: this.FormData.screenStartTime,
+							screenEndTime: this.FormData.screenEndTime,
 							updater: uni.$person.id,
-							remark: this.FormData.remark
+							remark: this.FormData.remark??''
 						};
 
 						this.conversionDate();
@@ -851,10 +871,10 @@ export default {
 			}
 		},
 		//手机号验证
-		telCheck() {
+		telCheck(tel) {
 			const regex = /^1[3456789]\d{9}$/;
-			if (!regex.test(this.FormData.tel)) {
-				this.FormData.tel = '';
+			if (!regex.test(tel)) {
+				tel = '';
 				uni.$u.toast('请输入有效的手机号');
 				return;
 			}
@@ -881,11 +901,13 @@ export default {
 				address:obj.address??null,
 				firstType:obj.firstType??null,
 				moreType:obj.moreType??null,
-				screenTime:obj.screenTime??null
+				screenStartTime: obj.screenStartTime,
+				screenEndTime: obj.screenEndTime
 			}
 			if(this.showStudent){
 				checkData.schoolOrTemple=obj.schoolOrTemple??null
 				checkData.classroom=obj.classroom??null
+				checkData.guardianTel=obj.guardianTel??null
 			}
 			console.log(checkData);
 			for (let key in checkData) {
@@ -976,7 +998,9 @@ export default {
 			selectDistrictForSelect(this.FormData.permanentAddressCounty).then((res) => {
 				this.permanentAddressTown = res;
 			});
-
+			this.FormData.screenTime=[]
+			this.FormData.screenTime.push(this.FormData.screenStartTime)
+			this.FormData.screenTime.push(this.FormData.screenEndTime)
 			this.isNew = e.isNew;
 			this.crowdVal = this.FormData.firstType.toString();
 			if (e.isNew == true) {
@@ -1025,6 +1049,12 @@ export default {
 				console.log(this.city);
 				this.city = res;
 			});
+		},
+		maskClick(){
+			this.FormData.screenStartTime=this.FormData.screenTime[0]
+			this.FormData.screenEndTime=this.FormData.screenTime[1]
+			this.FormData.screenTime=null
+			console.log(this.FormData);
 		},
 		//选择市级区划
 		selectCity(val) {
@@ -1078,7 +1108,7 @@ export default {
 		//初始化省级区划列表
 		provinceList() {
 			selectDistrictForSelect(0).then((res) => {
-				console.log(res);
+				// console.log(res);
 				this.province = res;
 				this.permanentAddressProvince = res;
 			});
