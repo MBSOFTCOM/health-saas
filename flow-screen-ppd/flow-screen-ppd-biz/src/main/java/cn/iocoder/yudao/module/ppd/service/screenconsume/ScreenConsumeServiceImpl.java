@@ -386,6 +386,7 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
         }
         Integer successNum = 0;
         for (ScreenConsumeRecordDO screenConsumeRecordDO : list) {
+            screenConsumeRecordDO.setId(null);
             ScreenConsumeDO screenConsumeDO = screenConsumeMapper.selectById(screenConsumeRecordDO.getConsumeId());
             if (screenConsumeDO.getCurrentNumber() - screenConsumeRecordDO.getChangeNumber() >= 0) {
                 screenConsumeMapper.decreaseScreenConsume(screenConsumeRecordDO.getConsumeId(), screenConsumeRecordDO.getChangeNumber());

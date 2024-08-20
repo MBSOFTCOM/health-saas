@@ -116,7 +116,7 @@ public class SynchronizeController {
 
     @PostMapping("/upload/consume-record")
     @Operation(summary = "更新试剂消耗")
-    public CommonResult<Integer> uploadConsumeRecord(List<ScreenConsumeRecordDO> data){
+    public CommonResult<Integer> uploadConsumeRecord(@RequestBody List<ScreenConsumeRecordDO> data){
         Integer batch = screenConsumeService.decreaseScreenConsumeBatch(data);
         return success(batch);
     }

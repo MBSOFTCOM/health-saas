@@ -387,7 +387,8 @@ export default {
 								await SynchronizeApi.uploadOfflineImage(2);
 								//上传汇总表
 								for (let i = 0; i < self.SyncData.length; i++) {
-									let sumData=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId)
+									let sumData=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId,self.SyncData[i].idNum)
+									console.log(sumData);
 									sumData.forEach(item=>{
 										if(item.lastCollectTime){
 											item.lastCollectTime = new Date(item.lastCollectTime).getTime();
@@ -408,7 +409,18 @@ export default {
 									await SynchronizeApi.uploadSumData(sumData);
 								}
 								let consume=await ConsumeRecordApi.selectLocalData()
-									if(consume.data){
+								for (var i = 0; i < consume.length; i++) {
+									if(consume[i].createTime){
+										consume[i].createTime = new Date(consume[i].createTime).getTime();
+									}
+									if(consume[i].updateTime){
+										consume[i].updateTime = new Date(consume[i].updateTime).getTime();
+									}
+								}
+								console.log(consume);
+								let consumeResult=await ConsumeRecordApi.upload(consume)
+								console.log(3);
+									if(consumeResult.data){
 										uni.showToast({
 										title: '上传成功',
 										mask: true,
