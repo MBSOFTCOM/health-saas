@@ -1,5 +1,20 @@
 
 /**
+ * 学生类型
+ */
+const studentType=[
+	{text:"技工学校",value:9},
+	{text:"五年制高职",value:8},
+	{text:"中等专业学校",value:7},
+	{text:"职业高中",value:6},
+	{text:"普通高中",value:5},
+	{text:"初中(寄宿生)",value:4},
+    {text:"初中(非寄宿生)",value:3},
+    {text:"小学",value:2},
+    {text:"托幼机构",value:1},
+    {text:"非学生",value:0}
+]
+/**
  * 0~5岁学生筛查流程
  * @type {Map<string, string>}
  */
@@ -168,5 +183,6 @@ export {
     chronic,
     normalFive,
     normalFourteen,
-    normalFifteen
+    normalFifteen,
+	studentType
 }

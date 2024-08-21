@@ -190,8 +190,8 @@
 							<span class="se-sp" style="margin-left: 50px">省</span>
 						<uni-data-select
 							v-model="FormData.province"
-              class="districtSelect"
-              placeholder="请选择现住地址"
+							class="districtSelect"
+							placeholder="请选择现住地址"
 							:localdata="province"
 							@change="selectProvince"/>
 						</view>
@@ -199,8 +199,8 @@
 							<span class="se-sp">市</span>
 						<uni-data-select
 							v-model="FormData.city"
-              class="districtSelect"
-              placeholder="请选择现住地址"
+							class="districtSelect"
+							placeholder="请选择现住地址"
 							:localdata="city"
 							@change="selectCity"/>
 						</view>
@@ -257,6 +257,7 @@
 							multiple
 							v-model="crowdArr"
 							:localdata="items2"
+							@change="moreTypeChange"
 						></uni-data-checkbox>
 					</view>
 					<view class="bom-p1" v-if="this.crowdVal == 4">
@@ -286,6 +287,14 @@
 								class="address-input"
 								v-model="FormData.classroom"
 							/>
+						</view>
+						<view class="bom-se" v-if="showStudent == true">
+							<span style="font-size: 18px">学生类型</span>
+							<uni-data-select
+								style="width: 250rpx; margin-left: 15px"
+								v-model="FormData.studentType"
+								placement="top"
+								:localdata="studentType"/>
 						</view>
 					</view>
 					<view class="bom-bm" v-if="showStudent">
@@ -322,18 +331,19 @@
 </template>
 
 <script>
-import { openTransaction } from '../../../utils/sqlite';
 
 const ocrModule = uni.requireNativePlugin('YY-TomatoOCR');
 const modal = uni.requireNativePlugin('modal');
-import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
-import { count, dbName, tbScreenPerson, updatePerson, repeatCheck } from '@/utils/sqlite';
+import dbUtils from '@/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
+import { count, dbName, tbScreenPerson, updatePerson, repeatCheck,openTransaction } from '@/utils/sqlite';
 import { selectDistrict, selectDistrictName,selectDistrictForSelect } from '@/utils/districtInitSql.js';
 import { ethnic } from '@/utils/dict.js';
+import { studentType } from '@/utils/dictData.js';
 
 export default {
 	data() {
 		return {
+			studentType,
 			nav: [],
 			// 点击学生
 			showStudent: false,
@@ -548,6 +558,14 @@ export default {
 				this.showMonks = false;
 			}
 		},
+		moreTypeChange(){
+			console.log(this.crowdArr);
+			if(!this.crowdArr.includes(1)){
+				this.FormData.isNewStudent=null
+				this.FormData.studentType=0
+				this.FormData.guardianTel=null
+			}
+		},
 		conversionDate() {
 			const currentDate = new Date();
 			const year = currentDate.getFullYear();
@@ -640,6 +658,7 @@ export default {
 							county: this.FormData.county,
 							town: this.FormData.town,
 							firstType: this.crowdVal,
+							studentType:this.FormData.studentType??0,
 							moreType: 0,
 							schoolOrTemple: this.FormData.schoolOrTemple,
 							isNew: this.FormData.isNew,
@@ -739,6 +758,7 @@ export default {
 							town: this.FormData.town,
 							firstType: this.crowdVal,
 							moreType: 0,
+							studentType:this.FormData.studentType??0,
 							schoolOrTemple: this.FormData.schoolOrTemple,
 							isNew: this.FormData.isNew,
 							isNewStudent: this.FormData.isNewStudent,
@@ -759,7 +779,7 @@ export default {
 							this.crowdArr.push('4');
 							// console.log(FormData1.moreType);
 						}
-						// console.log(this.crowdArr);
+						console.log(this.crowdArr);
 						//转换多人群
 						this.crowdArr.forEach((i) => {
 							FormData2.moreType = parseInt(FormData2.moreType) + parseInt(i);
@@ -908,8 +928,9 @@ export default {
 				checkData.schoolOrTemple=obj.schoolOrTemple??null
 				checkData.classroom=obj.classroom??null
 				checkData.guardianTel=obj.guardianTel??null
+				checkData.studentType=obj.studentType??0
 			}
-			console.log(checkData);
+			// console.log(checkData);
 			for (let key in checkData) {
 				// console.log(key);
 				if (obj.hasOwnProperty(key)) {
@@ -971,7 +992,7 @@ export default {
 					}
 				});
 			}
-
+			this.crowdArr=[]
 			selectedOptions.forEach((i) => {
 				this.crowdArr.push(i.toString());
 			});
@@ -979,7 +1000,7 @@ export default {
 		//修改传输进来的数据
 		async uData(e) {
 			this.FormData = JSON.parse(e.val);
-			console.log('p', this.FormData);
+			// console.log('p', this.FormData);
 			selectDistrictForSelect(this.FormData.province).then((res) => {
 				this.city = res;
 			});
@@ -1234,5 +1255,6 @@ export default {
 }
 .districtSelect{
   width: 300rpx;
+  margin-left: 40rpx;
 }
 </style>
