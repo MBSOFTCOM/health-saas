@@ -36,6 +36,7 @@ public interface ScreenPointMapper extends BaseMapperX<ScreenPointDO> {
     }
 
     ScreenPointDO selectByName(String name);
+    ScreenPointDO selectByPointName(String name);
 
     /**
      * 筛查点列表

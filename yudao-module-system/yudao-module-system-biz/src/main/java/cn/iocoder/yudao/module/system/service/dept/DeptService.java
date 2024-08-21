@@ -47,6 +47,13 @@ public interface DeptService {
      * @return 部门信息
      */
     DeptDO getDept(Long id);
+    /**
+     * 获得部门信息
+     *
+     * @param name 部门名称
+     * @return 部门信息
+     */
+    DeptDO getDept(String name);
 
     /**
      * 获得部门信息数组

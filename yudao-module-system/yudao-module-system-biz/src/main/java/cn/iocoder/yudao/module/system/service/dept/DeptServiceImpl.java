@@ -183,6 +183,11 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
+    public DeptDO getDept(String name) {
+        return deptMapper.getDept(name);
+    }
+
+    @Override
     public List<DeptDO> getDeptList(Collection<Long> ids) {
         if (CollUtil.isEmpty(ids)) {
             return Collections.emptyList();

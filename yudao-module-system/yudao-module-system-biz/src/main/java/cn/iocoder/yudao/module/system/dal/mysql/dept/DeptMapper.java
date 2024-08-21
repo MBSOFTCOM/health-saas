@@ -35,6 +35,8 @@ public interface DeptMapper extends BaseMapperX<DeptDO> {
 
     @Select("SELECT id FROM system_dept WHERE name = #{deptName} AND deleted = 0 AND status = 0")
     Long getDeptId(String deptName);
+    @Select("SELECT * FROM system_dept WHERE name = #{deptName} AND deleted = 0 AND status = 0")
+    DeptDO getDept(String deptName);
 
     @Select("SELECT dept_id FROM system_users WHERE id = #{loginUserId}")
     Long getMyDept(Long loginUserId);
