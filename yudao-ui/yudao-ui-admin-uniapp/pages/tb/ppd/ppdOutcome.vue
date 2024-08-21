@@ -77,106 +77,139 @@
 						</view>
 					</view>
 				</up-col>
-				
 			</up-row>
-			
+
 			<up-row gutter="10">
-				<up-col span="4">
-					<view style="width: 250rpx">图像采集</view>
-					<image style="width: 150px;height: 150px;"  v-if="FormData.actualPhoto" :src="FormData.actualPhoto" mode="aspectFit"/>
-					<up-button
-						class="custom-style"
-						@click="chooseImg()"
-						icon="plus"
-						iconColor="rgba(36, 93, 209, 1)">
-						<span v-if="!FormData.actualPhoto">采集照片</span>
-						<span v-else>修改照片</span>
-					</up-button>
-				</up-col>
+				<view>
+					<view class="img-left">
+						<view style="margin: 0 13rpx">图像采集</view>
+						<view style="margin-left: 50rpx;">
+							<image
+								style="width: 280rpx; height: 280rpx"
+								v-if="FormData.actualPhoto"
+								:src="FormData.actualPhoto"
+								mode="aspectFit"
+							/>
+							<view
+								:class="{
+									'custom-style': !this.FormData.actualPhoto,
+									'custom-style2': this.FormData.actualPhoto
+								}"
+								@click="chooseImg()"
+							>
+								<up-icon
+									name="plus"
+									color="rgba(36, 93, 209, 1)"
+									:size="this.FormData.actualPhoto ? 20 : 30"
+								></up-icon>
+								<span v-if="!FormData.actualPhoto">采集照片</span>
+								<span v-else>修改照片</span>
+							</view>
+						</view>
+					</view>
+				</view>
 				<!-- 硬结 -->
-				<up-col span="4">
-					<up-row>
-						<up-col span="7">
-							<view >
-								<span>硬结</span>
-								<view class="bom-t">
-									<view style="width: 250rpx;">横经(mm)</view>
-									<input
-										style="border: 1rpx silver solid;height: 50rpx;margin-left: 15rpx; border-radius: 5rpx;"
-										v-model="FormData.transverseDiameter"
-										confirm-type="search"
-										placeholder="请填写横经"
-										@blur="numberCheck(FormData.transverseDiameter, 1)"
-									/>
-								</view>
-								<view class="bom-t">
-									<view style="width: 250rpx;">纵经(mm)</view>
-									<input
-										style="border: 1rpx silver solid;height: 50rpx;margin-left: 15rpx; border-radius: 5rpx;margin-top: 10rpx;"
-										v-model="FormData.longitudinalDiameter"
-										confirm-type="search"
-										placeholder="请填写纵经"
-										@blur="numberCheck(FormData.longitudinalDiameter, 2)"
-									/>
-								</view>
-							</view>
-						</up-col>
-						<up-col span="5">
-							<image style="width: 250rpx;height: 250rpx;"  v-if="FormData.scleromaPhoto" :src="FormData.scleromaPhoto" mode="aspectFit"/>
-							<up-button
-								class="custom-style"
-								@click="editImage(0,null)"
-								icon="plus"
-								iconColor="rgba(36, 93, 209, 1)">
-								<span >绘制范围</span>
-							</up-button>
-						</up-col>
-					</up-row>
-				</up-col>
+				<view class="img-content">
+					<view class="induration">
+						<view>硬结</view>
+						<view class="bom-t" style="margin: 20rpx 0">
+							<view>横经(mm)</view>
+							<input
+								class="inpt"
+								v-model="FormData.transverseDiameter"
+								confirm-type="search"
+								placeholder="请填写横经"
+								@blur="numberCheck(FormData.transverseDiameter, 1)"
+							/>
+						</view>
+						<view class="bom-t">
+							<view>纵经(mm)</view>
+							<input
+								class="inpt"
+								v-model="FormData.longitudinalDiameter"
+								confirm-type="search"
+								placeholder="请填写纵经"
+								@blur="numberCheck(FormData.longitudinalDiameter, 2)"
+							/>
+						</view>
+					</view>
+					<view>
+						<image
+							style="width: 280rpx; height: 280rpx"
+							v-if="FormData.scleromaPhoto"
+							:src="FormData.scleromaPhoto"
+							mode="aspectFit"
+						/>
+						<view
+							:class="{
+								'custom-style': !this.FormData.scleromaPhoto,
+								'custom-style2': this.FormData.scleromaPhoto
+							}"
+							@click="editImage(0, null)"
+						>
+							<up-icon
+								name="plus"
+								color="rgba(36, 93, 209, 1)"
+								:size="this.FormData.scleromaPhoto ? 20 : 30"
+							></up-icon>
+							<span v-if="!FormData.scleromaPhoto">绘制范围</span>
+							<span v-else>修改绘制范围</span>
+						</view>
+					</view>
+				</view>
 				<!-- 红晕 -->
-				<up-col span="4">
-					<up-row>
-						<up-col span="7">
-							<view >
-								红晕
-								<view class="bom-t">
-									<view style="width: 250rpx;">横经(mm)</view>
-									<input
-										style="border: 1rpx silver solid;height: 50rpx;margin-left: 15rpx; border-radius: 5rpx;"
-										v-model="FormData.blushTransverseDiameter"
-										confirm-type="search"
-										placeholder="请填写横经"
-										@blur="numberCheck(FormData.blushTransverseDiameter, 1)"
-									/>
-								</view>
-								<view class="bom-t">
-									<view style="width: 250rpx;">纵经(mm)</view>
-									<input
-										style="border: 1rpx silver solid;height: 50rpx;margin-left: 15rpx; border-radius: 5rpx;margin-top: 10rpx;"
-										v-model="FormData.blushLongitudinalDiameter"
-										confirm-type="search"
-										placeholder="请填写纵经"
-										@blur="numberCheck(FormData.blushLongitudinalDiameter, 2)"
-									/>
-								</view>
-							</view>
-						</up-col>
-						<up-col span="5">
-							<image style="width: 150rpx;height: 150rpx;"  v-if="FormData.blushPhoto" :src="FormData.blushPhoto" mode="aspectFit"/>
-							<up-button
-								class="custom-style"
-								@click="editImage(1,null)"
-								icon="plus"
-								iconColor="rgba(36, 93, 209, 1)">
-								<span >绘制范围</span>
-							</up-button>
-						</up-col>
-					</up-row>
-				</up-col>
+				<view class="img-content">
+					<view class="induration">
+						<view>红晕</view>
+						<view class="bom-t" style="margin: 20rpx 0">
+							<view>横经(mm)</view>
+							<input
+								class="inpt"
+								v-model="FormData.blushTransverseDiameter"
+								confirm-type="search"
+								placeholder="请填写横经"
+								@blur="numberCheck(FormData.blushTransverseDiameter, 1)"
+							/>
+						</view>
+						<view class="bom-t">
+							<view>纵经(mm)</view>
+							<input
+								class="inpt"
+								v-model="FormData.blushLongitudinalDiameter"
+								confirm-type="search"
+								placeholder="请填写纵经"
+								@blur="numberCheck(FormData.blushLongitudinalDiameter, 2)"
+							/>
+						</view>
+					</view>
+					<view>
+						<image
+							style="width: 280rpx; height: 280rpx"
+							v-if="FormData.blushPhoto"
+							:src="FormData.blushPhoto"
+							mode="aspectFit"
+						/>
+						<view
+							:class="{
+								'custom-style': !this.FormData.blushPhoto,
+								'custom-style2': this.FormData.blushPhoto
+							}"
+							@click="editImage(1,null)"
+						>
+							<up-icon
+								name="plus"
+								color="rgba(36, 93, 209, 1)"
+								:size="this.FormData.blushPhoto ? 20 : 30"
+							></up-icon>
+							<span v-if="!FormData.blushPhoto">绘制范围</span>
+							<span v-else>修改绘制范围</span>
+						</view>
+					</view>
+				</view>
 			</up-row>
-			
+
 			<view class="bom-m">
-				<view style="width: 250rpx;">医生签名</view>
+				<view style="width: 250rpx">医生签名</view>
 				<view class="sign-bg" v-if="!FormData.doctorSignature" @click="onSign">
 					<view class="sign-text">
 						<image class="sign-img" src="../../../static/images/tb/sign.png" mode=""></image>
@@ -222,7 +255,7 @@ import {
 	getCollectOen,
 	updateCollect
 } from '@/utils/sqlite';
-const imageEditor = uni.requireNativePlugin('Ba-ImageEditor')
+const imageEditor = uni.requireNativePlugin('Ba-ImageEditor');
 import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
 import {
 	getPpdList,
@@ -231,7 +264,7 @@ import {
 	getBypersonIdAndScreenOrder,
 	getBypersonIdAndScreenOrderOne
 } from '@/utils/ppd.js';
-import {getTimeStamp} from '@/utils/common'
+import { getTimeStamp } from '@/utils/common';
 import { updateOne } from '/utils/screenSum.js';
 import ScreenImages, { tbScreenImages } from '../../../utils/screenImages.js';
 import { openTransaction } from '../../../utils/sqlite';
@@ -302,10 +335,10 @@ export default {
 			signBase64: '',
 			//存储生成的时间
 			markText: '',
-			scleromaPhoto:null,  // 硬结编辑图
-			blushPhoto:null,  // 红晕编辑图
-			actualPhoto:null,  // 实拍图
-			doctorSignature:null  // 签名
+			scleromaPhoto: null, // 硬结编辑图
+			blushPhoto: null, // 红晕编辑图
+			actualPhoto: null, // 实拍图
+			doctorSignature: null // 签名
 		};
 	},
 	onLoad(e) {
@@ -315,7 +348,7 @@ export default {
 		if (e.isNew == 0) {
 			getBypersonIdAndScreenOrderOne(e.order, e.id).then((res) => {
 				// console.log(res);
-				this.FormData=res[0]
+				this.FormData = res[0];
 				this.FormData.bleb = res[0].bleb.toString();
 				this.crowdArr = this.FormData.bleb.split('').map(Number);
 			});
@@ -362,14 +395,14 @@ export default {
 				tempFilePath: tempFilePath, // 需要保存的文件的临时路径
 				success: async (res) => {
 					const savedFilePath = res.savedFilePath;
-					if(type){
+					if (type) {
 						this.FormData.doctorSignature = savedFilePath;
-						this.doctorSignature=savedFilePath
-					}else{
-						this.FormData.actualPhoto=savedFilePath;
-						this.actualPhoto=savedFilePath
+						this.doctorSignature = savedFilePath;
+					} else {
+						this.FormData.actualPhoto = savedFilePath;
+						this.actualPhoto = savedFilePath;
 					}
-					
+
 					// 将保存后的文件路径赋值给photoUrl以显示在页面上
 
 					uni.showToast({
@@ -409,39 +442,40 @@ export default {
 		 * @param {Object} type 编辑图片的类型 0-硬结 1-红晕
 		 * @param {Object} saveName 保存的文件名
 		 */
-		editImage(type,saveName){
-			saveName=getTimeStamp(null)
+		editImage(type, saveName) {
+			saveName = getTimeStamp(null);
 
-			imageEditor.selectImage(
-			(ret) => {
-			    if (ret.outputPath) {
-					imageEditor.imageEdit({
-						'isShowSticker': false, //是否展示贴图功能，默认为true
-						'path': ret.outputPath,//原始图片路径
-						'outputPath': `/storage/emulated/0/Pictures/${saveName}.jpg`,//保存图片路径
-					},
-					(res) => {
-						if (res.outputPath && res.isImageEdit) {
-							if(type){ // 红晕
-								this.blushPhoto=res.outputPath
-								this.FormData.blushPhoto=res.outputPath
-							}else{
-								this.scleromaPhoto=res.outputPath
-								this.FormData.scleromaPhoto=res.outputPath
+			imageEditor.selectImage((ret) => {
+				if (ret.outputPath) {
+					imageEditor.imageEdit(
+						{
+							isShowSticker: false, //是否展示贴图功能，默认为true
+							path: ret.outputPath, //原始图片路径
+							outputPath: `/storage/emulated/0/Pictures/${saveName}.jpg` //保存图片路径
+						},
+						(res) => {
+							if (res.outputPath && res.isImageEdit) {
+								if (type) {
+									// 红晕
+									this.blushPhoto = res.outputPath;
+									this.FormData.blushPhoto = res.outputPath;
+								} else {
+									this.scleromaPhoto = res.outputPath;
+									this.FormData.scleromaPhoto = res.outputPath;
+								}
 							}
 						}
-					});
-			    }
+					);
+				}
 			});
-			
 		},
-		changeOutcome(){
-			if(this.FormData.outcome==0){
-				this.FormData.bleb=null
-				this.crowdArr=[]
+		changeOutcome() {
+			if (this.FormData.outcome == 0) {
+				this.FormData.bleb = null;
+				this.crowdArr = [];
 			}
 		},
-		chooseImg(){
+		chooseImg() {
 			uni.chooseImage({
 				count: 1, // 最多可以选择的图片张数
 				sourceType: ['camera', 'album'], // 指定拍照模式
@@ -535,49 +569,53 @@ export default {
 						uni.$person.year,
 						uni.$screenType,
 						this.patient.order,
-						9)
-					let imageData={
-						idNum:this.patient.idNum,
-						screenType:uni.$screenType,
-						year:uni.$person.year,
-						screenOrder:this.patient.order,
-						path:this.FormData.doctorSignature,
-						personId:this.patient.id,
-						screenId:this.patient.screenId,
-						type:9
-					}
+						9
+					);
+					let imageData = {
+						idNum: this.patient.idNum,
+						screenType: uni.$screenType,
+						year: uni.$person.year,
+						screenOrder: this.patient.order,
+						path: this.FormData.doctorSignature,
+						personId: this.patient.id,
+						screenId: this.patient.screenId,
+						type: 9
+					};
 					// console.log(imageData);
-					await dbUtils.addTabItem(dbName,tbScreenImages,imageData)
+					await dbUtils.addTabItem(dbName, tbScreenImages, imageData);
 					// 实拍
 					await ScreenImages.deleteOne(
 						this.patient.idNum,
 						uni.$person.year,
 						uni.$screenType,
 						this.patient.order,
-						16)
-					imageData.type=16
-					imageData.path=this.FormData.actualPhoto
-					await dbUtils.addTabItem(dbName,tbScreenImages,imageData)
+						16
+					);
+					imageData.type = 16;
+					imageData.path = this.FormData.actualPhoto;
+					await dbUtils.addTabItem(dbName, tbScreenImages, imageData);
 					// 红晕
 					await ScreenImages.deleteOne(
 						this.patient.idNum,
 						uni.$person.year,
 						uni.$screenType,
 						this.patient.order,
-						18)
-					imageData.type=18
-					imageData.path=this.FormData.blushPhoto
-					await dbUtils.addTabItem(dbName,tbScreenImages,imageData)
+						18
+					);
+					imageData.type = 18;
+					imageData.path = this.FormData.blushPhoto;
+					await dbUtils.addTabItem(dbName, tbScreenImages, imageData);
 					// 硬结
 					await ScreenImages.deleteOne(
 						this.patient.idNum,
 						uni.$person.year,
 						uni.$screenType,
 						this.patient.order,
-						17)
-					imageData.type=17
-					imageData.path=this.FormData.scleromaPhoto
-					await dbUtils.addTabItem(dbName,tbScreenImages,imageData)
+						17
+					);
+					imageData.type = 17;
+					imageData.path = this.FormData.scleromaPhoto;
+					await dbUtils.addTabItem(dbName, tbScreenImages, imageData);
 
 					//返回上一页
 					uni.navigateBack({
@@ -608,7 +646,7 @@ export default {
 			for (let key in obj) {
 				// console.log(key);
 				if (obj.hasOwnProperty(key)) {
-					if (obj[key] === null || obj[key] === undefined ) {
+					if (obj[key] === null || obj[key] === undefined) {
 						return false;
 					}
 				}
@@ -649,17 +687,28 @@ export default {
 	}
 }
 .custom-style {
-			padding: 5px;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			width: 250rpx;
-			height: 250rpx;
-			border: 1px dashed rgba(204, 204, 204, 1);
-			color: rgba(36, 93, 209, 1);
-			background-color: #fff;
-		}
+	padding: 5px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 280rpx;
+	height: 280rpx;
+	border: 1px dashed rgba(204, 204, 204, 1);
+	color: rgba(36, 93, 209, 1);
+	background-color: #fff;
+}
+.custom-style2 {
+	padding: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 280rpx;
+	height: 80rpx;
+	border: 1px dashed rgba(204, 204, 204, 1);
+	color: rgba(36, 93, 209, 1);
+	background-color: #fff;
+}
 .main-bottom {
 	background-color: #fff;
 	font-size: 18px;
@@ -741,5 +790,26 @@ export default {
 .sign {
 	width: 80vw;
 	height: 90vh;
+}
+.img-left {
+	display: flex;
+}
+.img-content {
+	margin-left: 20rpx;
+	display: flex;
+	.induration {
+		display: flex;
+		flex-direction: column;
+		margin: 0 30rpx 0 100rpx;
+
+		.inpt {
+			border: 1rpx silver solid;
+			height: 60rpx;
+			border-radius: 5rpx;
+			width: 200rpx;
+			margin-left: 20rpx;
+			margin-top: 10rpx;
+		}
+	}
 }
 </style>
