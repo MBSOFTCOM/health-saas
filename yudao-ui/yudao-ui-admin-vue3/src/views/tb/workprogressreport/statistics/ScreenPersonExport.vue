@@ -324,7 +324,6 @@ const handleExport = async () => {
       contactPhone, selectInjectionPeople, injectionPeople,
       selectCheckPeople, checkPeople
     } = formData.value;
-
     // 定义验证规则
     const validationRules = [
       { condition: selectSchool.includes(1), field: school, message: "勾选学校名称之后，请选择学校！" },
@@ -335,7 +334,6 @@ const handleExport = async () => {
       { condition: selectInjectionPeople.includes(1), field: injectionPeople, message: "勾选注射人之后，请输入注射人员！" },
       { condition: selectCheckPeople.includes(1), field: checkPeople, message: "勾选查验人之后，请输入查验人员！" }
     ];
-
     // 遍历验证规则并返回第一个不通过的错误消息
     for (const rule of validationRules) {
       if (rule.condition && !rule.field) {
@@ -344,13 +342,11 @@ const handleExport = async () => {
     }
     return null;
   };
-
   // 执行表单数据验证
   const errorMessage = validateFormData();
   if (errorMessage) {
     return message.error(errorMessage);
   }
-
   try {
     // 确认导出操作
     await message.exportConfirm();
@@ -448,7 +444,6 @@ const getDeptList = async () => {
 // 获取行政区划列表
 const getDistrictList = async () => {
   districtList.value = await ScreenDistrictApi.getDistrictList2()
-  console.log(districtList.value)
 }
 
 /** 初始化 **/

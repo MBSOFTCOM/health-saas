@@ -363,7 +363,6 @@ const openExportForm = (ids: any ) => {
 /** 导出档案 对话框*/
 const exportArchivesRef = ref()
 const openExportArchivesForm = (ids: any) => {
-  console.log(typeof ids)
   if (ids.length < 1){
     return message.error("请先勾选人员！再进行导出。")
   }
@@ -443,10 +442,10 @@ const handleSelectionChange = (val: any[]) => {
     year: item.year,
     idNum: item.idNum,
     screenType: item.screenType,
-/*    school: item.schoolOrTemple,
+    school: item.schoolOrTemple,
     classroom: item.classroom,
     name: item.name,
-    age: item.age*/
+    age: item.age
   }));
 }
 

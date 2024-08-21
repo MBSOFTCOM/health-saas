@@ -1,12 +1,14 @@
 package cn.iocoder.yudao.module.ppd.service.screenpersonrealsituation;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.IoUtil;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
+import cn.hutool.poi.word.Word07Writer;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
@@ -28,24 +30,29 @@ import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
 import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import com.google.common.annotations.VisibleForTesting;
-import com.mchange.v2.beans.swing.TestBean;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.dromara.hutool.core.bean.BeanUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.io.InputStream;
+import java.awt.*;
+import java.io.*;
 import java.math.BigDecimal;
-import java.net.StandardSocketOptions;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.module.cd.enums.ErrorCodeConstants.*;
@@ -1012,6 +1019,120 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         }
     }
 
+    @Override
+    public void exportScreenPersonArchive(ScreenPersonStatisticsReqVO reqVO, HttpServletRequest request, HttpServletResponse response) {
+        List<String> files = new ArrayList<>();
+        List<PatientInfoReqVO> personInfo = reqVO.getPersonInfo();
+        int i = 1;
+        try {
+            for (PatientInfoReqVO obj : personInfo) {
+                // 每次循环创建一个新的 Word07Writer 实例
+                Word07Writer writer = new Word07Writer();
+                String name = obj.getName();
+                String idCardNumber = obj.getIdNum();
+                String school = obj.getSchool();
+                String classroom = obj.getClassroom();
+                // 添加段落（标题）
+                writer.addText(ParagraphAlignment.CENTER, new Font("黑体", Font.PLAIN, 16), "结核病筛查PPD皮肤试验知情告知书");
+                writer.addText(new Font("宋体", Font.PLAIN, 16), "");
+                // 添加段落（正文）
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "【疾病简介】结核病是由结核杆菌感染所致的慢性传染病，主要由开放性肺结核病人咳嗽、打 ");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "喷嚏及大声说话时通过空气传播所致。缺乏对结核杆菌特异性免疫力的人群一旦感染，结核杆 ");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "菌可经血循环播散至全身。人体各组织器官均可感染、发生结核病变。如果得了肺结核不能及 ");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "时、彻底治疗会对自己的健康造成严重的伤害，而且还会传染他人。");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "【皮试禁忌】患急性疾病(如麻疹、湿疹、百日咳、流行性感冒、肺炎)、急性眼结膜炎、急性 ");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "中耳炎、广泛皮肤病者及过敏体质者(对奶粉过敏)暂不使用。一个月内接种过疫苗的暂不使");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "用。");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "【注意事项】");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "1、PPD注射后请原地休息，观察30分钟后，如无不适方可离开。观察期如有不适须立即告知   ");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "当班医生或护士。");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "2.保持PPD注射部位清洁于燥，禁揉搓、抓挠、涂擦药物，腕部禁止佩戴手表及饰品。");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "3.受试者于PPD注射后72小时查验反应结果。");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "【受试者姓名】______" + name + "_____   身份证号码________" + idCardNumber + "________");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "【学校班级】_________________" + school + "____" + classroom + "__________________");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "请仔细阅读并理解以上内容，受试者健康状况良好，无皮试禁忌症，愿意接受PPD皮肤试验。");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "如拒绝接受PPD皮肤试验，请说明原因_______________________________________");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(ParagraphAlignment.RIGHT, new Font("宋体", Font.PLAIN, 10), "家长确认签名：____________________");
+                writer.addText(new Font("宋体", Font.PLAIN, 10), "");
+                writer.addText(ParagraphAlignment.RIGHT, new Font("宋体", Font.PLAIN, 10), "年   月   日");
+
+                // 写出到文件，每次循环生成唯一的文件名
+                String realPath = request.getSession().getServletContext().getRealPath("/");
+                String parentPath = new File(realPath).getParent() + "/table";
+                File dir = new File(parentPath);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                String fileName = parentPath + "/" + name + "_" + i  + ".docx";
+                files.add(fileName);
+                writer.flush(new File(fileName));
+                // 关闭
+                writer.close();
+                i++;
+            }
+        } catch (IORuntimeException e) {
+            e.printStackTrace();
+        }
+        writeToZip(response, files);
+    }
+
+
+    public void writeToZip(HttpServletResponse response, List<String> files) {
+        String fileName = "知情同意书.zip";
+        try (
+                OutputStream os = response.getOutputStream();
+                ZipOutputStream zos = new ZipOutputStream(os)
+        ) {
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+            response.setContentType("application/zip");
+            response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.name()));
+            // 遍历文件列表
+            for (String filePath : files) {
+                File file = new File(filePath);
+                if (!file.exists() || !file.isFile()) {
+                    // 处理文件不存在或路径无效的情况
+                    continue;
+                }
+                try (FileInputStream fis = new FileInputStream(file)) {
+                    // 创建一个新的 ZIP 条目
+                    ZipEntry zipEntry = new ZipEntry(file.getName());
+                    zos.putNextEntry(zipEntry);
+                    // 将文件内容写入到 ZIP 文件中
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = fis.read(buffer)) > 0) {
+                        zos.write(buffer, 0, length);
+                    }
+                    // 关闭当前条目
+                    zos.closeEntry();
+                } catch (IOException e) {
+                    // 处理文件读取或写入错误
+                    e.printStackTrace();
+                }
+            }
+            // 不需要显式关闭 zos 和 os，因为 try-with-resources 会自动关闭它们
+        } catch (IOException e) {
+            // 处理响应流相关的错误
+            e.printStackTrace();
+        }
+    }
+
 
     // 处理勾选数据
     private void resolveExportData(StatisticExportVO statisticExportVO, List<Integer> infoList) {
@@ -1048,22 +1169,25 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         }
     }
 
+    // 导出表格--处理是否已做ppd
     private void setIsDoPpd(StatisticExportVO source, StatisticExportVO2 target) {
         if (ObjectUtil.isNotNull(source.getIsDoPpd())) {
             target.setIsDoPpd(source.getIsDoPpd() == 1 ? " √ " : " × ");
         }
     }
-
+    // 导出表格--处理是否双圈、水泡等
     private void setBleb(StatisticExportVO source, StatisticExportVO2 target) {
         if (ObjectUtil.isNotNull(source.getBleb()) && !StrUtil.isEmptyIfStr(source.getBleb())) {
             target.setBleb(" √ ");
         }
     }
 
+    // 导出表格--处理是否平均长度小于15mm
     private void setDiameterFlag(StatisticExportVO source, StatisticExportVO2 target) {
         target.setDiameterFlag(source.getDiameterFlag() == 1 ? " √ " : " × ");
     }
 
+    // 导出表格--处理ppd判读结果
     private void setOutcomePpd(StatisticExportVO source, StatisticExportVO2 target) {
         if (ObjectUtil.isNotNull(source.getOutcomePpd())) {
             switch (source.getOutcomePpd()) {
@@ -1074,12 +1198,14 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         }
     }
 
+    // 导出表格--处理是否做x胸片
     private void setIsDoX(StatisticExportVO source, StatisticExportVO2 target) {
         if (ObjectUtil.isNotNull(source.getIsDoX())) {
             target.setIsDoX(source.getIsDoX() == 1 ? " √ " : " × ");
         }
     }
 
+    // 导出表格--处理DR结果
     private void setOutcomeDr(StatisticExportVO source, StatisticExportVO2 target) {
         if (ObjectUtil.isNotNull(source.getOutcomeDr())) {
             switch (source.getOutcomeDr()) {

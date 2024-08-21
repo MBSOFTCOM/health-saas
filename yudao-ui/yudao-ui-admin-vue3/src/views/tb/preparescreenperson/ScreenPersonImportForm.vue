@@ -180,7 +180,7 @@ defineExpose({open}) // 提供 open 方法，用于打开弹窗
 const submitForm = async () => {
   let flag = await ScreenRepeatPersonApi.getIsRemainRepeatPerson()
   if (flag){
-    message.error("重复人员管理中有未处理的记录！请先联系市级管理员处理后，再进行导入。")
+    message.error("重复人员管理中有未处理的记录！请先处理后，再进行导入。")
     return
   }
   // 校验表单
