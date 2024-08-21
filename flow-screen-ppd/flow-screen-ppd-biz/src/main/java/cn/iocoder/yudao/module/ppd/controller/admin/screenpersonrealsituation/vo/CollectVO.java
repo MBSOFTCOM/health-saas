@@ -36,6 +36,10 @@ public class CollectVO implements Serializable {
      */
     private String outcome;
     /**
+     * 两年内是否有与结核病患者的接触史（0：否，1：是）
+     */
+    private Integer contacted;
+    /**
      * 医生签名
      */
     private String doctorSignature;

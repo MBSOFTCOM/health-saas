@@ -300,6 +300,7 @@ public class ScreenPersonController {
 
 
     @GetMapping("/get-patientInfoList")
+    @Operation(summary = "查看--患者基本信息")
     @Parameters({@Parameter(name = "year", description = "年份", required = true),
             @Parameter(name = "id", description = "患者id", required = true)})
     public CommonResult<PatientInfoList> getPatientInfoList(@RequestParam("id") Long id,
@@ -347,14 +348,10 @@ public class ScreenPersonController {
                                              @RequestParam("imageType") Integer imageType,
                                              @RequestParam("year") Integer year,
                                              @RequestParam("screenType") Integer screenType
-                                             ) {
-        try{
-            String image = screenPersonService.updateImag2(personId, screenId, imageType, screenOrder, year, screenType, file.getInputStream());
-            return success(image);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return success("success");
+                                             ) throws IOException {
+
+        String image = screenPersonService.updateImag2(personId, screenId, imageType, screenOrder, year, screenType, file.getInputStream());
+        return success(image);
     }
     @PostMapping(value = "/update-ct-image")
     @Operation(summary = "更换ct照片")

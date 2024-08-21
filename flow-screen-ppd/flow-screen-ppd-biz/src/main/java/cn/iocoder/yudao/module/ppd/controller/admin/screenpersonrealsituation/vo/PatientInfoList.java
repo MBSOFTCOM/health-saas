@@ -9,9 +9,13 @@ import java.util.List;
 public class PatientInfoList {
 
     /**
-     * CT、DR组数据
+     * DR组数据
      */
-    private List<ChestRadiographVO> CTDRList;
+    private List<ChestRadiographVO> DRList;
+    /**
+     * CT组数据
+     */
+    private List<ChestRadiographVO> CTList;
     /**
      * 采集组数据
      */

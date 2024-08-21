@@ -130,6 +130,15 @@ const open = async (type: number, personId: number, screenOrder: number, screenI
     case 4:
       dialogTitle.value = '心电图';
       break;
+    case 16:
+      dialogTitle.value = 'PPD实拍图';
+      break;
+    case 17:
+      dialogTitle.value = 'PPD硬结编辑图';
+      break;
+    case 18:
+      dialogTitle.value = 'PPD红晕编辑图';
+      break;
     default:
       dialogTitle.value = '其他类型';
   }

@@ -406,98 +406,88 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="采集" name="checkGroup">
-          <el-table
-            :data="checkList" :stripe="true" max-height="400px"
-            v-if="formData.isNewStudent===1">
+          <el-table :data="checkList" :stripe="true" max-height="400px">
             <el-table-column label="筛查次序" prop="screenOrder" align="center" width="100"/>
             <el-table-column label="咳嗽、咳痰不小于2周" align="center">
               <template #default="scope">
                 {{ scope.row.outcome.includes('1') ? '有' : '无' }}
               </template>
             </el-table-column>
-            <el-table-column label="痰中带血、咯血" align="center">
+            <el-table-column label="血痰、咯血" align="center">
               <template #default="scope">
                 {{ scope.row.outcome.includes('2') ? '有' : '无' }}
               </template>
             </el-table-column>
-            <el-table-column label="反复发热2周以上" align="center">
+            <el-table-column label="乏力、盗汗" align="center">
               <template #default="scope">
                 {{ scope.row.outcome.includes('3') ? '有' : '无' }}
               </template>
             </el-table-column>
-            <el-table-column label="淋巴肿大" align="center">
+            <el-table-column label="体重减轻(超过6斤)" align="center" width="100">
               <template #default="scope">
                 {{ scope.row.outcome.includes('4') ? '有' : '无' }}
               </template>
             </el-table-column>
-            <el-table-column label="筛查单位" align="center" prop="screenAgency"/>
-            <el-table-column
-              label="筛查时间" align="center" prop="screenTime"
-              :formatter="dateFormatter"/>
-          </el-table>
-          <el-table
-            :data="checkList" :stripe="true" max-height="400px"
-            v-if="formData.isNewStudent===0 || formData.isNewStudent === undefined">
-            <el-table-column label="筛查次序" prop="screenOrder" align="center" width="100"/>
-            <el-table-column label="咳嗽、咳痰(超过一周)" align="center" width="200">
-              <template #default="scope">
-                {{ scope.row.outcome.includes('1') ? '有' : '无' }}
-              </template>
-            </el-table-column>
-            <el-table-column label="血痰或咯血" align="center">
-              <template #default="scope">
-                {{ scope.row.outcome.includes('2') ? '有' : '无' }}
-              </template>
-            </el-table-column>
-            <el-table-column label="发热胸痛" align="center">
-              <template #default="scope">
-                {{ scope.row.outcome.includes('3') ? '有' : '无' }}
-              </template>
-            </el-table-column>
-            <el-table-column label="夜间盗汗" align="center">
-              <template #default="scope">
-                {{ scope.row.outcome.includes('4') ? '有' : '无' }}
-              </template>
-            </el-table-column>
-            <el-table-column label="食欲不振" align="center">
+            <el-table-column label="发热" align="center">
               <template #default="scope">
                 {{ scope.row.outcome.includes('5') ? '有' : '无' }}
               </template>
             </el-table-column>
-            <el-table-column label="乏力" align="center">
+            <el-table-column label="食欲不振" align="center">
               <template #default="scope">
                 {{ scope.row.outcome.includes('6') ? '有' : '无' }}
               </template>
             </el-table-column>
-            <el-table-column label="体重减轻" align="center">
+            <el-table-column label="胸痛" align="center">
               <template #default="scope">
                 {{ scope.row.outcome.includes('7') ? '有' : '无' }}
               </template>
             </el-table-column>
-            <el-table-column label="卡痕异常" align="center">
+            <el-table-column label="两年内是否有与结核病患者的接触史" align="center" prop="contacted">
               <template #default="scope">
-                {{ scope.row.outcome.includes('8') ? '有' : '无' }}
+                {{ scope.row.contacted ? '是' : '否' }}
               </template>
             </el-table-column>
             <el-table-column label="筛查单位" align="center" prop="screenAgency"/>
-            <el-table-column
-              label="筛查时间" align="center" prop="screenTime"
-              :formatter="dateFormatter"/>
+            <el-table-column label="筛查时间" align="center" prop="screenTime" :formatter="dateFormatter2"/>
           </el-table>
         </el-tab-pane>
-        <el-tab-pane label="PPD" name="PPDgroup">
+        <el-tab-pane label="PPD" name="ppdGroup">
           <el-table :data="PPDList" :stripe="true" max-height="400px">
             <el-table-column label="筛查次序" prop="screenOrder" align="center" width="100"/>
-            <el-table-column label="横径(mm)" align="center" prop="transverseDiameter"/>
-            <el-table-column label="纵径(mm)" align="center" prop="longitudinalDiameter"/>
-            <el-table-column label="是否含有水泡/双圈/坏死/淋巴管炎" align="center" prop="bleb">
+            <el-table-column label="硬结横径(mm)" align="center" prop="transverseDiameter" width="100"/>
+            <el-table-column label="硬结纵径(mm)" align="center" prop="longitudinalDiameter" width="100"/>
+            <el-table-column label="红晕横径(mm)" align="center" prop="blushTransverseDiameter"  width="100"/>
+            <el-table-column label="红晕纵径(mm)" align="center" prop="blushLongitudinalDiameter"  width="100"/>
+            <el-table-column label="水泡" align="center" >
               <template #default="scope">
-                {{ scope.row.bleb ? '是' : '否' }}
+                {{ scope.row.bleb.toString().includes('1') ? '是' : '否' }}
               </template>
             </el-table-column>
-            <el-table-column label="是否注射" align="center" prop="injection">
+            <el-table-column label="双圈" align="center">
+              <template #default="scope">
+                {{ scope.row.bleb.toString().includes('2') ? '是' : '否' }}
+              </template>
+            </el-table-column>
+            <el-table-column label="坏死" align="center">
+              <template #default="scope">
+                {{ scope.row.bleb.toString().includes('3') ? '是' : '否' }}
+              </template>
+            </el-table-column>
+            <el-table-column label="淋巴管炎" align="center" width="90">
+              <template #default="scope">
+                {{ scope.row.bleb.toString().includes('4') ? '是' : '否' }}
+              </template>
+            </el-table-column>
+            <el-table-column label="注射" align="center" prop="injection">
               <template #default="scope">
                 {{ scope.row.injection ? '是' : '否' }}
+              </template>
+            </el-table-column>
+            <el-table-column label="注射方式" align="center" prop="injectionWay" width="90">
+              <template #default="scope">
+                <dict-tag :type="DICT_TYPE.TB_SCREEN_INJECTION_WAY"
+                          :value="scope.row.injectionWay"/>
               </template>
             </el-table-column>
             <el-table-column label="结果" align="center" prop="outcome">
@@ -505,22 +495,45 @@
                 {{ scope.row.outcome ? '感染' : '未感染' }}
               </template>
             </el-table-column>
-            <el-table-column label="注射单位" align="center" prop="injectionAgency"/>
+            <el-table-column label="注射单位" align="center" prop="injectionAgency" width="180"/>
             <el-table-column
               label="筛查时间" align="center" prop="screenTime"
-              :formatter="dateFormatter"/>
+              :formatter="dateFormatter2" width="110"/>
+            <el-table-column label="操作" align="center" fixed="right" width="120">
+              <template #default="scope">
+                <el-dropdown
+                  @command="(command) => handleCommand(command, scope.row)"
+                >
+                  <el-button type="primary" link><Icon icon="ep:d-arrow-right" /> 查看图片</el-button>
+                  <template #dropdown>
+                    <el-dropdown-menu>
+                      <el-dropdown-item
+                        command="checkPPD"
+                      >
+                        查看PPD实拍图
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                        command="checkInduration"
+                      >
+                        查看硬结编辑图
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                        command="checkFlush"
+                      >
+                        查看红晕编辑图
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+              </template>
+            </el-table-column>
           </el-table>
         </el-tab-pane>
-        <el-tab-pane label="CT/DR">
-          <el-table :data="CTDRList" :stripe="true" max-height="400px">
+        <el-tab-pane label="DR">
+          <el-table :data="DRList" :stripe="true" max-height="400px">
             <el-table-column label="筛查次序" prop="screenOrder" align="center" width="100"/>
             <el-table-column label="操作" align="center" fixed="right" width="200">
               <template #default="scope">
-                <el-button
-                  link type="primary"
-                  @click="openImage(2,formData.id,scope.row.screenOrder,formData.screenId,formData.year,formData.screenType)">
-                  查看CT
-                </el-button>
                 <el-button
                   link type="primary"
                   @click="openImage(1, formData.id,scope.row.screenOrder,formData.screenId,formData.year,formData.screenType)">
@@ -535,8 +548,31 @@
               </template>
             </el-table-column>
             <el-table-column
-              label="筛查时间" align="center" prop="screenTime"
-              :formatter="dateFormatter"/>
+              label="胸片采集时间" align="center" prop="screenTime"
+              :formatter="dateFormatter2"/>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="CT">
+          <el-table :data="CTList" :stripe="true" max-height="400px">
+            <el-table-column label="筛查次序" prop="screenOrder" align="center" width="100"/>
+            <el-table-column label="操作" align="center" fixed="right" width="200">
+              <template #default="scope">
+                <el-button
+                  link type="primary"
+                  @click="openImage(2,formData.id,scope.row.screenOrder,formData.screenId,formData.year,formData.screenType)">
+                  查看CT
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column label="胸片编号" align="center" prop="chestRadiographCode"/>
+            <el-table-column label="结果" align="center" prop="outcome">
+              <template #default="scope">
+                {{ scope.row.outcome ? '疑似结核' : '无异常' }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="胸片采集时间" align="center" prop="screenTime"
+              :formatter="dateFormatter2"/>
           </el-table>
         </el-tab-pane>
         <el-tab-pane label="知情同意书">
@@ -671,7 +707,7 @@ import {onMounted, ref, reactive} from 'vue'
 import DictTag from "@/components/DictTag/src/DictTag.vue"
 import ContentWrap from "@/components/ContentWrap/src/ContentWrap.vue"
 import type {TabsPaneContext} from 'element-plus'
-import {dateFormatter} from '@/utils/formatTime'
+import {dateFormatter2} from '@/utils/formatTime'
 import ImageForm from './ImageForm.vue'
 
 
@@ -708,8 +744,8 @@ const formRef = ref() // 表单 Ref
 
 const checkList = ref([]) //采集组数据
 const PPDList = ref([]) // PPD组数据
-const CTDRList = ref([]) // CT、DR组数据
-const sputumList = ref([]) // 痰检组数据
+const DRList = ref([]) // DR组数据
+const CTList = ref([]) // CT组数据
 const electList = ref([]) // 心电图组数据
 const diagnoList = ref([]) // 诊断组数据
 const patientInfoList = ref()
@@ -779,7 +815,8 @@ const open = async (id: number, year: number, screenType: number) => {
       const data = await ScreenPersonApi.getPatientInfoList(id, year, screenType)
       checkList.value = data.checkList //采集组数据
       PPDList.value = data.ppdlist // PPD组数据
-      CTDRList.value = data.ctdrlist // CT、DR组数据
+      DRList.value = data.drlist // DR组数据
+      CTList.value = data.ctlist // CT组数据
 /*      sputumList.value = data.sputumList // 痰检组数据
       electList.value = data.electList // 心电图组数据
       diagnoList.value = data.diagnoList // 诊断组数据*/
@@ -857,6 +894,23 @@ const diagnoOutcome = (value) => {
 const imageRef = ref()
 const openImage = (type: number, personId: number, screenOrder: number, screenId: string, year: number, screenType:number) => {
   imageRef.value.open(type, personId, screenOrder, screenId, year, screenType)
+}
+
+/** 操作分发 */
+const handleCommand = (command: string, row: any) => {
+  switch (command) {
+    case 'checkPPD':
+      openImage(16, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType)
+      break
+    case 'checkInduration':
+      openImage(17, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType)
+      break
+    case 'checkFlush':
+      openImage(18, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType)
+      break
+    default:
+      break
+  }
 }
 
 </script>

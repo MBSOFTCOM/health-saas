@@ -32,15 +32,23 @@ public class ScreenTstVO implements Serializable {
      */
     private Long patientId;
     /**
-     * 横径 单位mm
+     * 硬结横径 单位mm
      */
-    private Double transverseDiameter;
+    private Integer transverseDiameter;
     /**
-     * 纵径 单位mm
+     * 硬结纵径 单位mm
      */
-    private Double longitudinalDiameter;
+    private Integer longitudinalDiameter;
     /**
-     * 是否含有水泡/双圈/坏死/淋巴管炎/ 1-是 0-否
+     * 红晕横径
+     */
+    private Integer blushTransverseDiameter;
+    /**
+     * 红晕纵径
+     */
+    private Integer blushLongitudinalDiameter;
+    /**
+     * 1：水泡/2：双圈/3：坏死/4：淋巴管炎/
      */
     private Integer bleb;
     /**

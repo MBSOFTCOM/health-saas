@@ -12,7 +12,7 @@
 
     <select id="getCheckList"
             resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.CollectVO">
-        SELECT id, outcome, screen_agency, screen_time, screen_order, person_id
+        SELECT id, outcome, screen_agency, screen_time, screen_order, person_id, contacted
         FROM tb_screen_collect
         WHERE person_id = #{patientId}
           AND year = #{year}
@@ -24,21 +24,50 @@
 
     <select id="getPPDList"
             resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ScreenTstVO">
-        SELECT transverse_diameter, longitudinal_diameter, bleb, injection, screen_order,person_id,
-               injection_way, outcome, injection_agency, screen_time, id
+        SELECT transverse_diameter,
+               longitudinal_diameter,
+               bleb,
+               injection,
+               screen_order,
+               person_id,
+               injection_way,
+               outcome,
+               injection_agency,
+               screen_time,
+               id,
+               blush_transverse_diameter,
+               blush_longitudinal_diameter
         FROM tb_screen_ppd
         WHERE person_id = #{patientId}
           AND year = #{year}
           AND screen_type = #{screenType}
-            AND deleted = 0
+          AND deleted = 0
         ORDER BY id DESC
     </select>
 
 
-    <select id="getCTDRList"
+    <select id="getDRList"
             resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ChestRadiographVO">
-        SELECT chest_radiograph_code, chest_radiograph, screen_time, outcome, screen_order,person_id, id
+        SELECT chest_radiograph_code, chest_radiograph, photo_time AS screenTime, outcome, screen_order,person_id, id
         FROM tb_screen_chest_radiograph
+        WHERE person_id = #{patientId}
+          AND year = #{year}
+          AND screen_type = #{screenType}
+          AND deleted = 0
+        ORDER BY id DESC
+    </select>
+
+
+    <select id="getCTList"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ChestRadiographVO">
+        SELECT computed_tomography_code AS chestRadiographCode,
+               computed_tomography      AS chestRadiograph,
+               photo_time               AS screenTime,
+               outcome,
+               screen_order,
+               person_id,
+               id
+        FROM tb_screen_computed_tomography
         WHERE person_id = #{patientId}
           AND year = #{year}
           AND screen_type = #{screenType}
@@ -364,4 +393,5 @@
           AND tsp.year = #{year}
           AND tsp.deleted = 0
     </select>
+
 </mapper>

@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -129,9 +130,16 @@ public interface ScreenPersonMapper extends BaseMapperX<ScreenPersonDO> {
                                  @Param("screenType") Integer screenType);
 
     /**
-     * 根据患者id，获取CTDR组数据
+     * 根据患者id，获取DR组数据
      */
-    List<ChestRadiographVO> getCTDRList(@Param("patientId") Long patientId,
+    List<ChestRadiographVO> getDRList(@Param("patientId") Long patientId,
+                                        @Param("year") Integer year,
+                                        @Param("screenType") Integer screenType);
+
+    /**
+     * 根据患者id，获取CT组数据
+     */
+    List<ChestRadiographVO> getCTList(@Param("patientId") Long patientId,
                                         @Param("year") Integer year,
                                         @Param("screenType") Integer screenType);
 

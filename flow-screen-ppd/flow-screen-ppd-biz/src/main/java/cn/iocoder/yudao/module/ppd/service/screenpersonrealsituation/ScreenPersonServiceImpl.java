@@ -751,8 +751,10 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         List<CollectVO> checkList =
                 screenPersonMapper.getCheckList(patientId, year, screenType).parallelStream().collect(Collectors.toList());
 
-        List<ChestRadiographVO> ctdrList =
-                screenPersonMapper.getCTDRList(patientId, year, screenType).parallelStream().collect(Collectors.toList());
+        List<ChestRadiographVO> drList =
+                screenPersonMapper.getDRList(patientId, year, screenType).parallelStream().collect(Collectors.toList());
+        List<ChestRadiographVO> ctList =
+                        screenPersonMapper.getCTList(patientId, year, screenType).parallelStream().collect(Collectors.toList());
 
         /*List<DiagnosisVO> diagnoList =
                 screenPersonMapper.getDiagnoList(patientId, year, screenType).parallelStream().collect(Collectors.toList());
@@ -771,7 +773,8 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         // 使用构造函数初始化PatientInfoList对象
         return new PatientInfoList()
                 .setCheckList(checkList)
-                .setCTDRList(ctdrList)
+                .setDRList(drList)
+                .setCTList(ctList)
                 .setPPDList(ppdList)
                 .setTbHealthScreening(tbHealthScreening);
     }

@@ -131,7 +131,7 @@
                tsp.student_type                                                                               AS studentType,
                COUNT(tsp.id)                                                                                  AS actualStudentNumber,
                COUNT(CASE WHEN latest_ppd.injection = 1 THEN 1 END)                                           AS ppdNumber,
-               COUNT(CASE WHEN latest_ppd.maxScreenOrder > 0 THEN 1 END)                                    AS ppdReNumber,
+               COUNT(CASE WHEN latest_ppd.maxScreenOrder > 1 THEN 1 END)                                    AS ppdReNumber,
                COUNT(CASE WHEN latest_ppd.outcome = 0 THEN 1 END)                                             AS feminine,
                COUNT(CASE WHEN latest_ppd.outcome = 1 THEN 1 END)                                             AS masculine,
                COUNT(CASE WHEN tss.ppd_id IS NULL THEN 1 END)                                                 AS noPpdNumber,
@@ -189,7 +189,7 @@
         SELECT tsd.name                                                    AS districtName,
                sd.name                                                     AS deptName,
                COUNT(CASE WHEN latest_ppd.injection = 1 THEN 1 END)        AS ppdNumber,
-               COUNT(CASE WHEN latest_ppd.max_screen_order > 0 THEN 1 END) AS ppdReNumber,
+               COUNT(CASE WHEN latest_ppd.maxScreenOrder > 1 THEN 1 END) AS ppdReNumber,
                COUNT(CASE WHEN latest_ppd.outcome = 0 THEN 1 END)          AS feminine,
                COUNT(CASE WHEN latest_ppd.outcome = 1 THEN 1 END)          AS masculine
         FROM tb_screen_person AS tsp

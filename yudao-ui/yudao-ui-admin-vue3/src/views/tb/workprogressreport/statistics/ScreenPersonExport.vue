@@ -3,7 +3,6 @@
     <template #title>
       <span style="font-weight: bold">导出表格</span>
     </template>
-
     <el-form
         ref="formRef"
         :model="formData"
@@ -225,9 +224,7 @@
             导出表格
           </el-button>
         </div>
-
       </el-form>
-
   </Dialog>
 
 
@@ -243,7 +240,7 @@ import {ScreenDistrictApi} from "@/api/tb/screendistrict";
 const activeName = ref('first')
 
 /** 摸底患者信息 */
-defineOptions({name: 'ScreenPersonDetail'})
+defineOptions({name: 'ScreenPersonExport'})
 
 const {t} = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
@@ -288,14 +285,17 @@ const districtList = ref([]) // 行政区划列表
 const formRules = reactive({
   tableTittle:[{required: true, message: '请输入表格标题', trigger: 'blur'},
               {max: 20, message: '表格标题过长', trigger: 'blur'},
-              ],
+  ],
   contact: [{max: 10, message: '联系人名字过长', trigger: 'blur'},
-            {pattern: /^[\u4e00-\u9fa5]+$/, message: '请输入汉字', trigger: 'blur'}],
+            {pattern: /^[\u4e00-\u9fa5]+$/, message: '请输入汉字', trigger: 'blur'}
+  ],
   contactPhone: [{pattern: /^[0-9]{11}$/, message: '必须为11位数字', trigger: 'blur'}],
   injectionPeople: [{max: 10, message: '注射人名字过长', trigger: 'blur'},
-                    {pattern: /^[\u4e00-\u9fa5]+$/, message: '请输入汉字', trigger: 'blur'}],
+                    {pattern: /^[\u4e00-\u9fa5]+$/, message: '请输入汉字', trigger: 'blur'}
+  ],
   checkPeople: [{max: 10, message: '查验人名字过长', trigger: 'blur'},
-                {pattern: /^[\u4e00-\u9fa5]+$/, message: '请输入汉字', trigger: 'blur'}],
+                {pattern: /^[\u4e00-\u9fa5]+$/, message: '请输入汉字', trigger: 'blur'}
+  ],
 });
 
 /** 打开弹窗 */
