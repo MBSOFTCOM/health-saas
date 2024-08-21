@@ -447,6 +447,7 @@ export default {
 							screenOrder: this.orderAndTime.order,
 							screenTime: this.orderAndTime.time,
 							creator: uni.$person.id,
+							statusFlag: 1,
 							createTime: this.orderAndTime.time
 						};
 						
@@ -492,6 +493,7 @@ export default {
 							screenTime: this.orderAndTime.time,
 							screenPoint: uni.$person.screenPoint,
 							year: this.patient.year,
+							statusFlag:1,
 							screenType: uni.$screenType
 						};
 
@@ -518,6 +520,7 @@ export default {
 							//插入
 							await dbUtils.addTabItem(dbName, tbScreenSum, gather);
 						} else {
+							gather.statusFlag=2
 							await updateOne(gather, this.patient.id, this.patient.year, uni.$screenType);
 						}
 					} else {
@@ -529,6 +532,7 @@ export default {
 							doctorSignature: this.formData.doctorSignature,
 							contacted:this.contacted,
 							updateTime: this.markText[0] + ' ' + this.markText[1],
+							statusFlag:this.formData.statusFlag??2,
 							updater: uni.$person.id
 						};
 
@@ -572,7 +576,7 @@ export default {
 						//修改离线照片存储信息
 						//插入离线图片表
 						const setScreenImagesData = {
-							path: this.formData.doctorSignature
+							path: this.formData.doctorSignature,
 						};
 
 						await ScreenImages.updateOne(

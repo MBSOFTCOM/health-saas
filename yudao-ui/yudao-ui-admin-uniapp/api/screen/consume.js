@@ -57,7 +57,7 @@ export const getDataFromLocal = async () => {
  * @param {number} regentId
  */
 export const  getFirstConsume=async(regentId)=>{
-	let sql=`select c.*,r.changeNumber from ${tbScreenConsume} c left join ${tbScreenConsumeRecord} r on r.consumeId=c.id where reagentId=${regentId} order by consumeOrder ASC limit 1`
+	let sql=`select c.*,r.changeNumber from ${tbScreenConsume} c left join ${tbScreenConsumeRecord} r on r.consumeId=c.id where reagentId=${regentId} order by consumeOrder DESC limit 1`
 	// console.log(sql);
 	return promise(dbName,sql)
 }

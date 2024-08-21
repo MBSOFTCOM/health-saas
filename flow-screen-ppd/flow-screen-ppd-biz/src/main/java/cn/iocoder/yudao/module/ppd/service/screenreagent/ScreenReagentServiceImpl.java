@@ -1,7 +1,6 @@
 package cn.iocoder.yudao.module.ppd.service.screenreagent;
 
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
@@ -15,7 +14,6 @@ import cn.iocoder.yudao.module.ppd.dal.mysql.screenconsume.ScreenConsumeMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenreagent.ScreenReagentMapper;
 import cn.iocoder.yudao.module.system.api.dict.DictDataApi;
 import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
-import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -170,8 +168,18 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
 
     @Override
     public List<ScreenReagentDO> getUsableReagent(ScreenReagentPageReqVO pageReqVO) {
-        pageReqVO.setDeptId(deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId()));
-        return screenReagentMapper.selectUsable(pageReqVO);
+        Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+        pageReqVO.setDeptId(deptId);
+        List<ScreenReagentDO> screenReagentDOS = screenReagentMapper.selectUsable(pageReqVO);
+        // 复制一份screenReagentDOS，然后遍历screenReagentDOS，如果screenConsumeMapper.listConsumeByReagentId(screenReagentDO.getId(),deptId)==0，则删除screenReagentDOS中的元素
+        List<ScreenReagentDO> screenReagentDOS2 = new ArrayList<>(screenReagentDOS);
+        for (ScreenReagentDO screenReagentDO : screenReagentDOS) {
+            Integer total = screenConsumeMapper.listConsumeByReagentId(screenReagentDO.getId(),deptId);
+            if (total==0){
+                screenReagentDOS2.remove(screenReagentDO);
+            }
+        }
+        return screenReagentDOS2;
     }
 
     @Override

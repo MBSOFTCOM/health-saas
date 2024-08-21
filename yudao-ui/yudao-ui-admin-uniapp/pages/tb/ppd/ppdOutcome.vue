@@ -509,8 +509,6 @@ export default {
 				return;
 			}
 
-			//把状态置为已提交
-			this.FormData.injection = 1;
 
 			//症状
 			this.FormData.bleb = '';
@@ -536,6 +534,7 @@ export default {
 				outcome: this.FormData.outcome, //结果
 				bleb: this.FormData.bleb, //症状
 				doctorSignature: this.FormData.doctorSignature, //签名
+				statusFlag:this.FormData.statusFlag??2,
 				updater: this.FormData.updater, //修改者
 				updateTime: this.FormData.updateTime //修改时间
 			};

@@ -36,24 +36,12 @@ public interface ScreenConsumeMapper extends BaseMapperX<ScreenConsumeDO> {
      * @return List<ScreenConsumeDO>
      */
      List<ScreenConsumeDO> listUsable(ScreenConsumePageReqVO reqVO);
-     /*{
-        return selectList(new LambdaQueryWrapperX<ScreenConsumeDO>()
-                .eqIfPresent(ScreenConsumeDO::getReagentId,reqVO.getReagentId())
-                .eqIfPresent(ScreenConsumeDO::getUsable,0)
-                .eqIfPresent(ScreenConsumeDO::getDeleted,0)
-                .eqIfPresent(ScreenConsumeDO::getDeptId,reqVO.getDeptId())
-                .gt(ScreenConsumeDO::getCurrentNumber,0)
-                .select(
-                        ScreenConsumeDO::getId,ScreenConsumeDO::getReagentId,
-                        ScreenConsumeDO::getReagentName,ScreenConsumeDO::getReagentType,
-                        ScreenConsumeDO::getReagentSpecsNum,ScreenConsumeDO::getConsumeOrder,
-                        ScreenConsumeDO::getThreshold,ScreenConsumeDO::getUsable,
-                        ScreenConsumeDO::getBathNumber,ScreenConsumeDO::getCurrentNumber,
-                        ScreenConsumeDO::getInboundNumber,ScreenConsumeDO::getIndate,
-                        ScreenConsumeDO::getManufactureDate
-                )
-        );
-    }*/
+    /**
+     * 获取所有某一类试剂所有现有库存总数
+     * @param reagentId Long
+     * @return Integer
+     */
+     Integer listConsumeByReagentId(Long reagentId,Long deptId);
 
     /**
      *  增加入库量、当前库存

@@ -249,6 +249,7 @@ export const tableSqls = [
 			"creator" TEXT, --创建者
 			"createTime" INTEGER, --创建时间
 			"updater" TEXT, --更新者
+			"statusFlag" INTEGER, --状态标识（1-新增 2-修改）
 			"updateTime" INTEGER --更新时间
 			);`
 	},

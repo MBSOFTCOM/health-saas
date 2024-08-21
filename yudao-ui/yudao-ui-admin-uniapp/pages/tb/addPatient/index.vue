@@ -560,7 +560,7 @@ export default {
 		},
 		moreTypeChange(){
 			console.log(this.crowdArr);
-			if(!this.crowdArr.includes(1)){
+			if(!this.crowdArr.includes("1")){
 				this.FormData.isNewStudent=null
 				this.FormData.studentType=0
 				this.FormData.guardianTel=null

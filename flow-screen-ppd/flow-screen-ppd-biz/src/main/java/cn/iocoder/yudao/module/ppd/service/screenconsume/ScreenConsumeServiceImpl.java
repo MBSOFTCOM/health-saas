@@ -396,4 +396,9 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
         }
         return successNum;
     }
+
+    @Override
+    public Integer getReagentTotalNum(Long reagentId,Long deptId) {
+        return screenConsumeMapper.listConsumeByReagentId(reagentId,deptId);
+    }
 }
