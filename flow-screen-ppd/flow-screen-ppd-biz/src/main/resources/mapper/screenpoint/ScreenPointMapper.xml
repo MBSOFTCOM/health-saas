@@ -91,6 +91,13 @@
             su.id = #{item}
         </foreach>
     </select>
+    <select id="selectByPointName"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenpoint.ScreenPointDO">
+        SELECT *
+        FROM tb_screen_point
+        WHERE name = #{name}
+          AND deleted = 0
+    </select>
 
 
 </mapper>
