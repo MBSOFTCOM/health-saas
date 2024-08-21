@@ -378,12 +378,18 @@ public class ScreenPersonController {
     @ApiAccessLog(operateType = EXPORT)
     public void exportScreenPersonExcel(@Valid ScreenPersonStatisticsReqVO reqVO,
                                         HttpServletResponse response) {
-
-        System.out.println(reqVO);
+        screenPersonService.exportStatistics(reqVO, response);
     }
 
 
+    @GetMapping("/archives-export")
+    @Operation(summary = "工作进展报告--统计表--导出档案")
+    @ApiAccessLog(operateType = EXPORT)
+    public void exportScreenPersonArchive(@Valid ScreenPersonStatisticsReqVO reqVO,
+                                        HttpServletResponse response) {
 
+        System.out.println("接收成功！" + reqVO);
+    }
 
 
 

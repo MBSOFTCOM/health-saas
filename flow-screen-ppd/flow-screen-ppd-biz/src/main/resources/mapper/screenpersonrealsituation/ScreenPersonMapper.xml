@@ -310,4 +310,58 @@
             <if test="quarter != null and quarter == 3">AND DATE_FORMAT(create_time, '%m') IN (7, 8, 9)</if>
             <if test="quarter != null and quarter == 4">AND DATE_FORMAT(create_time, '%m') IN (10, 11, 12)</if>
     </select>
+
+    <select id="getByPatientInfo"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.StatisticExportVO">
+        SELECT name,
+               age,
+               school_or_temple                                      AS school,
+               classroom,
+               tsp.id_num                                            AS idNum,
+               tspp.screen_time                                      AS ppdScreenTime,
+               tspp.transverse_diameter                              AS transverseDiameter,
+               tspp.longitudinal_diameter                            AS longitudinalDiameter,
+               tspp.bleb                                             AS bleb,
+               CASE WHEN tspp.maxScreenOrder1 > 0 THEN 1 ELSE 0 END AS isDoPpd,
+               tspp.outcome                                          AS outcomePpd,
+               (tspp.transverse_diameter + tspp.longitudinal_diameter) / 2 AS averageDiameter,
+               CASE
+                   WHEN (tspp.transverse_diameter + tspp.longitudinal_diameter) / 2
+                       &lt;
+                        15 THEN 1
+                   ELSE 0
+                   END                                               AS diameterFlag,
+               tscr.photo_time                                       AS photoTime,
+               CASE WHEN tscr.maxScreenOrder2 > 0 THEN 1 ELSE 0 END AS isDoX,
+               tscr.outcome                                          AS outcomeDr
+        FROM tb_screen_person AS tsp
+                 LEFT JOIN (SELECT id_num,
+                                   outcome,
+                                   screen_type,
+                                   screen_time,
+                                   transverse_diameter,
+                                   longitudinal_diameter,
+                                   bleb,
+                                   screen_order AS maxScreenOrder1
+                            FROM tb_screen_ppd
+                            WHERE year = #{year}
+                              AND deleted = 0
+                            GROUP BY id_num, outcome, screen_type, screen_time, transverse_diameter,
+                                     longitudinal_diameter, bleb, screen_order
+                            ORDER BY maxScreenOrder1 ASC
+                            LIMIT 1) AS tspp
+                           ON tsp.id_num = tspp.id_num AND tsp.screen_type = tspp.screen_type
+                 LEFT JOIN (SELECT id_num, photo_time, outcome, screen_type, screen_order AS maxScreenOrder2
+                            FROM tb_screen_chest_radiograph
+                            WHERE year = #{year}
+                              AND deleted = 0
+                            GROUP BY outcome, photo_time, id_num, screen_type, screen_order
+                            ORDER BY maxScreenOrder2 ASC
+                            LIMIT 1) AS tscr
+                           ON tsp.id_num = tscr.id_num AND tsp.screen_type = tscr.screen_type
+        WHERE tsp.id_num = #{idNum}
+          AND tsp.screen_type = #{screenType}
+          AND tsp.year = #{year}
+          AND tsp.deleted = 0
+    </select>
 </mapper>

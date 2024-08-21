@@ -11,18 +11,18 @@
       accept="image/*"
     >
       <template #trigger>
-        <el-button type="primary">
+        <el-button type="primary" v-hasPermi="['tb:screen-person:upload-image']">
           <Icon icon="ep:edit" class="mr-5px"/>
           选择照片
         </el-button>
       </template>
 
-      <el-button class="ml-3" type="success" @click="submitUpload">
+      <el-button class="ml-3" type="success" @click="submitUpload" v-hasPermi="['tb:screen-person:upload-image']">
         <Icon icon="ep:files" class="mr-5px"/>
         上传照片
       </el-button>
 
-      <el-button @click="handleDownload" style="margin-left: 20px">
+      <el-button @click="handleDownload" style="margin-left: 20px" >
         <Icon icon="ep:download" class="mr-5px"/>
         下载照片
       </el-button>
@@ -176,7 +176,9 @@ const uploadImage = async (params) => {
           personId: personid.value,
           screenOrder: screenorder.value,
           screenId: screenid.value,
-          imageType: imageType.value
+          imageType: imageType.value,
+          year: Year.value,
+          screenType: CreenType.value
         })
       message.success("照片上传成功！")
       imageUrl.value = res.data

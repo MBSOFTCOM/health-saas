@@ -744,10 +744,13 @@ const open = async (type: string, id?: number) => {
   resetForm()
   getDeptList()
   // 新增时 给予默认值
-  formData.value.screenType = 1;
+  formData.value.screenType = 2;
   formData.value.isScreened = 0;
   formData.value.year = new Date().getFullYear();
   formData.value.screenTime = new Date();
+  formData.value.firstType = 1;
+  formData.value.moreTempType = [1];
+  formData.value.isNewStudent = 1;
   clearList()
   // 修改时，设置数据
   if (id) {

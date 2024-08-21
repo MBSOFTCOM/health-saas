@@ -730,8 +730,11 @@ const open = async (type: string, id?: number) => {
   getDeptList()
   // 新增 时给默认值
   formData.value.year = new Date().getFullYear();
-  formData.value.screenType = 1;
+  formData.value.screenType = 2;
   formData.value.isNew = 1;
+  formData.value.firstType = 1;
+  formData.value.moreTempType = [1];
+  formData.value.isNewStudent = 1;
   clearList()
   // 修改时，设置数据
   if (id) {

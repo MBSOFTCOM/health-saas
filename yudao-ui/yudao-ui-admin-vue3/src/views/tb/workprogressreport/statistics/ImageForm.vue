@@ -10,7 +10,7 @@
       :http-request="uploadImage"
       accept="image/*"
     >
-      <template #trigger>
+<!--      <template #trigger>
         <el-button type="primary">
           <Icon icon="ep:edit" class="mr-5px"/>
           选择照片
@@ -20,7 +20,7 @@
       <el-button class="ml-3" type="success" @click="submitUpload">
         <Icon icon="ep:files" class="mr-5px"/>
         上传照片
-      </el-button>
+      </el-button>-->
 
       <el-button @click="handleDownload" style="margin-left: 20px">
         <Icon icon="ep:download" class="mr-5px"/>
@@ -176,7 +176,9 @@ const uploadImage = async (params) => {
           personId: personid.value,
           screenOrder: screenorder.value,
           screenId: screenid.value,
-          imageType: imageType.value
+          imageType: imageType.value,
+          year: Year.value,
+          screenType: CreenType.value
         })
       message.success("照片上传成功！")
       imageUrl.value = res.data

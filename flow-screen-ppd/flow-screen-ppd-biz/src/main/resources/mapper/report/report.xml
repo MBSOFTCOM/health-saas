@@ -131,7 +131,7 @@
                tsp.student_type                                                                               AS studentType,
                COUNT(tsp.id)                                                                                  AS actualStudentNumber,
                COUNT(CASE WHEN latest_ppd.injection = 1 THEN 1 END)                                           AS ppdNumber,
-               COUNT(CASE WHEN latest_ppd.max_screen_order > 1 THEN 1 END)                                    AS ppdReNumber,
+               COUNT(CASE WHEN latest_ppd.maxScreenOrder > 0 THEN 1 END)                                    AS ppdReNumber,
                COUNT(CASE WHEN latest_ppd.outcome = 0 THEN 1 END)                                             AS feminine,
                COUNT(CASE WHEN latest_ppd.outcome = 1 THEN 1 END)                                             AS masculine,
                COUNT(CASE WHEN tss.ppd_id IS NULL THEN 1 END)                                                 AS noPpdNumber,
@@ -144,20 +144,26 @@
         FROM tb_screen_person AS tsp
                  LEFT JOIN system_dept AS sd ON sd.id = tsp.dept_id
                  LEFT JOIN tb_screen_district AS tsd ON tsd.CODE = sd.district_code
-                 LEFT JOIN (SELECT id_num, injection, outcome, screen_type, MAX(screen_order) AS max_screen_order
+                 LEFT JOIN (SELECT id_num, injection, outcome, screen_type, screen_order AS maxScreenOrder
                             FROM tb_screen_ppd
                             WHERE year = #{year}
-                            GROUP BY id_num, injection, outcome, screen_type) AS latest_ppd
+                            GROUP BY id_num, injection, outcome, screen_type, screen_order
+                     ORDER BY maxScreenOrder ASC
+                     LIMIT 1) AS latest_ppd
                            ON tsp.id_num = latest_ppd.id_num AND tsp.screen_type = latest_ppd.screen_type
-                 LEFT JOIN (SELECT id_num, screen_type, outcome, contacted, MAX(screen_order)
+                 LEFT JOIN (SELECT id_num, screen_type, outcome, contacted, screen_order
                             FROM tb_screen_collect
                             WHERE year = #{year}
-                            GROUP BY id_num, screen_type, outcome, contacted) AS latest_collect
+                            GROUP BY id_num, screen_type, outcome, contacted, screen_order
+                     ORDER BY screen_order ASC
+                     LIMIT 1) AS latest_collect
                            ON tsp.id_num = latest_collect.id_num AND tsp.screen_type = latest_collect.screen_type
-                 LEFT JOIN (SELECT id_num, outcome, screen_type, MAX(screen_order)
+                 LEFT JOIN (SELECT id_num, outcome, screen_type, screen_order
                             FROM tb_screen_chest_radiograph
                             WHERE year = #{year}
-                            GROUP BY id_num, outcome, screen_type) AS latest_chest_radiograph
+                            GROUP BY id_num, outcome, screen_type, screen_order
+                     ORDER BY screen_order ASC
+                     LIMIT 1) AS latest_chest_radiograph
                            ON tsp.id_num = latest_chest_radiograph.id_num
                                AND tsp.screen_type = latest_chest_radiograph.screen_type
                  LEFT JOIN (SELECT id_num, screen_type, ppd_id
@@ -183,16 +189,18 @@
         SELECT tsd.name                                                    AS districtName,
                sd.name                                                     AS deptName,
                COUNT(CASE WHEN latest_ppd.injection = 1 THEN 1 END)        AS ppdNumber,
-               COUNT(CASE WHEN latest_ppd.max_screen_order > 1 THEN 1 END) AS ppdReNumber,
+               COUNT(CASE WHEN latest_ppd.max_screen_order > 0 THEN 1 END) AS ppdReNumber,
                COUNT(CASE WHEN latest_ppd.outcome = 0 THEN 1 END)          AS feminine,
                COUNT(CASE WHEN latest_ppd.outcome = 1 THEN 1 END)          AS masculine
         FROM tb_screen_person AS tsp
                  LEFT JOIN system_dept AS sd ON sd.id = tsp.dept_id
                  LEFT JOIN tb_screen_district AS tsd ON tsd.CODE = sd.district_code
-                 LEFT JOIN (SELECT id_num, injection, outcome, screen_type, MAX(screen_order) AS max_screen_order
+                 LEFT JOIN (SELECT id_num, injection, outcome, screen_type, screen_order AS maxScreenOrder
                             FROM tb_screen_ppd
                             WHERE year = #{year}
-                            GROUP BY id_num, injection, outcome, screen_type) AS latest_ppd
+                            GROUP BY id_num, injection, outcome, screen_type, screen_order
+                     ORDER BY screen_order ASC
+                     LIMIT 1) AS latest_ppd
                            ON tsp.id_num = latest_ppd.id_num AND tsp.screen_type = latest_ppd.screen_type
         WHERE tsp.year = #{year}
           AND sd.district_code = #{districtCode}

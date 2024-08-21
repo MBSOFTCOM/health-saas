@@ -11,13 +11,13 @@
       accept="image/*"
     >
       <template #trigger>
-        <el-button type="primary">
+        <el-button type="primary" v-hasPermi="['tb:screen-person:upload-image']">
           <Icon icon="ep:edit" class="mr-5px"/>
           选择照片
         </el-button>
       </template>
 
-      <el-button class="ml-3" type="success" @click="submitUpload" v-hasPermi="['tb:screen-person:create']">
+      <el-button class="ml-3" type="success" @click="submitUpload" v-hasPermi="['tb:screen-person:upload-image']">
         <Icon icon="ep:files" class="mr-5px"/>
         上传照片
       </el-button>
