@@ -5,10 +5,12 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenrepeatperson.ScreenRepeatPersonDO;
 import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -138,4 +140,9 @@ public interface ScreenPersonService {
      * 统计表--导出表格
      */
     void exportStatistics(ScreenPersonStatisticsReqVO reqVO, HttpServletResponse response);
+
+    /**
+     * 统计表导出档案
+     */
+    void exportScreenPersonArchive(ScreenPersonStatisticsReqVO reqVO, HttpServletRequest request, HttpServletResponse response) throws IOException;
 }

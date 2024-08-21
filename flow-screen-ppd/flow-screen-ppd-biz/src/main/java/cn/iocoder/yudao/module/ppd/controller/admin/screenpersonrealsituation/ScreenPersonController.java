@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -383,12 +384,11 @@ public class ScreenPersonController {
 
 
     @GetMapping("/archives-export")
-    @Operation(summary = "工作进展报告--统计表--导出档案")
+    @Operation(summary = "工作进展报告--统计表--导出知情同意书")
     @ApiAccessLog(operateType = EXPORT)
     public void exportScreenPersonArchive(@Valid ScreenPersonStatisticsReqVO reqVO,
-                                        HttpServletResponse response) {
-
-        System.out.println("接收成功！" + reqVO);
+                                            HttpServletRequest request, HttpServletResponse response) throws IOException {
+        screenPersonService.exportScreenPersonArchive(reqVO, request, response);
     }
 
 
