@@ -377,7 +377,7 @@
                   />
                 </div>
               </div>
-              <div
+<!--              <div
                 class="symptom_input_content_item_1 none_border_bottom "
                 style="border-top: 1px solid ; border-bottom-style: none">
                 <div class="symptom_input_content_item_1_item4_1 ">
@@ -406,7 +406,7 @@
                   />
 
                 </div>
-              </div>
+              </div>-->
             </div>
             <div class="check_signature" style="font-size: 18px">质检人员签字:</div>
           </div>
