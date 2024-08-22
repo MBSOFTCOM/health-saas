@@ -140,6 +140,37 @@
       </el-table-column>-->
       <el-table-column label="操作" align="center" width="150" fixed="right">
         <template #default="scope">
+
+          <el-dropdown
+            @command="(command) => handleCommand(command, scope.row)"
+          >
+            <el-button type="primary" link><Icon icon="ep:d-arrow-right" /> 查看图片</el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                  command="viewScreenForm"
+                >
+                  查看待筛查人员
+                </el-dropdown-item>
+                <el-dropdown-item
+                  command="updateScreenForm"
+                >
+                  添加待筛查人员
+                </el-dropdown-item>
+                <el-dropdown-item
+                  command="openForm"
+                >
+                  分配工作队员
+                </el-dropdown-item>
+                <el-dropdown-item
+                  command="handleDelete"
+                >
+                  删除筛查点
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+
           <el-button
             link type="success"
             @click="viewScreenForm(scope.row.name)"
@@ -365,6 +396,23 @@ const getUserId = async () => {
 
 const getDeptList = async () => {
   deptList.value = await ScreenPointApi.getDeptList();
+}
+
+/** 操作分发 */
+const handleCommand = (command: string, row: any) => {
+  switch (command) {
+    case 'checkPPD':
+      openImage(16, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType)
+      break
+    case 'checkInduration':
+      openImage(17, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType)
+      break
+    case 'checkFlush':
+      openImage(18, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType)
+      break
+    default:
+      break
+  }
 }
 
 /** 初始化 **/

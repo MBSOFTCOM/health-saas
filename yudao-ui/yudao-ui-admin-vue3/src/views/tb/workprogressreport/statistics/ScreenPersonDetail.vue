@@ -296,6 +296,7 @@
                   <!--                  {{ tbHealthScreening.fatigue ? '有' : '无' }}-->
                 </div>
               </div>
+<!--
               <div class="symptom_input_content_item_1">
                 <div class="symptom_input_content_item_1_item4_1">
                   <div class="symptom_input_content_item_1_item4_1_1" style="font-size: 30px">
@@ -324,6 +325,7 @@
                   />
                 </div>
               </div>
+-->
               <div class="symptom_input_content_item_1">
                 <div class="symptom_input_content_item_1_item4_1">
                   <div class="symptom_input_content_item_1_item4_1_1" style="font-size: 30px">
