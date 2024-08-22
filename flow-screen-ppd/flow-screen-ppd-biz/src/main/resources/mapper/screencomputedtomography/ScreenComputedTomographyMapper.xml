@@ -151,7 +151,7 @@
           AND id_num = #{idNum}
           AND screen_type = #{screenType}
           AND year = #{year}
-        order by screen_order asc
+        order by screen_order desc
         limit 1
     </select>
     <select id="getCtIsExist" resultType="java.lang.Long">

@@ -560,7 +560,7 @@ export default {
 		},
 		moreTypeChange(){
 			console.log(this.crowdArr);
-			if(!this.crowdArr.includes(1)){
+			if(!this.crowdArr.includes("1")){
 				this.FormData.isNewStudent=null
 				this.FormData.studentType=0
 				this.FormData.guardianTel=null
@@ -670,7 +670,8 @@ export default {
 							screenEndTime: this.FormData.screenEndTime,
 							guardianTel: this.FormData.guardianTel??'',
 							creator: uni.$person.id,
-							remark: this.FormData.remark??''
+							remark: this.FormData.remark??'',
+							statusFlag: 1
 						};
 						console.log(FormData1);
 						//生成时间
@@ -767,7 +768,8 @@ export default {
 							screenStartTime: this.FormData.screenStartTime,
 							screenEndTime: this.FormData.screenEndTime,
 							updater: uni.$person.id,
-							remark: this.FormData.remark??''
+							remark: this.FormData.remark??'',
+							statusFlag:this.FormData.statusFlag??2
 						};
 
 						this.conversionDate();

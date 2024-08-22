@@ -1028,6 +1028,7 @@ export default {
 						injectionWay: this.radiovalue1,
 						screenOrder: '',
 						screenTime: this.screenTime,
+						statusFlag:1,
 						creator: uni.$person.id
 					};
 					inData.reagentId= this.injectionReagent.id

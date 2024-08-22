@@ -137,7 +137,7 @@
 		</view>
 
 		<view>
-			<u-popup :show="show" @close="close" mode="center" @open="open" :closeOnClickOverlay="false">
+			<u-popup :show="show" @close="close" mode="center" :closeOnClickOverlay="false">
 				<view class="sign">
 					<sp-sign-board
 						v-if="show"
@@ -253,7 +253,7 @@ export default {
 		if (e.label == '修改' || e.label == '详情') {
 			let data = await getCTById(this.patient.id, this.patient.screenOrder);
 			this.formData = data;
-			// console.log("data=",data)
+			console.log("data=",data)
 			this.photoUrl = this.formData.chestRadiograph;
 			// console.log(this.formData);
 		}
@@ -526,7 +526,7 @@ export default {
 								imgForm.path = this.formData.chestRadiograph;
 								updateImg(imgForm);
 							}
-
+							console.log(this.formData);
 							let data = {};
 							data.personId = this.formData.personId;
 							data.outcome = this.formData.outcome;
@@ -535,9 +535,11 @@ export default {
 							data.chestRadiographCode = this.formData.chestRadiographCode;
 							data.remark = this.formData.remark;
 							data.updater = this.formData.updater;
+							data.statusFlag = this.formData.statusFlag??2;
 							data.updateTime = this.markText[0] + ' ' + this.markText[1];
 
 							try {
+								console.log(data);
 								await updateDr(this.formData.id, data, this.$dbUtils);
 
 								let param = {};
@@ -587,6 +589,7 @@ export default {
 		async insertItem() {
 			try {
 				// console.log(this.formData);
+				this.formData.statusFlag=1
 				await this.$dbUtils.addTabItem(dbName, tbScreenChestRadiograph, this.formData);
 				let param = {};
 				param.personId = this.formData.personId;

@@ -89,4 +89,12 @@ public interface ScreenConsumeService {
      * 上传数据时，批量减少当前库存
      */
     Integer decreaseScreenConsumeBatch(List<ScreenConsumeRecordDO> list);
+
+    /**
+     *
+     * @param reagentId 试剂id
+     * @param deptId 部门id
+     * @return Integer 某机构的一种试剂的总数
+     */
+    Integer getReagentTotalNum(Long reagentId,Long deptId);
 }

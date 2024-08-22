@@ -127,8 +127,9 @@ export const tableSqls = [
 			"updater" TEXT , -- 更新者
 			"updateTime" TEXT , -- 更新时间
 			"year" INTEGER , -- 年份
+			"statusFlag" INTEGER, --状态标识（1-新增 2-修改）
 			"screenType" TEXT  -- 筛查类型  1--常规、2--新生、3--应急
-			  );`
+			);`
 	},
 	{
 		tableName: 'tb_screen_ppd',
@@ -161,6 +162,7 @@ export const tableSqls = [
 				"updateTime" DATE , -- 更新时间
 				"deleted" INTEGER , -- 是否删除
 				"year" INTEGER , -- 年份
+				"statusFlag" INTEGER, --状态标识（1-新增 2-修改）
 				"screenType" INTEGER  -- 筛查类型  1--常规、2--新生、3--应急
 			  );`
 	},
@@ -184,6 +186,7 @@ export const tableSqls = [
 			"createTime" DATE, -- 创建时间 
 			"updater" TEXT, -- 更新者 
 			"updateTime" DATE, -- 更新时间 
+			"statusFlag" INTEGER, --状态标识（1-新增 2-修改）
 			"deleted" INTEGER -- 是否删除 
 		)`
 	},
@@ -246,8 +249,9 @@ export const tableSqls = [
 			"creator" TEXT, --创建者
 			"createTime" INTEGER, --创建时间
 			"updater" TEXT, --更新者
+			"statusFlag" INTEGER, --状态标识（1-新增 2-修改）
 			"updateTime" INTEGER --更新时间
-			  );`
+			);`
 	},
 	{
 		tableName:'tb_screen_computed_tomography',
@@ -390,6 +394,7 @@ export const tableSqls = [
 			  "updater" TEXT, --更新者
 			  "updateTime" DATE, --修改时间
 			  "creator" TEXT, --创建者
+			  "statusFlag" INTEGER, --状态标识（1-新增 2-修改）
 			  "createTime" DATE, --创建时间
 			  "studentType" INTEGER, -- 学生分类
 			  "screenStartTime" DATE, -- 计划筛查时间-开始
@@ -461,8 +466,9 @@ export const tableSqls = [
 			"screenPoint" TEXT  , --筛查点
 			"year" INTEGER, -- 年份
 			"screenType" INTEGER, --筛查类型  1--常规、2--新生、3--应急
+			"statusFlag" INTEGER, --状态标识（1-新增 2-修改）
 			"createTime" DATE --创建时间
-			  );`
+			);`
 	},
 	{
 		tableName: 'tb_screen_district',
