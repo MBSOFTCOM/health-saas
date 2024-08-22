@@ -174,7 +174,7 @@
                     HIV/AIDS
                   </div>
                   <div class="content_three_item_1_1" style="font-size: 30px">
-                    {{ tbHealthScreening.HIVorAIDS ? '☑' : '□' }}
+                    {{ tbHealthScreening.hivorAIDS ? '☑' : '□' }}
                   </div>
                 </div>
                 <div class="content_three_item_1">
@@ -238,13 +238,13 @@
               </div>
               <div class="symptom_input_content_item_1" style="font-size: 18px">
                 <div class="symptom_input_content_item_1_item4_1 " style="margin-left: 0.5vw;">
-                  1）咳嗽、咳痰（超过 1 周）
+                  1）咳嗽、咳痰（超过 2 周）
                 </div>
                 <div class="symptom_input_content_item_1_item4_1">
                   {{ tbHealthScreening.coughOrSputumForMoreThanOneWeek ? '有' : '无' }}
                 </div>
                 <div class="symptom_input_content_item_1_item4_1" style="margin-right: 0.5vw;">
-                  5）夜间盗汗
+                  5）乏力、盗汗
                 </div>
                 <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
                   {{ tbHealthScreening.nightSweats ? '有' : '无' }}
@@ -273,11 +273,11 @@
                 </div>
                 <div class="symptom_input_content_item_1_item4_1"
                      style="border-left: 1px solid;margin-right: 0.5vw;">
-                  7）乏力
+                  7）体重减轻（超过 6 斤）
                 </div>
                 <div class="symptom_input_content_item_1_item4_1"
                      style=" border-right-style: none;">
-                  {{ tbHealthScreening.fatigue ? '有' : '无' }}
+                  {{ tbHealthScreening.weightLossOverSixPounds ? '有' : '无' }}
                 </div>
               </div>
               <div class="symptom_input_content_item_1" style="font-size: 18px">
@@ -289,10 +289,10 @@
                 </div>
                 <div class="symptom_input_content_item_1_item4_1"
                      style="border-left: 1px solid;margin-right: 0.5vw">
-                  8）体重减轻（超过 6 斤）
+<!--                  8）乏力-->
                 </div>
                 <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
-                  {{ tbHealthScreening.weightLossOverSixPounds ? '有' : '无' }}
+<!--                  {{ tbHealthScreening.fatigue ? '有' : '无' }}-->
                 </div>
               </div>
               <div class="symptom_input_content_item_1">

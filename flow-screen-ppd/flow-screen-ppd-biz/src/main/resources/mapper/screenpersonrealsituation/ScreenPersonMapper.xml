@@ -377,7 +377,7 @@
                               AND deleted = 0
                             GROUP BY id_num, outcome, screen_type, screen_time, transverse_diameter,
                                      longitudinal_diameter, bleb, screen_order
-                            ORDER BY maxScreenOrder1 ASC
+                            ORDER BY maxScreenOrder1 DESC
                             LIMIT 1) AS tspp
                            ON tsp.id_num = tspp.id_num AND tsp.screen_type = tspp.screen_type
                  LEFT JOIN (SELECT id_num, photo_time, outcome, screen_type, screen_order AS maxScreenOrder2
@@ -385,7 +385,7 @@
                             WHERE year = #{year}
                               AND deleted = 0
                             GROUP BY outcome, photo_time, id_num, screen_type, screen_order
-                            ORDER BY maxScreenOrder2 ASC
+                            ORDER BY maxScreenOrder2 DESC
                             LIMIT 1) AS tscr
                            ON tsp.id_num = tscr.id_num AND tsp.screen_type = tscr.screen_type
         WHERE tsp.id_num = #{idNum}

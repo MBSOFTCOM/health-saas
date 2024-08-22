@@ -13,7 +13,7 @@
         SELECT type
         FROM tb_screen_sputum_examination
         WHERE person_id = #{personId}
-        ORDER BY screen_time DESC
+        ORDER BY screen_order DESC
         LIMIT 1
     </select>
     <select id="getSputumExaminationData"

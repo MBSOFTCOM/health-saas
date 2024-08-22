@@ -55,13 +55,17 @@ public class ScreenDiagnosisServiceImpl implements ScreenDiagnosisService {
         if(screenPersonDO == null){
             throw exception(SCREEN_PERSON_NOT_EXISTS);
         }
+        // 是否是新生
         boolean isNewStud = screenPersonDO.getIsNewStudent() != null && screenPersonDO.getIsNewStudent() == 1;
+        // 年龄
         int age = screenPersonDO.getAge() != null ? screenPersonDO.getAge() : -1;
 
         // 采集组最近一次采集症状数据
         ScreenCollectDO screenCollectDO = screenCollectMapper
                 .selectByPersonIdLastTime(personId, year, screenType);
+        // 是否做过查验卡痕
         tbHealthScreening.setDoneCheckMark(screenCollectDO != null);
+        // 有无卡痕 其他=9
         tbHealthScreening.setCheckMark(null);
 
         if(screenCollectDO != null){
@@ -75,19 +79,30 @@ public class ScreenDiagnosisServiceImpl implements ScreenDiagnosisService {
             }
 
             // 症状部分内容
+            // 咳嗽、咳痰（超过 2 周）
             tbHealthScreening.setCoughOrSputumForMoreThanOneWeek(outcome.contains("1"));
+            // 咯血或血痰
             tbHealthScreening.setHemoptysisOrBloodSputum(outcome.contains("2"));
-            tbHealthScreening.setFever(outcome.contains("3") && !isNewStud);
-            tbHealthScreening.setPersistentFever(outcome.contains("3") && isNewStud);
-            tbHealthScreening.setLymphoidEnlargement(outcome.contains("4") && isNewStud);
-            tbHealthScreening.setChestPain(outcome.contains("4") && !isNewStud);
-            tbHealthScreening.setNightSweats(outcome.contains("5") && !isNewStud);
-            tbHealthScreening.setLossOfAppetite(outcome.contains("6") && !isNewStud);
-            tbHealthScreening.setFatigue(outcome.contains("7") && !isNewStud);
-            tbHealthScreening.setWeightLossOverSixPounds(outcome.contains("8") && !isNewStud);
+            // 发热
+            tbHealthScreening.setFever(outcome.contains("5"));
+            // 反复发烧2周以上
+//            tbHealthScreening.setPersistentFever(outcome.contains("3") && isNewStud);
+            // 淋巴结肿大
+//            tbHealthScreening.setLymphoidEnlargement(outcome.contains("4") && isNewStud);
+            // 胸痛
+            tbHealthScreening.setChestPain(outcome.contains("7"));
+            // 乏力、盗汗
+            tbHealthScreening.setNightSweats(outcome.contains("3"));
+            // 食欲不振
+            tbHealthScreening.setLossOfAppetite(outcome.contains("6"));
+            // 乏力
+//            tbHealthScreening.setFatigue(outcome.contains("7") && !isNewStud);
+            // 体重减轻（超过 6 斤）
+            tbHealthScreening.setWeightLossOverSixPounds(outcome.contains("4"));
+            // 有无卡痕
+//            tbHealthScreening.setCheckMark(outcome.contains("9") && !isNewStud);
 
-            tbHealthScreening.setCheckMark(outcome.contains("9") && !isNewStud);
-
+            // 采集组医生签名
             String url = screenImagesMapper.selectLastTimeUrl(personId, 8, year, screenType);
             tbHealthScreening.setCollectDoctorSignature(url);
         }
@@ -101,24 +116,35 @@ public class ScreenDiagnosisServiceImpl implements ScreenDiagnosisService {
         // 人群分类
         Integer moreType = screenPersonDO.getMoreType();
         Integer firstType = screenPersonDO.getFirstType();
-
+        // 是否是非重点人群
         boolean isMonkOrNun = firstType != null && firstType == 2;
 
+        // 是否是教职工
         boolean isTeacher = moreType != null &&
                 isObtainable(moreType, 4);
+        // 是否是僧尼
         boolean isMonk = moreType != null
                 && isObtainable(moreType, 32);
+        // 是否是学生
         boolean isStud = moreType != null
                 && isObtainable(moreType, 1);
+        // 是否是老年人
         boolean isElderly = moreType != null
                 && isObtainable(moreType, 2);
+        // 是否是密接者
         boolean isCloseContactWithActivePulmonaryTB = moreType != null
                 && isObtainable(moreType, 8);
+        // 是否是既往患者
         boolean isPastTBPatient = moreType != null
                 && isObtainable(moreType, 64);
+        // 是否是糖尿病
         boolean isDiabetesPatient = moreType != null
                 && isObtainable(moreType, 16);
+        // 是否是HIV/AIDS
+        boolean isHivPatient = moreType != null
+                && isObtainable(moreType, 128);
 
+        // 僧尼
         boolean isMonkOrNun0To5Years = isMonk && (age >= 0 && age <= 5);
         boolean isMonkOrNun6To14Years = isMonk && (age >= 6 && age <= 14);
         boolean isMonkOrNunOver15Years = isMonk && (age >= 15);
@@ -129,22 +155,25 @@ public class ScreenDiagnosisServiceImpl implements ScreenDiagnosisService {
         tbHealthScreening.setMonkOrNun6To14Years(isMonkOrNun6To14Years);
         tbHealthScreening.setMonkOrNunOver15Years(isMonkOrNunOver15Years);
 
-        // TODO 数据库中未存储该字段数据
-        tbHealthScreening.setHIVorAIDS(false);
-
+        // 是否是HIV/AIDS
+        tbHealthScreening.setHIVorAIDS(isHivPatient);
+        // 是否是既往患者
         tbHealthScreening.setPastTBPatient(isPastTBPatient);
 
         // 在校师生
         boolean isStudent0To5Years = isStud && (age >= 0 && age <= 5);
         boolean isStudent6To14Years = isStud && (age >= 6 && age <= 14);
-        boolean isStudentOver15Years = isMonk && (age >= 15);
+        boolean isStudentOver15Years = isStud && (age >= 15);
 
         tbHealthScreening.setStudent0To5Years(isStudent0To5Years);
         tbHealthScreening.setStudent6To14Years(isStudent6To14Years);
         tbHealthScreening.setStudentOver15Years(isStudentOver15Years);
 
+        // 是否在校师生教职工
         tbHealthScreening.setSchoolStaff(isTeacher);
+        // 是否老年人
         tbHealthScreening.setElderly(isElderly);
+        // 是否糖尿病患者
         tbHealthScreening.setDiabetesPatient(isDiabetesPatient);
 
         // 是否非重点人群
@@ -167,32 +196,43 @@ public class ScreenDiagnosisServiceImpl implements ScreenDiagnosisService {
         }
         // 从离线图片表中获取数据
         String url = screenImagesMapper.selectLastTimeUrl(personId, 9, year, screenType);
+        // ppd组医生签名
         tbHealthScreening.setPpdDoctorSignature(url);
 
         // 胸部X线检查
         TBHealthScreening chestRadiographData = screenChestRadiographMapper.selectByPersonIdLastTime(personId);
+        // 是否做过胸部X线
         tbHealthScreening.setChestXRayDone(chestRadiographData != null);
         boolean isNoTBRelatedAbnormalities = (chestRadiographData != null && chestRadiographData.getOutcome() != null)
                 && chestRadiographData.getOutcome() == 0;
         boolean isSuspectedTB = (chestRadiographData != null && chestRadiographData.getOutcome() != null)
                 && chestRadiographData.getOutcome() == 1;
+        // 是否无结核相关异常
         tbHealthScreening.setNoTBRelatedAbnormalities(isNoTBRelatedAbnormalities);
+        // 是否疑似结核
         tbHealthScreening.setSuspectedTB(isSuspectedTB);
         String chestXRayCode = chestRadiographData != null ? chestRadiographData.getChestXRayCode() : "";
+        // 机器中与患者对应的编码
         tbHealthScreening.setChestXRayCode(chestXRayCode);
-
+        // dr医生签名
         tbHealthScreening.setChestXRayDoctorSignature(screenImagesMapper.selectLastTimeUrl(personId, 10
                 , year, screenType));
 
         // 痰标本
         Integer typeSputumExamination = screenSputumExaminationMapper
                 .selectByPersonIdLastTime(personId);
+        // 是否做过痰标本
         tbHealthScreening.setSputumSpecimenDone(typeSputumExamination != null);
+        // 是否即时痰
         tbHealthScreening.setImmediateSputum(typeSputumExamination != null && typeSputumExamination == 2);
+        // 是否发放晨痰
         tbHealthScreening.setMorningSputum(typeSputumExamination != null && typeSputumExamination == 3);
+        // 是否夜间痰
         tbHealthScreening.setNighttimeSputum(typeSputumExamination != null && typeSputumExamination == 4);
+        // 是否无痰
         tbHealthScreening.setNoSputum(typeSputumExamination != null && typeSputumExamination == 1);
 
+        // 痰标本医生签字
         tbHealthScreening.setSputumDoctorSignature(screenImagesMapper.selectLastTimeUrl(personId, 12
                 , year, screenType));
         return tbHealthScreening;
@@ -214,6 +254,7 @@ public class ScreenDiagnosisServiceImpl implements ScreenDiagnosisService {
         groups.put(16, "糖尿病");
         groups.put(32, "僧尼");
         groups.put(64, "既往患者");
+        groups.put(128, "HIV/AIDS");
 
         // 将分类编号进行排序
         List<Integer> keys = new ArrayList<>(groups.keySet());

@@ -148,21 +148,21 @@
                             FROM tb_screen_ppd
                             WHERE year = #{year}
                             GROUP BY id_num, injection, outcome, screen_type, screen_order
-                     ORDER BY maxScreenOrder ASC
+                     ORDER BY maxScreenOrder DESC
                      LIMIT 1) AS latest_ppd
                            ON tsp.id_num = latest_ppd.id_num AND tsp.screen_type = latest_ppd.screen_type
                  LEFT JOIN (SELECT id_num, screen_type, outcome, contacted, screen_order
                             FROM tb_screen_collect
                             WHERE year = #{year}
                             GROUP BY id_num, screen_type, outcome, contacted, screen_order
-                     ORDER BY screen_order ASC
+                     ORDER BY screen_order DESC
                      LIMIT 1) AS latest_collect
                            ON tsp.id_num = latest_collect.id_num AND tsp.screen_type = latest_collect.screen_type
                  LEFT JOIN (SELECT id_num, outcome, screen_type, screen_order
                             FROM tb_screen_chest_radiograph
                             WHERE year = #{year}
                             GROUP BY id_num, outcome, screen_type, screen_order
-                     ORDER BY screen_order ASC
+                     ORDER BY screen_order DESC
                      LIMIT 1) AS latest_chest_radiograph
                            ON tsp.id_num = latest_chest_radiograph.id_num
                                AND tsp.screen_type = latest_chest_radiograph.screen_type
@@ -199,7 +199,7 @@
                             FROM tb_screen_ppd
                             WHERE year = #{year}
                             GROUP BY id_num, injection, outcome, screen_type, screen_order
-                     ORDER BY screen_order ASC
+                     ORDER BY screen_order DESC
                      LIMIT 1) AS latest_ppd
                            ON tsp.id_num = latest_ppd.id_num AND tsp.screen_type = latest_ppd.screen_type
         WHERE tsp.year = #{year}

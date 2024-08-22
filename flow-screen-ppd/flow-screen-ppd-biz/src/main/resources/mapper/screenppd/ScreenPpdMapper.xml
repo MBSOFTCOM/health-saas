@@ -8,7 +8,7 @@
         SELECT screen_time AS ppdInjectionTime, id
         FROM tb_screen_ppd
         WHERE person_id = #{personId}
-        ORDER BY screen_time DESC
+        ORDER BY screen_order DESC
         LIMIT 1
     </select>
     <select id="getPpdData"

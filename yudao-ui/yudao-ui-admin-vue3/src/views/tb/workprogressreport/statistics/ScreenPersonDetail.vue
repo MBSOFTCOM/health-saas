@@ -121,37 +121,37 @@
                 </div>
               </div>
               <div class="content_tow">
-<!--                <div class="content_tow_item_column3_2">
-                  <div class="content_tow_item_column3_item_1" style="font-size: 18px">
-                    僧尼
-                  </div>
-                  <div class="content_tow_item_column3_item_1point5" style="font-size: 18px">
-                    <div class="content_tow_item_column3_item_1point5_item_col_1 center">
-                      0-5岁
-                    </div>
-                    <div class="content_tow_item_column3_item_1point5_item_col_1 center">
-                      6-14岁
-                    </div>
-                    <div
-                      class="content_tow_item_column3_item_1point5_item_col_1 center"
-                      style="border-bottom-style: none;">
-                      ≥ 15岁
-                    </div>
-                  </div>
-                  <div class="content_tow_item_column3_item_1point5" style="font-size: 30px">
-                    <div class="content_tow_item_column3_item_1_item_col_1">
-                      {{ tbHealthScreening.monkOrNun0To5Years ? '☑' : '□' }}
-                    </div>
-                    <div class="content_tow_item_column3_item_1_item_col_1">
-                      {{ tbHealthScreening.monkOrNun6To14Years ? '☑' : '□' }}
-                    </div>
-                    <div
-                      class="content_tow_item_column3_item_1_item_col_1"
-                      style="border-bottom-style: none;">
-                      {{ tbHealthScreening.monkOrNunOver15Years ? '☑' : '□' }}
-                    </div>
-                  </div>
-                </div>-->
+                <!--                <div class="content_tow_item_column3_2">
+                                  <div class="content_tow_item_column3_item_1" style="font-size: 18px">
+                                    僧尼
+                                  </div>
+                                  <div class="content_tow_item_column3_item_1point5" style="font-size: 18px">
+                                    <div class="content_tow_item_column3_item_1point5_item_col_1 center">
+                                      0-5岁
+                                    </div>
+                                    <div class="content_tow_item_column3_item_1point5_item_col_1 center">
+                                      6-14岁
+                                    </div>
+                                    <div
+                                      class="content_tow_item_column3_item_1point5_item_col_1 center"
+                                      style="border-bottom-style: none;">
+                                      ≥ 15岁
+                                    </div>
+                                  </div>
+                                  <div class="content_tow_item_column3_item_1point5" style="font-size: 30px">
+                                    <div class="content_tow_item_column3_item_1_item_col_1">
+                                      {{ tbHealthScreening.monkOrNun0To5Years ? '☑' : '□' }}
+                                    </div>
+                                    <div class="content_tow_item_column3_item_1_item_col_1">
+                                      {{ tbHealthScreening.monkOrNun6To14Years ? '☑' : '□' }}
+                                    </div>
+                                    <div
+                                      class="content_tow_item_column3_item_1_item_col_1"
+                                      style="border-bottom-style: none;">
+                                      {{ tbHealthScreening.monkOrNunOver15Years ? '☑' : '□' }}
+                                    </div>
+                                  </div>
+                                </div>-->
                 <div class="content_tow_item_column3_1">
                   <div class="content_tow_item_column3_item_2point5" style="font-size: 18px">
                     老年人
@@ -161,7 +161,7 @@
                   </div>
                 </div>
                 <div class="content_tow_item_column3_1" style="border-bottom-style: none;">
-                  <div class="content_tow_item_column3_item_2point5" style="font-size: 18px; ">
+                  <div class="content_tow_item_column3_item_2point5" style="font-size: 18px">
                     糖尿病患者
                   </div>
                   <div class="content_tow_item_column3_item_1" style="font-size: 30px">
@@ -175,7 +175,7 @@
                     HIV/AIDS
                   </div>
                   <div class="content_three_item_1_1" style="font-size: 30px">
-                    {{ tbHealthScreening.HIVorAIDS ? '☑' : '□' }}
+                    {{ tbHealthScreening.hivorAIDS ? '☑' : '□' }}
                   </div>
                 </div>
                 <div class="content_three_item_1">
@@ -239,13 +239,13 @@
               </div>
               <div class="symptom_input_content_item_1" style="font-size: 18px">
                 <div class="symptom_input_content_item_1_item4_1 " style="margin-left: 0.5vw;">
-                  1）咳嗽、咳痰（超过 1 周）
+                  1）咳嗽、咳痰（超过 2 周）
                 </div>
                 <div class="symptom_input_content_item_1_item4_1">
                   {{ tbHealthScreening.coughOrSputumForMoreThanOneWeek ? '有' : '无' }}
                 </div>
                 <div class="symptom_input_content_item_1_item4_1" style="margin-right: 0.5vw;">
-                  5）夜间盗汗
+                  5）乏力、盗汗
                 </div>
                 <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
                   {{ tbHealthScreening.nightSweats ? '有' : '无' }}
@@ -274,11 +274,11 @@
                 </div>
                 <div class="symptom_input_content_item_1_item4_1"
                      style="border-left: 1px solid;margin-right: 0.5vw;">
-                  7）乏力
+                  7）体重减轻（超过 6 斤）
                 </div>
                 <div class="symptom_input_content_item_1_item4_1"
                      style=" border-right-style: none;">
-                  {{ tbHealthScreening.fatigue ? '有' : '无' }}
+                  {{ tbHealthScreening.weightLossOverSixPounds ? '有' : '无' }}
                 </div>
               </div>
               <div class="symptom_input_content_item_1" style="font-size: 18px">
@@ -289,11 +289,11 @@
                   {{ tbHealthScreening.chestPain ? '有' : '无' }}
                 </div>
                 <div class="symptom_input_content_item_1_item4_1"
-                     style="border-left: 1px solid;margin-right: 0.5vw;">
-                  8）体重减轻（超过 6 斤）
+                     style="border-left: 1px solid;margin-right: 0.5vw">
+                  <!--                  8）乏力-->
                 </div>
                 <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
-                  {{ tbHealthScreening.weightLossOverSixPounds ? '有' : '无' }}
+                  <!--                  {{ tbHealthScreening.fatigue ? '有' : '无' }}-->
                 </div>
               </div>
               <div class="symptom_input_content_item_1">
@@ -301,11 +301,13 @@
                   <div class="symptom_input_content_item_1_item4_1_1" style="font-size: 30px">
                     {{ tbHealthScreening.doneCheckMark ? '☑' : '□' }}
                   </div>
-                  <div class="symptom_input_content_item_1_item4_1_3" style="font-size: 18px; ">
+                  <div class="symptom_input_content_item_1_item4_1_3"
+                       style="font-size: 18px; margin-top: 15px">
                     <strong>查验卡痕</strong>
                   </div>
                 </div>
-                <div class="symptom_input_content_item_1_item4_2" style="font-size: 20px;">
+                <div class="symptom_input_content_item_1_item4_2"
+                     style="font-size: 20px;margin-top: 15px; border-right-style: none;">
                   {{ tbHealthScreening.checkMark ? '☑有' : '□有' }}
                   {{
                     (tbHealthScreening.doneCheckMark && !tbHealthScreening.checkMark) ? '☑无' : '□无'
@@ -313,7 +315,7 @@
                   □无法判断
                 </div>
                 <div class="symptom_input_content_item_1_item4_1"
-                     style="border-right-style: none;font-size: 18px">
+                     style="border-right-style: none;border-left: 1px solid ;font-size: 18px">
                   医生签字：
                   <el-image
                     style="width: 50px; height: 50px"
@@ -328,15 +330,16 @@
                     {{ tbHealthScreening.ppdTestDone ? '☑' : '□' }}
                   </div>
                   <div class="symptom_input_content_item_1_item4_1_3"
-                       style="border-right-style: none;font-size: 18px;">
+                       style="border-right-style: none;font-size: 18px;margin-top: 15px">
                     <strong>ppd</strong>
                   </div>
                 </div>
-                <div class="symptom_input_content_item_1_item4_2" style="font-size: 18px;">
+                <div class="symptom_input_content_item_1_item4_2"
+                     style="font-size: 18px;margin-top: 15px; border-right-style: none; ">
                   注射时间：{{ tbHealthScreening.ppdInjectionTimeStr }}
                 </div>
                 <div class="symptom_input_content_item_1_item4_1"
-                     style="border-right-style: none;font-size: 18px;">
+                     style="border-right-style: none;border-left: 1px solid ;font-size: 18px;">
                   医生签字：
                   <el-image
                     style="width: 50px; height: 50px"
@@ -355,7 +358,8 @@
                     <strong>胸部 X 线</strong>
                   </div>
                 </div>
-                <div class="symptom_input_content_item_1_item4_2" style="font-size: 18px;">
+                <div class="symptom_input_content_item_1_item4_2"
+                     style="font-size: 18px;margin-top: 15px;border-right-style: none; ">
                   {{ tbHealthScreening.noTBRelatedAbnormalities ? '☑无结核相关异常' : '□无结核相关异常' }}
                   {{ tbHealthScreening.suspectedTB ? '☑疑似结核' : '□疑似结核' }}
                   <br/>
@@ -364,7 +368,7 @@
                   </div>
                 </div>
                 <div class="symptom_input_content_item_1_item4_1"
-                     style="border-right-style: none;font-size: 18px;margin-top: 45px">
+                     style="border-right-style: none;border-left: 1px solid ;font-size: 18px;">
                   医生签字：
                   <el-image
                     style="width: 50px; height: 50px"
@@ -380,18 +384,20 @@
                   <div class="symptom_input_content_item_1_item4_1_1" style="font-size: 30px">
                     {{ tbHealthScreening.sputumSpecimenDone ? '☑' : '□' }}
                   </div>
-                  <div class="symptom_input_content_item_1_item4_1_3 " style="font-size: 18px;">
+                  <div class="symptom_input_content_item_1_item4_1_3 "
+                       style="font-size: 18px;margin-top: 15px">
                     <strong>痰标本</strong>
                   </div>
                 </div>
-                <div class="symptom_input_content_item_1_item4_2" style="font-size: 18px;">
+                <div class="symptom_input_content_item_1_item4_2"
+                     style="font-size: 18px;margin-top: 15px;border-right-style: none; ">
                   {{ tbHealthScreening.immediateSputum ? '☑即时痰' : '□即时痰' }}
                   {{ tbHealthScreening.morningSputum ? '☑发放晨痰' : '□发放晨痰' }}
                   {{ tbHealthScreening.nighttimeSputum ? '☑夜间痰盒' : '□夜间痰盒' }}
                   {{ tbHealthScreening.noSputum ? '☑无痰' : '□无痰' }}
                 </div>
                 <div class="symptom_input_content_item_1_item4_1"
-                     style="border-right-style: none;font-size: 18px;">
+                     style="border-right-style: none;border-left: 1px solid ;font-size: 18px">
                   医生签字：
                   <el-image
                     style="width: 50px; height: 50px"

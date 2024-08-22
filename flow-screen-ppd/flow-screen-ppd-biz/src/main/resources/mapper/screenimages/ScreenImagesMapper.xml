@@ -17,7 +17,7 @@
         <if test="year != null">
             AND `year` = #{year}
         </if>
-        ORDER BY screen_time DESC
+        ORDER BY screen_order DESC
         LIMIT 1
     </select>
 

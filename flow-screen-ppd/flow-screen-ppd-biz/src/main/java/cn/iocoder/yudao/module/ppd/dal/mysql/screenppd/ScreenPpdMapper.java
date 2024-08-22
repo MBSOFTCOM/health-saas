@@ -9,6 +9,7 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdPageRe
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -54,5 +55,5 @@ public interface ScreenPpdMapper extends BaseMapperX<ScreenPpdDO> {
      * @param personId 摸底表id
      * @return ppd筛查记录数据
      */
-    TBHealthScreening selectByPersonIdLastTime(Long personId);
+    TBHealthScreening selectByPersonIdLastTime(@Param("personId") Long personId);
 }

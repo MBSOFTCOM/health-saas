@@ -14,7 +14,7 @@
         SELECT id, outcome, chest_radiograph_code AS chestXRayCode
         FROM tb_screen_chest_radiograph
         WHERE person_id = #{personId}
-        ORDER BY screen_time DESC
+        ORDER BY screen_order DESC
         LiMIT 1
     </select>
     <select id="selectOutComeByPersonIdAndOrder"

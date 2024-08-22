@@ -13,7 +13,8 @@
             resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO">
         SELECT
             outcome,
-            screen_time AS screenTime
+            screen_time AS screenTime,
+            screen_order
         FROM
             tb_screen_collect
         WHERE
@@ -24,7 +25,7 @@
         <if test="screenType != null">
             AND `screen_type` = #{screenType}
         </if>
-        ORDER BY screen_time DESC
+        ORDER BY screen_order DESC
         LIMIT 1
     </select>
     <select id="getCollectData"
