@@ -250,6 +250,7 @@ export default {
 					SynchronizeApi.getPersonData(
 						this.queryParams.screenId,
 						this.queryParams.screenPoint,
+						1,
 						this.pageNo,
 						this.pageSize
 					).then((resp) => {
@@ -391,7 +392,7 @@ export default {
 								});
 							} else {
 								// 获取本地数据 上传到pc端
-								let local=await SynchronizeApi.getPersonData(self.queryParams.screenId, self.queryParams.screenPoint, -1, self.pageSize)
+								let local=await SynchronizeApi.getPersonData(self.queryParams.screenId, self.queryParams.screenPoint, 1,1, self.pageSize)
 								self.SyncData = local;
 								// console.log(self.SyncData);
 
@@ -403,7 +404,13 @@ export default {
 								// console.log(self.SyncData);
 
 								// 上传
-								await SynchronizeApi.updateTableData1(self.SyncData).then((res) => {
+								await SynchronizeApi.updateTableData1(self.SyncData).then(async(res) => {
+									console.log(res);
+									for (var i = 0; i < res.data.length; i++) {
+										let tableData=await SynchronizeApi.listDataByIdNumAndPersonId(res.data[i].idNum,res.data[i].id,tbScreenPerson)
+										console.log(tableData);
+										await SynchronizeApi.updatePersonId(tbScreenPerson,tableData[i].id,res.data[i].newId,tableData[i].idNum,res.data[i].screenId)
+									}
 								  if (res.data) {
 									uni.showToast({
 									  title: '上传成功',

@@ -12,10 +12,7 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdPageRe
 import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumPageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumSaveReqVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.PageReqVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.TableSchema;
-import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.UserLoginInfoVO;
-import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.WorkTeamVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
@@ -43,7 +40,7 @@ public interface SynchronizeService {
      * 更新摸底表数据
      * @param list
      */
-    void updateScreenPerson(List<ScreenPersonSaveReqVO> list);
+    List<SyncRespVO> updateScreenPerson(List<ScreenPersonSaveReqVO> list);
 
     /**
      * 获取采集表分页数据

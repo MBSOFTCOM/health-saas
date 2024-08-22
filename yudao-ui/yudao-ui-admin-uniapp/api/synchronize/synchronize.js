@@ -3,6 +3,7 @@ import request from '@/utils/request'
 import dbUtils from '/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
 import { count,promise } from '@/utils/sqlite';
 import { login } from '../login';
+import { func } from '../../uni_modules/uview-plus/libs/function/test';
 
 const dbName = 'tb_screen'
 // ppd表
@@ -40,15 +41,20 @@ export function getTableList(params) {
 
 // ========================== 摸底表 ==========================
 // 获取平板端待筛查分页数据
-export function getPersonData(screenId,screenPoint,pageNo,pageSize){
+export function getPersonData(screenId,screenPoint,statusFlag,pageNo,pageSize){
 	let sql = `select *
 			   from ${tbScreenPerson} 
 			   where screenPoint = '${screenPoint}'
 			   `
 	if(screenId){
-		sql+=`and screenId like '%${screenId}%'`
+		sql+=`and screenId like '%${screenId}%' `
 	}
-	sql+=`order by id desc `
+	if(statusFlag){
+		sql+=` and statusFlag = ${statusFlag} `
+	}else{
+		sql+=` and statusFlag is null `
+	}
+	sql+=` order by id desc `
 	if(pageNo !=-1){
 		let offset = (pageNo-1)*pageSize
 		sql+=` limit ${offset},${pageSize} `
@@ -1192,4 +1198,32 @@ export function uploadOfflineImage(type) {
 			console.log(e);
 		}
 	});
+}
+/**
+ * @param {string} idNum
+ * @param {number} personId
+ * @param {string} table
+ */
+export async function listDataByIdNumAndPersonId(idNum,personId,table){
+	let sql=`select * from ${table} where idNum='${idNum}' and personId=${personId}`
+	if(table==tbScreenPerson){
+		sql=`select * from ${table} where idNum='${idNum}' and id=${personId}`
+	}
+	return promise(dbName,sql)
+}
+/**
+ * @param {string} table 表名
+ * @param {number} id 旧的患者id
+ * @param {number} newId 新的患者id
+ * @param {string} idNum 患者身份证
+ * @param {string} screenId 筛查编号
+ */
+export async function updatePersonId(table,id,newId,idNum,screenId){
+	let field='personId'
+	if(table==tbScreenPerson){
+		field='id'
+	}
+	let sql=`update ${table} set ${field}=${newId},screenId=${screenId} where ${field}=${id} and idNum=${idNum}`
+	console.log(sql);
+	return promise(dbName,sql)
 }

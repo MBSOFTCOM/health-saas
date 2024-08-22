@@ -17,16 +17,20 @@ import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpoint.ScreenPointDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screensum.ScreenSumDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenchestradiograph.ScreenChestRadiographMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screencollect.ScreenCollectMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screendistrict.ScreenDistrictMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenpersonrealsituation.ScreenPersonMapper;
+import cn.iocoder.yudao.module.ppd.dal.mysql.screenpoint.ScreenPointMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenppd.ScreenPpdMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screensputumexamination.ScreenSputumExaminationMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screensum.ScreenSumMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.synchronization.SynchronizeMapper;
+import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
+import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -60,6 +64,10 @@ public class SynchronizeServiceImpl implements SynchronizeService{
     private ScreenDistrictMapper screenDistrictMapper;
     @Resource
     private ScreenSumMapper screenSumMapper;
+    @Resource
+    private DeptService deptService;
+    @Resource
+    private ScreenPointMapper screenPointMapper;
 
 
 
@@ -78,8 +86,11 @@ public class SynchronizeServiceImpl implements SynchronizeService{
     }
 
     @Override
-    public void updateScreenPerson(List<ScreenPersonSaveReqVO> list) {
+    public List<SyncRespVO> updateScreenPerson(List<ScreenPersonSaveReqVO> list) {
+        List<SyncRespVO> result = new LinkedList<>();
+        SyncRespVO syncRespVO = new SyncRespVO();
         list.forEach(item->{
+            syncRespVO.setIdNum(item.getIdNum()).setId(item.getId());
             if ("0".equals(item.getScreenId())){
                 // 编码规则：省市县乡区划代码9位+排序号5位+年度4位+筛查类型1位
                 // 根据乡镇区划、年度以及筛查类型找到个人最大排序号 如果当前乡镇还没有患者，则从1开始排序
@@ -91,8 +102,10 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                     orderNum = String.format("%05d", 1);
                 }
                 // 获取当前所在乡镇的区划
-                String code = screenDistrictMapper.selectByName(item.getTown());
-                if(code!=null){
+//                String code = screenDistrictMapper.selectByName(item.getTown());
+                if(item.getTown()!=null && item.getTown().length()==12){
+                    String code=item.getTown();// 将code后三位字符去掉，因为乡镇的code为区划code的后三位
+                    code=code.substring(0,code.length()-3);
                     item.setScreenId(code+orderNum+item.getYear()+item.getScreenType());
                 }
             }
@@ -106,15 +119,24 @@ public class SynchronizeServiceImpl implements SynchronizeService{
             if (id != null ) {
                 synchronizeMapper.updateScreenPerson(item,id);
             }else{
-                Long result = synchronizeMapper.selectCountById("tb_screen_person", item.getId());
+                /*Long result = synchronizeMapper.selectCountById("tb_screen_person", item.getId());
                 if (result > 0) {
                     Long maxId = synchronizeMapper.selectMaxId("tb_screen_person");
                     item.setId(maxId+1);
                 }
-                synchronizeMapper.insertPerson(item);
+                synchronizeMapper.insertPerson(item);*/
+                ScreenPointDO screenPointDO = screenPointMapper.selectByPointName(item.getScreenPoint());
+                DeptDO dept = deptService.getDept(screenPointDO.getScreenDept());
+                ScreenPersonDO screenPersonDO = BeanUtils.toBean(item, ScreenPersonDO.class);
+                screenPersonDO.setId(null);
+                screenPersonDO.setDeptId(dept.getId());
+                screenPersonMapper.insert(screenPersonDO);
+                syncRespVO.setNewId(screenPersonDO.getId());
+                syncRespVO.setScreenId(screenPersonDO.getScreenId());
+                result.add(syncRespVO);
             }
         });
-
+        return result;
     }
 
     @Override

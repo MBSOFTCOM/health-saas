@@ -19,17 +19,22 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdRespVO
 import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumPageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screensum.vo.ScreenSumSaveReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.SyncRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.UserLoginInfoVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.synchronization.vo.WorkTeamVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsumerecord.ScreenConsumeRecordDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpoint.ScreenPointDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screensum.ScreenSumDO;
+import cn.iocoder.yudao.module.ppd.dal.mysql.screenpoint.ScreenPointMapper;
 import cn.iocoder.yudao.module.ppd.service.screenconsume.ScreenConsumeService;
 import cn.iocoder.yudao.module.ppd.service.screenpersonrealsituation.ScreenPersonService;
 import cn.iocoder.yudao.module.ppd.service.synchronization.SynchronizeService;
+import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
+import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import cn.iocoder.yudao.module.system.service.user.AdminUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -55,7 +60,10 @@ public class SynchronizeController {
     private AdminUserService adminUserService;
     @Resource
     private ScreenConsumeService screenConsumeService;
-
+    @Resource
+    private DeptService deptService;
+    @Resource
+    private ScreenPointMapper screenPointMapper;
 
 //    @GetMapping("/get-tableLists")
 //    @Operation(summary = "获取全部业务数据表")
@@ -75,9 +83,9 @@ public class SynchronizeController {
     @PutMapping("/update-tableData1")
     @Operation(summary = "更新摸底表数据")
 //    @PreAuthorize("@ss.hasPermission('tb:synchronization:query')")
-    public CommonResult<Boolean> updateTableData1(@RequestBody List<ScreenPersonSaveReqVO> list) {
-        synchronizeService.updateScreenPerson(list);
-        return success(true);
+    public CommonResult<List<SyncRespVO>> updateTableData1(@RequestBody List<ScreenPersonSaveReqVO> list) {
+        List<SyncRespVO> syncRespVOS = synchronizeService.updateScreenPerson(list);
+        return success(syncRespVOS);
     }
 
 
@@ -171,5 +179,13 @@ public class SynchronizeController {
     public CommonResult<Boolean> updateSumData(@RequestBody List<ScreenSumSaveReqVO> list) {
         synchronizeService.updateSum(list);
         return success(true);
+    }
+
+    @GetMapping("/test/get")
+    @Operation(summary = "测试")
+    public CommonResult<Object> get(String o){
+        ScreenPointDO screenPointDO = screenPointMapper.selectByPointName(o);
+        DeptDO dept = deptService.getDept(screenPointDO.getScreenDept());
+        return success(dept);
     }
 }
