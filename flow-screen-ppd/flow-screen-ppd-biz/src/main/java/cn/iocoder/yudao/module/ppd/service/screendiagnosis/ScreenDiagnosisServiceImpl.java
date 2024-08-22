@@ -64,9 +64,9 @@ public class ScreenDiagnosisServiceImpl implements ScreenDiagnosisService {
         ScreenCollectDO screenCollectDO = screenCollectMapper
                 .selectByPersonIdLastTime(personId, year, screenType);
         // 是否做过查验卡痕
-        tbHealthScreening.setDoneCheckMark(screenCollectDO != null);
+//        tbHealthScreening.setDoneCheckMark(screenCollectDO != null);
         // 有无卡痕 其他=9
-        tbHealthScreening.setCheckMark(null);
+//        tbHealthScreening.setCheckMark(null);
 
         if(screenCollectDO != null){
             // 症状结果
@@ -189,6 +189,7 @@ public class ScreenDiagnosisServiceImpl implements ScreenDiagnosisService {
         TBHealthScreening ppdData = screenPpdMapper
                 .selectByPersonIdLastTime(personId);
         tbHealthScreening.setPpdTestDone(ppdData != null);
+        tbHealthScreening.setPpdOutcome(ppdData.getPpdOutcome()!=null?ppdData.getPpdOutcome():2);
         if(ppdData != null && ppdData.getPpdInjectionTime() != null){
             tbHealthScreening.setPpdInjectionTimeStr(DateTimeFormatter
                     .ofPattern("yyyy年MM月dd日")

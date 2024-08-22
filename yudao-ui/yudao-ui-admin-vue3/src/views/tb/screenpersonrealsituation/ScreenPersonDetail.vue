@@ -218,18 +218,18 @@
             <div class="tips_content" style="font-size: 18px">
               <strong>活动性肺结核密切接触者：</strong> 症状筛查+ppd+胸片检查，异常或强阳性进行实验室检查。
               <br/>
-              <strong>0-5岁学生：</strong> 症状筛查+查验卡痕，有症状做 ppd，强阳性进一步检查；<strong>6-14
-              岁学生：</strong>症状筛查+ppd+查验卡痕，有症状或强
+              <strong>0-5岁学生：</strong> 症状筛查，有症状做 ppd，强阳性进一步检查；<strong>6-14
+              岁学生：</strong>症状筛查+ppd，有症状或强
               阳性进一步检查；<strong>≥15
-              岁学生：</strong>症状筛查+ppd+查验卡痕+胸片检查，有症状或强阳性或异常进一步检查；<strong>教职工：</strong>症状筛
+              岁学生：</strong>症状筛查+ppd+胸片检查，有症状或强阳性或异常进一步检查；<strong>教职工：</strong>症状筛
               查+胸片检查，有症状或异常进一步检查。
               <br/>
-              <strong>僧尼：</strong>0-5 岁、6-14 岁同学生；≥15 岁症状筛查+查验卡痕+胸片检查，有症状或强阳性或异常进一步检查。
-              <br/>
+              <!--              <strong>僧尼：</strong>0-5 岁、6-14 岁同学生；≥15 岁症状筛查+查验卡痕+胸片检查，有症状或强阳性或异常进一步检查。
+                            <br/>-->
               <strong>老年人、糖尿病患者、HIV/AIDS 和既往结核病患者：</strong>症状筛查+胸片检查，有症状或异常进一步检查。
               <br/>
-              <strong>0-5 岁非重点人群：</strong>症状筛查+查验卡痕，有症状做 ppd，强阳性进一步检查；<strong>6-14
-              岁非重点人群：</strong>症状筛查+ppd+查验卡痕，
+              <strong>0-5 岁非重点人群：</strong>症状筛查，有症状做 ppd，强阳性进一步检查；<strong>6-14
+              岁非重点人群：</strong>症状筛查+ppd，
               有症状或强阳性进一步检查；<strong>≥15 岁非重点人群：</strong>症状筛查+胸片检查，有症状或异常进一步检查。
             </div>
             <div class="symptom_input_content">
@@ -295,6 +295,7 @@
 <!--                  {{ tbHealthScreening.fatigue ? '有' : '无' }}-->
                 </div>
               </div>
+<!--
               <div class="symptom_input_content_item_1">
                 <div class="symptom_input_content_item_1_item4_1">
                   <div class="symptom_input_content_item_1_item4_1_1" style="font-size: 30px">
@@ -323,6 +324,7 @@
                   />
                 </div>
               </div>
+-->
               <div class="symptom_input_content_item_1">
                 <div class="symptom_input_content_item_1_item4_1">
                   <div class="symptom_input_content_item_1_item4_1_1" style="font-size: 30px">
@@ -336,6 +338,8 @@
                 <div class="symptom_input_content_item_1_item4_2"
                      style="font-size: 18px;margin-top: 15px; border-right-style: none; ">
                   注射时间：{{ tbHealthScreening.ppdInjectionTimeStr }}
+                  <br/>
+                  结果：{{tbHealthScreening.ppdOutcome == 1 ? "阳性":"阴性"}}
                 </div>
                 <div class="symptom_input_content_item_1_item4_1"
                      style="border-right-style: none;border-left: 1px solid ;font-size: 18px;">
@@ -407,7 +411,7 @@
                 </div>
               </div>-->
             </div>
-            <div class="check_signature" style="font-size: 18px">质检人员签字:</div>
+<!--            <div class="check_signature" style="font-size: 18px">质检人员签字:</div>-->
           </div>
         </el-tab-pane>
         <el-tab-pane label="采集" name="checkGroup">
@@ -497,7 +501,7 @@
             </el-table-column>
             <el-table-column label="结果" align="center" prop="outcome">
               <template #default="scope">
-                {{ scope.row.outcome ? '感染' : '未感染' }}
+                {{ scope.row.outcome==1 ? '阳性' : '阴性' }}
               </template>
             </el-table-column>
             <el-table-column label="注射单位" align="center" prop="injectionAgency" width="180"/>
@@ -593,8 +597,8 @@
               <li>保持PPD注射部位清洁干燥，禁揉搓、抓挠、涂擦药物，腕部禁止佩戴手表及饰品。</li>
               <li>受试者于PPD注射后72小时查验反应结果。</li>
             </ol>
-            <p><text><strong>【受试者姓名】</strong></text>______{学生姓名}_____<text><strong>身份证号码</strong></text>__________{身份证号}______________</p>
-            <p><text><strong>【学校班级】</strong></text>__________________________________________________________________</p>
+            <p><text><strong>【受试者姓名】</strong></text>______{{formData.name}}_____<text><strong>身份证号码</strong></text>_______{{formData.idNum}}_______</p>
+            <p><text><strong>【学校班级】</strong></text>___________{{formData.schoolOrTemple}}___{{formData.classroom}}_________________________________</p>
             <p>请仔细阅读并理解以上内容，受试者健康状况良好，无皮试禁忌症，愿意接受PPD皮肤试验。<text><strong>如拒绝接受PPD皮肤试验，请说明原因</strong></text>_______________________________________</p>
             <div style="text-align: right;">
               <p><text><strong>家长确认签名：</strong></text>____________________</p>
@@ -805,7 +809,8 @@ const tbHealthScreening = ref({
   noSputum: undefined,
   type: undefined,
   sputumDoctorSignature: undefined,
-  hivorAIDS: undefined
+  hivorAIDS: undefined,
+  ppdOutcome: undefined,
 })
 
 /** 打开弹窗 */
@@ -1105,7 +1110,6 @@ const handleCommand = (command: string, row: any) => {
 
   .symptom_input_content_item_2 {
     flex: 2;
-
     display: flex;
 
     .symptom_input_content_item_1_item4_1 {

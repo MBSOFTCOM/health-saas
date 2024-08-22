@@ -85,6 +85,8 @@ public class TBHealthScreening {
     // 注射时间
     private LocalDateTime ppdInjectionTime;
     private String ppdInjectionTimeStr;
+    //PPD结果
+    private Integer ppdOutcome;
     // 医生签字完整url
     private String ppdDoctorSignature;
 
