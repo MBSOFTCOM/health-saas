@@ -140,7 +140,6 @@
       </el-table-column>-->
       <el-table-column label="操作" align="center" width="150" fixed="right">
         <template #default="scope">
-
           <el-dropdown
             @command="(command) => handleCommand(command, scope.row)"
             v-hasPermi="[
@@ -178,7 +177,6 @@
               </el-dropdown-menu>
             </template>
           </el-dropdown>
-
 <!--          <el-button
             link type="success"
             @click="viewScreenForm(scope.row.name)"

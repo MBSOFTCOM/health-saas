@@ -5,7 +5,7 @@
 
     <select id="selectByPersonIdLastTime"
             resultType="cn.iocoder.yudao.module.ppd.controller.admin.screendiagnosis.vo.TBHealthScreening">
-        SELECT screen_time AS ppdInjectionTime, id
+        SELECT screen_time AS ppdInjectionTime, id, outcome AS ppdOutcome
         FROM tb_screen_ppd
         WHERE person_id = #{personId}
         ORDER BY screen_order DESC

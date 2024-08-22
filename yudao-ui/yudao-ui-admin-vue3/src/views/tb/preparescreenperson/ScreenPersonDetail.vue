@@ -337,6 +337,8 @@
                 <div class="symptom_input_content_item_1_item4_2"
                      style="font-size: 18px;margin-top: 15px; border-right-style: none; ">
                   注射时间：{{ tbHealthScreening.ppdInjectionTimeStr }}
+                  <br/>
+                  结果：{{tbHealthScreening.ppdOutcome == 1 ? "阳性":"阴性"}}
                 </div>
                 <div class="symptom_input_content_item_1_item4_1"
                      style="border-right-style: none;border-left: 1px solid ;font-size: 18px;">
@@ -408,7 +410,7 @@
                 </div>
               </div>-->
             </div>
-            <div class="check_signature" style="font-size: 18px">质检人员签字:</div>
+<!--            <div class="check_signature" style="font-size: 18px">质检人员签字:</div>-->
           </div>
         </el-tab-pane>
         <el-tab-pane label="采集" name="checkGroup">
@@ -498,7 +500,7 @@
             </el-table-column>
             <el-table-column label="结果" align="center" prop="outcome">
               <template #default="scope">
-                {{ scope.row.outcome ? '感染' : '未感染' }}
+                {{ scope.row.outcome == 1 ? '阳性' : '阴性' }}
               </template>
             </el-table-column>
             <el-table-column label="注射单位" align="center" prop="injectionAgency" width="180"/>
@@ -594,8 +596,8 @@
               <li>保持PPD注射部位清洁干燥，禁揉搓、抓挠、涂擦药物，腕部禁止佩戴手表及饰品。</li>
               <li>受试者于PPD注射后72小时查验反应结果。</li>
             </ol>
-            <p><text><strong>【受试者姓名】</strong></text>______{学生姓名}_____<text><strong>身份证号码</strong></text>__________{身份证号}______________</p>
-            <p><text><strong>【学校班级】</strong></text>__________________________________________________________________</p>
+            <p><text><strong>【受试者姓名】</strong></text>______{{formData.name}}_____<text><strong>身份证号码</strong></text>_______{{formData.idNum}}_______</p>
+            <p><text><strong>【学校班级】</strong></text>___________{{formData.schoolOrTemple}}___{{formData.classroom}}_________________________________</p>
             <p>请仔细阅读并理解以上内容，受试者健康状况良好，无皮试禁忌症，愿意接受PPD皮肤试验。<text><strong>如拒绝接受PPD皮肤试验，请说明原因</strong></text>_______________________________________</p>
             <div style="text-align: right;">
               <p><text><strong>家长确认签名：</strong></text>____________________</p>
@@ -743,7 +745,9 @@ const formData = ref({
   isNewStudent: undefined,
   year: undefined,
   screenId: undefined,
-  screenType: undefined
+  screenType: undefined,
+  classroom: undefined,
+  schoolOrTemple: undefined,
 })
 
 const formRef = ref() // 表单 Ref
@@ -806,7 +810,8 @@ const tbHealthScreening = ref({
   noSputum: undefined,
   type: undefined,
   sputumDoctorSignature: undefined,
-  hivorAIDS: undefined
+  hivorAIDS: undefined,
+  ppdOutcome: undefined,
 })
 
 /** 打开弹窗 */

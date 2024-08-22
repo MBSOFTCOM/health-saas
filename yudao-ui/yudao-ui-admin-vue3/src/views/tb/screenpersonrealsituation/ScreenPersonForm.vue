@@ -1,5 +1,5 @@
 <template>
-  <Dialog :title="dialogTitle" v-model="dialogVisible">
+  <Dialog :title="dialogTitle" v-model="dialogVisible"  style="margin-top: 1px">
     <el-form
       ref="formRef"
       :model="formData"
