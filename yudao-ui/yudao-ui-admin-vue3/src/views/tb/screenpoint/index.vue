@@ -143,8 +143,13 @@
 
           <el-dropdown
             @command="(command) => handleCommand(command, scope.row)"
+            v-hasPermi="[
+                    'tb:screen-point:update',
+                    'tb:screen-point:add-person',
+                    'tb:screen-point:delete'
+                  ]"
           >
-            <el-button type="primary" link><Icon icon="ep:d-arrow-right" /> 查看图片</el-button>
+            <el-button type="primary" link><Icon icon="ep:d-arrow-right" /> 操作筛查点</el-button>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item
@@ -154,16 +159,19 @@
                 </el-dropdown-item>
                 <el-dropdown-item
                   command="updateScreenForm"
+                  v-if="checkPermi(['tb:screen-point:add-person'])"
                 >
                   添加待筛查人员
                 </el-dropdown-item>
                 <el-dropdown-item
                   command="openForm"
+                  v-if="checkPermi(['tb:screen-point:update'])"
                 >
                   分配工作队员
                 </el-dropdown-item>
                 <el-dropdown-item
                   command="handleDelete"
+                  v-if="checkPermi(['tb:screen-point:delete'])"
                 >
                   删除筛查点
                 </el-dropdown-item>
@@ -171,7 +179,7 @@
             </template>
           </el-dropdown>
 
-          <el-button
+<!--          <el-button
             link type="success"
             @click="viewScreenForm(scope.row.name)"
           >
@@ -180,6 +188,7 @@
           <el-button
             link type="warning"
             @click="updateScreenForm(scope.row.name)"
+            v-hasPermi="['tb:screen-point:add-person']"
             style="margin-left: -0px"
           >
             添加待筛查人员
@@ -199,7 +208,7 @@
             style="margin-left: -0px"
           >
             删除筛查点
-          </el-button>
+          </el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -231,7 +240,7 @@ import UpdateScreenForm from './UpdateScreenForm.vue'
 import {onMounted, ref, reactive} from 'vue'
 import ScreenPointImportForm from './ScreenPointImportForm.vue'
 import * as UserApi from "@/api/system/user";
-import {computed} from "vue/dist/vue";
+import { checkPermi } from '@/utils/permission'
 
 
 /** 筛查点 列表 */
@@ -401,14 +410,17 @@ const getDeptList = async () => {
 /** 操作分发 */
 const handleCommand = (command: string, row: any) => {
   switch (command) {
-    case 'checkPPD':
-      openImage(16, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType)
+    case 'viewScreenForm':
+      viewScreenForm(row.name)
       break
-    case 'checkInduration':
-      openImage(17, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType)
+    case 'updateScreenForm':
+      updateScreenForm(row.name)
       break
-    case 'checkFlush':
-      openImage(18, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType)
+    case 'openForm':
+      openForm('update', userList.value, row.id)
+      break
+    case 'handleDelete':
+    handleDelete(row.id)
       break
     default:
       break

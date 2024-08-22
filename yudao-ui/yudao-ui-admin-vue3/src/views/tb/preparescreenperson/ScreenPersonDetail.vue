@@ -219,18 +219,18 @@
             <div class="tips_content" style="font-size: 18px">
               <strong>活动性肺结核密切接触者：</strong> 症状筛查+ppd+胸片检查，异常或强阳性进行实验室检查。
               <br/>
-              <strong>0-5岁学生：</strong> 症状筛查+查验卡痕，有症状做 ppd，强阳性进一步检查；<strong>6-14
-              岁学生：</strong>症状筛查+ppd+查验卡痕，有症状或强
+              <strong>0-5岁学生：</strong> 症状筛查，有症状做 ppd，强阳性进一步检查；<strong>6-14
+              岁学生：</strong>症状筛查+ppd，有症状或强
               阳性进一步检查；<strong>≥15
-              岁学生：</strong>症状筛查+ppd+查验卡痕+胸片检查，有症状或强阳性或异常进一步检查；<strong>教职工：</strong>症状筛
+              岁学生：</strong>症状筛查+ppd+胸片检查，有症状或强阳性或异常进一步检查；<strong>教职工：</strong>症状筛
               查+胸片检查，有症状或异常进一步检查。
               <br/>
-              <strong>僧尼：</strong>0-5 岁、6-14 岁同学生；≥15 岁症状筛查+查验卡痕+胸片检查，有症状或强阳性或异常进一步检查。
-              <br/>
+              <!--              <strong>僧尼：</strong>0-5 岁、6-14 岁同学生；≥15 岁症状筛查+查验卡痕+胸片检查，有症状或强阳性或异常进一步检查。
+                            <br/>-->
               <strong>老年人、糖尿病患者、HIV/AIDS 和既往结核病患者：</strong>症状筛查+胸片检查，有症状或异常进一步检查。
               <br/>
-              <strong>0-5 岁非重点人群：</strong>症状筛查+查验卡痕，有症状做 ppd，强阳性进一步检查；<strong>6-14
-              岁非重点人群：</strong>症状筛查+ppd+查验卡痕，
+              <strong>0-5 岁非重点人群：</strong>症状筛查，有症状做 ppd，强阳性进一步检查；<strong>6-14
+              岁非重点人群：</strong>症状筛查+ppd，
               有症状或强阳性进一步检查；<strong>≥15 岁非重点人群：</strong>症状筛查+胸片检查，有症状或异常进一步检查。
             </div>
             <div class="symptom_input_content">
