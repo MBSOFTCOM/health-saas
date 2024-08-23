@@ -391,10 +391,10 @@ export default {
 		 * @param {Object} type 0-实拍 1-签名
 		 */
 		async savePhoto(tempFilePath, type) {
-			uni.saveFile({
-				tempFilePath: tempFilePath, // 需要保存的文件的临时路径
-				success: async (res) => {
-					const savedFilePath = res.savedFilePath;
+			uni.saveImageToPhotosAlbum({
+				filePath: tempFilePath,
+				success: (image) =>{
+					const savedFilePath = image.path.replace("file://","")
 					if (type) {
 						this.FormData.doctorSignature = savedFilePath;
 						this.doctorSignature = savedFilePath;
@@ -402,21 +402,22 @@ export default {
 						this.FormData.actualPhoto = savedFilePath;
 						this.actualPhoto = savedFilePath;
 					}
-
 					// 将保存后的文件路径赋值给photoUrl以显示在页面上
-
 					uni.showToast({
 						title: '照片保存成功',
 						icon: 'success'
 					});
 				},
-				fail: () => {
-					uni.showToast({
-						title: '照片保存失败',
-						icon: 'none'
-					});
+				fail: (e)=>{
+					fail: () => {
+						uni.showToast({
+							title: '照片保存失败',
+							icon: 'none'
+						});
+					}
 				}
 			});
+			
 		},
 		reset() {
 			this.refreshMark();
@@ -445,27 +446,34 @@ export default {
 		editImage(type, saveName) {
 			saveName = getTimeStamp(null);
 
-			imageEditor.selectImage((ret) => {
-				if (ret.outputPath) {
-					imageEditor.imageEdit(
-						{
-							isShowSticker: false, //是否展示贴图功能，默认为true
-							path: ret.outputPath, //原始图片路径
-							outputPath: `/storage/emulated/0/Pictures/${saveName}.jpg` //保存图片路径
-						},
-						(res) => {
-							if (res.outputPath && res.isImageEdit) {
-								if (type) {
-									// 红晕
-									this.blushPhoto = res.outputPath;
-									this.FormData.blushPhoto = res.outputPath;
-								} else {
-									this.scleromaPhoto = res.outputPath;
-									this.FormData.scleromaPhoto = res.outputPath;
+			uni.chooseImage({
+				count:1,
+				sourceType: ['camera', 'album'],
+				success: (resp) =>{
+					uni.saveImageToPhotosAlbum({
+						filePath: resp.tempFilePaths[0],
+						success: (saveRes)=> {
+							let path=saveRes.path.replace("file://","")
+							imageEditor.imageEdit({
+								isShowSticker: false, //是否展示贴图功能，默认为true
+								path: path, //原始图片路径
+								outputPath: `/storage/emulated/0/Pictures/${saveName}.jpg` //保存图片路径
+							},
+							(res) => {
+								if (res.outputPath && res.isImageEdit) {
+									if (type) {
+										// 红晕
+										this.blushPhoto = res.outputPath;
+										this.FormData.blushPhoto = res.outputPath;
+									} else {
+										this.scleromaPhoto = res.outputPath;
+										this.FormData.scleromaPhoto = res.outputPath;
+									}
 								}
 							}
+							);
 						}
-					);
+				});
 				}
 			});
 		},
