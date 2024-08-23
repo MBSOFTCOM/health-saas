@@ -46,21 +46,21 @@
           @tab-click="handleClick"
         >
           <el-tab-pane label="队长" name="cap">
+            <div style="margin-bottom: 20px">
+              <el-button
+                type="primary"
+                plain
+                @click="distributeRole(1)"
+                v-if="isHavePower"
+              >
+                <Icon icon="ep:plus" class="mr-5px" /> 分配队长
+              </el-button>
+            </div>
             <el-row type="flex" justify="space-between">
               <el-col :span="11">
                 <el-form-item label="队长名字" prop="worker" style="width: 250px">
                   <el-input v-model="formData.workers" disabled/>
                 </el-form-item>
-              </el-col>
-              <el-col :span="11">
-                <el-button
-                  link
-                  type="success"
-                  @click="distributeRole(1)"
-                  v-if="isHavePower"
-                >
-                  分配队长
-                </el-button>
               </el-col>
             </el-row>
             <el-row type="flex" justify="space-between">
