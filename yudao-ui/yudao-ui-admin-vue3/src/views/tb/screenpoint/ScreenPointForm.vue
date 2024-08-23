@@ -946,8 +946,8 @@ const copyDeptList = reactive([])
  */
 const getDeptList = () => {
   ScreenPointApi.getDeptList().then(data =>{
-    deptList.value = data;
-    copyDeptList.splice(0, copyDeptList.length, ...data)
+    deptList.value = data.filter(dept => dept.type != 1);
+    copyDeptList.splice(0, copyDeptList.length, ...data.filter(dept => dept.type != 1))
   })
 }
 

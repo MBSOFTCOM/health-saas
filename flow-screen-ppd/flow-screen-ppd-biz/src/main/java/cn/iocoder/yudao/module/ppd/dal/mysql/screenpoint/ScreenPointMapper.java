@@ -75,7 +75,7 @@ public interface ScreenPointMapper extends BaseMapperX<ScreenPointDO> {
      */
     List<UserVO> getAllUserList();
 
-    @Select("SELECT id, name FROM system_dept WHERE deleted = 0 AND status = 0")
+    @Select("SELECT id, name, type FROM system_dept WHERE deleted = 0 AND status = 0")
     List<DeptVO> getDeptList();
 
     @Update("UPDATE tb_screen_point set worker = #{userId} WHERE id = #{screenPointId} AND deleted = 0")

@@ -405,7 +405,9 @@ const getUserId = async () => {
 }
 
 const getDeptList = async () => {
-  deptList.value = await ScreenPointApi.getDeptList();
+  const allDeptList = await ScreenPointApi.getDeptList();
+  // 去掉学校类型
+  deptList.value = allDeptList.filter(dept => dept.type != 1);
 }
 
 /** 操作分发 */

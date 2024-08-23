@@ -329,7 +329,9 @@ const rowClassName = ({ row }) => {
 };
 
 const getDeptList = async () => {
-  deptList.value = await DeptApi.getMyDeptList();
+  const allDeptList = await DeptApi.getMyDeptList();
+  // 去掉学校类型
+  deptList.value = allDeptList.filter(dept => dept.type != 1);
 }
 
 const loginUserId = ref()

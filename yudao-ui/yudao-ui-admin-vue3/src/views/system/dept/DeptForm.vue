@@ -104,11 +104,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="是否为学校" prop="type" label-width="120">
-            <el-radio-group v-model="formData.type">
-              <el-radio :value="1">是</el-radio>
-              <el-radio :value="2">否</el-radio>
-            </el-radio-group>
+          <el-form-item label="单位类型" prop="type" label-width="120">
+            <el-select v-model="formData.type" placeholder="请选择单位类型">
+              <el-option :value="1" label="学校"/>
+              <el-option :value="2" label="医疗机构"/>
+              <el-option :value="3" label="管理机构"/>
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>

@@ -20,4 +20,7 @@ public class DeptSimpleRespVO {
     @Schema(description = "父部门 ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
     private Long parentId;
 
+    @Schema(description = "单位类型")
+    private Integer type;
+
 }
