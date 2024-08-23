@@ -7,14 +7,14 @@
       :rules="formRules"
       label-width="80px"
     >
-      <el-form-item label="上级部门" prop="parentId">
+      <el-form-item label="上级单位" prop="parentId">
         <el-tree-select
           v-model="formData.parentId"
           :data="deptTree"
           :props="defaultProps"
           check-strictly
           default-expand-all
-          placeholder="请选择上级部门"
+          placeholder="请选择上级单位"
           value-key="deptId"
           @change="getDistrictCode(formData.parentId)"
         />
@@ -22,8 +22,8 @@
 
       <el-row type="flex" justify="space-between">
         <el-col :span="11">
-          <el-form-item label="部门名称" prop="name">
-            <el-input v-model="formData.name" placeholder="请输入部门名称" />
+          <el-form-item label="单位名称" prop="name">
+            <el-input v-model="formData.name" placeholder="请输入单位名称" />
           </el-form-item>
         </el-col>
         <el-col :span="11">
