@@ -30,6 +30,10 @@ import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
 import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import com.google.common.annotations.VisibleForTesting;
+import com.itextpdf.text.pdf.BaseFont;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,6 +45,8 @@ import org.dromara.hutool.core.bean.BeanUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.xhtmlrenderer.pdf.ITextFontResolver;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.awt.*;
 import java.io.*;
@@ -86,6 +92,8 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
     private ScreenComputedTomographyMapper screenComputedTomographyMapper;
     @Resource
     private DeptService deptService;
+    @Resource
+    private Configuration configuration;
 
     @Override
     public Long createScreenPerson(ScreenPersonSaveReqVO createReqVO) {
@@ -1094,6 +1102,55 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         }
         writeToZip(response, files);
     }
+
+    @Override
+    public void exportScreenPersonArchive2(ScreenPersonStatisticsReqVO reqVO, HttpServletRequest request, HttpServletResponse response) {
+        List<PatientInfoReqVO> personInfoList = reqVO.getPersonInfo();
+        List<String> filePathList = new ArrayList<>();
+
+        String realPath = request.getSession().getServletContext().getRealPath("/");
+        String parentPath = new File(realPath).getParent() + "/table";
+        File dir = new File(parentPath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        int index = 1;
+
+        for (PatientInfoReqVO obj : personInfoList) {
+            TBHealthScreening tbHealthScreening = screenDiagnosisService.getTbHealthScreening(obj.getId(), obj.getYear(), obj.getScreenType());
+            String fileName = parentPath + "/" + index + "_" + obj.getName() + ".pdf";
+            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                Template template = configuration.getTemplate("healthForm.ftl");
+                StringWriter result = new StringWriter(1024);
+                template.process(tbHealthScreening, result);
+                String content = result.toString();
+                ITextRenderer renderer = new ITextRenderer();
+                ITextFontResolver fontResolver = renderer.getFontResolver();
+                fontResolver.addFont("/fontcss/simsun.ttc", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+                renderer.setDocumentFromString(content);
+                renderer.layout();
+                renderer.createPDF(outputStream);
+                renderer.finishPDF();
+
+                try (FileOutputStream fileOutputStream = new FileOutputStream(fileName)) {
+                    outputStream.writeTo(fileOutputStream);
+                }
+                filePathList.add(fileName);
+                index++;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            writeToZip(response, filePathList);
+        } finally {
+            for (String filePath : filePathList) {
+                new File(filePath).delete();
+            }
+        }
+    }
+
 
 
     public void writeToZip(HttpServletResponse response, List<String> files) {

@@ -365,7 +365,7 @@ const handleExport = async () => {
     message.success("导出成功！");
   } catch (error) {
     // 提示导出失败
-    message.error(`导出失败: ${error.message}`);
+    message.info('导出失败：取消导出！');
   } finally {
     // 恢复导出状态
     exportLoading.value = false;

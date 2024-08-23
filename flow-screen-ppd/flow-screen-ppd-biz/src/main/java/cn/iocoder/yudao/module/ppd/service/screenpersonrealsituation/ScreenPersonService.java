@@ -142,7 +142,13 @@ public interface ScreenPersonService {
     void exportStatistics(ScreenPersonStatisticsReqVO reqVO, HttpServletResponse response);
 
     /**
-     * 统计表导出档案
+     * 统计表导出知情同意书
      */
     void exportScreenPersonArchive(ScreenPersonStatisticsReqVO reqVO, HttpServletRequest request, HttpServletResponse response) throws IOException;
+
+
+    /**
+     * 统计表导出体检表
+     */
+    void exportScreenPersonArchive2(ScreenPersonStatisticsReqVO reqVO, HttpServletRequest request, HttpServletResponse response);
 }

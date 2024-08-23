@@ -126,8 +126,13 @@ export const ScreenPersonApi = {
     return await request.download({url: `/tb/screen-person/statistics-export`, params})
   },
 
-  // 工作进展报告--统计表--导出档案
+  // 工作进展报告--统计表--导出知情同意书
   exportArchives: async (params: any) => {
     return await request.download({url: `/tb/screen-person/archives-export`, params})
+  },
+
+  // 工作进展报告--统计表--导出体检表
+  exportArchives2: async (params: any) => {
+    return await request.download({url: `/tb/screen-person/archives-export2`, params})
   },
 }

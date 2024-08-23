@@ -13,7 +13,7 @@
           v-model="queryParams.deptList"
           placeholder="请选择"
           clearable
-          class="!w-180px"
+          class="!w-200px"
         >
           <el-option
             v-for="item in deptList"
@@ -29,7 +29,7 @@
           placeholder="请输入试剂名称"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-150px"
+          class="!w-200px"
         />
       </el-form-item>
       <el-form-item label="试剂类型" prop="type">
@@ -37,7 +37,7 @@
           v-model="queryParams.type"
           placeholder="请选择"
           clearable
-          class="!w-120px"
+          class="!w-200px"
         >
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.DOSAGE_FORM)"
@@ -53,7 +53,7 @@
           placeholder="请输入供应商"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-150px"
+          class="!w-200px"
         />
       </el-form-item>
       <el-form-item label="是否启用" prop="usable">
@@ -61,7 +61,7 @@
           v-model="queryParams.usable"
           placeholder="试剂状态"
           clearable
-          class="!w-120px"
+          class="!w-200px"
         >
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
@@ -74,6 +74,9 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+      </el-form-item>
+      <br/>
+      <el-form-item style="float: right">
         <el-button
           type="primary"
           plain

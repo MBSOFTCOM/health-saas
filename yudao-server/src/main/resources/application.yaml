@@ -262,3 +262,13 @@ debug: false
 jeecg:
   jmreport:
     saas-mode: tenant
+
+spring:
+  # freemarker configuration
+  freemarker:
+    cache: true
+    suffix: .ftl
+    charset: UTF-8
+    template-loader-path: classpath:freemarker/
+    settings:
+      classic_compatible: true

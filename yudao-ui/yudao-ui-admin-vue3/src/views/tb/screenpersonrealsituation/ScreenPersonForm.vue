@@ -391,10 +391,10 @@
       <el-row type="flex" justify="space-between">
         <el-col :span="11">
           <el-form-item
-            label="单位"
+            label="单位(学校)"
             prop="schoolOrTemple"
           >
-            <el-input v-model="formData.schoolOrTemple" placeholder="请输入单位"/>
+            <el-input v-model="formData.schoolOrTemple" placeholder="请输入单位(学校)"/>
           </el-form-item>
         </el-col>
 
