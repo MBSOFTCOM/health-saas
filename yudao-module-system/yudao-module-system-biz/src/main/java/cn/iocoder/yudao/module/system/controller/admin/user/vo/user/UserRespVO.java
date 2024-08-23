@@ -16,35 +16,36 @@ import java.util.Set;
 @ExcelIgnoreUnannotated
 public class UserRespVO{
 
-    @Schema(description = "用户编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @Schema(description = "用户编号", requiredMode = Schema.RequiredMode.REQUIRED)
     @ExcelProperty("用户编号")
     private Long id;
 
-    @Schema(description = "用户账号", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao")
-    @ExcelProperty("用户名称")
+    @Schema(description = "登录账号", requiredMode = Schema.RequiredMode.REQUIRED)
+    @ExcelProperty("登录账号")
     private String username;
 
-    @Schema(description = "用户昵称", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋艿")
-    @ExcelProperty("用户昵称")
+    @Schema(description = "用户姓名", requiredMode = Schema.RequiredMode.REQUIRED)
+    @ExcelProperty("用户姓名")
     private String nickname;
 
-    @Schema(description = "备注", example = "我是一个用户")
+    @Schema(description = "备注")
     private String remark;
 
-    @Schema(description = "部门ID", example = "我是一个用户")
+    @Schema(description = "单位ID")
     private Long deptId;
-    @Schema(description = "部门名称", example = "IT 部")
-    @ExcelProperty("部门名称")
+
+    @Schema(description = "单位名称")
+    @ExcelProperty("单位名称")
     private String deptName;
 
-    @Schema(description = "岗位编号数组", example = "1")
+    @Schema(description = "岗位编号数组")
     private Set<Long> postIds;
 
-    @Schema(description = "用户邮箱", example = "yudao@iocoder.cn")
+    @Schema(description = "用户邮箱")
     @ExcelProperty("用户邮箱")
     private String email;
 
-    @Schema(description = "手机号码", example = "15601691300")
+    @Schema(description = "手机号码")
     @ExcelProperty("手机号码")
     private String mobile;
 

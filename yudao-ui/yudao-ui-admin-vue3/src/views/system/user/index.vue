@@ -17,7 +17,7 @@
           :inline="true"
           label-width="68px"
         >
-          <el-form-item label="用户名称" prop="username">
+          <el-form-item label="登录账号" prop="username">
             <el-input
               v-model="queryParams.username"
               placeholder="请输入用户名称"
@@ -98,19 +98,19 @@
         <el-table v-loading="loading" :data="list">
           <el-table-column label="用户编号" align="center" key="id" prop="id" />
           <el-table-column
-            label="用户名称"
+            label="登录账号"
             align="center"
             prop="username"
             :show-overflow-tooltip="true"
           />
           <el-table-column
-            label="用户昵称"
+            label="用户姓名"
             align="center"
             prop="nickname"
             :show-overflow-tooltip="true"
           />
           <el-table-column
-            label="部门"
+            label="单位"
             align="center"
             key="deptName"
             prop="deptName"

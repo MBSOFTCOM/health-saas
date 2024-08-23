@@ -9,19 +9,19 @@
     >
       <el-row>
         <el-col :span="12">
-          <el-form-item label="用户昵称" prop="nickname">
+          <el-form-item label="用户姓名" prop="nickname">
             <el-input v-model="formData.nickname" placeholder="请输入用户昵称" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="归属部门" prop="deptId">
+          <el-form-item label="归属单位" prop="deptId">
             <el-tree-select
               v-model="formData.deptId"
               :data="deptList"
               :props="defaultProps"
               check-strictly
               node-key="id"
-              placeholder="请选择归属部门"
+              placeholder="请选择归属单位"
             />
           </el-form-item>
         </el-col>
@@ -40,12 +40,12 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item v-if="formData.id === undefined" label="用户名称" prop="username">
+          <el-form-item v-if="formData.id === undefined" label="登录账号" prop="username">
             <el-input v-model="formData.username" placeholder="请输入用户名称" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item v-if="formData.id === undefined" label="用户密码" prop="password">
+          <el-form-item v-if="formData.id === undefined" label="登录密码" prop="password">
             <el-input
               v-model="formData.password"
               placeholder="请输入用户密码"
