@@ -23,7 +23,7 @@ public class UserImportExcelVO {
     @ExcelProperty("登录账号")
     private String username;
 
-    @ExcelProperty("用户姓名")
+    @ExcelProperty("姓名")
     private String nickname;
 
     @ExcelProperty("单位编号")

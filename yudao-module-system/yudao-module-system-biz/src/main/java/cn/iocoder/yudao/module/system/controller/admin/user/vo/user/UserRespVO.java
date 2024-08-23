@@ -16,16 +16,16 @@ import java.util.Set;
 @ExcelIgnoreUnannotated
 public class UserRespVO{
 
-    @Schema(description = "用户编号", requiredMode = Schema.RequiredMode.REQUIRED)
-    @ExcelProperty("用户编号")
+    @Schema(description = "编号", requiredMode = Schema.RequiredMode.REQUIRED)
+    @ExcelProperty("编号")
     private Long id;
 
     @Schema(description = "登录账号", requiredMode = Schema.RequiredMode.REQUIRED)
     @ExcelProperty("登录账号")
     private String username;
 
-    @Schema(description = "用户姓名", requiredMode = Schema.RequiredMode.REQUIRED)
-    @ExcelProperty("用户姓名")
+    @Schema(description = "姓名", requiredMode = Schema.RequiredMode.REQUIRED)
+    @ExcelProperty("姓名")
     private String nickname;
 
     @Schema(description = "备注")

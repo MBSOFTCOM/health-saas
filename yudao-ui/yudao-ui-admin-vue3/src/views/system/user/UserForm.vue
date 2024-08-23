@@ -9,8 +9,8 @@
     >
       <el-row>
         <el-col :span="12">
-          <el-form-item label="用户姓名" prop="nickname">
-            <el-input v-model="formData.nickname" placeholder="请输入用户昵称" />
+          <el-form-item label="姓名" prop="nickname">
+            <el-input v-model="formData.nickname" placeholder="请输入姓名" />
           </el-form-item>
         </el-col>
         <el-col :span="12">

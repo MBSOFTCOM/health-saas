@@ -10,10 +10,10 @@
         :inline="true"
         label-width="68px"
       >
-        <el-form-item label="用户昵称" prop="nickname">
+        <el-form-item label="用户姓名" prop="nickname">
           <el-input
             v-model="queryParams.nickname"
-            placeholder="请输入用户昵称"
+            placeholder="请输入用户姓名"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
@@ -28,7 +28,7 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="部门" prop="deptId">
+        <el-form-item label="单位" prop="deptId">
           <el-select v-model="queryParams.deptId"
                      clearable
                      class="!w-200px"
@@ -73,21 +73,21 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="用户编号" align="center" key="id" prop="id"/>
-        <el-table-column
-          label="用户名称"
+        <el-table-column label="编号" align="center" key="id" prop="id"/>
+<!--        <el-table-column
+          label="登录账号"
           align="center"
           prop="username"
           :show-overflow-tooltip="true"
-        />
+        />-->
         <el-table-column
-          label="用户昵称"
+          label="姓名"
           align="center"
           prop="nickname"
           :show-overflow-tooltip="true"
         />
         <el-table-column
-          label="部门"
+          label="所在单位"
           align="center"
           key="deptName"
           prop="deptName"

@@ -20,7 +20,7 @@
           <el-form-item label="登录账号" prop="username">
             <el-input
               v-model="queryParams.username"
-              placeholder="请输入用户名称"
+              placeholder="请输入登录账号"
               clearable
               @keyup.enter="handleQuery"
               class="!w-240px"
@@ -96,7 +96,7 @@
       </ContentWrap>
       <ContentWrap>
         <el-table v-loading="loading" :data="list">
-          <el-table-column label="用户编号" align="center" key="id" prop="id" />
+          <el-table-column label="编号" align="center" key="id" prop="id" />
           <el-table-column
             label="登录账号"
             align="center"
@@ -104,7 +104,7 @@
             :show-overflow-tooltip="true"
           />
           <el-table-column
-            label="用户姓名"
+            label="姓名"
             align="center"
             prop="nickname"
             :show-overflow-tooltip="true"
