@@ -8,7 +8,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-row  type="flex" justify="space-between">
+      <el-row type="flex" justify="space-between">
         <el-col :span="4">
           <el-form-item label="姓名" prop="name">
             <el-input

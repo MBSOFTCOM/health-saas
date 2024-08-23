@@ -63,6 +63,9 @@
           <el-form-item>
             <el-button @click="handleQuery"><Icon icon="ep:search" />搜索</el-button>
             <el-button @click="resetQuery"><Icon icon="ep:refresh" />重置</el-button>
+          </el-form-item>
+          <br/>
+          <el-form-item style="float: right">
             <el-button
               type="primary"
               plain

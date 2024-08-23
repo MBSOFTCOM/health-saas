@@ -15,7 +15,7 @@
           :filter-method="PinyinMatchFun"
           placeholder="请选择民族"
           clearable
-          class="!w-120px"
+          class="!w-160px"
         >
           <el-option
             v-for="item in ethnicList"
@@ -28,9 +28,9 @@
       <el-form-item label="第一人群分类" prop="firstType" label-width="97">
         <el-select
           v-model="queryParams.firstType"
-          placeholder="请选择第一人群分类"
+          placeholder="请选择"
           clearable
-          class="!w-180px"
+          class="!w-160px"
         >
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.FIRST_TYPE)"
@@ -43,13 +43,13 @@
       <el-form-item label="多人群分类" prop="moreType" label-width="85">
         <el-select
           v-model="queryParams.moreTempType"
-          placeholder="请选择多人群分类"
+          placeholder="请选择"
           clearable
           multiple
           :max-collapse-tags="2"
           collapse-tags
           collapse-tags-tooltip
-          class="!w-180px"
+          class="!w-160px"
         >
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.MORE_TYPE)"
@@ -59,12 +59,12 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="学生类别" prop="studentType" label-width="97">
+      <el-form-item label="学生类别" prop="studentType">
         <el-select
           v-model="queryParams.studentType"
           placeholder="请选择学生类别"
           clearable
-          class="!w-180px"
+          class="!w-160px"
         >
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.STUDENT_TYPE)"
@@ -80,7 +80,7 @@
           placeholder="请输入工作年度"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-140px"
+          class="!w-160px"
         />
       </el-form-item>
 
@@ -90,7 +90,7 @@
           placeholder="请输入单位"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-180px"
+          class="!w-160px"
         />
       </el-form-item>
       <el-form-item label="班级" prop="classroom">
@@ -99,7 +99,7 @@
           placeholder="请输入班级"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-140px"
+          class="!w-160px"
         />
       </el-form-item>
       <el-form-item label="筛查点" prop="screenPoint">
@@ -108,7 +108,7 @@
           placeholder="请输入筛查点"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-140px"
+          class="!w-160px"
         />
       </el-form-item>
       <el-form-item label="筛查类型" prop="screenType" label-width="97">
@@ -116,7 +116,7 @@
           v-model="queryParams.screenType"
           placeholder="请选择筛查类型"
           clearable
-          class="!w-180px"
+          class="!w-160px"
         >
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.TB_SCREEN_TYPE)"
@@ -131,7 +131,7 @@
           v-model="queryParams.isScreened"
           placeholder="请选择"
           clearable
-          class="!w-150px"
+          class="!w-160px"
         >
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.IS_SCREEN)"
@@ -142,7 +142,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item style="display:flex;margin-left: 65%">
+      <el-form-item>
         <el-button @click="handleQuery">
           <Icon icon="ep:search" class="mr-5px"/>
           搜索
@@ -151,6 +151,9 @@
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
+      </el-form-item>
+      <br/>
+      <el-form-item style="float: right">
         <el-button
           type="warning"
           plain
