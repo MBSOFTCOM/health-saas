@@ -76,7 +76,8 @@
               :value="dict.value"
             />
           </el-select>
-        </el-col>/
+        </el-col>
+        <span style="margin-top: 5px">/</span>
         <el-col :span="4">
           <el-select
             v-model="formData.packageUnit"

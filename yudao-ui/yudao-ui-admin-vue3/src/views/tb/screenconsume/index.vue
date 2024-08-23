@@ -8,7 +8,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="部门" prop="deptList">
+      <el-form-item label="单位" prop="deptList">
         <el-select
           v-model="queryParams.deptList"
           placeholder="请选择"
@@ -65,7 +65,7 @@
         <el-button
           type="primary"
           plain
-          @click="openForm('create')"
+          @click="openForm('create', list)"
           v-hasPermi="['tb:screen-consume:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
@@ -245,8 +245,8 @@ const resetQuery = () => {
 
 /** 详情操作 */
 const formRef = ref()
-const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+const openForm = (type: string, list:any, id?: number) => {
+  formRef.value.open(type, list, id)
 }
 
 /** 增加、减少库存操作 */

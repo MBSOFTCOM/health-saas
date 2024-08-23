@@ -10,7 +10,7 @@
     >
       <el-row  type="flex" justify="space-between">
         <el-col :span="5">
-          <el-form-item label="部门" prop="deptList">
+          <el-form-item label="单位" prop="deptList">
             <el-select
               v-model="queryParams.deptList"
               placeholder="请选择"
@@ -260,7 +260,7 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  formRef.value.open(type,  id)
 }
 
 /** 删除按钮操作 */
