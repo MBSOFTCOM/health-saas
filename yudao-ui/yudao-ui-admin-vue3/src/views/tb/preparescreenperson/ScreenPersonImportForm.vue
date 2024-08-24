@@ -60,7 +60,7 @@
         />
       </el-form-item>
 
-      <el-form-item label="所属管理部门:" label-width="120px" prop="deptId">
+      <el-form-item label="被筛查单位:" label-width="120px" prop="deptId">
         <el-select
           v-model="formData.deptId"
           filterable
