@@ -36,6 +36,7 @@
 					<up-button
 						@click="districtCover"
 						:plain="true"
+            style="margin-right: 10px"
 						text="同步区划数据"
 						v-if="activeItem === 0"
 						class="custom-style"

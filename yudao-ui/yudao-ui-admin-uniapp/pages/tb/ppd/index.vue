@@ -111,7 +111,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="card-main" style="width: width: 320px;">
+			<view class="card-main" style="width: 320px;">
 				<view class="card-top various2">试剂类型统计</view>
 				<view class="card-tle">
 					<view class="card-sp">
@@ -255,357 +255,343 @@
 						style="margin: 0 10px"
 						class="custom-reset"
 						:plain="true"
-						text="重置"
-					></up-button>
+						text="重置"/>
 					<up-button
 						@click="reviewProcess"
 						style="width: 115px"
 						type="primary"
 						:plain="true"
-						text="查看筛查流程"
-					></up-button>
-					<up-button
-						@click="coverRegent()"
-						style="width: 115px"
-						type="primary"
-						:plain="true"
-						text="同步试剂"/>
-					<up-button
-						@click="coverConsume()"
-						style="width: 115px"
-						type="primary"
-						:plain="true"
-						text="同步试剂批号"/>
-				</view>
+						text="查看筛查流程"/>
 			</view>
 			<up-line style="margin-top: 5px;"></up-line>
 		</view>
-		<view class="uni-container">
-			<uni-table :style="tableStyle" ref="table" :loading="loading" stripe emptyText="暂无更多数据">
-				<uni-tr>
-					<uni-th width="60" align="center">序号</uni-th>
-					<uni-th width="110" align="center">筛查编号</uni-th>
-					<uni-th width="100" align="center">姓名</uni-th>
-					<uni-th width="180" align="center">筛查次序/时间</uni-th>
-					<uni-th width="180" align="center">下一步检查</uni-th>
-					<uni-th width="170" align="center">操作</uni-th>
-					<uni-th width="180" align="center">身份证号</uni-th>
-					<uni-th width="60" align="center">性别</uni-th>
-					<uni-th width="60" align="center">年龄</uni-th>
-					<uni-th width="60" align="center">民族</uni-th>
-					<uni-th width="150" align="center">筛查点</uni-th>
-					<uni-th width="120" align="center">第一人群分类</uni-th>
-					<uni-th width="120" align="center">重点人群分类</uni-th>
-					<uni-th width="150" align="center">患者信息操作</uni-th>
-				</uni-tr>
-				<uni-tr v-for="(item, index) in pageData" :key="index">
-					<uni-td align="center">{{ index + 1 }}</uni-td>
-					<uni-td align="center">{{ item.screenId }}</uni-td>
-					<uni-td align="center">{{ item.name }}</uni-td>
-					<uni-td align="center">
-						<view>
-							<uni-data-select
-								v-model="item.orderVal"
-								:localdata="item.orderTime"
-								placeholder="选择筛查次序"
-								:clear="false"
-								placement="top"
-								@click="toggleOverflow(item)"
-								@change="changeOrder(item)"
-							></uni-data-select>
-						</view>
-					</uni-td>
-					<uni-td align="left">
-						<view v-if="checkLength(item.next)">{{ item.next }}</view>
-						<view v-else>
-							<up-text text="点击查看" type="success" @click="clickTextHandler(item.next)"></up-text>
-						</view>
-					</uni-td>
-					<uni-td align="center">
-						<view style="display: flex; justify-content: space-around; align-items: center">
-							<u-button
-								@click="gather(item)"
-								style="
-									background-color: #fff;
-									border: 1px solid rgba(21, 99, 232, 1);
-									color: rgba(21, 99, 232, 1);
-									display: flex;
-									flex-direction: column;
-									justify-content: center;
-									height: 6vh;
-									width: 15vh;
-									font-size: 16px;
-								"
-								class="btn-span"
-							>
-								新增注射
-							</u-button>
-							<u-button
-								class="btn-span"
-								style="
-									margin: 0 10px;
-									background-color: #fff;
-									border: 1px solid rgba(51, 176, 19, 1);
-									color: rgba(51, 176, 19, 1);
-									display: flex;
-									flex-direction: column;
-									justify-content: center;
-									height: 6vh;
-									width: 15vh;
-									font-size: 16px;
-								"
-								@click="submitOutcome(item)"
-								v-if="item.injection != '1'"
-							>
-								提交结果
-							</u-button>
-							
-							<u-button
-								class="btn-span"
-								style="
-									margin: 0 10px;
-									background-color: #fff;
-									border: 1px solid #fa9f37;
-									color: #fa9f37;
-									display: flex;
-									flex-direction: column;
-									justify-content: center;
-									height: 6vh;
-									width: 15vh;
-									font-size: 16px;
-								"
-								@click="modify(item)"
-								v-else
-							>
-								修改结果
-							</u-button>
-						</view>
-					</uni-td>
-					<uni-td align="center">{{ item.idNum }}</uni-td>
-					<uni-td align="center">{{ getSex(item.sex) }}</uni-td>
-					<uni-td align="center">{{ item.age }}</uni-td>
-					<uni-td align="center">{{ get(item.nation) }}</uni-td>
-					<uni-td align="center">{{ item.screenPoint }}</uni-td>
-					<uni-td align="center">{{ getFirstType(item.firstType) }}</uni-td>
-					<uni-td align="center">{{ getMoreType(item) }}</uni-td>
-					<uni-td align="center">
-						<view style="display: flex; justify-content: space-around; align-items: center">
-							<span
-								class="btn-span"
-								style="
-									background-color: #fff;
-									border: 1px solid rgba(223, 65, 65, 1);
-									color: rgba(223, 65, 65, 1);
-									padding: 5px 10px;
-								"
-								@click="revise(item)"
-							>
-								修改
-							</span>
-							<span
-								class="btn-span"
-								style="
-									background-color: #fff;
-									border: 1px solid rgba(80, 104, 242, 1);
-									color: rgba(80, 104, 242, 1);
-									padding: 5px 10px;
-								"
-								@click="print(item)"
-							>
-								打印
-							</span>
-						</view>
-					</uni-td>
-				</uni-tr>
-			</uni-table>
-			<view class="uni-pagination-box">
-				<uni-pagination
-					show-icon
-					:page-size="pageSize"
-					:current="pageCurrent"
-					:total="total"
-					@change="change"
-				/>
-			</view>
-			<!-- 注射弹窗 -->
-			<u-popup :show="show" mode="center">
-				<view class="injection">
-					<view class="injection-tle">注射试剂</view>
-					<uni-data-select
-						style="width: 100%;"
-					    v-model="regentId"
-					    :localdata="regentList"
-						:clear="false"
-					    @change="selectRegentList"/>
-						<up-row>
-							<up-col span="7">
-								<u-radio-group style="margin-left: 20rpx;" v-model="injectionReagent.reagentType" placement="column" disabled>
-									<u-radio
-										v-for="(item, index) in radiolist1"
-										:key="index"
-										:label="item.name"
-										:name="item.value"
-										labelSize="20px"
-										iconSize="23px"
-										size="25px"
-									></u-radio>
-								</u-radio-group>
-							</up-col>
-							<up-col span="5" >
-								<view v-if="injectionReagent.reagentSpecsNum">
-									<up-row>转换系数 ：{{this.injectionReagent.reagentSpecsNum}} (人次)</up-row>
-									<up-row>现有库存 ：{{this.injectionReagent.currentNumber}}</up-row>
-									<up-row>已消耗数量 ：{{this.injectionReagent.changeNumber}}</up-row>
-								</view>
-							</up-col>
-						</up-row>
-					
-					</view>
-				<view class="injection-btn">
-					<up-button class="btn-1" @click="show = false">取消</up-button>
-					<up-button class="btn-2" @click="injectionUpload()">保存</up-button>
-				</view>
-			</u-popup>
+      <view class="uni-container">
+        <uni-table :style="tableStyle" ref="table" :loading="loading" stripe emptyText="暂无更多数据">
+          <uni-tr>
+            <uni-th width="60" align="center">序号</uni-th>
+            <uni-th width="110" align="center">筛查编号</uni-th>
+            <uni-th width="100" align="center">姓名</uni-th>
+            <uni-th width="180" align="center">筛查次序/时间</uni-th>
+            <uni-th width="180" align="center">下一步检查</uni-th>
+            <uni-th width="170" align="center">操作</uni-th>
+            <uni-th width="180" align="center">身份证号</uni-th>
+            <uni-th width="60" align="center">性别</uni-th>
+            <uni-th width="60" align="center">年龄</uni-th>
+            <uni-th width="60" align="center">民族</uni-th>
+            <uni-th width="150" align="center">筛查点</uni-th>
+            <uni-th width="120" align="center">第一人群分类</uni-th>
+            <uni-th width="120" align="center">重点人群分类</uni-th>
+            <uni-th width="150" align="center">患者信息操作</uni-th>
+          </uni-tr>
+          <uni-tr v-for="(item, index) in pageData" :key="index">
+            <uni-td align="center">{{ index + 1 }}</uni-td>
+            <uni-td align="center">{{ item.screenId }}</uni-td>
+            <uni-td align="center">{{ item.name }}</uni-td>
+            <uni-td align="center">
+              <view>
+                <uni-data-select
+                  v-model="item.orderVal"
+                  :localdata="item.orderTime"
+                  placeholder="选择筛查次序"
+                  :clear="false"
+                  placement="top"
+                  @click="toggleOverflow(item)"
+                  @change="changeOrder(item)"
+                ></uni-data-select>
+              </view>
+            </uni-td>
+            <uni-td align="left">
+              <view v-if="checkLength(item.next)">{{ item.next }}</view>
+              <view v-else>
+                <up-text text="点击查看" type="success" @click="clickTextHandler(item.next)"></up-text>
+              </view>
+            </uni-td>
+            <uni-td align="center">
+              <view style="display: flex; justify-content: space-around; align-items: center">
+                <u-button
+                  @click="gather(item)"
+                  style="
+                    background-color: #fff;
+                    border: 1px solid rgba(21, 99, 232, 1);
+                    color: rgba(21, 99, 232, 1);
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    height: 6vh;
+                    width: 15vh;
+                    font-size: 16px;
+                  "
+                  class="btn-span"
+                >
+                  新增注射
+                </u-button>
+                <u-button
+                  class="btn-span"
+                  style="
+                    margin: 0 10px;
+                    background-color: #fff;
+                    border: 1px solid rgba(51, 176, 19, 1);
+                    color: rgba(51, 176, 19, 1);
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    height: 6vh;
+                    width: 15vh;
+                    font-size: 16px;
+                  "
+                  @click="submitOutcome(item)"
+                  v-if="item.injection != '1'"
+                >
+                  提交结果
+                </u-button>
 
-			<!-- 打印弹窗 -->
-			<u-popup :show="showGather" :closeOnClickOverlay="false" mode="center" @close="closeGather">
-				<view class="gather-open">
-					<view style="display: flex; flex-direction: column; align-items: center; justify-content: center">
-						<view v-for="(row, rowI) in modules" :key="rowI" style="display: flex; flex-direction: row">
-							<view v-for="(col, colI) in row" :key="colI">
-								<view v-if="col.isBlack" style="width: 5px; height: 5px; background-color: black">
-									<!-- 黑色码点 -->
-								</view>
-								<view v-else style="width: 5px; height: 5px; background-color: white">
-									<!-- 白色码点 -->
-								</view>
-							</view>
-						</view>
-						<view style="font-size: 18px; font-weight: 600; margin-top: 10px">{{ this.prtScreenId }}</view>
-					</view>
-					<view class="scan-btn">
-						<up-button style="width: 60px" text="取消" @click="closeGather"></up-button>
-						<up-button type="primary" style="width: 60px" text="打印"></up-button>
-					</view>
-				</view>
-			</u-popup>
+                <u-button
+                  class="btn-span"
+                  style="
+                    margin: 0 10px;
+                    background-color: #fff;
+                    border: 1px solid #fa9f37;
+                    color: #fa9f37;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    height: 6vh;
+                    width: 15vh;
+                    font-size: 16px;
+                  "
+                  @click="modify(item)"
+                  v-else
+                >
+                  修改结果
+                </u-button>
+              </view>
+            </uni-td>
+            <uni-td align="center">{{ item.idNum }}</uni-td>
+            <uni-td align="center">{{ getSex(item.sex) }}</uni-td>
+            <uni-td align="center">{{ item.age }}</uni-td>
+            <uni-td align="center">{{ get(item.nation) }}</uni-td>
+            <uni-td align="center">{{ item.screenPoint }}</uni-td>
+            <uni-td align="center">{{ getFirstType(item.firstType) }}</uni-td>
+            <uni-td align="center">{{ getMoreType(item) }}</uni-td>
+            <uni-td align="center">
+              <view style="display: flex; justify-content: space-around; align-items: center">
+                <span
+                  class="btn-span"
+                  style="
+                    background-color: #fff;
+                    border: 1px solid rgba(223, 65, 65, 1);
+                    color: rgba(223, 65, 65, 1);
+                    padding: 5px 10px;
+                  "
+                  @click="revise(item)"
+                >
+                  修改
+                </span>
+                <span
+                  class="btn-span"
+                  style="
+                    background-color: #fff;
+                    border: 1px solid rgba(80, 104, 242, 1);
+                    color: rgba(80, 104, 242, 1);
+                    padding: 5px 10px;
+                  "
+                  @click="print(item)"
+                >
+                  打印
+                </span>
+              </view>
+            </uni-td>
+          </uni-tr>
+        </uni-table>
+        <view class="uni-pagination-box">
+          <uni-pagination
+            show-icon
+            :page-size="pageSize"
+            :current="pageCurrent"
+            :total="total"
+            @change="change"
+          />
+        </view>
+        <!-- 注射弹窗 -->
+        <u-popup :show="show" mode="center">
+          <view class="injection">
+            <view class="injection-tle">注射试剂</view>
+            <uni-data-select
+              style="width: 100%;"
+                v-model="regentId"
+                :localdata="regentList"
+              :clear="false"
+                @change="selectRegentList"/>
+              <up-row>
+                <up-col span="7">
+                  <u-radio-group style="margin-left: 20rpx;" v-model="injectionReagent.reagentType" placement="column" disabled>
+                    <u-radio
+                      v-for="(item, index) in radiolist1"
+                      :key="index"
+                      :label="item.name"
+                      :name="item.value"
+                      labelSize="20px"
+                      iconSize="23px"
+                      size="25px"
+                    ></u-radio>
+                  </u-radio-group>
+                </up-col>
+                <up-col span="5" >
+                  <view v-if="injectionReagent.reagentSpecsNum">
+                    <up-row>转换系数 ：{{this.injectionReagent.reagentSpecsNum}} (人次)</up-row>
+                    <up-row>现有库存 ：{{this.injectionReagent.currentNumber}}</up-row>
+                    <up-row>已消耗数量 ：{{this.injectionReagent.changeNumber}}</up-row>
+                  </view>
+                </up-col>
+              </up-row>
 
-			<!-- 扫描弹框 -->
-			<u-popup :show="printShow" mode="center" @close="printClose" @open="open">
-				<view class="injection">
-					<view class="injection-tle">扫描选项</view>
-					<u-radio-group style="margin-left: 10vw" v-model="scanVal" placement="column">
-						<u-radio
-							v-for="(item, index) in scanRadio"
-							:key="index + 'a'"
-							:label="item.label"
-							:name="item.val"
-							labelSize="20px"
-							iconSize="23px"
-							size="25px"
-						></u-radio>
-					</u-radio-group>
-				</view>
-				<view class="injection-btn">
-					<up-button class="btn-1" text="取消" @click="printClose">取消</up-button>
-					<up-button class="btn-2" text="确认" @click="okClick">确认</up-button>
-				</view>
-			</u-popup>
-			<!--    流程弹框-->
-			<u-popup :show="showProcess" mode="center" @close="closeProcess" :round="10">
-				<h1 style="display: flex; justify-content: center; margin-top: 10rpx">查看不同人群的筛查流程</h1>
-				<up-tabs
-					:list="personTypeForProcess"
-					@click="clickFlow"
-					:activeStyle="{ fontSize: '20px' }"
-					:inactiveStyle="{ fontSize: '20px' }"
-					:lineWidth="lineWith"
-				></up-tabs>
-				<view style="padding: 30rpx">
-					<view class="pro-text" v-if="tabIndex === 3">
-						<span class="pro-title">密切接触者：</span>
-						<span class="pro-main">症状筛查+PPD+胸片检查，异常或强阳性进行实验室检查;</span>
-					</view>
-					<view v-if="tabIndex === 0 || tabIndex === 5" style="display: flex; align-items: center">
-						<span style="font-size: 22px">选择年龄段：</span>
-						<up-radio-group v-model="studentType" placement="row" @change="studentTypeChange" :size="30">
-							<up-radio
-								style="margin-left: 70px"
-								:labelSize="25"
-								:iconSize="20"
-								:customStyle="{ marginBottom: '8px' }"
-								v-for="(item, index) in ageTypeList"
-								:key="index"
-								:label="item.name"
-								:name="index"
-							></up-radio>
-						</up-radio-group>
-					</view>
-					<view v-if="tabIndex === 0">
-						<view class="pro-text" v-if="tabIndex === 0 && studentType === 0">
-							<span class="pro-title">0-5岁学生：</span>
-							<span class="pro-main">症状筛查+查验卡痕，有症状做PPD，强阳性进一步检查;</span>
-						</view>
-						<view class="pro-text" v-if="tabIndex === 0 && studentType === 1">
-							<span class="pro-title">6-14岁学生：</span>
-							<span class="pro-main">症状筛查+PPD+查验卡痕，有症状或强阳性进一步检查;</span>
-						</view>
-						<view class="pro-text" v-if="tabIndex === 0 && studentType === 2">
-							<span class="pro-title">≥15岁学生：</span>
-							<span class="pro-main">
-								症状筛查+PPD+查验卡痕+胸片检查，有症状或强阳性或异常进一步检查;
-							</span>
-						</view>
-					</view>
+            </view>
+          <view class="injection-btn">
+            <up-button class="btn-1" @click="show = false">取消</up-button>
+            <up-button class="btn-2" @click="injectionUpload()">保存</up-button>
+          </view>
+        </u-popup>
 
-					<view class="pro-text" v-if="tabIndex === 1">
-						<span class="pro-title">教职工：</span>
-						<span class="pro-main">症状筛查+胸片检查，有症状或异常进一步检查;</span>
-					</view>
-					<view class="pro-text" v-if="tabIndex === 2">
-						<span class="pro-title">僧尼：</span>
-						<span class="pro-main">
-							0-5岁、6-14岁同学生；≥15岁症状筛查+查验卡痕+胸片检查，有症状或强阳性或异常进一步检查;
-						</span>
-					</view>
-					<view class="pro-text" v-if="tabIndex === 4">
-						<span class="pro-title">老年人、糖尿病患者、HIV/AIDS 和既往结核病患者：</span>
-						<span class="pro-main">症状筛查+胸片检查，有症状或异常进一步检查;</span>
-					</view>
-					<view v-if="tabIndex === 5">
-						<view class="pro-text" v-if="studentType === 0">
-							<span class="pro-title">0-5岁非重点人群：</span>
-							<span class="pro-main">症状筛查+查验卡痕，有症状做PPD，强阳性进一步检查;</span>
-						</view>
-						<view class="pro-text" v-if="studentType === 1">
-							<span class="pro-title">6-14岁非重点人群：</span>
-							<span class="pro-main">症状筛查+PPD+查验卡痕，有症状或强阳性进一步检查;</span>
-						</view>
-						<view class="pro-text" v-if="studentType === 2">
-							<span class="pro-title">≥15岁非重点人群：</span>
-							<span class="pro-main">症状筛查+胸片检查，有症状或异常进一步检查;</span>
-						</view>
-					</view>
-				</view>
-			</u-popup>
-			<!--    下一步检查弹框-->
-			<u-popup
-				:show="showNextText"
-				mode="center"
-				@close="showNextText = false"
-				:round="10"
-				style="height: 100rpx"
-			>
-				<view style="height: 280rpx; padding: 30rpx">
-					<b style="display: flex; justify-content: center; margin-top: 10rpx">
-						查看该待筛查人员不同身份的下一步检查
-					</b>
-					<view v-for="text in nextText">
-						{{ text }}
-					</view>
-				</view>
-			</u-popup>
-		</view>
+        <!-- 打印弹窗 -->
+        <u-popup :show="showGather" :closeOnClickOverlay="false" mode="center" @close="closeGather">
+          <view class="gather-open">
+            <view style="display: flex; flex-direction: column; align-items: center; justify-content: center">
+              <view v-for="(row, rowI) in modules" :key="rowI" style="display: flex; flex-direction: row">
+                <view v-for="(col, colI) in row" :key="colI">
+                  <view v-if="col.isBlack" style="width: 5px; height: 5px; background-color: black">
+                    <!-- 黑色码点 -->
+                  </view>
+                  <view v-else style="width: 5px; height: 5px; background-color: white">
+                    <!-- 白色码点 -->
+                  </view>
+                </view>
+              </view>
+              <view style="font-size: 18px; font-weight: 600; margin-top: 10px">{{ this.prtScreenId }}</view>
+            </view>
+            <view class="scan-btn">
+              <up-button style="width: 60px" text="取消" @click="closeGather"></up-button>
+              <up-button type="primary" style="width: 60px" text="打印"></up-button>
+            </view>
+          </view>
+        </u-popup>
+
+        <!-- 扫描弹框 -->
+        <u-popup :show="printShow" mode="center" @close="printClose" @open="open">
+          <view class="injection">
+            <view class="injection-tle">扫描选项</view>
+            <u-radio-group style="margin-left: 10vw" v-model="scanVal" placement="column">
+              <u-radio
+                v-for="(item, index) in scanRadio"
+                :key="index + 'a'"
+                :label="item.label"
+                :name="item.val"
+                labelSize="20px"
+                iconSize="23px"
+                size="25px"
+              ></u-radio>
+            </u-radio-group>
+          </view>
+          <view class="injection-btn">
+            <up-button class="btn-1" text="取消" @click="printClose">取消</up-button>
+            <up-button class="btn-2" text="确认" @click="okClick">确认</up-button>
+          </view>
+        </u-popup>
+        <!--    流程弹框-->
+        <u-popup :show="showProcess" mode="center" @close="closeProcess" :round="10">
+          <h1 style="display: flex; justify-content: center; margin-top: 10rpx">查看不同人群的筛查流程</h1>
+          <up-tabs
+            :list="personTypeForProcess"
+            @click="clickFlow"
+            :activeStyle="{ fontSize: '20px' }"
+            :inactiveStyle="{ fontSize: '20px' }"
+            :lineWidth="lineWith"
+          ></up-tabs>
+          <view style="padding: 30rpx">
+            <view class="pro-text" v-if="tabIndex === 3">
+              <span class="pro-title">密切接触者：</span>
+              <span class="pro-main">症状筛查+PPD+胸片检查，异常或强阳性进行实验室检查;</span>
+            </view>
+            <view v-if="tabIndex === 0 || tabIndex === 5" style="display: flex; align-items: center">
+              <span style="font-size: 22px">选择年龄段：</span>
+              <up-radio-group v-model="studentType" placement="row" @change="studentTypeChange" :size="30">
+                <up-radio
+                  style="margin-left: 70px"
+                  :labelSize="25"
+                  :iconSize="20"
+                  :customStyle="{ marginBottom: '8px' }"
+                  v-for="(item, index) in ageTypeList"
+                  :key="index"
+                  :label="item.name"
+                  :name="index"
+                ></up-radio>
+              </up-radio-group>
+            </view>
+            <view v-if="tabIndex === 0">
+              <view class="pro-text" v-if="tabIndex === 0 && studentType === 0">
+                <span class="pro-title">0-5岁学生：</span>
+                <span class="pro-main">症状筛查+查验卡痕，有症状做PPD，强阳性进一步检查;</span>
+              </view>
+              <view class="pro-text" v-if="tabIndex === 0 && studentType === 1">
+                <span class="pro-title">6-14岁学生：</span>
+                <span class="pro-main">症状筛查+PPD+查验卡痕，有症状或强阳性进一步检查;</span>
+              </view>
+              <view class="pro-text" v-if="tabIndex === 0 && studentType === 2">
+                <span class="pro-title">≥15岁学生：</span>
+                <span class="pro-main">
+                  症状筛查+PPD+查验卡痕+胸片检查，有症状或强阳性或异常进一步检查;
+                </span>
+              </view>
+            </view>
+
+            <view class="pro-text" v-if="tabIndex === 1">
+              <span class="pro-title">教职工：</span>
+              <span class="pro-main">症状筛查+胸片检查，有症状或异常进一步检查;</span>
+            </view>
+            <view class="pro-text" v-if="tabIndex === 2">
+              <span class="pro-title">僧尼：</span>
+              <span class="pro-main">
+                0-5岁、6-14岁同学生；≥15岁症状筛查+查验卡痕+胸片检查，有症状或强阳性或异常进一步检查;
+              </span>
+            </view>
+            <view class="pro-text" v-if="tabIndex === 4">
+              <span class="pro-title">老年人、糖尿病患者、HIV/AIDS 和既往结核病患者：</span>
+              <span class="pro-main">症状筛查+胸片检查，有症状或异常进一步检查;</span>
+            </view>
+            <view v-if="tabIndex === 5">
+              <view class="pro-text" v-if="studentType === 0">
+                <span class="pro-title">0-5岁非重点人群：</span>
+                <span class="pro-main">症状筛查+查验卡痕，有症状做PPD，强阳性进一步检查;</span>
+              </view>
+              <view class="pro-text" v-if="studentType === 1">
+                <span class="pro-title">6-14岁非重点人群：</span>
+                <span class="pro-main">症状筛查+PPD+查验卡痕，有症状或强阳性进一步检查;</span>
+              </view>
+              <view class="pro-text" v-if="studentType === 2">
+                <span class="pro-title">≥15岁非重点人群：</span>
+                <span class="pro-main">症状筛查+胸片检查，有症状或异常进一步检查;</span>
+              </view>
+            </view>
+          </view>
+        </u-popup>
+        <!--    下一步检查弹框-->
+        <u-popup
+          :show="showNextText"
+          mode="center"
+          @close="showNextText = false"
+          :round="10"
+          style="height: 100rpx"
+        >
+          <view style="height: 280rpx; padding: 30rpx">
+            <b style="display: flex; justify-content: center; margin-top: 10rpx">
+              查看该待筛查人员不同身份的下一步检查
+            </b>
+            <view v-for="text in nextText">
+              {{ text }}
+            </view>
+          </view>
+        </u-popup>
+      </view>
+    </view>
 	</view>
 </template>
 
@@ -787,21 +773,6 @@ export default {
 			}
 
 			return this.nav;
-		},
-		coverRegent(){
-			// regentApi.getRegentData().then(res=>{
-			// 	console.log(res);
-			// })
-			regentApi.coverDataAuto()
-			regentApi.getDataFromLocal().then((res)=>{
-				console.log(res);
-			})
-		},
-		coverConsume(){
-			// regentApi.getDataFromLocal().then((res)=>{
-			// 	console.log(res);
-			// })
-			consumeApi.coverDataAuto()
 		},
 		reviewProcess() {
 			this.showProcess = true;

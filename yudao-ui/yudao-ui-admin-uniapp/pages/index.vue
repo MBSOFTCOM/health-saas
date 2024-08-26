@@ -5,7 +5,7 @@
 			<view class="main-title">校园筛查管理系统</view>
 		</view>
     <view>
-      <span @click="navToSQLiteManager">SQLiteManager</span>
+      <span @click="navToSQLiteManager" v-if="false">SQLiteManager</span>
     </view>
     <view class="circle-container">
 			<image class="bgimg" @click="btn1" src="../static/images/tb/mian-1.png" mode="" disabled></image>

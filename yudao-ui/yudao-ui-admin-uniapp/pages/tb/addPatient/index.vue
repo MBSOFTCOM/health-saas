@@ -1,7 +1,7 @@
 <template>
 	<view style="margin: 10px; font-size: 18px">
 		<navigator url="/pages/tb/SQLiteManager/index" hover-class="navigator-hover">
-			<button type="default">SQLiteManager</button>
+			<button type="default" v-if="false">SQLiteManager</button>
 		</navigator>
 		<view class="top1">
 			<view class="top1-left">

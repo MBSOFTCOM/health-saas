@@ -13,27 +13,24 @@
 					上次同步时间:{{synchronizeTime}}
 				</view>
 				<view class="top-right1" style="margin-right: 10px">
-					<up-button
-						@click="PcToPad"
-						style="margin-left: 10px"
-						type="success"
-						icon="download"
-						iconColor="#fff"
-						:plain="true"
-						class="custom-sync"
-						text="同步"
-					></up-button>
-					<up-button
-						@click="downloadReagent"
-						style="margin-left: 10px"
-						type="success"
-						icon="download"
-						iconColor="#fff"
-						:plain="true"
-						class="custom-sync"
-						text="同步"
-					></up-button>
-				</view>
+
+            <up-button
+                @click="coverRegent()"
+                style="width: 80px"
+                type="primary"
+                :plain="true"
+                text="同步试剂"/>
+          <up-button
+              @click="PcToPad"
+              style="margin-left: 10px;width: 70px;"
+              type="success"
+              icon="download"
+              iconColor="#fff"
+              :plain="true"
+              class="custom-sync"
+              text="同步"/>
+        </view>
+
 			</view>
 			<view class="top">
 				<view class="top-left">
@@ -122,7 +119,7 @@
 				/>
 			</view>
 		</view>
-	</view>
+  </view>
 </template>
 
 <script>
@@ -130,6 +127,8 @@ import * as SynchronizeApi from '@/api/synchronize/synchronize';
 import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
 import { getById, dbName, tbScreenPpd, tbScreenSum } from '@/utils/sqlite';
 import { screenType, getLabelByValue, commonMap, injectionWayMap, ppdOutcome } from '@/utils/dict.js';
+import * as regentApi from '@/api/screen/regent'
+import * as consumeApi from '@/api/screen/consume'
 
 export default {
 	data() {
@@ -196,6 +195,16 @@ export default {
 		this.search();
 	},
 	methods: {
+		coverRegent(){
+			regentApi.coverDataAuto()
+      this.coverConsume()
+			regentApi.getDataFromLocal().then((res)=>{
+				// console.log(res);
+			})
+		},
+		coverConsume(){
+			consumeApi.coverDataAuto()
+		},
 		clearScreenId() {
 			this.queryParams.screenId = undefined;
 		},
