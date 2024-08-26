@@ -53,7 +53,7 @@ public interface SynchronizeService {
      * 更新采集表数据
      * @param list
      */
-    void updateCollect(List<ScreenCollectSaveReqVO> list);
+    List<SyncRespVO> updateCollect(List<ScreenCollectSaveReqVO> list);
 
     /**
      * 获取ppd分页数据

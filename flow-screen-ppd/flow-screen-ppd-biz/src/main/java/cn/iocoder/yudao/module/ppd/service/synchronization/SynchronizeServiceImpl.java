@@ -88,8 +88,8 @@ public class SynchronizeServiceImpl implements SynchronizeService{
     @Override
     public List<SyncRespVO> updateScreenPerson(List<ScreenPersonSaveReqVO> list) {
         List<SyncRespVO> result = new LinkedList<>();
-        SyncRespVO syncRespVO = new SyncRespVO();
         list.forEach(item->{
+            SyncRespVO syncRespVO = new SyncRespVO();
             syncRespVO.setIdNum(item.getIdNum()).setId(item.getId());
             if ("0".equals(item.getScreenId())){
                 // 编码规则：省市县乡区划代码9位+排序号5位+年度4位+筛查类型1位
@@ -149,25 +149,32 @@ public class SynchronizeServiceImpl implements SynchronizeService{
     }
 
     @Override
-    public void updateCollect(List<ScreenCollectSaveReqVO> list) {
+    public List<SyncRespVO> updateCollect(List<ScreenCollectSaveReqVO> list) {
+        List<SyncRespVO> result = new LinkedList<>();
         list.forEach(item->{
+            SyncRespVO syncRespVO = new SyncRespVO();
+            syncRespVO.setIdNum(item.getIdNum()).setId(item.getId());
             // 根据筛查编号，筛查次序查询 是否有对应记录的id
             // 有记录 -- 更新
             // 无记录 -- 根据id查记录
             //           无记录 -- 插入
             //           有记录 -- 查询表中id的最大值 ， 更新待插入数据的id值 再插入
-            Long id = synchronizeMapper.selectCollectIdByIndex(item.getScreenId(), item.getScreenOrder(), item.getPersonId());
-            if(id != null){
-                synchronizeMapper.updateCollect(item,id);
-            }else{
-                Long result = synchronizeMapper.selectCountById("tb_screen_collect", item.getId());
-                if (result > 0) {
-                    Long maxId = synchronizeMapper.selectMaxId("tb_screen_collect");
-                    item.setId(maxId+1);
+            if (item.getStatusFlag()==1){
+                ScreenCollectDO collectDO = BeanUtils.toBean(item, ScreenCollectDO.class);
+                collectDO.setId(null);
+                syncRespVO.setId(item.getId());
+                screenCollectMapper.insert(collectDO);
+                syncRespVO.setNewId(collectDO.getId());
+                result.add(syncRespVO);
+            } else if (item.getStatusFlag() == 2) {
+                ScreenCollectDO collectDO = BeanUtils.toBean(item, ScreenCollectDO.class);
+                Long id = synchronizeMapper.selectCollectIdByIndex(item.getScreenId(), item.getScreenOrder(), item.getPersonId());
+                if(id != null){
+                    screenCollectMapper.updateById(collectDO);
                 }
-                synchronizeMapper.insertCollect(item);
             }
         });
+        return result;
     }
 
     @Override

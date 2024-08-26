@@ -72,3 +72,18 @@ export const countList = (table) => {
     let sql=`select ifnull(count(*),0) num from ${table}`
     return promise(dbName,sql)
 }
+/**
+ * @param {string} 表名
+ * @param {string} 身份证
+ * @param {string} 筛查次序（传null则不判断次序）
+ * @param {string} 次序的字段名
+ * @param {number} 数据状态 （1-新增 2-修改）
+ */
+export const setStatusFlag=(table,idNum,order,orderField,statusFlagSet)=>{
+	let sql=`update ${table} set statusFlag=${statusFlagSet} where idNum=${idNum}`
+	if(order){
+		sql+=` ${orderField}=${order}`
+	}
+	console.log(sql);
+	return  promise(dbName,sql)
+}

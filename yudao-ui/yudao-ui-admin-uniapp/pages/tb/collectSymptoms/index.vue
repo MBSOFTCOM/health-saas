@@ -525,7 +525,6 @@ export default {
 							//插入
 							await dbUtils.addTabItem(dbName, tbScreenSum, gather);
 						} else {
-							gather.statusFlag=2
 							await updateOne(gather, this.patient.id, this.patient.year, uni.$screenType);
 						}
 					} else {

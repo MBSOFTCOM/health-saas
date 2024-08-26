@@ -100,9 +100,9 @@ public class SynchronizeController {
     @PutMapping("/update-tableData2")
     @Operation(summary = "更新采集表数据")
 //    @PreAuthorize("@ss.hasPermission('tb:synchronization:query')")
-    public CommonResult<Boolean> updateTableData2(@RequestBody List<ScreenCollectSaveReqVO> list) {
-        synchronizeService.updateCollect(list);
-        return success(true);
+    public CommonResult<List<SyncRespVO>> updateTableData2(@RequestBody List<ScreenCollectSaveReqVO> list) {
+        List<SyncRespVO> syncRespVOS = synchronizeService.updateCollect(list);
+        return success(syncRespVOS);
     }
 
     @GetMapping("/get-tableData3")

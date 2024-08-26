@@ -138,7 +138,7 @@
 
 <script>
 import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
-import { dbName, tbScreenPerson, updatePerson } from '@/utils/sqlite';
+import { dbName, tbScreenChestRadiograph, tbScreenCollect, tbScreenPerson, tbScreenPpd, tbScreenSum, updatePerson } from '@/utils/sqlite';
 import {
 	screenType,
 	getLabelByValue,
@@ -152,6 +152,7 @@ import {
 	items3
 } from '@/utils/dict.js';
 import * as SynchronizeApi from '@/api/synchronize/synchronize';
+import { tbScreenImages } from '../../../utils/screenImages';
 
 export default {
 	data() {
@@ -405,12 +406,18 @@ export default {
 								// console.log(self.SyncData);
 
 								// 上传
-								await SynchronizeApi.updateTableData1(self.SyncData).then(async(res) => {
+								SynchronizeApi.updateTableData1(self.SyncData).then(async(res) => {
 									console.log(res);
 									for (var i = 0; i < res.data.length; i++) {
+										// console.log(res.data[i]);
 										let tableData=await SynchronizeApi.listDataByIdNumAndPersonId(res.data[i].idNum,res.data[i].id,tbScreenPerson)
-										console.log(tableData);
-										await SynchronizeApi.updatePersonId(tbScreenPerson,tableData[i].id,res.data[i].newId,tableData[i].idNum,res.data[i].screenId)
+										// console.log(tableData);
+										await SynchronizeApi.updatePersonId(tbScreenPerson,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
+										await SynchronizeApi.updatePersonIdOnly(tbScreenSum,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
+										await SynchronizeApi.updatePersonIdOnly(tbScreenCollect,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
+										await SynchronizeApi.updatePersonIdOnly(tbScreenPpd,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
+										await SynchronizeApi.updatePersonIdOnly(tbScreenChestRadiograph,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
+										await SynchronizeApi.updatePersonIdOnly(tbScreenImages,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
 									}
 								  if (res.data) {
 									uni.showToast({

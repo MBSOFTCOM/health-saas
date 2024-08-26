@@ -4,6 +4,7 @@ import dbUtils from '/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage
 import { count,promise } from '@/utils/sqlite';
 import { login } from '../login';
 import { func } from '../../uni_modules/uview-plus/libs/function/test';
+import tab from '../../plugins/tab';
 
 const dbName = 'tb_screen'
 // ppd表
@@ -41,6 +42,13 @@ export function getTableList(params) {
 
 // ========================== 摸底表 ==========================
 // 获取平板端待筛查分页数据
+/**
+ * @param {Object} screenId
+ * @param {Object} screenPoint
+ * @param {Object} statusFlag 数据的状态 （1- 新增，2-修改）；数据类型 （'not null'-新增或修改的，'null' 不是新增或修改的，null 所有数据 ）
+ * @param {Object} pageNo
+ * @param {Object} pageSize
+ */
 export function getPersonData(screenId,screenPoint,statusFlag,pageNo,pageSize){
 	let sql = `select *
 			   from ${tbScreenPerson} 
@@ -80,6 +88,11 @@ export function getPersonData(screenId,screenPoint,statusFlag,pageNo,pageSize){
 	});
 }
 // 获取平板端待筛查数据总条数
+/**
+ * @param {Object} screenId
+ * @param {Object} screenPoint
+ * @param {Object} statusFlag 数据的状态 （1- 新增，2-修改）；数据类型 （'not null'-新增或修改的，'null' 不是新增或修改的，null 所有数据 ）
+ */
 export function getPersonCount(screenId,screenPoint,statusFlag){
 	let sql = `select ifnull(count(*),0) num
 			   from ${tbScreenPerson} 
@@ -112,35 +125,6 @@ export function getPersonCount(screenId,screenPoint,statusFlag){
 	    }
 	  });
 	});
-}
-/**
- * @param {Object} screenId 筛查编号
- * @param {Object} screenPoint 筛查点
- * @param {Object} statusFlag 状态
- * @param {Object} pageNo 页码
- * @param {Object} pageSize 页大小
- */
-export async function uploadData(screenId, screenPoint, statusFlag,pageNo, pageSize){
-	// 获取本地数据 上传到pc端
-	let local=await getPersonData(screenId, screenPoint, statusFlag,pageNo, pageSize)
-	// console.log(self.SyncData);
-	
-	// 筛查时间转换成时间戳
-	local.forEach((item) => {
-	  let date = new Date(item.screenTime);
-	  item.screenTime = date.getTime();
-	});
-	// console.log(self.SyncData);
-	
-	// 上传
-	await updateTableData1(local).then(async(res) => {
-		console.log(res);
-		for (var i = 0; i < res.data.length; i++) {
-			let tableData=await listDataByIdNumAndPersonId(res.data[i].idNum,res.data[i].id,tbScreenPerson)
-			console.log(tableData);
-			await updatePersonId(tbScreenPerson,tableData[i].id,res.data[i].newId,tableData[i].idNum,res.data[i].screenId)
-		}
-	})
 }
 
 // 获取摸底表 待筛查数据
@@ -207,6 +191,13 @@ export function selectMaxId(tableName) {
 
 // ========================== 采集表 ==========================
 // 获取平板端采集组分页数据
+/**
+ * @param {Object} screenId
+ * @param {Object} screenPoint
+ * @param {Object} statusFlag 数据的状态 （1- 新增，2-修改）；数据类型 （'not null'-新增或修改的，'null' 不是新增或修改的，null 所有数据 ）
+ * @param {Object} pageNo
+ * @param {Object} pageSize
+ */
 export function getCollectData(screenId,screenPoint,statusFlag,pageNo,pageSize){
 	let sql = `select sc.*,sp.name,sp.screenPoint
 			   from ${tbScreenCollect} sc
@@ -218,11 +209,11 @@ export function getCollectData(screenId,screenPoint,statusFlag,pageNo,pageSize){
 	}
 	if(statusFlag){
 		if(statusFlag=='null'){
-			sql+=` and statusFlag is null `
+			sql+=` and sc.statusFlag is null `
 		}else  if(statusFlag== 'not null'){
-			sql+=` and statusFlag is not null `
+			sql+=` and sc.statusFlag is not null `
 		}else{
-			sql+=` and statusFlag = ${statusFlag} `
+			sql+=` and sc.statusFlag = ${statusFlag} `
 		}
 	}
 	sql+=`order by sc.id desc `
@@ -247,6 +238,11 @@ export function getCollectData(screenId,screenPoint,statusFlag,pageNo,pageSize){
 	});
 }
 // 获取平板端采集组数据总条数
+/**
+ * @param {Object} screenId
+ * @param {Object} screenPoint
+ * @param {Object} statusFlag 数据的状态 （1- 新增，2-修改）；数据类型 （'not null'-新增或修改的，'null' 不是新增或修改的，null 所有数据 ）
+ */
 export function getCollectCount(screenId,screenPoint,statusFlag){
 	let sql = `select ifnull(count(*),0) num 
 			   from ${tbScreenCollect} sc
@@ -1269,9 +1265,11 @@ export async function listDataByIdNumAndPersonId(idNum,personId,table){
 	if(table==tbScreenPerson){
 		sql=`select * from ${table} where idNum='${idNum}' and id=${personId}`
 	}
+	console.log(sql);
 	return promise(dbName,sql)
 }
 /**
+ * 更新筛查编号、患者id、数据状态
  * @param {string} table 表名
  * @param {number} id 旧的患者id
  * @param {number} newId 新的患者id
@@ -1283,7 +1281,60 @@ export async function updatePersonId(table,id,newId,idNum,screenId){
 	if(table==tbScreenPerson){
 		field='id'
 	}
-	let sql=`update ${table} set ${field}=${newId},screenId=${screenId} where ${field}=${id} and idNum=${idNum}`
+	let statusFlagSet=''
+	if(table!=tbScreenSum){
+		statusFlagSet=', statusFlag=null'
+	}
+	let screenIdSet=''
+	if(screenId){
+		screenIdSet=`,screenId=${screenId} `
+	}
+	let sql=`update ${table} set ${field}=${newId}${screenIdSet}${statusFlagSet} where ${field}=${id} and idNum=${idNum} `
+	console.log(sql);
+	return promise(dbName,sql)
+}
+/**
+ * 更新筛查编号、患者id
+ * @param {string} table 表名
+ * @param {number} id 旧的患者id
+ * @param {number} newId 新的患者id
+ * @param {string} idNum 患者身份证
+ * @param {string} screenId 筛查编号
+ */
+export async function updatePersonIdOnly(table,id,newId,idNum,screenId){
+	let field='personId'
+	if(table==tbScreenPerson){
+		field='id'
+	}
+	let screenIdSet=''
+	if(screenId){
+		screenIdSet=`,screenId=${screenId} `
+	}
+	let sql=`update ${table} set ${field}=${newId}${screenIdSet} where ${field}=${id} and idNum=${idNum} `
+	console.log(sql);
+	return promise(dbName,sql)
+}
+/**
+ * 更新id和数据状态statusFlag
+ * @param {string} table 表名
+ * @param {number} id 旧的id
+ * @param {number} newId 新的id
+ * @param {string} idNum 患者身份证
+ */
+export async function updateIdAndStatusFlag(table,id,newId,idNum){
+	let sql=`update ${table} set id=${newId},statusFlag=null where id=${id} and idNum=${idNum} `
+	console.log(sql);
+	return promise(dbName,sql)
+}
+/**
+ * 更新汇总表
+ * @param {number} id 旧的分组id
+ * @param {number} newId 新的患者id
+ * @param {string} idNum 患者身份证
+ * @param {string} field 分组表字段
+ */
+export async function updateSumFieldId(id,newId,idNum,field){
+	let sql=`update ${tbScreenSum} set ${field}=${newId} where ${field}=${id} and idNum=${idNum} `
 	console.log(sql);
 	return promise(dbName,sql)
 }

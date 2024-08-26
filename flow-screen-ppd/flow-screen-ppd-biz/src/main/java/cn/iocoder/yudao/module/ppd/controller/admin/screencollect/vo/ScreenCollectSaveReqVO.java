@@ -54,4 +54,9 @@ public class ScreenCollectSaveReqVO {
     @Schema(description = "筛查类型")
     private Integer screenType;
 
+    /**
+     * 标识pad上数据是否新增、或者修改
+     */
+    private Integer statusFlag;
+
 }

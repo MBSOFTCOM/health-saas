@@ -349,8 +349,19 @@ export default {
 									duration: 1500
 								});
 							} else {
+								let person=await SynchronizeApi.getPersonCount(self.queryParams.screenId, self.queryParams.screenPoint,'not null', -1, self.pageSize)
+								console.log(person);
+								if(person[0].num>=1){
+									uni.showToast({
+										title: '待筛查人员信息还有未上传的改动，请先同步待筛查人员信息',
+										icon: 'none',
+										duration: 2000
+									})  
+									return
+								}
 								// 获取本地数据 上传到pc端
 								let local=await SynchronizeApi.getCollectData(self.queryParams.screenId, self.queryParams.screenPoint,1, -1, self.pageSize)
+								// console.log(local);
 								self.SyncData = local.map((item) => ({
 								  ...item,
 								  screenAgency: self.agency
@@ -363,8 +374,36 @@ export default {
 								// console.log(self.SyncData);
 
 								// 上传
-								SynchronizeApi.updateTableData2(self.SyncData).then((res) => {
+								SynchronizeApi.updateTableData2(self.SyncData).then(async(res) => {
 								  // console.log(res);
+								  for (var i = 0; i < res.data.length; i++) {
+								  	let tableData=await SynchronizeApi.listDataByIdNumAndPersonId(res.data[i].idNum,res.data[i].id,tbScreenCollect)
+								  	// console.log(tableData);
+									await SynchronizeApi.updateIdAndStatusFlag(tbScreenCollect,res.data[i].id,res.data[i].newId,res.data[i].idNum)
+									await SynchronizeApi.updateSumFieldId(res.data[i].id,res.data[i].newId,res.data[i].idNum,'collectId')
+								  }
+								  //上传汇总表
+									for (let i = 0; i < self.SyncData.length; i++) {
+										let localSum=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId,self.SyncData[i].idNum)
+										await localSum.forEach(item=>{
+											if(item.lastCollectTime){
+											  item.lastCollectTime = new Date(item.lastCollectTime).getTime();
+											}
+											if(item.lastPpdTime){
+											  item.lastPpdTime = new Date(item.lastPpdTime).getTime();
+											}
+											if(item.lastChestRadiographTime){
+											  item.lastChestRadiographTime = new Date(item.lastChestRadiographTime).getTime();
+											}
+											if(item.lastSputumExaminationTime){
+											  item.lastSputumExaminationTime = new Date(item.lastSputumExaminationTime).getTime();
+											}
+											if(item.lastElectrocardiogramTime){
+											  item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
+											}
+									  })
+									  await SynchronizeApi.uploadSumData(localSum);
+									}
 								  if (res.data) {
 									// console.log(111);
 									// 上传采集组图片
@@ -391,30 +430,7 @@ export default {
 								});
 								// console.log(9999);
 
-								//上传汇总表
-								for (let i = 0; i < self.SyncData.length; i++) {
-								  let localSum=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId,self.SyncData[i].idNum)
-								  await localSum.forEach(item=>{
-									if(item.lastCollectTime){
-									  item.lastCollectTime = new Date(item.lastCollectTime).getTime();
-									}
-									if(item.lastPpdTime){
-									  item.lastPpdTime = new Date(item.lastPpdTime).getTime();
-									}
-									if(item.lastChestRadiographTime){
-									  item.lastChestRadiographTime = new Date(item.lastChestRadiographTime).getTime();
-									}
-									if(item.lastSputumExaminationTime){
-									  item.lastSputumExaminationTime = new Date(item.lastSputumExaminationTime).getTime();
-									}
-									if(item.lastElectrocardiogramTime){
-									  item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
-									}
-
-								  })
-								  await SynchronizeApi.uploadSumData(localSum);
 								}
-							  }
 						} else if (res.cancel) {
 							uni.showToast({
 								title: '取消上传',
