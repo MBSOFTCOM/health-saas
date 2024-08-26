@@ -8,60 +8,70 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="部门" prop="deptList">
-        <el-select
-          v-model="queryParams.deptList"
-          placeholder="请选择"
-          clearable
-          class="!w-180px"
-        >
-          <el-option
-            v-for="item in deptList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="试剂名称" prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="请输入试剂名称"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-150px"
-        />
-      </el-form-item>
-      <el-form-item label="试剂类型" prop="type">
-        <el-select
-          v-model="queryParams.type"
-          placeholder="请选择"
-          clearable
-          class="!w-120px"
-        >
-          <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.DOSAGE_FORM)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="供应商" prop="manufacturer">
-        <el-input
-          v-model="queryParams.manufacturer"
-          placeholder="请输入供应商"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-150px"
-        />
-      </el-form-item>
+      <el-row  type="flex" justify="space-between">
+        <el-col :span="5">
+          <el-form-item label="单位" prop="deptList">
+            <el-select
+              v-model="queryParams.deptList"
+              placeholder="请选择"
+              clearable
+              class="!w-200px"
+            >
+              <el-option
+                v-for="item in deptList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="5">
+          <el-form-item label="试剂名称" prop="name">
+            <el-input
+              v-model="queryParams.name"
+              placeholder="请输入试剂名称"
+              clearable
+              @keyup.enter="handleQuery"
+              class="!w-200px"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="5">
+          <el-form-item label="试剂类型" prop="type">
+            <el-select
+              v-model="queryParams.type"
+              placeholder="请选择"
+              clearable
+              class="!w-200px"
+            >
+              <el-option
+                v-for="dict in getIntDictOptions(DICT_TYPE.DOSAGE_FORM)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="5">
+          <el-form-item label="供应商" prop="manufacturer">
+            <el-input
+              v-model="queryParams.manufacturer"
+              placeholder="请输入供应商"
+              clearable
+              @keyup.enter="handleQuery"
+              class="!w-200px"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item label="是否启用" prop="usable">
         <el-select
           v-model="queryParams.usable"
           placeholder="试剂状态"
           clearable
-          class="!w-120px"
+          class="!w-200px"
         >
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
@@ -74,6 +84,9 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+      </el-form-item>
+      <br/>
+      <el-form-item style="float: right">
         <el-button
           type="primary"
           plain
@@ -247,7 +260,7 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  formRef.value.open(type,  id)
 }
 
 /** 删除按钮操作 */
@@ -326,7 +339,9 @@ const rowClassName = ({ row }) => {
 };
 
 const getDeptList = async () => {
-  deptList.value = await DeptApi.getMyDeptList();
+  const allDeptList = await DeptApi.getMyDeptList();
+  // 去掉学校类型
+  deptList.value = allDeptList.filter(dept => dept.type != 1);
 }
 
 const loginUserId = ref()

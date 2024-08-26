@@ -23,5 +23,6 @@ public class DeptVO  {
      * 部门名称
      */
     private String name;
+    private Integer type;
 
 }

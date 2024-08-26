@@ -47,6 +47,9 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+      </el-form-item>
+      <br/>
+      <el-form-item style="float: right">
         <el-button
           type="success"
           plain
@@ -198,7 +201,9 @@ const handleDateChange = (dates) => {
 };
 
 const getDeptList = async () => {
-  deptList.value = await DeptApi.getMyDeptList();
+  const allDeptList = await DeptApi.getMyDeptList();
+  // 去掉学校类型
+  deptList.value = allDeptList.filter(dept => dept.type != 1);
 }
 
 /** 初始化 **/

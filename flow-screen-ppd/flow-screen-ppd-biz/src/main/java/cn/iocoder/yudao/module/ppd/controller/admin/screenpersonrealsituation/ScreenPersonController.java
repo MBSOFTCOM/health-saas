@@ -390,7 +390,12 @@ public class ScreenPersonController {
 
 
 
-
-
-
+    @GetMapping("/archives-export2")
+    @Operation(summary = "工作进展报告--统计表--导出档案")
+    @ApiAccessLog(operateType = EXPORT)
+    public void exportScreenPersonArchive2(@Valid ScreenPersonStatisticsReqVO reqVO,
+                                          HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println(reqVO);
+        screenPersonService.exportScreenPersonArchive2(reqVO, request, response);
+    }
 }

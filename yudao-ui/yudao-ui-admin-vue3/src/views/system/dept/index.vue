@@ -8,18 +8,18 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="部门名称" prop="title">
+      <el-form-item label="单位名称" prop="title">
         <el-input
           v-model="queryParams.name"
-          placeholder="请输入部门名称"
+          placeholder="请输入单位名称"
           clearable
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="部门状态" prop="status">
+      <el-form-item label="单位状态" prop="status">
         <el-select
           v-model="queryParams.status"
-          placeholder="请选择部门状态"
+          placeholder="请选择单位状态"
           clearable
           class="!w-240px"
         >
@@ -58,7 +58,7 @@
       :default-expand-all="isExpandAll"
       v-if="refreshTable"
     >
-      <el-table-column prop="name" label="部门名称" />
+      <el-table-column prop="name" label="单位名称" />
       <el-table-column prop="leader" label="负责人">
         <template #default="scope">
           {{ userList.find((user) => user.id === scope.row.leaderUserId)?.nickname }}

@@ -1,6 +1,7 @@
 package cn.iocoder.yudao.module.ppd.service.screendiagnosis;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.iocoder.yudao.module.ppd.controller.admin.screendiagnosis.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
@@ -189,7 +190,7 @@ public class ScreenDiagnosisServiceImpl implements ScreenDiagnosisService {
         TBHealthScreening ppdData = screenPpdMapper
                 .selectByPersonIdLastTime(personId);
         tbHealthScreening.setPpdTestDone(ppdData != null);
-        tbHealthScreening.setPpdOutcome(ppdData.getPpdOutcome()!=null?ppdData.getPpdOutcome():2);
+        tbHealthScreening.setPpdOutcome(ppdData != null && ppdData.getPpdOutcome() != null ? ppdData.getPpdOutcome() : 2);
         if(ppdData != null && ppdData.getPpdInjectionTime() != null){
             tbHealthScreening.setPpdInjectionTimeStr(DateTimeFormatter
                     .ofPattern("yyyy年MM月dd日")

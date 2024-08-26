@@ -15,7 +15,7 @@
           :filter-method="PinyinMatchFun"
           placeholder="请选择区划"
           clearable
-          class="!w-150px"
+          class="!w-160px"
         >
           <el-option
             v-for="item in districtList"
@@ -31,7 +31,7 @@
           placeholder="请输入工作年度"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-140px"
+          class="!w-160px"
         />
       </el-form-item>
 <!--      <el-form-item label="筛查点" prop="screenPoint">
@@ -59,6 +59,9 @@
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
+      </el-form-item>
+      <br/>
+      <el-form-item style="float: right">
         <el-button
           type="warning"
           plain
@@ -69,6 +72,8 @@
           导出表格
         </el-button>
       </el-form-item>
+
+
     </el-form>
   </ContentWrap>
 

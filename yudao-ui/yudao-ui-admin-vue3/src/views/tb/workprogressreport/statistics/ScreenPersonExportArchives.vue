@@ -108,12 +108,16 @@ const handleExport = async () => {
       // 提示导出成功
       message.success("导出成功！");
     }else if (formData.value.exportType == 1){
+      // 执行导出操作
+      const data = await ScreenPersonApi.exportArchives2(params);
+      // 下载导出文件
+      download.zip(data, '体检表.zip')
       // 提示导出成功
       message.success("导出成功！");
     }
-  } catch (error) {
+  } catch (e) {
     // 提示导出失败
-    message.error(`导出失败: ${error.message}`);
+    message.info('导出失败：取消导出！');
   } finally {
     // 恢复导出状态
     exportLoading.value = false;

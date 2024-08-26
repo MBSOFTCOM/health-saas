@@ -1,5 +1,5 @@
 <template>
-  <Dialog v-model="dialogVisible" style="min-width: 1400px; " :show-overflow-tooltip="true">
+  <Dialog v-model="dialogVisible" style="min-width: 1200px; " :show-overflow-tooltip="true">
     <template #title>
       <span style="font-weight: bold">患者信息</span>
     </template>
@@ -56,377 +56,160 @@
         class="demo-tabs"
         @tab-click="handleClick"
       >
-        <el-tab-pane label="体检单" name="first">
-          <div class="physical_examination_diagnosis">
-            <div class="text_name">体检表</div>
-            <div class="input_content">
-              <div class="info_code" style="font-size: 18px">
-                筛查编号：{{ tbHealthScreening.screeningNumber }}
+        <el-tab-pane label="体检表" name="first">
+          <div class="content">
+            <div class="main">
+              <div class="title">体检表</div>
+              <div class="info">
+                <div>筛查编号：{{ tbHealthScreening.screeningNumber }}</div>
+                <div>身份证号：{{ tbHealthScreening.idNumber }}</div>
+                <div>姓名：{{ tbHealthScreening.name }}</div>
+                <div>年龄:：{{ tbHealthScreening.age }} 岁</div>
+                <div>体检日期：{{ tbHealthScreening.examinationDate }}</div>
               </div>
-              <div class="info_idCard" style="font-size: 18px">
-                身份证号：{{ tbHealthScreening.idNumber }}
-              </div>
-              <div class="info_name" style="font-size: 18px">姓名：{{ tbHealthScreening.name }}</div>
-              <div class="info_age" style="font-size: 18px">年龄：{{ tbHealthScreening.age }} 岁</div>
-              <div class="info_date" style="font-size: 18px">
-                体检日期：{{ tbHealthScreening.examinationDate }}
-              </div>
+              <table>
+                <tr>
+                  <th colspan="8">人群分类(可多选)</th>
+                </tr>
+                <tr>
+                  <td colspan="2">活动性肺结核密切接触者</td>
+                  <td class="trs">{{ tbHealthScreening.closeContactWithActivePulmonaryTB ? '☑' : '□' }}</td>
+                  <td rowspan="2">老年人</td>
+                  <td class="trs" rowspan="2">{{ tbHealthScreening.elderly ? '☑' : '□' }}</td>
+                  <td colspan="2">HIV/AIDS</td>
+                  <td class="trs">{{ tbHealthScreening.hivorAIDS ? '☑' : '□' }}</td>
+                </tr>
+                <tr>
+                  <td rowspan="4">在校师生</td>
+                  <td>0-5岁学生</td>
+                  <td class="trs">{{ tbHealthScreening.student0To5Years ? '☑' : '□' }}</td>
+                  <td colspan="2">既往结核病患者</td>
+                  <td class="trs">{{ tbHealthScreening.pastTBPatient ? '☑' : '□' }}</td>
+                </tr>
+                <tr>
+                  <td>6-14岁学生</td>
+                  <td class="trs">{{ tbHealthScreening.student6To14Years ? '☑' : '□' }}</td>
+                  <td rowspan="3">糖尿病患者</td>
+                  <td class="trs" rowspan="3">{{ tbHealthScreening.diabetesPatient ? '☑' : '□' }}</td>
+                  <td rowspan="3">非重点人群</td>
+                  <td>0-5岁</td>
+                  <td class="trs">{{ tbHealthScreening.nonKeyPopulation0To5Years ? '☑' : '□' }}</td>
+                </tr>
+                <tr>
+                  <td>≥15岁学生</td>
+                  <td class="trs">{{ tbHealthScreening.studentOver15Years ? '☑' : '□' }}</td>
+                  <td>6-14岁</td>
+                  <td class="trs">{{ tbHealthScreening.nonKeyPopulation6To14Years ? '☑' : '□' }}</td>
+                </tr>
+                <tr>
+                  <td>教职工</td>
+                  <td class="trs">□</td>
+                  <td>≥15岁</td>
+                  <td class="trs">{{ tbHealthScreening.schoolStaff ? '☑' : '□' }}</td>
+                </tr>
+              </table>
+              <table style="margin-top: 5px">
+                <tr>
+                  <td class="text">
+                    <b>活动性肺结核密切接触者:</b>
+                    症状筛查+ppd+胸片检查,异常或强阳性进行实验室检查。<br />
+                    <b>0-5岁学生:</b>症状筛查,有症状做 ppd,强阳性进一步检查;
+                    <b>6-14岁学生:</b> 症状查+ppd,有症状或强 阳性进一步检查;<br/>
+                    <b>≥15岁学生:</b> 症状筛
+                    査+ppd+胸片检查,有症状或强阳性或异常进一步检查;<br />
+                    <b>教职工:</b> 症状筛 查+胸片检查,有症状或异常进一步检查。<br />
+                    <b>老年人、糖尿病患者、HIV/AIDS和既往结核病患者:</b>
+                    症状筛査+胸片检查,有症状或异常进一步检查。<br />
+                    <b>0-5岁非重点人群:</b>症状筛查,有症状做ppd,强阳性进一步检查;
+                    <b>6-14岁非重点人群:</b> 症状筛查+ppd,有症状或强阳性进一步检查;
+                    <b>≥15岁非重点人群:</b> 症状筛查+胸片检查,有症状或异常进一步检查,
+                  </td>
+                </tr>
+              </table>
+              <table style="margin-top: 5px">
+                <tr>
+                  <th class="text" colspan="5">您最近1个月是否有一下症状?</th>
+                </tr>
+                <tr>
+                  <td class="text-left" colspan="2">1)咳嗽、咳痰(超过2周)</td>
+                  <td>{{ tbHealthScreening.coughOrSputumForMoreThanOneWeek ? '有' : '无' }}</td>
+                  <td class="text-left">2)咳血或血痰</td>
+                  <td>{{ tbHealthScreening.hemoptysisOrBloodSputum ? '有' : '无' }}</td>
+                </tr>
+                <tr>
+                  <td class="text-left" colspan="2">3)发热</td>
+                  <td>{{ tbHealthScreening.fever ? '有' : '无' }}</td>
+                  <td class="text-left">4)胸痛</td>
+                  <td>{{ tbHealthScreening.chestPain ? '有' : '无' }}</td>
+                </tr>
+                <tr>
+                  <td class="text-left" colspan="2">5)乏力、盗汗</td>
+                  <td>{{ tbHealthScreening.nightSweats ? '有' : '无' }}</td>
+                  <td class="text-left">6)食欲不振</td>
+                  <td>{{ tbHealthScreening.lossOfAppetite ? '有' : '无' }}</td>
+                </tr>
+                <tr>
+                  <td class="text-left" colspan="2">7)体重减轻(超过6斤)</td>
+                  <td>{{ tbHealthScreening.weightLossOverSixPounds ? '有' : '无' }}</td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td class="trs">{{ tbHealthScreening.ppdTestDone ? '☑' : '□' }}</td>
+                  <td><b>ppd</b></td>
+                  <td class="text-left" colspan="2">
+                    注射时间：{{ tbHealthScreening.ppdInjectionTimeStr }} <br/>
+                    结果：{{tbHealthScreening.ppdOutcome == 1 ? "阳性":"阴性"}}
+                  </td>
+                  <td class="text-left">
+                    医生签名:
+                    <el-image
+                      style="width: 50px; height: 50px"
+                      :src="tbHealthScreening.ppdDoctorSignature"
+                      :preview-src-list="[tbHealthScreening.ppdDoctorSignature]"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="trs">{{ tbHealthScreening.chestXRayDone ? '☑' : '□' }}</td>
+                  <td><b>胸部X线</b></td>
+                  <td class="text-left" colspan="2">
+                    <div style="float: left; transform: scale(1.5)">{{ tbHealthScreening.noTBRelatedAbnormalities ? '☑' : '□' }}</div>
+                    <div style="float: left; margin: 0 5px">无结核相关异常</div>
+                    <div style="float: left; transform: scale(1.5); margin: 0 5px">
+                      {{ tbHealthScreening.suspectedTB ? '☑' : '□' }}
+                    </div>
+                    <div style="float: left">疑似结核</div>
+                    <br />
+                    <div>机器中与患者对应的编码：{{ tbHealthScreening.chestXRayCode }}</div>
+                  </td>
+                  <td class="text-left">
+                    医生签名:
+                    <el-image
+                      style="width: 50px; height: 50px;"
+                      :src="tbHealthScreening.chestXRayDoctorSignature"
+                      :preview-src-list="[tbHealthScreening.chestXRayDoctorSignature]"
+                    />
+                  </td>
+                </tr>
+              </table>
             </div>
-            <div class="crowd_class">
-              <div class="crowd_class_title">人群分类（可多选）</div>
-            </div>
-            <div class="crowd_class_content">
-              <div class="content_one">
-                <div class="content_one_head ">
-                  <div class="content_one_head_left center" style="font-size: 18px">
-                    活动性肺结核密切接触者
-                  </div>
-                  <div class="content_one_head_right center" style="font-size: 30px">
-                    {{ tbHealthScreening.closeContactWithActivePulmonaryTB ? '☑' : '□' }}
-                  </div>
-                </div>
-
-                <div class="content_one_content ">
-                  <div class="content_one_content_item_1 " style="font-size: 18px">
-                    在校师生
-                  </div>
-                  <div class="content_one_content_item_2" style="font-size: 18px">
-                    <div class="content_one_content_item_2_item_1 center">
-                      0-5岁学生
-                    </div>
-                    <div class="content_one_content_item_2_item_2 center">
-                      6-14岁学生
-                    </div>
-                    <div class="content_one_content_item_2_item_3 center">
-                      ≥15岁学生
-                    </div>
-                    <div class="content_one_content_item_2_item_4 center">
-                      教职工
-                    </div>
-                  </div>
-                  <div class="content_one_content_item_3" style="font-size: 30px">
-                    <div class="content_one_content_item_3_item_1 center">
-                      {{ tbHealthScreening.student0To5Years ? '☑' : '□' }}
-                    </div>
-                    <div class="content_one_content_item_3_item_2 center">
-                      {{ tbHealthScreening.student6To14Years ? '☑' : '□' }}
-                    </div>
-                    <div class="content_one_content_item_3_item_3 center">
-                      {{ tbHealthScreening.studentOver15Years ? '☑' : '□' }}
-                    </div>
-                    <div class="content_one_content_item_3_item_4 center">
-                      {{ tbHealthScreening.schoolStaff ? '☑' : '□' }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="content_tow">
-                <!--                <div class="content_tow_item_column3_2">
-                                  <div class="content_tow_item_column3_item_1" style="font-size: 18px">
-                                    僧尼
-                                  </div>
-                                  <div class="content_tow_item_column3_item_1point5" style="font-size: 18px">
-                                    <div class="content_tow_item_column3_item_1point5_item_col_1 center">
-                                      0-5岁
-                                    </div>
-                                    <div class="content_tow_item_column3_item_1point5_item_col_1 center">
-                                      6-14岁
-                                    </div>
-                                    <div
-                                      class="content_tow_item_column3_item_1point5_item_col_1 center"
-                                      style="border-bottom-style: none;">
-                                      ≥ 15岁
-                                    </div>
-                                  </div>
-                                  <div class="content_tow_item_column3_item_1point5" style="font-size: 30px">
-                                    <div class="content_tow_item_column3_item_1_item_col_1">
-                                      {{ tbHealthScreening.monkOrNun0To5Years ? '☑' : '□' }}
-                                    </div>
-                                    <div class="content_tow_item_column3_item_1_item_col_1">
-                                      {{ tbHealthScreening.monkOrNun6To14Years ? '☑' : '□' }}
-                                    </div>
-                                    <div
-                                      class="content_tow_item_column3_item_1_item_col_1"
-                                      style="border-bottom-style: none;">
-                                      {{ tbHealthScreening.monkOrNunOver15Years ? '☑' : '□' }}
-                                    </div>
-                                  </div>
-                                </div>-->
-                <div class="content_tow_item_column3_1">
-                  <div class="content_tow_item_column3_item_2point5" style="font-size: 18px">
-                    老年人
-                  </div>
-                  <div class="content_tow_item_column3_item_1" style="font-size: 30px">
-                    {{ tbHealthScreening.elderly ? '☑' : '□' }}
-                  </div>
-                </div>
-                <div class="content_tow_item_column3_1" style="border-bottom-style: none;">
-                  <div class="content_tow_item_column3_item_2point5" style="font-size: 18px">
-                    糖尿病患者
-                  </div>
-                  <div class="content_tow_item_column3_item_1" style="font-size: 30px">
-                    {{ tbHealthScreening.diabetesPatient ? '☑' : '□' }}
-                  </div>
-                </div>
-              </div>
-              <div class="content_three">
-                <div class="content_three_item_1">
-                  <div class="content_three_item_1_4" style="font-size: 18px">
-                    HIV/AIDS
-                  </div>
-                  <div class="content_three_item_1_1" style="font-size: 30px">
-                    {{ tbHealthScreening.hivorAIDS ? '☑' : '□' }}
-                  </div>
-                </div>
-                <div class="content_three_item_1">
-                  <div class="content_three_item_1_4" style="font-size: 18px">
-                    既往结核病患者
-                  </div>
-                  <div class="content_three_item_1_1" style="font-size: 30px">
-                    {{ tbHealthScreening.pastTBPatient ? '☑' : '□' }}
-                  </div>
-                </div>
-                <div class="content_three_item_2">
-                  <div class="content_three_item_2_1"
-                       style="padding-top: 6vh;padding-left: 1vw;font-size: 18px">
-                    非重点人群
-                  </div>
-                  <div class="content_three_item_2_1" style="font-size: 18px">
-                    <div class="content_three_item_2_1_col_1">
-                      0-5岁
-                    </div>
-                    <div class="content_three_item_2_1_col_1">
-                      6-14岁
-                    </div>
-                    <div class="content_three_item_2_1_col_1" style="border-bottom-style: none;">
-                      ≥15岁
-                    </div>
-                  </div>
-                  <div class="content_three_item_2_0point5" style="font-size: 30px">
-                    <div class="content_three_item_2_1_col_1">
-                      {{ tbHealthScreening.nonKeyPopulation0To5Years ? '☑' : '□' }}
-                    </div>
-                    <div class="content_three_item_2_1_col_1">
-                      {{ tbHealthScreening.nonKeyPopulation6To14Years ? '☑' : '□' }}
-                    </div>
-                    <div class="content_three_item_2_1_col_1" style="border-bottom-style: none;">
-                      {{ tbHealthScreening.nonKeyPopulationOver15Years ? '☑' : '□' }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="tips_content" style="font-size: 18px">
-              <strong>活动性肺结核密切接触者：</strong> 症状筛查+ppd+胸片检查，异常或强阳性进行实验室检查。
-              <br/>
-              <strong>0-5岁学生：</strong> 症状筛查，有症状做 ppd，强阳性进一步检查；<strong>6-14
-              岁学生：</strong>症状筛查+ppd，有症状或强
-              阳性进一步检查；<strong>≥15
-              岁学生：</strong>症状筛查+ppd+胸片检查，有症状或强阳性或异常进一步检查；<strong>教职工：</strong>症状筛
-              查+胸片检查，有症状或异常进一步检查。
-              <br/>
-              <!--              <strong>僧尼：</strong>0-5 岁、6-14 岁同学生；≥15 岁症状筛查+查验卡痕+胸片检查，有症状或强阳性或异常进一步检查。
-                            <br/>-->
-              <strong>老年人、糖尿病患者、HIV/AIDS 和既往结核病患者：</strong>症状筛查+胸片检查，有症状或异常进一步检查。
-              <br/>
-              <strong>0-5 岁非重点人群：</strong>症状筛查，有症状做 ppd，强阳性进一步检查；<strong>6-14
-              岁非重点人群：</strong>症状筛查+ppd，
-              有症状或强阳性进一步检查；<strong>≥15 岁非重点人群：</strong>症状筛查+胸片检查，有症状或异常进一步检查。
-            </div>
-            <div class="symptom_input_content">
-              <div class="symptom_input_content_item_1">
-                <strong style="padding: 2vh;font-size: 1.5vw;">您最近 1 个月内是否有以下症状？</strong>
-              </div>
-              <div class="symptom_input_content_item_1" style="font-size: 18px">
-                <div class="symptom_input_content_item_1_item4_1 " style="margin-left: 0.5vw;">
-                  1）咳嗽、咳痰（超过 2 周）
-                </div>
-                <div class="symptom_input_content_item_1_item4_1">
-                  {{ tbHealthScreening.coughOrSputumForMoreThanOneWeek ? '有' : '无' }}
-                </div>
-                <div class="symptom_input_content_item_1_item4_1" style="margin-right: 0.5vw;">
-                  5）乏力、盗汗
-                </div>
-                <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
-                  {{ tbHealthScreening.nightSweats ? '有' : '无' }}
-                </div>
-              </div>
-              <div class="symptom_input_content_item_1" style="font-size: 18px">
-                <div class="symptom_input_content_item_1_item4_1" style="margin-left: 0.5vw;">
-                  2）咯血或血痰
-                </div>
-                <div class="symptom_input_content_item_1_item4_1">
-                  {{ tbHealthScreening.hemoptysisOrBloodSputum ? '有' : '无' }}
-                </div>
-                <div class="symptom_input_content_item_1_item4_1" style="margin-right: 0.5vw;">
-                  6）食欲不振
-                </div>
-                <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
-                  {{ tbHealthScreening.lossOfAppetite ? '有' : '无' }}
-                </div>
-              </div>
-              <div class="symptom_input_content_item_1" style="font-size: 18px">
-                <div class="symptom_input_content_item_1_item4_1" style="margin-left: 0.5vw;">
-                  3）发热
-                </div>
-                <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
-                  {{ tbHealthScreening.fever ? '有' : '无' }}
-                </div>
-                <div class="symptom_input_content_item_1_item4_1"
-                     style="border-left: 1px solid;margin-right: 0.5vw;">
-                  7）体重减轻（超过 6 斤）
-                </div>
-                <div class="symptom_input_content_item_1_item4_1"
-                     style=" border-right-style: none;">
-                  {{ tbHealthScreening.weightLossOverSixPounds ? '有' : '无' }}
-                </div>
-              </div>
-              <div class="symptom_input_content_item_1" style="font-size: 18px">
-                <div class="symptom_input_content_item_1_item4_1" style="margin-left: 0.5vw;">
-                  4）胸痛
-                </div>
-                <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
-                  {{ tbHealthScreening.chestPain ? '有' : '无' }}
-                </div>
-                <div class="symptom_input_content_item_1_item4_1"
-                     style="border-left: 1px solid;margin-right: 0.5vw">
-                  <!--                  8）乏力-->
-                </div>
-                <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
-                  <!--                  {{ tbHealthScreening.fatigue ? '有' : '无' }}-->
-                </div>
-              </div>
-<!--              <div class="symptom_input_content_item_1">
-                <div class="symptom_input_content_item_1_item4_1">
-                  <div class="symptom_input_content_item_1_item4_1_1" style="font-size: 30px">
-                    {{ tbHealthScreening.doneCheckMark ? '☑' : '□' }}
-                  </div>
-                  <div class="symptom_input_content_item_1_item4_1_3"
-                       style="font-size: 18px; margin-top: 15px">
-                    <strong>查验卡痕</strong>
-                  </div>
-                </div>
-                <div class="symptom_input_content_item_1_item4_2"
-                     style="font-size: 20px;margin-top: 15px; border-right-style: none;">
-                  {{ tbHealthScreening.checkMark ? '☑有' : '□有' }}
-                  {{
-                    (tbHealthScreening.doneCheckMark && !tbHealthScreening.checkMark) ? '☑无' : '□无'
-                  }}
-                  □无法判断
-                </div>
-                <div class="symptom_input_content_item_1_item4_1"
-                     style="border-right-style: none;border-left: 1px solid ;font-size: 18px">
-                  医生签字：
-                  <el-image
-                    style="width: 50px; height: 50px"
-                    :src="tbHealthScreening.collectDoctorSignature"
-                    :preview-src-list="[tbHealthScreening.collectDoctorSignature]"
-                  />
-                </div>
-              </div>-->
-              <div class="symptom_input_content_item_1">
-                <div class="symptom_input_content_item_1_item4_1">
-                  <div class="symptom_input_content_item_1_item4_1_1" style="font-size: 30px">
-                    {{ tbHealthScreening.ppdTestDone ? '☑' : '□' }}
-                  </div>
-                  <div class="symptom_input_content_item_1_item4_1_3"
-                       style="border-right-style: none;font-size: 18px;margin-top: 15px">
-                    <strong>ppd</strong>
-                  </div>
-                </div>
-                <div class="symptom_input_content_item_1_item4_2"
-                     style="font-size: 18px;margin-top: 15px; border-right-style: none; ">
-                  注射时间：{{ tbHealthScreening.ppdInjectionTimeStr }}
-                  <br/>
-                  结果：{{tbHealthScreening.ppdOutcome == 1 ? "阳性":"阴性"}}
-                </div>
-                <div class="symptom_input_content_item_1_item4_1"
-                     style="border-right-style: none;border-left: 1px solid ;font-size: 18px;">
-                  医生签字：
-                  <el-image
-                    style="width: 50px; height: 50px"
-                    :src="tbHealthScreening.ppdDoctorSignature"
-                    :preview-src-list="[tbHealthScreening.ppdDoctorSignature]"
-                  />
-                </div>
-              </div>
-              <div class="symptom_input_content_item_2">
-                <div class="symptom_input_content_item_1_item4_1">
-                  <div class="symptom_input_content_item_1_item4_1_1" style="font-size: 30px">
-                    {{ tbHealthScreening.chestXRayDone ? '☑' : '□' }}
-                  </div>
-                  <div class="symptom_input_content_item_1_item4_1_3"
-                       style="border-right-style: none;font-size: 18px;margin-top: 45px">
-                    <strong>胸部 X 线</strong>
-                  </div>
-                </div>
-                <div class="symptom_input_content_item_1_item4_2"
-                     style="font-size: 18px;margin-top: 15px;border-right-style: none; ">
-                  {{ tbHealthScreening.noTBRelatedAbnormalities ? '☑无结核相关异常' : '□无结核相关异常' }}
-                  {{ tbHealthScreening.suspectedTB ? '☑疑似结核' : '□疑似结核' }}
-                  <br/>
-                  <div style="padding-top: 2vh;">
-                    机器中与患者对应的编码：{{ tbHealthScreening.chestXRayCode }}
-                  </div>
-                </div>
-                <div class="symptom_input_content_item_1_item4_1"
-                     style="border-right-style: none;border-left: 1px solid ;font-size: 18px;">
-                  医生签字：
-                  <el-image
-                    style="width: 50px; height: 50px"
-                    :src="tbHealthScreening.chestXRayDoctorSignature"
-                    :preview-src-list="[tbHealthScreening.chestXRayDoctorSignature]"
-                  />
-                </div>
-              </div>
-<!--              <div
-                class="symptom_input_content_item_1 none_border_bottom "
-                style="border-top: 1px solid ; border-bottom-style: none">
-                <div class="symptom_input_content_item_1_item4_1 ">
-                  <div class="symptom_input_content_item_1_item4_1_1" style="font-size: 30px">
-                    {{ tbHealthScreening.sputumSpecimenDone ? '☑' : '□' }}
-                  </div>
-                  <div class="symptom_input_content_item_1_item4_1_3 "
-                       style="font-size: 18px;margin-top: 15px">
-                    <strong>痰标本</strong>
-                  </div>
-                </div>
-                <div class="symptom_input_content_item_1_item4_2"
-                     style="font-size: 18px;margin-top: 15px;border-right-style: none; ">
-                  {{ tbHealthScreening.immediateSputum ? '☑即时痰' : '□即时痰' }}
-                  {{ tbHealthScreening.morningSputum ? '☑发放晨痰' : '□发放晨痰' }}
-                  {{ tbHealthScreening.nighttimeSputum ? '☑夜间痰盒' : '□夜间痰盒' }}
-                  {{ tbHealthScreening.noSputum ? '☑无痰' : '□无痰' }}
-                </div>
-                <div class="symptom_input_content_item_1_item4_1"
-                     style="border-right-style: none;border-left: 1px solid ;font-size: 18px">
-                  医生签字：
-                  <el-image
-                    style="width: 50px; height: 50px"
-                    :src="tbHealthScreening.sputumDoctorSignature"
-                    :preview-src-list="[tbHealthScreening.sputumDoctorSignature]"
-                  />
-
-                </div>
-              </div>-->
-            </div>
-<!--            <div class="check_signature" style="font-size: 18px">质检人员签字:</div>-->
           </div>
         </el-tab-pane>
         <el-tab-pane label="采集" name="checkGroup">
           <el-table :data="checkList" :stripe="true" max-height="400px">
             <el-table-column label="筛查次序" prop="screenOrder" align="center" width="100"/>
-            <el-table-column label="咳嗽、咳痰不小于2周" align="center">
+            <el-table-column label="咳嗽、咳痰不小于2周" align="center" width="110">
               <template #default="scope">
                 {{ scope.row.outcome.includes('1') ? '有' : '无' }}
               </template>
             </el-table-column>
-            <el-table-column label="血痰、咯血" align="center">
+            <el-table-column label="血痰、咯血" align="center" width="110">
               <template #default="scope">
                 {{ scope.row.outcome.includes('2') ? '有' : '无' }}
               </template>
             </el-table-column>
-            <el-table-column label="乏力、盗汗" align="center">
+            <el-table-column label="乏力、盗汗" align="center" width="110">
               <template #default="scope">
                 {{ scope.row.outcome.includes('3') ? '有' : '无' }}
               </template>
@@ -451,13 +234,13 @@
                 {{ scope.row.outcome.includes('7') ? '有' : '无' }}
               </template>
             </el-table-column>
-            <el-table-column label="两年内是否有与结核病患者的接触史" align="center" prop="contacted">
+            <el-table-column label="两年内是否有与结核病患者的接触史" align="center" prop="contacted" width="160">
               <template #default="scope">
                 {{ scope.row.contacted ? '是' : '否' }}
               </template>
             </el-table-column>
-            <el-table-column label="筛查单位" align="center" prop="screenAgency"/>
-            <el-table-column label="筛查时间" align="center" prop="screenTime" :formatter="dateFormatter2"/>
+            <el-table-column label="筛查单位" align="center" prop="screenAgency" width="180"/>
+            <el-table-column label="筛查时间" align="center" prop="screenTime" :formatter="dateFormatter2" width="130"/>
           </el-table>
         </el-tab-pane>
         <el-tab-pane label="PPD" name="ppdGroup">
@@ -925,506 +708,53 @@ const handleCommand = (command: string, row: any) => {
 }
 
 </script>
-<style scoped lang="scss">
-.main {
+<style scoped>
+table {
+  table-layout: fixed; /* 设置表格宽度固定 */
+  border-collapse: collapse;
+  margin-top: 10px; /* 增大表格上边距 */
   width: 100%;
-  height: 85vh;
-  display: flex;
-  font-size: 2rem;
 }
 
-.left_info {
-  flex: 0.5;
-}
-
-.class_hover {
-  background-color: #028077;
-  color: white;
-  cursor: grab;
-}
-
-.center_info {
-  flex: 0.2;
-
-  display: flex;
-  flex-flow: column;
-
-  .physical_examination_list {
-    flex: 1;
-  }
-
-  .physical_examination_list:hover {
-    background-color: #028077;
-    color: white;
-    cursor: grab;
-  }
-
-  .ct {
-    flex: 1;
-  }
-
-  .ct:hover {
-    background-color: #028077;
-    color: white;
-    cursor: grab;
-  }
-
-  .dr {
-    flex: 1;
-  }
-
-  .dr:hover {
-    background-color: #028077;
-    color: white;
-    cursor: grab;
-  }
-
-  .experiment {
-    flex: 1;
-  }
-
-  .experiment:hover {
-    background-color: #028077;
-    color: white;
-    cursor: grab;
-  }
-
-  .electrocardiogram {
-    flex: 1;
-  }
-
-  .electrocardiogram:hover {
-    background-color: #028077;
-    color: white;
-    cursor: grab;
-  }
-}
-
-.right_info {
-  flex: 2;
-}
-
-.border_color {
-  border: 1px solid #000000;
-}
-
-.none_border_bottom {
-  border-bottom: none;
-}
-
-.none_border_top {
-  border-top: none;
-}
-
-.none_border_left {
-  border-left: none;
-}
-
-.none_border_right {
-  border-right: none;
-}
-
-.none_border {
-  border-bottom-style: none;
-  border-top-style: none;
-  border-left-style: none;
-  border-right-style: none;
-}
-
-.center_div {
-  align-content: center;
+td,
+th {
+  word-break: break-all; /* 处理长单词换行 */
+  white-space: normal; /* 允许文本换行 */
+  border: 1px solid black;
+  padding: 12px; /* 增大内边距 */
   text-align: center;
+  width: 105px; /* 调整单元格宽度 */
+  font-size: 18px; /* 增大字体 */
 }
 
-.font_color {
+.info {
+  margin-top: 15px; /* 增大信息区域上边距 */
+  font-size: 20px; /* 增大字体 */
 }
 
-
-.center {
-  align-content: center;
+.content {
+  width: 1050px; /* 设置内容区域宽度 */
+  padding: 15px; /* 增大内边距 */
 }
 
-.physical_examination_diagnosis {
-  display: flex;
-  flex-direction: column;
-}
-
-.text_name {
-  /* border: 1px solid red; */
-  align-items: center;
-  justify-content: center;
+.title {
   text-align: center;
-  font-size: 2vw;
-  font-weight: bold;
+  font-size: 28px; /* 增大标题字体 */
+  font-weight: 700; /* 增大标题字体粗细 */
 }
 
-.input_content {
-  position: relative;
-  padding-left: 2.4vw;
+.text {
+  text-align: left;
+  width: calc(1050px - 36px); /* 计算宽度以适应内边距和边框 */
+  font-size: 20px; /* 增大字体 */
 }
 
-.info_idCard {
-  //position: absolute;
-  //margin: -1.1vw 0 0 7vw;
+.trs {
+  transform: scale(1.5);
+  width: 45px; /* 调整宽度 */
 }
 
-.info_name {
-  //margin-bottom: -25px;
-}
-
-.info_age {
-  //margin: 0.2vw 0 0 7vw;
-}
-
-.info_date {
-  //margin: -1.1vw 0 0 15vw;
-
-}
-
-.check_signature {
-  margin-top: 5vh;
-  margin-bottom: 2vh;
-  margin-left: 80%;
-}
-
-.symptom_input_content {
-  border: 1px solid;
-  margin: 1vh 5vh 0 5vh;
-  height: 60vh;
-
-  display: flex;
-  flex-direction: column;
-
-  .symptom_input_content_item_1 {
-    flex: 1;
-    border-bottom: 1px solid;
-
-    display: flex;
-
-    .symptom_input_content_item_1_item4_1 {
-      flex: 1;
-      border-right: 1px solid;
-      padding-left: 1vw;
-
-      display: flex;
-
-      .symptom_input_content_item_1_item4_1_1 {
-        flex: 1;
-        border-right: 1px solid;
-      }
-
-      .symptom_input_content_item_1_item4_1_3 {
-        flex: 3;
-        padding-left: 1vw;
-      }
-    }
-
-    .symptom_input_content_item_1_item4_2 {
-      flex: 2;
-      border-right: 1px solid;
-      padding-left: 1vw;
-    }
-  }
-
-  .symptom_input_content_item_2 {
-    flex: 2;
-
-    display: flex;
-
-    .symptom_input_content_item_1_item4_1 {
-      flex: 1;
-      border-right: 1px solid;
-      padding-left: 1vw;
-
-      display: flex;
-
-      .symptom_input_content_item_1_item4_1_1 {
-        flex: 1;
-        border-right: 1px solid;
-
-      }
-
-      .symptom_input_content_item_1_item4_1_3 {
-        flex: 3;
-        border-right: 1px solid;
-        padding-left: 1vw;
-      }
-    }
-
-    .symptom_input_content_item_1_item4_1 {
-      flex: 1;
-      border-right: 1px solid;
-      padding-left: 1vw;
-    }
-
-    .symptom_input_content_item_1_item4_2 {
-      flex: 2;
-      border-right: 1px solid;
-      padding-left: 1vw;
-    }
-  }
-}
-
-.tips_content {
-  border: 1px solid;
-  margin: 1vh 5vh 0 5vh;
-  height: 40%;
-  padding: 1vw;
-}
-
-.crowd_class_title {
-  font-weight: 700;
-}
-
-.crowd_class {
-  border: 1px solid;
-  display: flex;
-  flex-direction: column;
-  margin: 1vh 5vh 0 5vh;
-  align-items: center;
-  font-size: 1.5vw;
-}
-
-.crowd_class_content {
-  margin: 0 5vh 0 5vh;
-  height: 40vh;
-  display: flex;
-
-  .content_one {
-    flex: 2;
-    border: 1px solid;
-    border-top-style: none;
-
-    display: flex;
-    flex-direction: column;
-
-    .content_one_head {
-      flex: 1;
-
-      display: flex;
-
-      .content_one_head_left {
-        border-bottom: 1px solid;
-        border-right: 1px solid;
-        flex: 10;
-        padding-left: 1vw;
-      }
-
-      .content_one_head_right {
-        border-bottom: 1px solid;
-        flex: 3;
-        padding-left: 1vw;
-      }
-    }
-
-    .content_one_content {
-      flex: 4;
-      display: flex;
-
-      .content_one_content_item_1 {
-        border-right: 1px solid;
-        flex: 1;
-        padding-top: 10vh;
-        text-align: center;
-      }
-
-      .content_one_content_item_2 {
-        border-right: 1px solid;
-        flex: 2;
-
-        display: flex;
-        flex-direction: column;
-
-        .content_one_content_item_2_item_1 {
-          flex: 1;
-          border-bottom: 1px solid;
-          padding-left: 1vw;
-        }
-
-        .content_one_content_item_2_item_2 {
-          flex: 1;
-          border-bottom: 1px solid;
-          padding-left: 1vw;
-        }
-
-        .content_one_content_item_2_item_3 {
-          flex: 1;
-          border-bottom: 1px solid;
-          padding-left: 1vw;
-        }
-
-        .content_one_content_item_2_item_4 {
-          flex: 1;
-          padding-left: 1vw;
-        }
-      }
-
-      .content_one_content_item_3 {
-        flex: 1;
-
-        display: flex;
-        flex-direction: column;
-
-        .content_one_content_item_3_item_1 {
-          flex: 1;
-          border-bottom: 1px solid;
-          padding-left: 1vw;
-        }
-
-        .content_one_content_item_3_item_2 {
-          flex: 1;
-          border-bottom: 1px solid;
-          padding-left: 1vw;
-        }
-
-        .content_one_content_item_3_item_3 {
-          flex: 1;
-          border-bottom: 1px solid;
-          padding-left: 1vw;
-        }
-
-        .content_one_content_item_3_item_4 {
-          flex: 1;
-          padding-left: 1vw;
-        }
-      }
-    }
-  }
-
-  .content_tow {
-    flex: 1;
-    border-bottom: 1px solid;
-    border-right: 1px solid;
-    border-top: 1px none;
-
-    display: flex;
-    flex-direction: column;
-
-    .content_tow_item_column3_2 {
-      flex: 2;
-      border-bottom: 1px solid;
-      display: flex;
-
-      .content_tow_item_column3_item_1 {
-        flex: 1.2;
-        border-right: 1px solid;
-
-        padding-top: 6vh;
-        text-align: center;
-
-        display: flex;
-        flex-direction: column;
-
-
-      }
-
-      .content_tow_item_column3_item_1point5 {
-        flex: 1;
-
-        display: flex;
-        flex-direction: column;
-
-        .content_tow_item_column3_item_1point5_item_col_1 {
-          flex: 1;
-          border-bottom: 1px solid;
-          border-right: 1px solid;
-          padding-left: 1vw;
-        }
-
-        .content_tow_item_column3_item_1_item_col_1 {
-          flex: 1;
-          border-bottom: 1px solid;
-          padding-left: 1vw;
-          padding-top: 1vh;
-        }
-      }
-    }
-
-    .content_tow_item_column3_1 {
-      flex: 1;
-      border-bottom: 1px solid;
-
-      display: flex;
-
-      .content_tow_item_column3_item_2point5 {
-        flex: 2.5;
-        border-right: 1px solid;
-        padding-top: 2vh;
-        padding-left: 1vw;
-      }
-
-      .content_tow_item_column3_item_1 {
-        flex: 1;
-
-        padding-top: 1.5vh;
-        padding-left: 1vw;
-      }
-    }
-  }
-
-  .content_three {
-    flex: 1.5;
-    border-right: 1px solid;
-    border-bottom: 1px solid;
-
-    display: flex;
-    flex-direction: column;
-
-    .content_three_item_1 {
-      flex: 1;
-      border-bottom: 1px solid;
-
-      display: flex;
-
-      .content_three_item_1_1 {
-        flex: 1;
-        border-left: 1px solid;
-
-        padding-top: 2.5vh;
-        padding-left: 1vw;
-      }
-
-      .content_three_item_1_4 {
-       flex: 5.1;
-        padding-top: 2vh;
-        padding-left: 1vw;
-      }
-    }
-
-    .content_three_item_2 {
-      flex: 2;
-
-      display: flex;
-
-      .content_three_item_2_1 {
-        flex: 1;
-        border-right: 1px solid;
-
-        display: flex;
-        flex-direction: column;
-
-        .content_three_item_2_1_col_1 {
-          flex: 1;
-          border-bottom: 1px solid;
-          padding-left: 1vw;
-          padding-top: 1vh;
-        }
-      }
-
-      .content_three_item_2_0point5 {
-        flex: 0.5;
-
-        display: flex;
-        flex-direction: column;
-
-        .content_three_item_2_1_col_1 {
-          flex: 1;
-          border-bottom: 1px solid;
-          padding-left: 1vw;
-          padding-top: 1vh;
-        }
-      }
-    }
-  }
+.text-left {
+  text-align: left;
 }
 </style>

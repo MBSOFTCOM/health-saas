@@ -46,21 +46,21 @@
           @tab-click="handleClick"
         >
           <el-tab-pane label="队长" name="cap">
+            <div style="margin-bottom: 20px">
+              <el-button
+                type="primary"
+                plain
+                @click="distributeRole(1)"
+                v-if="isHavePower"
+              >
+                <Icon icon="ep:plus" class="mr-5px" /> 分配队长
+              </el-button>
+            </div>
             <el-row type="flex" justify="space-between">
               <el-col :span="11">
                 <el-form-item label="队长名字" prop="worker" style="width: 250px">
                   <el-input v-model="formData.workers" disabled/>
                 </el-form-item>
-              </el-col>
-              <el-col :span="11">
-                <el-button
-                  link
-                  type="success"
-                  @click="distributeRole(1)"
-                  v-if="isHavePower"
-                >
-                  分配队长
-                </el-button>
               </el-col>
             </el-row>
             <el-row type="flex" justify="space-between">
@@ -89,10 +89,10 @@
               </el-button>
             </div>
             <el-table v-loading="loading" :data="collectList">
-              <el-table-column label="用户编号" align="center" key="id" prop="id"/>
-              <el-table-column label="用户名称" align="center" prop="username"/>
-              <el-table-column label="用户昵称" align="center" prop="nickname"/>
-              <el-table-column label="部门" align="center" key="deptName" prop="deptName"/>
+              <el-table-column label="编号" align="center" key="id" prop="id"/>
+<!--              <el-table-column label="用户名称" align="center" prop="username"/>-->
+              <el-table-column label="姓名" align="center" prop="nickname"/>
+              <el-table-column label="单位" align="center" key="deptName" prop="deptName"/>
               <el-table-column label="手机号码" align="center" prop="mobile" width="120"/>
               <el-table-column label="操作" align="center">
                 <template #default="scope">
@@ -118,10 +118,10 @@
               </el-button>
             </div>
             <el-table v-loading="loading" :data="PPDList">
-              <el-table-column label="用户编号" align="center" key="id" prop="id"/>
-              <el-table-column label="用户名称" align="center" prop="username"/>
-              <el-table-column label="用户昵称" align="center" prop="nickname"/>
-              <el-table-column label="部门" align="center" key="deptName" prop="deptName"/>
+              <el-table-column label="编号" align="center" key="id" prop="id"/>
+<!--              <el-table-column label="用户名称" align="center" prop="username"/>-->
+              <el-table-column label="姓名" align="center" prop="nickname"/>
+              <el-table-column label="单位" align="center" key="deptName" prop="deptName"/>
               <el-table-column label="手机号码" align="center" prop="mobile" width="120"/>
               <el-table-column label="操作" align="center">
                 <template #default="scope">
@@ -148,10 +148,10 @@
               </el-button>
             </div>
             <el-table v-loading="loading" :data="ctdrList">
-              <el-table-column label="用户编号" align="center" key="id" prop="id"/>
-              <el-table-column label="用户名称" align="center" prop="username"/>
-              <el-table-column label="用户昵称" align="center" prop="nickname"/>
-              <el-table-column label="部门" align="center" key="deptName" prop="deptName"/>
+              <el-table-column label="编号" align="center" key="id" prop="id"/>
+<!--              <el-table-column label="用户名称" align="center" prop="username"/>-->
+              <el-table-column label="姓名" align="center" prop="nickname"/>
+              <el-table-column label="单位" align="center" key="deptName" prop="deptName"/>
               <el-table-column label="手机号码" align="center" prop="mobile" width="120"/>
               <el-table-column label="操作" align="center">
                 <template #default="scope">
@@ -946,8 +946,8 @@ const copyDeptList = reactive([])
  */
 const getDeptList = () => {
   ScreenPointApi.getDeptList().then(data =>{
-    deptList.value = data;
-    copyDeptList.splice(0, copyDeptList.length, ...data)
+    deptList.value = data.filter(dept => dept.type != 1);
+    copyDeptList.splice(0, copyDeptList.length, ...data.filter(dept => dept.type != 1))
   })
 }
 

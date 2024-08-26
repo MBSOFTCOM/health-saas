@@ -119,6 +119,7 @@ const formData = ref({
   indate: undefined,
 })
 const reagentList = ref([]) // 试剂列表
+const reagentConsumeList = ref([]) // 消耗列表
 
 // 验证入库量
 const checkInboundNumber = (rule, value) => {
@@ -160,12 +161,13 @@ const formRules = reactive({
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, list: any, id?: number) => {
   // 获取试剂列表
   await getReagentList()
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
+  reagentConsumeList.value = list
   resetForm()
   // 修改时，设置数据
   if (id) {
@@ -176,6 +178,7 @@ const open = async (type: string, id?: number) => {
       formLoading.value = false
     }
   }
+  console.log(reagentConsumeList.value)
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
@@ -189,6 +192,15 @@ const submitForm = async () => {
   try {
     const data = formData.value as unknown as ScreenConsumeVO
     if (formType.value === 'create') {
+
+      if (formData.value.consumeOrder !== undefined) {
+        // 使用 some 方法来检查 consumeOrder 是否在数组中的对象里
+        const exists = reagentConsumeList.value.some(item => item.consumeOrder == formData.value.consumeOrder);
+        if (exists) {
+          return message.error("列表中已存在该消耗次序！");
+        }
+      }
+
       data.currentNumber = data.inboundNumber
       await ScreenConsumeApi.createScreenConsume(data)
       message.success(t('common.createSuccess'))

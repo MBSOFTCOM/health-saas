@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="divport" content="width=device-width, initial-scale=1.0" />
     <title>体检表</title>
 .
 
@@ -393,299 +393,299 @@
     </style>
 </head>
 <body>
-<view class="physical_examination">
-    <view class="text_name">体检表</view>
-    <view class="input_content">
-        <view class="info_code">个人编号：001</view>
-        <view class="info_idCard">身份证号：360302200009290617</view>
-        <view class="info_name">姓名：刘华奇</view>
-        <view class="info_age">年龄：23 岁</view>
-        <view class="info_date">体检日期：2024年3月26日</view>
-    </view>
-    <view class="crowd_class">
-        <view class="crowd_class_title">人群分类（可多选）</view>
-    </view>
-    <view class="crowd_class_content">
-        <view class="content_one">
-            <view class="content_one_head">
-                <view class="content_one_head_left">
+<div class="physical_examination">
+    <div class="text_name">体检表</div>
+    <div class="input_content">
+        <div class="info_code">个人编号：001</div>
+        <div class="info_idCard">身份证号：360302200009290617</div>
+        <div class="info_name">姓名：刘华奇</div>
+        <div class="info_age">年龄：23 岁</div>
+        <div class="info_date">体检日期：2024年3月26日</div>
+    </div>
+    <div class="crowd_class">
+        <div class="crowd_class_title">人群分类（可多选）</div>
+    </div>
+    <div class="crowd_class_content">
+        <div class="content_one">
+            <div class="content_one_head">
+                <div class="content_one_head_left">
                     活动性肺结核密切接触者
-                </view>
-                <view class="content_one_head_right">
+                </div>
+                <div class="content_one_head_right">
                     □
-                </view>
-            </view>
+                </div>
+            </div>
 
-            <view class="content_one_content">
-                <view class="content_one_content_item_1">
+            <div class="content_one_content">
+                <div class="content_one_content_item_1">
                     在校师生
-                </view>
-                <view class="content_one_content_item_2">
-                    <view class="content_one_content_item_2_item_1">
+                </div>
+                <div class="content_one_content_item_2">
+                    <div class="content_one_content_item_2_item_1">
                         0-5岁学生
-                    </view>
-                    <view class="content_one_content_item_2_item_2">
+                    </div>
+                    <div class="content_one_content_item_2_item_2">
                         6-14岁学生
-                    </view>
-                    <view class="content_one_content_item_2_item_3">
+                    </div>
+                    <div class="content_one_content_item_2_item_3">
                         ≥15岁学生
-                    </view>
-                    <view class="content_one_content_item_2_item_4">
+                    </div>
+                    <div class="content_one_content_item_2_item_4">
                         教职工
-                    </view>
-                </view>
-                <view class="content_one_content_item_3">
-                    <view class="content_one_content_item_3_item_1">
+                    </div>
+                </div>
+                <div class="content_one_content_item_3">
+                    <div class="content_one_content_item_3_item_1">
                         □
-                    </view>
-                    <view class="content_one_content_item_3_item_2">
+                    </div>
+                    <div class="content_one_content_item_3_item_2">
                         □
-                    </view>
-                    <view class="content_one_content_item_3_item_3">
+                    </div>
+                    <div class="content_one_content_item_3_item_3">
                         □
-                    </view>
-                    <view class="content_one_content_item_3_item_4">
+                    </div>
+                    <div class="content_one_content_item_3_item_4">
                         □
-                    </view>
-                </view>
-            </view>
-        </view>
-        <view class="content_tow">
-            <view class="content_tow_item_column3_2">
-                <view class="content_tow_item_column3_item_1">
-                    僧尼
-                </view>
-                <view class="content_tow_item_column3_item_1point5">
-                    <view class="content_tow_item_column3_item_1point5_item_col_1">
-                        0-5岁
-                    </view>
-                    <view class="content_tow_item_column3_item_1point5_item_col_1">
-                        6-14岁
-                    </view>
-                    <view class="content_tow_item_column3_item_1point5_item_col_1" style="border-bottom-style: none;">
-                        ≥ 15岁
-                    </view>
-                </view>
-                <view class="content_tow_item_column3_item_1point5">
-                    <view class="content_tow_item_column3_item_1_item_col_1">
-                        □
-                    </view>
-                    <view class="content_tow_item_column3_item_1_item_col_1">
-                        □
-                    </view>
-                    <view class="content_tow_item_column3_item_1_item_col_1" style="border-bottom-style: none;">
-                        □
-                    </view>
-                </view>
-            </view>
-            <view class="content_tow_item_column3_1">
-                <view class="content_tow_item_column3_item_2point5">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content_tow">
+<#--            <div class="content_tow_item_column3_2">-->
+<#--                <div class="content_tow_item_column3_item_1">-->
+<#--                    僧尼-->
+<#--                </div>-->
+<#--                <div class="content_tow_item_column3_item_1point5">-->
+<#--                    <div class="content_tow_item_column3_item_1point5_item_col_1">-->
+<#--                        0-5岁-->
+<#--                    </div>-->
+<#--                    <div class="content_tow_item_column3_item_1point5_item_col_1">-->
+<#--                        6-14岁-->
+<#--                    </div>-->
+<#--                    <div class="content_tow_item_column3_item_1point5_item_col_1" style="border-bottom-style: none;">-->
+<#--                        ≥ 15岁-->
+<#--                    </div>-->
+<#--                </div>-->
+<#--                <div class="content_tow_item_column3_item_1point5">-->
+<#--                    <div class="content_tow_item_column3_item_1_item_col_1">-->
+<#--                        □-->
+<#--                    </div>-->
+<#--                    <div class="content_tow_item_column3_item_1_item_col_1">-->
+<#--                        □-->
+<#--                    </div>-->
+<#--                    <div class="content_tow_item_column3_item_1_item_col_1" style="border-bottom-style: none;">-->
+<#--                        □-->
+<#--                    </div>-->
+<#--                </div>-->
+<#--            </div>-->
+            <div class="content_tow_item_column3_1">
+                <div class="content_tow_item_column3_item_2point5">
                     老年人
-                </view>
-                <view class="content_tow_item_column3_item_1">
+                </div>
+                <div class="content_tow_item_column3_item_1">
                     □
-                </view>
-            </view>
-            <view class="content_tow_item_column3_1" style="border-bottom-style: none;">
-                <view class="content_tow_item_column3_item_2point5">
+                </div>
+            </div>
+            <div class="content_tow_item_column3_1" style="border-bottom-style: none;">
+                <div class="content_tow_item_column3_item_2point5">
                     糖尿病患者
-                </view>
-                <view class="content_tow_item_column3_item_1">
+                </div>
+                <div class="content_tow_item_column3_item_1">
                     □
-                </view>
-            </view>
-        </view>
-        <view class="content_three">
-            <view class="content_three_item_1">
-                <view class="content_three_item_1_4">
+                </div>
+            </div>
+        </div>
+        <div class="content_three">
+            <div class="content_three_item_1">
+                <div class="content_three_item_1_4">
                     HIV/AIDS
-                </view>
-                <view class="content_three_item_1_1">
+                </div>
+                <div class="content_three_item_1_1">
                     □
-                </view>
-            </view>
-            <view class="content_three_item_1">
-                <view class="content_three_item_1_4">
+                </div>
+            </div>
+            <div class="content_three_item_1">
+                <div class="content_three_item_1_4">
                     既往结核病患者
-                </view>
-                <view class="content_three_item_1_1">
+                </div>
+                <div class="content_three_item_1_1">
                     □
-                </view>
-            </view>
-            <view class="content_three_item_2">
-                <view class="content_three_item_2_1" style="padding-top: 5vh;padding-left: 1vw;">
+                </div>
+            </div>
+            <div class="content_three_item_2">
+                <div class="content_three_item_2_1" style="padding-top: 5vh;padding-left: 1vw;">
                     非重点人群
-                </view>
-                <view class="content_three_item_2_1">
-                    <view class="content_three_item_2_1_col_1">
+                </div>
+                <div class="content_three_item_2_1">
+                    <div class="content_three_item_2_1_col_1">
                         0-5岁
-                    </view>
-                    <view class="content_three_item_2_1_col_1">
+                    </div>
+                    <div class="content_three_item_2_1_col_1">
                         6-14岁
-                    </view>
-                    <view class="content_three_item_2_1_col_1" style="border-bottom-style: none;">
+                    </div>
+                    <div class="content_three_item_2_1_col_1" style="border-bottom-style: none;">
                         ≥15岁
-                    </view>
-                </view>
-                <view class="content_three_item_2_0point5">
-                    <view class="content_three_item_2_1_col_1">
+                    </div>
+                </div>
+                <div class="content_three_item_2_0point5">
+                    <div class="content_three_item_2_1_col_1">
                         □
-                    </view>
-                    <view class="content_three_item_2_1_col_1">
+                    </div>
+                    <div class="content_three_item_2_1_col_1">
                         □
-                    </view>
-                    <view class="content_three_item_2_1_col_1" style="border-bottom-style: none;">
+                    </div>
+                    <div class="content_three_item_2_1_col_1" style="border-bottom-style: none;">
                         □
-                    </view>
-                </view>
-            </view>
-        </view>
-    </view>
-    <view class="tips_content">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tips_content">
         <strong>活动性肺结核密切接触者：</strong> 症状筛查+TST+胸片检查，异常或强阳性进行实验室检查。
         <br/>
         <strong>0-5岁学生：</strong> 症状筛查+查验卡痕，有症状做 TST，强阳性进一步检查；<strong>6-14 岁学生：</strong>症状筛查+TST+查验卡痕，有症状或强
         阳性进一步检查；<strong>≥15 岁学生：</strong>症状筛查+TST+查验卡痕+胸片检查，有症状或强阳性或异常进一步检查；<strong>教职工：</strong>症状筛
         查+胸片检查，有症状或异常进一步检查。
         <br/>
-        <strong>僧尼：</strong>0-5 岁、6-14 岁同学生；≥15 岁症状筛查+查验卡痕+胸片检查，有症状或强阳性或异常进一步检查。
-        <br/>
+        <#--<strong>僧尼：</strong>0-5 岁、6-14 岁同学生；≥15 岁症状筛查+查验卡痕+胸片检查，有症状或强阳性或异常进一步检查。
+        <br/>-->
         <strong>老年人、糖尿病患者、HIV/AIDS 和既往结核病患者：</strong>症状筛查+胸片检查，有症状或异常进一步检查。
         <br/>
         <strong>0-5 岁非重点人群：</strong>症状筛查+查验卡痕，有症状做 TST，强阳性进一步检查；<strong>6-14 岁非重点人群：</strong>症状筛查+TST+查验卡痕，
         有症状或强阳性进一步检查；<strong>≥15 岁非重点人群：</strong>症状筛查+胸片检查，有症状或异常进一步检查。
-    </view>
-    <view class="symptom_input_content">
-        <view class="symptom_input_content_item_1">
+    </div>
+    <div class="symptom_input_content">
+        <div class="symptom_input_content_item_1">
             <strong style="padding: 2vh;font-size: 1.5vw;">您最近 1 个月内是否有以下症状？</strong>
-        </view>
-        <view class="symptom_input_content_item_1">
-            <view class="symptom_input_content_item_1_item4_1">
+        </div>
+        <div class="symptom_input_content_item_1">
+            <div class="symptom_input_content_item_1_item4_1">
                 1）咳嗽、咳痰（超过 1 周）
-            </view>
-            <view class="symptom_input_content_item_1_item4_1">
+            </div>
+            <div class="symptom_input_content_item_1_item4_1">
                 有 无
-            </view>
-            <view class="symptom_input_content_item_1_item4_1">
+            </div>
+            <div class="symptom_input_content_item_1_item4_1">
                 5）夜间盗汗
-            </view>
-            <view class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
+            </div>
+            <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
                 有 无
-            </view>
-        </view>
-        <view class="symptom_input_content_item_1">
-            <view class="symptom_input_content_item_1_item4_1">
+            </div>
+        </div>
+        <div class="symptom_input_content_item_1">
+            <div class="symptom_input_content_item_1_item4_1">
                 2）咯血或血痰
-            </view>
-            <view class="symptom_input_content_item_1_item4_1">
+            </div>
+            <div class="symptom_input_content_item_1_item4_1">
                 有 无
-            </view>
-            <view class="symptom_input_content_item_1_item4_1">
+            </div>
+            <div class="symptom_input_content_item_1_item4_1">
                 6）食欲不振
-            </view>
-            <view class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
+            </div>
+            <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
                 有 无
-            </view>
-        </view>
-        <view class="symptom_input_content_item_1">
-            <view class="symptom_input_content_item_1_item4_1">
+            </div>
+        </div>
+        <div class="symptom_input_content_item_1">
+            <div class="symptom_input_content_item_1_item4_1">
                 3）发热
-            </view>
-            <view class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
+            </div>
+            <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
                 有 无
-            </view>
-            <view class="symptom_input_content_item_1_item4_1" style="border-left-style: solid;">
+            </div>
+            <div class="symptom_input_content_item_1_item4_1" style="border-left-style: solid;">
                 7）乏力
-            </view>
-            <view class="symptom_input_content_item_1_item4_1" style=" border-right-style: none;">
+            </div>
+            <div class="symptom_input_content_item_1_item4_1" style=" border-right-style: none;">
                 有 无
-            </view>
-        </view>
-        <view class="symptom_input_content_item_1">
-            <view class="symptom_input_content_item_1_item4_1">
+            </div>
+        </div>
+        <div class="symptom_input_content_item_1">
+            <div class="symptom_input_content_item_1_item4_1">
                 4）胸痛
-            </view>
-            <view class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
+            </div>
+            <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
                 有 无
-            </view>
-            <view class="symptom_input_content_item_1_item4_1" style="border-left-style: solid;">
+            </div>
+            <div class="symptom_input_content_item_1_item4_1" style="border-left-style: solid;">
                 8）体重减轻（超过 6 斤）
-            </view>
-            <view class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
+            </div>
+            <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
                 有 无
-            </view>
-        </view>
-        <view class="symptom_input_content_item_1">
-            <view class="symptom_input_content_item_1_item4_1">
-                <view class="symptom_input_content_item_1_item4_1_1">
+            </div>
+        </div>
+        <div class="symptom_input_content_item_1">
+            <div class="symptom_input_content_item_1_item4_1">
+                <div class="symptom_input_content_item_1_item4_1_1">
                     □
-                </view>
-                <view class="symptom_input_content_item_1_item4_1_3" style="border-right-style: none;">
+                </div>
+                <div class="symptom_input_content_item_1_item4_1_3" style="border-right-style: none;">
                     <strong>查验卡痕</strong>
-                </view>
-            </view>
-            <view class="symptom_input_content_item_1_item4_2">
+                </div>
+            </div>
+            <div class="symptom_input_content_item_1_item4_2">
                 □ 有 □无 □无法判断
-            </view>
-            <view class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
+            </div>
+            <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
                 医生签字：
-            </view>
-        </view>
-        <view class="symptom_input_content_item_1">
-            <view class="symptom_input_content_item_1_item4_1">
-                <view class="symptom_input_content_item_1_item4_1_1">
+            </div>
+        </div>
+        <div class="symptom_input_content_item_1">
+            <div class="symptom_input_content_item_1_item4_1">
+                <div class="symptom_input_content_item_1_item4_1_1">
                     □
-                </view>
-                <view class="symptom_input_content_item_1_item4_1_3" style="border-right-style: none;">
+                </div>
+                <div class="symptom_input_content_item_1_item4_1_3" style="border-right-style: none;">
                     <strong>TST</strong>
-                </view>
-            </view>
-            <view class="symptom_input_content_item_1_item4_2">
+                </div>
+            </div>
+            <div class="symptom_input_content_item_1_item4_2">
                 注射时间： 年 月 日 时（24 小时制）
-            </view>
-            <view class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
+            </div>
+            <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
                 医生签字：
-            </view>
-        </view>
-        <view class="symptom_input_content_item_2">
-            <view class="symptom_input_content_item_1_item4_1">
-                <view class="symptom_input_content_item_1_item4_1_1">
+            </div>
+        </div>
+        <div class="symptom_input_content_item_2">
+            <div class="symptom_input_content_item_1_item4_1">
+                <div class="symptom_input_content_item_1_item4_1_1">
                     □
-                </view>
-                <view class="symptom_input_content_item_1_item4_1_3" style="border-right-style: none;">
+                </div>
+                <div class="symptom_input_content_item_1_item4_1_3" style="border-right-style: none;">
                     <strong>胸部 X 线</strong>
-                </view>
-            </view>
-            <view class="symptom_input_content_item_1_item4_2">
+                </div>
+            </div>
+            <div class="symptom_input_content_item_1_item4_2">
                 □无结核相关异常 □疑似结核
                 <br/>
-                <view style="padding-top: 2vh;">
+                <div style="padding-top: 2vh;">
                     机器中与患者对应的编码：
-                </view>
-            </view>
-            <view class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
+                </div>
+            </div>
+            <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
                 医生签字：
-            </view>
-        </view>
-        <view class="symptom_input_content_item_1" style="border-top-style: solid; border-bottom-style: none;">
-            <view class="symptom_input_content_item_1_item4_1">
-                <view class="symptom_input_content_item_1_item4_1_1">
+            </div>
+        </div>
+        <div class="symptom_input_content_item_1" style="border-top-style: solid; border-bottom-style: none;">
+            <div class="symptom_input_content_item_1_item4_1">
+                <div class="symptom_input_content_item_1_item4_1_1">
                     □
-                </view>
-                <view class="symptom_input_content_item_1_item4_1_3" style="border-right-style: none;">
+                </div>
+                <div class="symptom_input_content_item_1_item4_1_3" style="border-right-style: none;">
                     <strong>痰标本</strong>
-                </view>
-            </view>
-            <view class="symptom_input_content_item_1_item4_2">
+                </div>
+            </div>
+            <div class="symptom_input_content_item_1_item4_2">
                 □即时痰 □发放晨痰、夜间痰盒 □无痰
-            </view>
-            <view class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
+            </div>
+            <div class="symptom_input_content_item_1_item4_1" style="border-right-style: none;">
                 医生签字：
-            </view>
-        </view>
-    </view>
-    <view class="check_signature">质检人员签字:</view>
-</view>
+            </div>
+        </div>
+    </div>
+    <div class="check_signature">质检人员签字:</div>
+</div>
 
 </body>
 </html>

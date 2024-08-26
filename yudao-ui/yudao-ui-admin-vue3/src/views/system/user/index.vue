@@ -17,10 +17,10 @@
           :inline="true"
           label-width="68px"
         >
-          <el-form-item label="用户名称" prop="username">
+          <el-form-item label="登录账号" prop="username">
             <el-input
               v-model="queryParams.username"
-              placeholder="请输入用户名称"
+              placeholder="请输入登录账号"
               clearable
               @keyup.enter="handleQuery"
               class="!w-240px"
@@ -63,6 +63,9 @@
           <el-form-item>
             <el-button @click="handleQuery"><Icon icon="ep:search" />搜索</el-button>
             <el-button @click="resetQuery"><Icon icon="ep:refresh" />重置</el-button>
+          </el-form-item>
+          <br/>
+          <el-form-item style="float: right">
             <el-button
               type="primary"
               plain
@@ -93,21 +96,21 @@
       </ContentWrap>
       <ContentWrap>
         <el-table v-loading="loading" :data="list">
-          <el-table-column label="用户编号" align="center" key="id" prop="id" />
+          <el-table-column label="编号" align="center" key="id" prop="id" />
           <el-table-column
-            label="用户名称"
+            label="登录账号"
             align="center"
             prop="username"
             :show-overflow-tooltip="true"
           />
           <el-table-column
-            label="用户昵称"
+            label="姓名"
             align="center"
             prop="nickname"
             :show-overflow-tooltip="true"
           />
           <el-table-column
-            label="部门"
+            label="单位"
             align="center"
             key="deptName"
             prop="deptName"

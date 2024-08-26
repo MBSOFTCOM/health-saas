@@ -8,12 +8,12 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="部门" prop="deptList">
+      <el-form-item label="单位" prop="deptList">
         <el-select
           v-model="queryParams.deptList"
           placeholder="请选择"
           clearable
-          class="!w-180px"
+          class="!w-160px"
         >
           <el-option
             v-for="item in deptList"
@@ -29,7 +29,7 @@
           placeholder="输入试剂名称"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-140px"
+          class="!w-160px"
         />
       </el-form-item>
       <el-form-item label="批次号" prop="bathNumber">
@@ -38,7 +38,7 @@
           placeholder="输入批次号"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-140px"
+          class="!w-160px"
         />
       </el-form-item>
       <el-form-item label="试剂类型" prop="reagentType">
@@ -46,7 +46,7 @@
           v-model="queryParams.reagentType"
           placeholder="请选择"
           clearable
-          class="!w-120px"
+          class="!w-160px"
         >
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.DOSAGE_FORM)"
@@ -59,10 +59,13 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+      </el-form-item>
+      <br/>
+      <el-form-item style="float: right">
         <el-button
           type="primary"
           plain
-          @click="openForm('create')"
+          @click="openForm('create', list)"
           v-hasPermi="['tb:screen-consume:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
@@ -242,8 +245,8 @@ const resetQuery = () => {
 
 /** 详情操作 */
 const formRef = ref()
-const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+const openForm = (type: string, list:any, id?: number) => {
+  formRef.value.open(type, list, id)
 }
 
 /** 增加、减少库存操作 */
@@ -326,7 +329,9 @@ const rowClassName = ({ row }) => {
 };
 
 const getDeptList = async () => {
-  deptList.value = await DeptApi.getMyDeptList();
+  const allDeptList = await DeptApi.getMyDeptList();
+  // 去掉学校类型
+  deptList.value = allDeptList.filter(dept => dept.type != 1);
 }
 
 const loginUserId = ref()

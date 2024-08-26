@@ -14,7 +14,7 @@
           placeholder="请输入筛查点名称"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-180px"
+          class="!w-160px"
         />
       </el-form-item>
       <el-form-item label="工作年度" prop="year">
@@ -23,13 +23,13 @@
           placeholder="请输入工作年度"
           clearable
           @keyup.enter="handleQuery"
-          class="!w-150px"
+          class="!w-160px"
         />
       </el-form-item>
       <el-form-item label="筛查单位" prop="screenDept">
         <el-select v-model="queryParams.screenDept"
                    clearable
-                   class="!w-200px"
+                   class="!w-160px"
         >
           <el-option
             v-for="item in deptList"
@@ -48,6 +48,9 @@
           <Icon icon="ep:refresh" class="mr-5px"/>
           重置
         </el-button>
+      </el-form-item>
+      <br/>
+      <el-form-item style="float: right;">
         <el-button
           type="primary"
           plain
@@ -57,15 +60,15 @@
           <Icon icon="ep:plus" class="mr-5px"/>
           新增
         </el-button>
-<!--        <el-button
-          type="success"
-          plain
-          @click="handleExportTemplate"
-          :loading="importTemplateLoading"
-        >
-          <Icon icon="ep:link" class="mr-5px"/>
-          下载导入模板
-        </el-button>-->
+        <!--        <el-button
+                  type="success"
+                  plain
+                  @click="handleExportTemplate"
+                  :loading="importTemplateLoading"
+                >
+                  <Icon icon="ep:link" class="mr-5px"/>
+                  下载导入模板
+                </el-button>-->
         <el-button
           type="warning"
           plain
@@ -76,16 +79,16 @@
           <Icon icon="ep:position" class="mr-5px"/>
           导出
         </el-button>
-<!--        <el-button
-          type="info"
-          plain
-          @click="handleImport"
-          v-hasPermi="['tb:screen-point:create']"
-          :loading="importLoading"
-        >
-          <Icon icon="ep:finished" class="mr-5px"/>
-          导入
-        </el-button>-->
+        <!--        <el-button
+                  type="info"
+                  plain
+                  @click="handleImport"
+                  v-hasPermi="['tb:screen-point:create']"
+                  :loading="importLoading"
+                >
+                  <Icon icon="ep:finished" class="mr-5px"/>
+                  导入
+                </el-button>-->
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -402,7 +405,9 @@ const getUserId = async () => {
 }
 
 const getDeptList = async () => {
-  deptList.value = await ScreenPointApi.getDeptList();
+  const allDeptList = await ScreenPointApi.getDeptList();
+  // 去掉学校类型
+  deptList.value = allDeptList.filter(dept => dept.type != 1);
 }
 
 /** 操作分发 */

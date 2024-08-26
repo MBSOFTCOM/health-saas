@@ -120,4 +120,11 @@ public interface DeptService {
      * 获取本部门及以下的学校、医疗机构列表
      */
     DeptStasticList getDdeptList();
+
+    /**
+     * 获得本部门及以下的部门列表（不含医院）
+     * @param myDept
+     * @return
+     */
+    List<DeptDO> getChildDeptList2(Long myDept);
 }
