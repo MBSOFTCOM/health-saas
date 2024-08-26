@@ -180,7 +180,7 @@
 				</view>
 			</view>
 		</view>
-		<view class="content">
+		<view class="content" >
 			<!-- 顶部搜索栏 -->
 			<view class="top">
 				<view class="top-left">
@@ -223,7 +223,7 @@
 				</view>
 			</view>
 			<!-- 输入框和搜索按钮 -->
-			<view class="statistics" style="justify-content: flex-start">
+			<view class="statistics" style="justify-content: flex-start;margin-bottom: 5px;">
 				<span style="font-size: 18px; margin-left: 10px">筛查日期</span>
 				<select-date style="margin-left: 10px" ref="componentDate" @selectDate="handleSelectDate" />
 				<span style="font-size: 18px; display: inline-block; margin-left: 60px">人群分类</span>
@@ -250,8 +250,8 @@
 					></up-button>
 				</view>
 			</view>
+			<up-line></up-line>
 		</view>
-
 		<!-- 患者列表 -->
 		<view class="uni-container">
 			<uni-table :style="tableStyle" ref="table" :loading="loading" stripe emptyText="暂无更多数据">
@@ -261,14 +261,14 @@
 					<uni-th width="100" align="center">姓名</uni-th>
 					<uni-th width="180" align="center">筛查次序/时间</uni-th>
 					<uni-th width="180" align="center">下一步检查</uni-th>
-					<uni-th width="190" align="center">采集操作</uni-th>
+					<uni-th width="220" align="center">采集操作</uni-th>
 					<uni-th width="180" align="center">身份证号</uni-th>
 					<uni-th width="60" align="center">性别</uni-th>
 					<uni-th width="60" align="center">年龄</uni-th>
-					<uni-th width="5%" align="center">民族</uni-th>
+					<uni-th width="60" align="center">民族</uni-th>
 					<uni-th width="150" align="center">筛查点</uni-th>
 					<uni-th width="120" align="center">第一人群分类</uni-th>
-					<uni-th width="5%" align="center">重点人群分类</uni-th>
+					<uni-th width="120" align="center">重点人群分类</uni-th>
 					<uni-th width="250" align="center">患者信息操作</uni-th>
 				</uni-tr>
 				<uni-tr v-for="(item, index) in pageData" :key="index">

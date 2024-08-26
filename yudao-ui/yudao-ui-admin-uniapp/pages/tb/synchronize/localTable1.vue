@@ -243,14 +243,14 @@ export default {
 		},
 		// 搜索
 		search() {
-			SynchronizeApi.getPersonCount(this.queryParams.screenId, this.queryParams.screenPoint).then((res) => {
+			SynchronizeApi.getPersonCount(this.queryParams.screenId, this.queryParams.screenPoint,null).then((res) => {
 				// console.log(res);
 				if (res[0].num > 0) {
 					this.total = res[0].num;
 					SynchronizeApi.getPersonData(
 						this.queryParams.screenId,
 						this.queryParams.screenPoint,
-						1,
+						null,
 						this.pageNo,
 						this.pageSize
 					).then((resp) => {
@@ -372,6 +372,7 @@ export default {
 		nation(value) {
 			return nationMap[value];
 		},
+		
 		// 平板到pc
 		PadToPc() {
 			if (this.selectedIndexs.length == 0) {

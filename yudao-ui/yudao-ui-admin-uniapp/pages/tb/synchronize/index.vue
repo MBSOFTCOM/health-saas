@@ -1197,7 +1197,7 @@ updateArray(number) {
 					});
 					break;
 				case 1:
-					SynchronizeApi.getPersonCount(this.queryParams.screenId, this.queryParams.screenPoint).then(
+					SynchronizeApi.getPersonCount(this.queryParams.screenId, this.queryParams.screenPoint,null).then(
 						(res) => {
 							// console.log(this.queryParams);
 							// console.log(res);
@@ -1206,6 +1206,7 @@ updateArray(number) {
 								SynchronizeApi.getPersonData(
 									this.queryParams.screenId,
 									this.queryParams.screenPoint,
+									null,
 									this.pageNo,
 									this.pageSize
 								).then((resp) => {
@@ -1220,7 +1221,7 @@ updateArray(number) {
 					);
 					break;
 				case 2:
-					SynchronizeApi.getCollectCount(this.queryParams.screenId, this.queryParams.screenPoint).then(
+					SynchronizeApi.getCollectCount(this.queryParams.screenId, this.queryParams.screenPoint,null).then(
 						(res) => {
 							// console.log(res);
 							if (res[0].num > 0) {
@@ -1228,6 +1229,7 @@ updateArray(number) {
 								SynchronizeApi.getCollectData(
 									this.queryParams.screenId,
 									this.queryParams.screenPoint,
+									null,
 									this.pageNo,
 									this.pageSize
 								).then((resp) => {

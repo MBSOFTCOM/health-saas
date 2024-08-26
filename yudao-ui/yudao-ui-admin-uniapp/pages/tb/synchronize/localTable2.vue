@@ -201,12 +201,13 @@ export default {
 		},
 		// 搜索
 		search() {
-			SynchronizeApi.getCollectCount(this.queryParams.screenId, this.queryParams.screenPoint).then((res) => {
+			SynchronizeApi.getCollectCount(this.queryParams.screenId, this.queryParams.screenPoint,null).then((res) => {
 				if (res[0].num > 0) {
 					this.total = res[0].num;
 					SynchronizeApi.getCollectData(
 						this.queryParams.screenId,
 						this.queryParams.screenPoint,
+						null,
 						this.pageNo,
 						this.pageSize
 					).then((resp) => {
@@ -349,7 +350,7 @@ export default {
 								});
 							} else {
 								// 获取本地数据 上传到pc端
-								let local=await SynchronizeApi.getCollectData(self.queryParams.screenId, self.queryParams.screenPoint, -1, self.pageSize)
+								let local=await SynchronizeApi.getCollectData(self.queryParams.screenId, self.queryParams.screenPoint,1, -1, self.pageSize)
 								self.SyncData = local.map((item) => ({
 								  ...item,
 								  screenAgency: self.agency

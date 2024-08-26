@@ -278,6 +278,7 @@
 						text="同步试剂批号"/>
 				</view>
 			</view>
+			<up-line style="margin-top: 5px;"></up-line>
 		</view>
 		<view class="uni-container">
 			<uni-table :style="tableStyle" ref="table" :loading="loading" stripe emptyText="暂无更多数据">
@@ -291,10 +292,10 @@
 					<uni-th width="180" align="center">身份证号</uni-th>
 					<uni-th width="60" align="center">性别</uni-th>
 					<uni-th width="60" align="center">年龄</uni-th>
-					<uni-th width="5%" align="center">民族</uni-th>
-					<uni-th width="5%" align="center">筛查点</uni-th>
+					<uni-th width="60" align="center">民族</uni-th>
+					<uni-th width="150" align="center">筛查点</uni-th>
 					<uni-th width="120" align="center">第一人群分类</uni-th>
-					<uni-th width="5%" align="center">重点人群分类</uni-th>
+					<uni-th width="120" align="center">重点人群分类</uni-th>
 					<uni-th width="150" align="center">患者信息操作</uni-th>
 				</uni-tr>
 				<uni-tr v-for="(item, index) in pageData" :key="index">

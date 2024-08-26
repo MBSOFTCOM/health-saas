@@ -458,7 +458,7 @@ export default {
 				weight: undefined,
 				idNum: undefined,
 				tel: undefined,
-				nation: 0,
+				nation: 1,
 				permanentAddress: undefined,
 				permanentAddressProvince: '',
 				permanentAddressCity: undefined,

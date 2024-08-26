@@ -12,6 +12,7 @@
 			<view class="top1-right">
 				<view class="search-btn">
 					<up-button
+						v-if="false"
 						@click="toAddPatient"
 						:plain="true"
 						class="custom-add"
@@ -163,6 +164,7 @@
 					></up-button>
 				</view>
 			</view>
+			<up-line style="margin-top: 5px;"></up-line>
 		</view>
 		<!-- 患者列表 -->
 		<view class="uni-container">
@@ -174,7 +176,7 @@
 					<uni-th width="180" align="center">筛查次序/时间</uni-th>
 					<uni-th width="150" align="center">检测结果</uni-th>
 					<uni-th width="180" align="center">下一步检查</uni-th>
-					<uni-th width="350" align="center">操作</uni-th>
+					<uni-th width="250" align="center">操作</uni-th>
 					<uni-th width="180" align="center">身份证号</uni-th>
 					<uni-th width="80" align="center">年龄</uni-th>
 					<uni-th width="100" align="center">民族</uni-th>
@@ -216,7 +218,7 @@
 								采集
 							</span>
 							<span class="btn-span" style="color:  rgba(51, 176, 19, 1);border: 1px solid  rgba(51, 176, 19, 1);" @click="navTo(item, getItemByLabel(state(), '详情'))">详情</span>
-							<span class="btn-span" style="color: rgba(102, 68, 216, 1.0);border: 1px solid rgba(102, 68, 216, 1.0);margin: 0 5px;" @click="revise(item)">
+							<span v-if="flase" class="btn-span" style="color: rgba(102, 68, 216, 1.0);border: 1px solid rgba(102, 68, 216, 1.0);margin: 0 5px;" @click="revise(item)">
 								修改患者信息
 							</span>
 						</view>

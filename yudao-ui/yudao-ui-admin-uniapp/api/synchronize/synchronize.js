@@ -50,9 +50,13 @@ export function getPersonData(screenId,screenPoint,statusFlag,pageNo,pageSize){
 		sql+=`and screenId like '%${screenId}%' `
 	}
 	if(statusFlag){
-		sql+=` and statusFlag = ${statusFlag} `
-	}else{
-		sql+=` and statusFlag is null `
+		if(statusFlag=='null'){
+			sql+=` and statusFlag is null `
+		}else  if(statusFlag== 'not null'){
+			sql+=` and statusFlag is not null `
+		}else{
+			sql+=` and statusFlag = ${statusFlag} `
+		}
 	}
 	sql+=` order by id desc `
 	if(pageNo !=-1){
@@ -76,13 +80,22 @@ export function getPersonData(screenId,screenPoint,statusFlag,pageNo,pageSize){
 	});
 }
 // 获取平板端待筛查数据总条数
-export function getPersonCount(screenId,screenPoint){
+export function getPersonCount(screenId,screenPoint,statusFlag){
 	let sql = `select ifnull(count(*),0) num
 			   from ${tbScreenPerson} 
 			   where screenPoint = '${screenPoint}'
 			   `
 	if(screenId){
 		sql+=`and screenId like '%${screenId}%'`
+	}
+	if(statusFlag){
+		if(statusFlag=='null'){
+			sql+=` and statusFlag is null `
+		}else  if(statusFlag== 'not null'){
+			sql+=` and statusFlag is not null `
+		}else{
+			sql+=` and statusFlag = ${statusFlag} `
+		}
 	}
 	// console.log("SQL:" + sql);
 
@@ -99,6 +112,35 @@ export function getPersonCount(screenId,screenPoint){
 	    }
 	  });
 	});
+}
+/**
+ * @param {Object} screenId 筛查编号
+ * @param {Object} screenPoint 筛查点
+ * @param {Object} statusFlag 状态
+ * @param {Object} pageNo 页码
+ * @param {Object} pageSize 页大小
+ */
+export async function uploadData(screenId, screenPoint, statusFlag,pageNo, pageSize){
+	// 获取本地数据 上传到pc端
+	let local=await getPersonData(screenId, screenPoint, statusFlag,pageNo, pageSize)
+	// console.log(self.SyncData);
+	
+	// 筛查时间转换成时间戳
+	local.forEach((item) => {
+	  let date = new Date(item.screenTime);
+	  item.screenTime = date.getTime();
+	});
+	// console.log(self.SyncData);
+	
+	// 上传
+	await updateTableData1(local).then(async(res) => {
+		console.log(res);
+		for (var i = 0; i < res.data.length; i++) {
+			let tableData=await listDataByIdNumAndPersonId(res.data[i].idNum,res.data[i].id,tbScreenPerson)
+			console.log(tableData);
+			await updatePersonId(tbScreenPerson,tableData[i].id,res.data[i].newId,tableData[i].idNum,res.data[i].screenId)
+		}
+	})
 }
 
 // 获取摸底表 待筛查数据
@@ -165,7 +207,7 @@ export function selectMaxId(tableName) {
 
 // ========================== 采集表 ==========================
 // 获取平板端采集组分页数据
-export function getCollectData(screenId,screenPoint,pageNo,pageSize){
+export function getCollectData(screenId,screenPoint,statusFlag,pageNo,pageSize){
 	let sql = `select sc.*,sp.name,sp.screenPoint
 			   from ${tbScreenCollect} sc
 			   left join ${tbScreenPerson} sp on sc.personId=sp.id
@@ -173,6 +215,15 @@ export function getCollectData(screenId,screenPoint,pageNo,pageSize){
 			   `
 	if(screenId){
 		sql+=`and screenId like '%${screenId}%'`
+	}
+	if(statusFlag){
+		if(statusFlag=='null'){
+			sql+=` and statusFlag is null `
+		}else  if(statusFlag== 'not null'){
+			sql+=` and statusFlag is not null `
+		}else{
+			sql+=` and statusFlag = ${statusFlag} `
+		}
 	}
 	sql+=`order by sc.id desc `
 	if(pageNo!=-1){
@@ -196,7 +247,7 @@ export function getCollectData(screenId,screenPoint,pageNo,pageSize){
 	});
 }
 // 获取平板端采集组数据总条数
-export function getCollectCount(screenId,screenPoint){
+export function getCollectCount(screenId,screenPoint,statusFlag){
 	let sql = `select ifnull(count(*),0) num 
 			   from ${tbScreenCollect} sc
 			   left join ${tbScreenPerson} sp on sc.personId=sp.id
@@ -204,6 +255,15 @@ export function getCollectCount(screenId,screenPoint){
 			   `
 	if(screenId){
 		sql+=`and screenId like '%${screenId}%'`
+	}
+	if(statusFlag){
+		if(statusFlag=='null'){
+			sql+=` and statusFlag is null `
+		}else  if(statusFlag== 'not null'){
+			sql+=` and statusFlag is not null `
+		}else{
+			sql+=` and statusFlag = ${statusFlag} `
+		}
 	}
 	// console.log("SQL:" + sql);
 

@@ -152,8 +152,7 @@
 								color="rgba(36, 93, 209, 1)"
 								:size="this.FormData.scleromaPhoto ? 20 : 30"
 							></up-icon>
-							<span v-if="!FormData.scleromaPhoto">绘制范围</span>
-							<span v-else>修改绘制范围</span>
+							<span >绘制范围</span>
 						</view>
 					</view>
 				</view>
@@ -201,8 +200,7 @@
 								color="rgba(36, 93, 209, 1)"
 								:size="this.FormData.blushPhoto ? 20 : 30"
 							></up-icon>
-							<span v-if="!FormData.blushPhoto">绘制范围</span>
-							<span v-else>修改绘制范围</span>
+							<span >绘制范围</span>
 						</view>
 					</view>
 				</view>

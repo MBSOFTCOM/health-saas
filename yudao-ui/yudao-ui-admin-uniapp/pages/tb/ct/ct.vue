@@ -164,6 +164,7 @@
 					></up-button>
 				</view>
 			</view>
+			<up-line style="margin-top: 5px;"></up-line>
 		</view>
 
 		<!-- 患者列表 -->
