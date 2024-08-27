@@ -482,8 +482,10 @@ export default {
 				{ title: '采集组', url: '../../../static/images/tb/sy-3.png' },
 				{ title: 'PPD组', url: '../../../static/images/tb/sy-4.png' },
 				{ title: 'DR/CT组', url: '../../../static/images/tb/sy-5.png' },
+				/*
 				{ title: '痰检组', url: '../../../static/images/tb/sy-6.png' },
 				{ title: '心电图组', url: '../../../static/images/tb/sy-7.png' }
+				*/
 			],
 			// 初始激活 第一个菜单项
 			activeItem: 0,

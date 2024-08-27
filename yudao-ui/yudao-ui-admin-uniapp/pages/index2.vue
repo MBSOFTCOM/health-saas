@@ -60,6 +60,7 @@ export default {
 					url: '/pages/tb/ppd/index',
 					img: '../static/images/tb/index-2.png'
 				},
+				/*
 				{
 					label: '痰检组',
 					url: '/pages/tb/sputumExamination/index',
@@ -70,8 +71,10 @@ export default {
 					url: '/pages/tb/laboratory/index',
 					img: '../static/images/tb/index-4.png'
 				}
+				*/
 			],
 			bottomMenuItems: [
+				/*
 				{
 					label: '诊断组',
 					url: '/pages/tb/diagnosis/index',
@@ -82,6 +85,7 @@ export default {
 					url: '/pages/tb/ecg/index',
 					img: '../static/images/tb/index-6.png'
 				}
+				*/
 			]
 		};
 	},

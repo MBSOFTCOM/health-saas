@@ -3,7 +3,7 @@
     <view class="header-section text-center">
       <image style="width: 250px;height: 80px;" src="/static/images/tb/logo.png" mode="widthFix">
       </image>
-      <uni-title type="h2" title="甘孜州色达县结核病全流程筛查管理系统"></uni-title>
+      <uni-title type="h2" title="校园筛查管理系统"></uni-title>
     </view>
 
     <view class="content-section" style="font-size: 16px;">

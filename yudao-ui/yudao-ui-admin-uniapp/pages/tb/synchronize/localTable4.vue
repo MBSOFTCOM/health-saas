@@ -322,7 +322,17 @@ export default {
 			return getLabelByValue(ctOutcome, value);
 		},
 		// 平板到pc
-		PadToPc() {
+		async PadToPc() {
+			let person=await SynchronizeApi.getPersonCount(self.queryParams.screenId, self.queryParams.screenPoint,'not null', -1, self.pageSize)
+			console.log(person);
+			if(person[0].num>=1){
+				uni.showToast({
+					title: '待筛查人员信息还有未上传的改动，请先同步待筛查人员信息',
+					icon: 'none',
+					duration: 2000
+				})  
+				return
+			}
 			if (this.selectedIndexs.length == 0) {
 				let self = this;
 				uni.showModal({
@@ -332,16 +342,6 @@ export default {
 					confirmText: '确认',
 					success: async (res) =>{
 						if (res.confirm) {
-							let person=await SynchronizeApi.getPersonCount(self.queryParams.screenId, self.queryParams.screenPoint,'not null', -1, self.pageSize)
-							// console.log(person);
-							if(person[0].num>=1){
-								uni.showToast({
-									title: '待筛查人员信息还有未上传的改动，请先同步待筛查人员信息',
-									icon: 'none',
-									duration: 2000
-								})  
-								return
-							}
 							if (self.pageData.length == 0) {
 								uni.showToast({
 									title: '暂无数据，上传失败',
@@ -435,7 +435,7 @@ export default {
 					content: '是否上传当前所选数据？',
 					cancelText: '取消',
 					confirmText: '确认',
-					success: function (res) {
+					success: async (res)=> {
 						if (res.confirm) {
 							self.selectedIndexs.map((i) => {
 								self.SyncData.push(self.pageData[i]);
@@ -452,18 +452,33 @@ export default {
 								}
 							});
 							// console.log(self.SyncData);
-							self.SyncData.forEach((item) => {
-								// 上传dr/ct组图片
-								SynchronizeApi.uploadOfflineImageOne(
-									3,
-									item.screenId,
-									item.personId,
-									item.screenOrder,
-									item.year,
-									item.screenType
-								);
-							});
 							
+							// 上传
+							SynchronizeApi.updateTableData4(self.SyncData).then(async(res) => {
+								for (var i = 0; i < res.data.length; i++) {
+									await SynchronizeApi.updateIdAndStatusFlag(tbScreenChestRadiograph,res.data[i].id,res.data[i].newId,res.data[i].idNum)
+									await SynchronizeApi.updateSumFieldId(res.data[i].id,res.data[i].newId,res.data[i].idNum,'chestRadiographId')
+								}
+								if (res.data) {
+									uni.showToast({
+										title: '上传成功',
+										mask: true,
+										icon: 'success',
+										duration: 1500
+									});
+									// 记录本次同步时间(存缓存)
+									let time = self.getCurrentTime()
+									uni.setStorage({
+										key:'drctPad',
+										data:time
+									})
+									self.synchronizeTime=time
+									uni.setStorage({
+										key:'drct',
+										data:time
+									})
+								}
+							});
 							//上传汇总表
 							for (let i = 0; i < self.SyncData.length; i++) {
 								SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId).then(res=>{
@@ -489,29 +504,17 @@ export default {
 								})
 							}
 
-							// 上传
-							SynchronizeApi.updateTableData4(self.SyncData).then((res) => {
-								if (res.data) {
-									uni.showToast({
-										title: '上传成功',
-										mask: true,
-										icon: 'success',
-										duration: 1500
-									});
-									// 记录本次同步时间(存缓存)
-									let time = self.getCurrentTime()
-									uni.setStorage({
-										key:'drctPad',
-										data:time
-									})
-									self.synchronizeTime=time
-									uni.setStorage({
-										key:'drct',
-										data:time
-									})
-								}
+							self.SyncData.forEach((item) => {
+								// 上传dr/ct组图片
+								SynchronizeApi.uploadOfflineImageOne(
+									3,
+									item.screenId,
+									item.personId,
+									item.screenOrder,
+									item.year,
+									item.screenType
+								);
 							});
-
 							self.SyncData = []; //清空同步数组
 							self.$refs.table.clearSelection(); //清除勾选内容
 							self.selectedIndexs.length = 0; // 清空索引数组
