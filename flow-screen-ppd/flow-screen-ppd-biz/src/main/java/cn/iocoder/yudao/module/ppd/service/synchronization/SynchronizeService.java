@@ -79,7 +79,7 @@ public interface SynchronizeService {
      * 更新dr/ct表数据
      * @param list
      */
-    void updateChestRadiograph(List<ScreenChestRadiographSaveReqVO> list);
+    List<SyncRespVO>  updateChestRadiograph(List<ScreenChestRadiographSaveReqVO> list);
 
 
     /**

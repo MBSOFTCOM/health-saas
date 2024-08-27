@@ -454,7 +454,7 @@ export function updateTableData3(params) {
 
 // ========================== dr/ct表 ==========================
 // 获取平板端dr/ct分页数据
-export function getDrCtData(screenId,outcome,screenPoint,pageNo,pageSize){
+export function getDrCtData(screenId,outcome,screenPoint,statusFlag,pageNo,pageSize){
 	let sql = `select sc.*,sp.name
 			   from ${tbScreenChestRadiograph} sc
 			   left join ${tbScreenPerson} sp on sc.personId=sp.id
@@ -465,6 +465,15 @@ export function getDrCtData(screenId,outcome,screenPoint,pageNo,pageSize){
 	}
 	if(outcome!=null){
 		sql+=` and sc.outcome=${outcome} `
+	}
+	if(statusFlag){
+		if(statusFlag=='null'){
+			sql+=` and sc.statusFlag is null `
+		}else  if(statusFlag== 'not null'){
+			sql+=` and sc.statusFlag is not null `
+		}else{
+			sql+=` and sc.statusFlag = ${statusFlag} `
+		}
 	}
 	sql+=` order by sc.id desc `
 	if(pageNo!=-1){
@@ -488,7 +497,7 @@ export function getDrCtData(screenId,outcome,screenPoint,pageNo,pageSize){
 	});
 }
 // 获取平板端dr/ct数据总条数
-export function getDrCtCount(screenId,outcome,screenPoint){
+export function getDrCtCount(screenId,outcome,screenPoint,statusFlag){
 	let sql = `select ifnull(count(*),0) num
 			   from ${tbScreenChestRadiograph} sc
 			   left join ${tbScreenPerson} sp on sc.personId=sp.id
@@ -499,6 +508,15 @@ export function getDrCtCount(screenId,outcome,screenPoint){
 	}
 	if(outcome!=null){
 		sql+=` and sc.outcome=${outcome} `
+	}
+	if(statusFlag){
+		if(statusFlag=='null'){
+			sql+=` and sc.statusFlag is null `
+		}else  if(statusFlag== 'not null'){
+			sql+=` and sc.statusFlag is not null `
+		}else{
+			sql+=` and sc.statusFlag = ${statusFlag} `
+		}
 	}
 	// console.log("SQL:" + sql);
 

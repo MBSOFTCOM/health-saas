@@ -1277,7 +1277,7 @@ updateArray(number) {
 					);
 					break;
 				case 4:
-					SynchronizeApi.getDrCtCount(this.queryParams.screenId, null, this.queryParams.screenPoint).then(
+					SynchronizeApi.getDrCtCount(this.queryParams.screenId, null, this.queryParams.screenPoint,'not null').then(
 						(res) => {
 							// console.log(res);
 							if (res[0].num > 0) {
@@ -1286,6 +1286,7 @@ updateArray(number) {
 									this.queryParams.screenId,
 									null,
 									this.queryParams.screenPoint,
+									'not null',
 									this.pageNo,
 									this.pageSize
 								).then((resp) => {

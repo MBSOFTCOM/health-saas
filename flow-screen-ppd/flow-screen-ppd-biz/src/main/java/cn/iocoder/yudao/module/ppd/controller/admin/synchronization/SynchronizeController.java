@@ -140,9 +140,9 @@ public class SynchronizeController {
     @PutMapping("/update-tableData4")
     @Operation(summary = "更新dr/ct表数据")
 //    @PreAuthorize("@ss.hasPermission('tb:synchronization:query')")
-    public CommonResult<Boolean> updateTableData4(@RequestBody List<ScreenChestRadiographSaveReqVO> list) {
-        synchronizeService.updateChestRadiograph(list);
-        return success(true);
+    public CommonResult<List<SyncRespVO>> updateTableData4(@RequestBody List<ScreenChestRadiographSaveReqVO> list) {
+        List<SyncRespVO> respVOS = synchronizeService.updateChestRadiograph(list);
+        return success(respVOS);
     }
 
     @GetMapping("/get-workTeam")

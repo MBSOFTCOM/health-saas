@@ -352,6 +352,16 @@ export default {
 					confirmText: '确认',
 					success: async (res)=> {
 						if (res.confirm) {
+							let person=await SynchronizeApi.getPersonCount(self.queryParams.screenId, self.queryParams.screenPoint,'not null', -1, self.pageSize)
+							// console.log(person);
+							if(person[0].num>=1){
+								uni.showToast({
+									title: '待筛查人员信息还有未上传的改动，请先同步待筛查人员信息',
+									icon: 'none',
+									duration: 2000
+								})  
+								return
+							}
 							if (self.pageData.length == 0) {
 								uni.showToast({
 									title: '暂无数据，上传失败',
@@ -360,16 +370,6 @@ export default {
 									duration: 1500
 								});
 							} else {
-								let person=await SynchronizeApi.getPersonCount(self.queryParams.screenId, self.queryParams.screenPoint,'not null', -1, self.pageSize)
-								// console.log(person);
-								if(person[0].num>=1){
-									uni.showToast({
-										title: '待筛查人员信息还有未上传的改动，请先同步待筛查人员信息',
-										icon: 'none',
-										duration: 2000
-									})  
-									return
-								}
 								uni.showLoading({
 									title: '上传中...'
 								})

@@ -225,25 +225,32 @@ public class SynchronizeServiceImpl implements SynchronizeService{
     }
 
     @Override
-    public void updateChestRadiograph(List<ScreenChestRadiographSaveReqVO> list) {
+    public List<SyncRespVO>  updateChestRadiograph(List<ScreenChestRadiographSaveReqVO> list) {
+        List<SyncRespVO> result = new LinkedList<>();
         list.forEach(item->{
+            SyncRespVO syncRespVO = new SyncRespVO();
+            syncRespVO.setIdNum(item.getIdNum()).setId(item.getId());
             // 根据筛查编号，筛查次序查询 是否有对应记录的id
             // 有记录 -- 更新
             // 无记录 -- 根据id查记录
             //           无记录 -- 插入
             //           有记录 -- 查询表中id的最大值 ， 更新待插入数据的id值 再插入
-            Long id = synchronizeMapper.selectChestRadiographIdByIndex(item.getScreenId(), item.getScreenOrder(), item.getPersonId());
-            if(id != null){
-                synchronizeMapper.updateChestRadiograph(item,id);
-            }else{
-                Long result = synchronizeMapper.selectCountById("tb_screen_chest_radiograph", item.getId());
-                if (result > 0) {
-                    Long maxId = synchronizeMapper.selectMaxId("tb_screen_chest_radiograph");
-                    item.setId(maxId+1);
+            if (item.getStatusFlag()==1){
+                ScreenChestRadiographDO radiographDO = BeanUtils.toBean(item, ScreenChestRadiographDO.class);
+                radiographDO.setId(null);
+                syncRespVO.setId(item.getId());
+                screenChestRadiographMapper.insert(radiographDO);
+                syncRespVO.setNewId(radiographDO.getId());
+                result.add(syncRespVO);
+            } else if (item.getStatusFlag() == 2) {
+                ScreenChestRadiographDO radiographDO = BeanUtils.toBean(item, ScreenChestRadiographDO.class);
+                Long id = synchronizeMapper.selectChestRadiographIdByIndex(item.getScreenId(), item.getScreenOrder(), item.getPersonId());
+                if(id != null){
+                    screenChestRadiographMapper.updateById(radiographDO);
                 }
-                synchronizeMapper.insertChestRadiograph(item);
             }
         });
+        return result;
     }
 
 
