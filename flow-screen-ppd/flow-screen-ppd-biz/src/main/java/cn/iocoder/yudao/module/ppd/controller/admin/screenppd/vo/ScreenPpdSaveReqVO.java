@@ -83,4 +83,6 @@ public class ScreenPpdSaveReqVO {
     @Schema(description = "纵径纵径 单位mm")
     private BigDecimal blushLongitudinalDiameter;
 
+    private Integer statusFlag;
+
 }

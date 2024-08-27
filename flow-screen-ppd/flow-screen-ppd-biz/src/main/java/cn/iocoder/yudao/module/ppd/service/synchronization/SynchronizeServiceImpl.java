@@ -187,25 +187,32 @@ public class SynchronizeServiceImpl implements SynchronizeService{
     }
 
     @Override
-    public void updatePpd(List<ScreenPpdSaveReqVO> list) {
+    public List<SyncRespVO>  updatePpd(List<ScreenPpdSaveReqVO> list) {
+        List<SyncRespVO> result = new LinkedList<>();
         list.forEach(item->{
+            SyncRespVO syncRespVO = new SyncRespVO();
+            syncRespVO.setIdNum(item.getIdNum()).setId(item.getId());
             // 根据筛查编号，筛查次序查询 是否有对应记录的id
             // 有记录 -- 更新
             // 无记录 -- 根据id查记录
             //           无记录 -- 插入
             //           有记录 -- 查询表中id的最大值 ， 更新待插入数据的id值 再插入
-            Long id = synchronizeMapper.selectPpdIdByIndex(item.getScreenId(), item.getScreenOrder(), item.getPersonId());
-            if(id!=null){
-                synchronizeMapper.updatePpd(item,id);
-            }else{
-                Long result = synchronizeMapper.selectCountById("tb_screen_ppd", item.getId());
-                if (result > 0) {
-                    Long maxId = synchronizeMapper.selectMaxId("tb_screen_ppd");
-                    item.setId(maxId+1);
+            if (item.getStatusFlag()==1){
+                ScreenPpdDO screenPpdDO = BeanUtils.toBean(item, ScreenPpdDO.class);
+                screenPpdDO.setId(null);
+                syncRespVO.setId(item.getId());
+                screenPpdMapper.insert(screenPpdDO);
+                syncRespVO.setNewId(screenPpdDO.getId());
+                result.add(syncRespVO);
+            } else if (item.getStatusFlag() == 2) {
+                ScreenPpdDO screenPpdDO = BeanUtils.toBean(item, ScreenPpdDO.class);
+                Long id = synchronizeMapper.selectPpdIdByIndex(item.getScreenId(), item.getScreenOrder(), item.getPersonId());
+                if(id != null){
+                    screenPpdMapper.updateById(screenPpdDO);
                 }
-                synchronizeMapper.insertPpd(item);
             }
         });
+        return result;
     }
 
     @Override

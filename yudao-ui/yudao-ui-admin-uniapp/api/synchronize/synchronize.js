@@ -355,7 +355,7 @@ export function updateTable(table,setData, id) {
 
 // ========================== ppd表 ==========================
 // 获取平板端ppd分页数据
-export function getPpdData(screenId,injection,screenPoint,pageNo,pageSize){
+export function getPpdData(screenId,injection,screenPoint,statusFlag,pageNo,pageSize){
 	let sql = `select sp1.*,sp2.name
 			   from ${tbScreenPpd} sp1
 			   left join ${tbScreenPerson} sp2 on sp1.personId=sp2.id
@@ -365,6 +365,15 @@ export function getPpdData(screenId,injection,screenPoint,pageNo,pageSize){
 	}
 	if(injection!=null){
 		sql+=` and sp1.injection=${injection} `
+	}
+	if(statusFlag){
+		if(statusFlag=='null'){
+			sql+=` and sp1.statusFlag is null `
+		}else  if(statusFlag== 'not null'){
+			sql+=` and sp1.statusFlag is not null `
+		}else{
+			sql+=` and sp1.statusFlag = ${statusFlag} `
+		}
 	}
 	sql+=` order by sp1.id desc `
 	if(pageNo!=-1){
@@ -388,7 +397,7 @@ export function getPpdData(screenId,injection,screenPoint,pageNo,pageSize){
 	});
 }
 // 获取平板端ppd数据总条数
-export function getPpdCount(screenId,injection,screenPoint){
+export function getPpdCount(screenId,injection,screenPoint,statusFlag){
 	let sql = `select ifnull(count(*),0) num
 			   from ${tbScreenPpd} sp1
 			   left join ${tbScreenPerson} sp2 on sp1.personId=sp2.id
@@ -399,6 +408,15 @@ export function getPpdCount(screenId,injection,screenPoint){
 	}
 	if(injection!=null){
 		sql+=` and sp1.injection=${injection} `
+	}
+	if(statusFlag){
+		if(statusFlag=='null'){
+			sql+=` and sp1.statusFlag is null `
+		}else  if(statusFlag== 'not null'){
+			sql+=` and sp1.statusFlag is not null `
+		}else{
+			sql+=` and sp1.statusFlag = ${statusFlag} `
+		}
 	}
 	// console.log("SQL:" + sql);
 

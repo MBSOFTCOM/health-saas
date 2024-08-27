@@ -66,7 +66,7 @@ public interface SynchronizeService {
      * 更新ppd表数据
      * @param list
      */
-    void updatePpd(List<ScreenPpdSaveReqVO> list);
+    List<SyncRespVO>  updatePpd(List<ScreenPpdSaveReqVO> list);
 
     /**
      * 获取dr/ct分页数据

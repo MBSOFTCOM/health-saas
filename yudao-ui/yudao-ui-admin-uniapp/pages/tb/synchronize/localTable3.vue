@@ -225,7 +225,8 @@ export default {
 			SynchronizeApi.getPpdCount(
 				this.queryParams.screenId,
 				this.queryParams.injection,
-				this.queryParams.screenPoint
+				this.queryParams.screenPoint,
+				'not null'
 			).then((res) => {
 				if (res[0].num > 0) {
 					this.total = res[0].num;
@@ -233,6 +234,7 @@ export default {
 						this.queryParams.screenId,
 						this.queryParams.injection,
 						this.queryParams.screenPoint,
+						'not null',
 						this.pageNo,
 						this.pageSize
 					).then((resp) => {
@@ -358,6 +360,16 @@ export default {
 									duration: 1500
 								});
 							} else {
+								let person=await SynchronizeApi.getPersonCount(self.queryParams.screenId, self.queryParams.screenPoint,'not null', -1, self.pageSize)
+								// console.log(person);
+								if(person[0].num>=1){
+									uni.showToast({
+										title: '待筛查人员信息还有未上传的改动，请先同步待筛查人员信息',
+										icon: 'none',
+										duration: 2000
+									})  
+									return
+								}
 								uni.showLoading({
 									title: '上传中...'
 								})
@@ -366,6 +378,7 @@ export default {
 									self.queryParams.screenId,
 									self.queryParams.injection,
 									self.queryParams.screenPoint,
+									'not null',
 									-1,
 									self.pageSize
 								)
@@ -385,7 +398,10 @@ export default {
 							
 								// 上传
 								let updatePpd=await SynchronizeApi.updateTableData3(self.SyncData)
-								
+								for (var i = 0; i < updatePpd.data.length; i++) {
+									await SynchronizeApi.updateIdAndStatusFlag(tbScreenPpd,updatePpd.data[i].id,updatePpd.data[i].newId,updatePpd.data[i].idNum)
+									await SynchronizeApi.updateSumFieldId(updatePpd.data[i].id,updatePpd.data[i].newId,updatePpd.data[i].idNum,'ppdId')
+								}
 								// 上传ppd组图片
 								await SynchronizeApi.uploadOfflineImage(2);
 								//上传汇总表

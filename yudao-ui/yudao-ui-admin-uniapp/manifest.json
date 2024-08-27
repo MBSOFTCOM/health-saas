@@ -98,20 +98,6 @@
                     }
                 }
             },
-            "Ba-ImageEditor" : {
-                "__plugin_info__" : {
-                    "name" : "图片编辑插件（涂鸦、贴图、滤镜、裁剪、美颜、文字） Ba-ImageEditor - [试用版，仅用于自定义调试基座]",
-                    "description" : "Ba-ImageEditor 是一款功能强大的uniapp图片编辑插件，支持涂鸦、贴图、滤镜、裁剪、旋转、添加文字、美颜等等。",
-                    "platforms" : "Android",
-                    "url" : "https://ext.dcloud.net.cn/plugin?id=9095",
-                    "android_package_name" : "",
-                    "ios_bundle_id" : "",
-                    "isCloud" : true,
-                    "bought" : 0,
-                    "pid" : "9095",
-                    "parameters" : {}
-                }
-            },
             "YY-TomatoOCR" : {
                 "__plugin_info__" : {
                     "name" : "本地离线文字、身份证识别TomatoOCR - [试用版，仅用于自定义调试基座]",
@@ -123,6 +109,20 @@
                     "isCloud" : true,
                     "bought" : 0,
                     "pid" : "7907",
+                    "parameters" : {}
+                }
+            },
+            "Ba-ImageEditor" : {
+                "__plugin_info__" : {
+                    "name" : "图片编辑插件（涂鸦、贴图、滤镜、裁剪、美颜、文字） Ba-ImageEditor",
+                    "description" : "Ba-ImageEditor 是一款功能强大的uniapp图片编辑插件，支持涂鸦、贴图、滤镜、裁剪、旋转、添加文字、美颜等等。",
+                    "platforms" : "Android",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=9095",
+                    "android_package_name" : "com.flowtb.ppd",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "9095",
                     "parameters" : {}
                 }
             }

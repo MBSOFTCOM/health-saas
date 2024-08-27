@@ -117,9 +117,9 @@ public class SynchronizeController {
     @PutMapping("/update-tableData3")
     @Operation(summary = "更新ppd表数据")
 //    @PreAuthorize("@ss.hasPermission('tb:synchronization:query')")
-    public CommonResult<Boolean> updateTableData3(@RequestBody List<ScreenPpdSaveReqVO> list) {
-        synchronizeService.updatePpd(list);
-        return success(true);
+    public CommonResult<List<SyncRespVO> > updateTableData3(@RequestBody List<ScreenPpdSaveReqVO> list) {
+        List<SyncRespVO> respVOS = synchronizeService.updatePpd(list);
+        return success(respVOS);
     }
 
     @PostMapping("/upload/consume-record")
