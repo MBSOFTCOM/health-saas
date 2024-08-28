@@ -19,6 +19,9 @@ import java.math.BigDecimal;
 @Accessors(chain = false) // 设置 chain = false，避免用户导入有问题
 public class ScreenPersonImportTemplateVO {
 
+    @ExcelProperty("序号")
+    private String order;
+
     @ExcelProperty("姓名")
     private String name;
 

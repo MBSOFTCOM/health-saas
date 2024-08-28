@@ -3,7 +3,6 @@ package cn.iocoder.yudao.module.ppd.service.screenpersonrealsituation;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.IoUtil;
-
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -23,6 +22,7 @@ import cn.iocoder.yudao.module.ppd.dal.mysql.screencomputedtomography.ScreenComp
 import cn.iocoder.yudao.module.ppd.dal.mysql.screendistrict.ScreenDistrictMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenimages.ScreenImagesMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenpersonrealsituation.ScreenPersonMapper;
+import cn.iocoder.yudao.module.ppd.dal.mysql.screenpoint.ScreenPointMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenrepeatperson.ScreenRepeatPersonMapper;
 import cn.iocoder.yudao.module.ppd.service.screendiagnosis.ScreenDiagnosisService;
 import cn.iocoder.yudao.module.system.api.dict.DictDataApi;
@@ -33,7 +33,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.itextpdf.text.pdf.BaseFont;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,14 +53,17 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.module.cd.enums.ErrorCodeConstants.*;
+import static cn.iocoder.yudao.module.cd.enums.MatchRules.ID_NUMBER;
+import static cn.iocoder.yudao.module.cd.enums.MatchRules.TEL;
+import static cn.iocoder.yudao.module.cd.enums.MatchRulesMsg.*;
 
 
 /**
@@ -90,6 +92,8 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
     private ScreenRepeatPersonMapper screenRepeatPersonMapper;
     @Resource
     private ScreenComputedTomographyMapper screenComputedTomographyMapper;
+    @Resource
+    private ScreenPointMapper screenPointMapper;
     @Resource
     private DeptService deptService;
     @Resource
@@ -279,6 +283,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         // 使用迭代器遍历 uniqueList，以便在遍历过程中安全地移除元素
         Iterator<ScreenPersonImportVO> iterator = uniqueList.iterator();
         while (iterator.hasNext()) {
+
             ScreenPersonImportVO obj = iterator.next();
             // 根据乡镇名称查询对应的区域代码
             String code = screenDistrictMapper.selectByName(obj.getTown());
@@ -296,17 +301,50 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             String cityCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressCity());
             // 根据户籍区/县名称查询对应的区域代码
             String countyCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressCounty());
-
+            int order=0;
+            StringBuffer  errorMsg=new StringBuffer();
+            try {
+                order = Integer.parseInt(obj.getOrder());
+                if (order<0){
+                    throw exception(SCREEN_PERSON_IMPORT_ORDER_NOT_NUMBER);
+                }
+            }catch (Exception e){
+                throw exception(SCREEN_PERSON_IMPORT_ORDER_NOT_NUMBER);
+            }
+            if (obj.getName()==null || obj.getName().isEmpty()){
+                errorMsg.append("姓名未填");
+            }
+            if (obj.getIdNum()==null || obj.getIdNum().isEmpty()){
+                errorMsg.append(ID_NUMBER_EMPTY);
+            }else {
+                if (!obj.getIdNum().matches(ID_NUMBER)){
+                    errorMsg.append(ID_NUMBER_MATCH_ERROR);
+                }
+            }
+            if (obj.getScreenPoint()==null || obj.getScreenPoint().isEmpty()){
+                errorMsg.append(SCREEN_POINT_EMPTY);
+            }else {
+                Long pointId = screenPointMapper.getIdByName(obj.getScreenPoint(), year, deptService.getDept(deptId).getName());
+                if (pointId==null){
+                    errorMsg.append(SCREEN_POINT_NOT_EXIST);
+                }
+            }
+            if (obj.getTel()==null || obj.getTel().isEmpty()){
+                errorMsg.append(TEL_EMPTY);
+            }else {
+                if (!obj.getTel().matches(TEL) ){
+                    errorMsg.append(TEL_MATCH_ERROR);
+                }
+            }
+            if (obj.getGuardianTel()!=null && !obj.getGuardianTel().matches(TEL)){
+                errorMsg.append("监护人手机号格式错误;");
+            }
             if (code1 != null && countyCode1 != null && cityCode1 != null && provinceCode1 != null) {
                 if (!code1.substring(0, 6).equals(countyCode1.substring(0,6)) || !code1.substring(0, 4).equals(cityCode1.substring(0, 4)) || !code1.substring(0, 2).equals(provinceCode1.substring(0, 2))) {
-                    failureSpecification.put(failureSpecification.size(), "该摸底人员户籍省市县乡不匹配");
-                    iterator.remove(); // 使用迭代器的 remove 方法移除当前元素
-                    continue; // 跳过后续的操作，继续下一轮循环
+                    errorMsg.append("该人员户籍省市县乡不匹配;");
                 }
             }else {
-                failureSpecification.put(failureSpecification.size(), "该摸底人员户籍省市县乡缺失");
-                iterator.remove(); // 使用迭代器的 remove 方法移除当前元素
-                continue; // 跳过后续的操作，继续下一轮循环
+                errorMsg.append("该人员户籍省市县乡缺失;");
             }
 
             if (code != null && countyCode != null && cityCode != null && provinceCode != null){
@@ -334,14 +372,16 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
                         importVOList.add(importVO); // 将 importVO 添加到 importVOList 中
                     }
                 }else {
-                    failureSpecification.put(failureSpecification.size(), "该摸底人员所在省市县乡不匹配");
-                    iterator.remove(); // 使用迭代器的 remove 方法移除当前元素
+                    errorMsg.append("该人员现住址的省市县乡不匹配;");
                 }
             }else {
-                failureSpecification.put(failureSpecification.size(), "该摸底人员所在省市县乡缺失");
-                iterator.remove(); // 使用迭代器的 remove 方法移除当前元素
+                errorMsg.append("该人员现住址的省市县乡缺失;");
             }
-
+            if (!errorMsg.isEmpty()){
+                failureSpecification.put(order,errorMsg.toString());
+                iterator.remove();
+                continue;
+            }
             obj.setProvince(provinceCode);
             obj.setCity(cityCode);
             obj.setCounty(countyCode);
@@ -351,7 +391,6 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             obj.setPermanentAddressCounty(countyCode1);
             obj.setPermanentAddressTown(code1);
         }
-
         // 处理非重复人员
         for (ScreenPersonImportVO obj : uniqueList) {
             String newScreenId = "";
@@ -376,6 +415,16 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         Iterator<ScreenPersonImportVO> iterator2 = duplicateList.iterator();
         while (iterator2.hasNext()) {
             ScreenPersonImportVO obj = iterator2.next();
+            int order=0;
+            StringBuffer  errorMsg=new StringBuffer();
+            try {
+                order = Integer.parseInt(obj.getOrder());
+                if (order<0){
+                    throw exception(SCREEN_PERSON_IMPORT_ORDER_NOT_NUMBER);
+                }
+            }catch (Exception e){
+                throw exception(SCREEN_PERSON_IMPORT_ORDER_NOT_NUMBER);
+            }
             // 根据乡镇名称查询对应的区域代码
             String code = screenDistrictMapper.selectByName(obj.getTown());
             // 根据省名称查询对应的区域代码
@@ -393,26 +442,53 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             // 根据户籍区/县名称查询对应的区域代码
             String countyCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressCounty());
 
+            if (obj.getName()==null || obj.getName().isEmpty()){
+                errorMsg.append("姓名未填");
+            }
+            if (obj.getIdNum()==null || obj.getIdNum().isEmpty()){
+                errorMsg.append(ID_NUMBER_EMPTY);
+            }else {
+                if (!obj.getIdNum().matches(ID_NUMBER)){
+                    errorMsg.append(ID_NUMBER_MATCH_ERROR);
+                }
+            }
+            if (obj.getScreenPoint()==null || obj.getScreenPoint().isEmpty()){
+                errorMsg.append(SCREEN_POINT_EMPTY);
+            }else {
+                Long pointId = screenPointMapper.getIdByName(obj.getScreenPoint(), year, deptService.getDept(deptId).getName());
+                if (pointId==null){
+                    errorMsg.append(SCREEN_POINT_NOT_EXIST);
+                }
+            }
+            if (obj.getTel()==null || obj.getTel().isEmpty()){
+                errorMsg.append(TEL_EMPTY);
+            }else {
+                if (!obj.getTel().matches(TEL) ){
+                    errorMsg.append(TEL_MATCH_ERROR);
+                }
+            }
+            if (obj.getGuardianTel()!=null && !obj.getGuardianTel().matches(TEL)){
+                errorMsg.append("监护人手机号格式错误;");
+            }
             if (code1 != null && countyCode1 != null && cityCode1 != null && provinceCode1 != null) {
                 if (!code1.substring(0, 6).equals(countyCode1.substring(0, 6)) || !code1.substring(0, 4).equals(cityCode1.substring(0, 4)) || !code1.substring(0, 2).equals(provinceCode1.substring(0, 2))) {
-                    failureSpecification.put(failureSpecification.size(), "该重复人员户籍省市县乡不匹配");
-                    iterator2.remove(); // 使用迭代器的 remove 方法移除当前元素
-                    continue; // 跳过后续的操作，继续下一轮循环
+                    errorMsg.append("该重复人员户籍省市县乡不匹配;");
                 }
             }else {
-                failureSpecification.put(failureSpecification.size(), "该重复人员户籍省市县乡缺失");
-                iterator2.remove(); // 使用迭代器的 remove 方法移除当前元素
-                continue; // 跳过后续的操作，继续下一轮循环
+                errorMsg.append("该重复人员户籍省市县乡缺失;");
             }
 
             if (code != null && countyCode != null && cityCode != null && provinceCode != null){
                 if (!code.substring(0, 6).equals(countyCode.substring(0, 6)) || !code.substring(0, 4).equals(cityCode.substring(0, 4)) || !code.substring(0,2).equals(provinceCode.substring(0,2))) {
-                    failureSpecification.put(failureSpecification.size(), "该重复人员所在省市县乡不匹配");
-                    iterator2.remove(); // 使用迭代器的 remove 方法移除当前元素
+                    errorMsg.append("该重复人员现住址的省市县乡不匹配;");
                 }
             }else {
-                failureSpecification.put(failureSpecification.size(), "该重复人员所在省市县乡缺失");
-                iterator2.remove(); // 使用迭代器的 remove 方法移除当前元素
+                errorMsg.append("该重复人员现住址的省市县乡缺失;");
+            }
+            if (!errorMsg.isEmpty()){
+                failureSpecification.put(order,errorMsg.toString());
+                iterator2.remove();
+                continue;
             }
             obj.setProvince(provinceCode);
             obj.setCity(cityCode);
@@ -702,7 +778,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
     @Override
     public List<ScreenPersonImportVO> createSampleData() {
         return List.of(
-                ScreenPersonImportVO.builder().name("张三").idNum("360888888888888888").nation(24).studentType(1)
+                ScreenPersonImportVO.builder().order("1").name("张三").idNum("360888888888888888").nation(24).studentType(1)
                         .tel("18888888888").height(BigDecimal.valueOf(175.22)).weight(BigDecimal.valueOf(55.2))
                         .permanentAddress("重庆市重庆市辖区万州区高笋塘街道").permanentAddressProvince("重庆市")
                         .permanentAddressCity("重庆市辖区").permanentAddressCounty("万州区").permanentAddressTown("高笋塘街道")

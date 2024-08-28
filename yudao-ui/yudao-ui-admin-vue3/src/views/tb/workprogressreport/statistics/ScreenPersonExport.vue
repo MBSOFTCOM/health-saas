@@ -182,7 +182,7 @@
                 <el-checkbox label="是否已做" :value="7"/>
                 <el-checkbox label="横径mm" :value="8"/>
                 <el-checkbox label="纵径mm" :value="9"/>
-                <el-checkbox label="双拳、水泡、坏死或淋巴炎" :value="10"/>
+                <el-checkbox label="双圈、水泡、坏死或淋巴炎" :value="10"/>
                 <el-checkbox label="硬结平均直径mm" :value="11"/>
                 <el-checkbox label="硬结平均直径是否<15mm" :value="12"/>
                 <el-checkbox label="PPD判读结果" :value="13"/>

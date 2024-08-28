@@ -90,7 +90,7 @@
       <el-collapse-item title="有误数据详情：">
         <ul class="scrollable-content" style="max-height: 150px; overflow-y: auto;">
           <li v-for="(value, key) in resultData3" :key="key">
-            <p>第{{ parseInt(key) + parseInt(1) }}条</p>
+            <p>序号：{{ parseInt(key)}}</p>
             <p v-html="formatValue(value)"></p>
           </li>
         </ul>
@@ -217,7 +217,7 @@ const submitFormSuccess = (response: any) => {
   const data = response.data
 
   isComplete.value = true
-  resultData1.value = '导入摸底人员成功数量：' + data.createSpecification.length + '条。'
+  resultData1.value = '导入人员成功数量：' + data.createSpecification.length + '条。'
   resultData5.value = '导入重复人员成功数量：' + data.repeateSpecification.length + '条。'
   resultData2.value = '导入失败数量：' + Object.keys(data.failureSpecification).length + '条。'
   resultData3.value = data.failureSpecification

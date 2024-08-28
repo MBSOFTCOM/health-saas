@@ -7,6 +7,7 @@ public interface ErrorCodeConstants{
 
     // ========== 摸底  ==========
     ErrorCode SCREEN_PERSON_NOT_EXISTS = new ErrorCode(10001, "患者不存在");
+    ErrorCode SCREEN_PERSON_IMPORT_ORDER_NOT_NUMBER = new ErrorCode(100010, "excel中的序号必须全部是大于0的正整数");
 
     ErrorCode IDNUM_ESITS = new ErrorCode(10002, "身份证号重复！");
 

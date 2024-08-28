@@ -4,7 +4,7 @@
     class="main relative h-[100%] lt-xl:bg-[var(--login-bg-color)] lt-md:px-10px lt-sm:px-10px lt-xl:px-10px"
   >
     <div class="header">
-      <span>慢病管理系统</span>
+      <span>校园筛查管理系统</span>
     </div>
     <div>
       <div class="content">

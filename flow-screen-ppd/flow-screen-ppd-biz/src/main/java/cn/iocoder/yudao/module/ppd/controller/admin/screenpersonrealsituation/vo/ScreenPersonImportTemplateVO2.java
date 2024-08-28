@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 
 /**
@@ -23,6 +22,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Accessors(chain = false) // 设置 chain = false，避免用户导入有问题
 public class ScreenPersonImportTemplateVO2 {
+
+    @ExcelProperty("序号")
+    private String order;
 
     @ExcelProperty("姓名")
     private String name;

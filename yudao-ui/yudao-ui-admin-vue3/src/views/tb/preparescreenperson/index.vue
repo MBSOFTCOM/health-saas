@@ -357,9 +357,9 @@
         </template>
       </el-table-column>
       <el-table-column label="筛查点" align="center" prop="screenPoint" width="120"/>
-      <el-table-column label="筛查时间" align="center" width="180">
+      <el-table-column label="筛查时间" align="center" width="240">
         <template #default="scope">
-          {{ new Date(scope.row.screenStartTime).toLocaleDateString() }}-{{ new Date(scope.row.screenEndTime).toLocaleDateString() }}
+          {{ new Date(scope.row.screenStartTime).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }) }}-{{ new Date(scope.row.screenEndTime).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }) }}
         </template>
       </el-table-column>
       <el-table-column label="筛查编号" align="center" prop="screenId" width="190"/>
