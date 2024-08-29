@@ -237,6 +237,9 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
                                                        Integer screenType, LocalDateTime screenStartTime,
                                                        LocalDateTime screenEndTime,
                                                        Long deptId) {
+        if (list==null || list.isEmpty()){
+            throw exception(EXCEL_EMPTY);
+        }
         // 初始化变量
         List<ScreenPersonDO> batchInsert = new ArrayList<>();
         List<ScreenPersonDO> batchUpdate = new ArrayList<>();
@@ -269,6 +272,9 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         // 遍历列表，根据 idNum 的出现次数将数据放入不同的列表
         for (ScreenPersonImportVO obj : filteredList) {
             String idNum = obj.getIdNum();
+            if (idNum==null || idNum.isEmpty()){
+                uniqueList.add(obj);
+            }
             if (idNumCountMap.get(idNum) > 1) {
                 // 这是重复数据，放入重复列表
                 duplicateList.add(obj);
@@ -665,13 +671,13 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
     char genderChar = obj.getIdNum().charAt(obj.getIdNum().length() - 2);
     obj.setSex((genderChar - '0') % 2 == 0 ? 1 : 0);
     // 判断是否插入或更新
-    Long id = screenPersonMapper.isNullByIdNumYear(obj.getIdNum(), year, screenType);
+    Long id = screenPersonMapper.isNullByIdNumYearDeptId(obj.getIdNum(), year, screenType,obj.getDeptId());
     if (id == null && obj.getIdNum() != null) {
         batchInsert.add(BeanUtils.toBean(obj, ScreenPersonDO.class));
         createSpecification.add("");
     } else {
         batchUpdate.add(BeanUtils.toBean(obj, ScreenPersonDO.class));
-        failureSpecification.put(failureSpecification.size(), "该摸底人员已存在,数据已更新！");
+        failureSpecification.put(failureSpecification.size(), "该人员已存在,数据已更新！");
     }
 }
 
@@ -770,7 +776,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             createRepeatSpecification.add("");
         } else {
             batchUpdate2.add(BeanUtils.toBean(obj, ScreenRepeatPersonDO.class));
-            failureSpecification.put(failureSpecification.size(), "该摸底人员已存在,数据已更新！");
+            failureSpecification.put(failureSpecification.size(), "该人员已存在,数据已更新！");
         }
     }
 

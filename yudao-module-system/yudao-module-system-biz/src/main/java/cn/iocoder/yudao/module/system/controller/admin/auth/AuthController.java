@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.iocoder.yudao.framework.common.enums.CommonStatusEnum;
 import cn.iocoder.yudao.framework.common.enums.UserTypeEnum;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
+import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.security.config.SecurityProperties;
 import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.system.controller.admin.auth.vo.*;
@@ -67,6 +68,16 @@ public class AuthController {
     @Operation(summary = "使用账号密码登录")
     public CommonResult<AuthLoginRespVO> login(@RequestBody @Valid AuthLoginReqVO reqVO) {
         return success(authService.login(reqVO));
+    }
+    @PostMapping("/wx/login")
+    @PermitAll
+    @Operation(summary = "使用微信登录小程序")
+    public CommonResult<AuthLoginRespVO> wxLogin() {
+        AuthLoginWxReqVO reqVO=new AuthLoginWxReqVO();
+        reqVO.setUsername("wxloginUser");
+        reqVO.setPassword("wxFlow123");
+        AuthLoginReqVO authLoginReqVO = BeanUtils.toBean(reqVO, AuthLoginReqVO.class);
+        return success(authService.wxLogin(authLoginReqVO));
     }
 
     @PostMapping("/logout")

@@ -110,6 +110,15 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     }
 
     @Override
+    public AuthLoginRespVO wxLogin(AuthLoginReqVO reqVO) {
+        // 使用账号密码，进行登录
+        AdminUserDO user = authenticate(reqVO.getUsername(), reqVO.getPassword());
+
+        // 创建 Token 令牌，记录登录日志
+        return createTokenAfterLoginWxSuccess(user.getId(), reqVO.getUsername(), LoginLogTypeEnum.LOGIN_USERNAME);
+    }
+
+    @Override
     public void sendSmsCode(AuthSmsSendReqVO reqVO) {
         // 登录场景，验证是否存在
         if (userService.getUserByMobile(reqVO.getMobile()) == null) {
@@ -197,6 +206,15 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         // 创建访问令牌
         OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.createAccessToken(userId, getUserType().getValue(),
                 OAuth2ClientConstants.CLIENT_ID_DEFAULT, null);
+        // 构建返回结果
+        return AuthConvert.INSTANCE.convert(accessTokenDO);
+    }
+    private AuthLoginRespVO createTokenAfterLoginWxSuccess(Long userId, String username, LoginLogTypeEnum logType) {
+        // 插入登陆日志
+        createLoginLog(userId, username, logType, LoginResultEnum.SUCCESS);
+        // 创建访问令牌
+        OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.createAccessToken(userId, getUserType().getValue(),
+                OAuth2ClientConstants.CLIENT_ID_WX, null);
         // 构建返回结果
         return AuthConvert.INSTANCE.convert(accessTokenDO);
     }

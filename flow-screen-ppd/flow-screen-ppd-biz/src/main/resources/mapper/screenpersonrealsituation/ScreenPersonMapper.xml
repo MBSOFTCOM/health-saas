@@ -393,5 +393,10 @@
           AND tsp.year = #{year}
           AND tsp.deleted = 0
     </select>
+    <select id="isNullByIdNumYearDeptId" resultType="java.lang.Long">
+        SELECT id
+        FROM tb_screen_person
+        WHERE id_num = #{idNum} AND year = #{year} AND screen_type = #{screenType} AND deptId=#{deptId} AND deleted = 0
+    </select>
 
 </mapper>

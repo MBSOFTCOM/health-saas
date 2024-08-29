@@ -1,7 +1,6 @@
 package cn.iocoder.yudao.module.ppd.dal.mysql.screenpersonrealsituation;
 
 
-import cn.hutool.core.util.ObjectUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
 import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
@@ -11,7 +10,6 @@ import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -114,6 +112,13 @@ public interface ScreenPersonMapper extends BaseMapperX<ScreenPersonDO> {
     Long isNullByIdNumYear(@Param("idNum") String idNum,
                            @Param("year") Integer year,
                            @Param("screenType") Integer screenType);
+    /**
+     * 根据 身份证号和年份 查id，判断某机构中摸底表中是否有这个患者
+     * @return Long id
+     */
+    Long isNullByIdNumYearDeptId(@Param("idNum") String idNum,
+                           @Param("year") Integer year,
+                           @Param("screenType") Integer screenType,@Param("deptId") Long deptId);
 
     /**
      *  根据患者id，获取采集组数据
