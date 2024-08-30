@@ -409,25 +409,25 @@
             resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO">
         select *
         from tb_screen_ppd
-        where outcome is not null and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY) and id_num=#{idNum} and screen_type=#{screenType}
+        where outcome is not null and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY) and id_num=#{idNum} and screen_type=#{screenType} and deleted=0
         <if test="screenOrder!=null"> and screen_order=#{screenOrder}</if>
         order by id desc
         limit 1
     </select>
     <select id="selectCtDetailNotice"
             resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screencomputedtomography.ScreenComputedTomographyDO">
-        select id, computed_tomography_code computedTomographyCode, outcome, remark,create_time createTime
+        select id, computed_tomography_code computedTomographyCode, outcome, remark,create_time createTime,screen_order screenOrder
         from tb_screen_computed_tomography
-        where outcome is not null and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY) and id_num=#{idNum} and screen_type=#{screenType}
+        where outcome is not null and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY) and id_num=#{idNum} and screen_type=#{screenType} and deleted=0
         <if test="screenOrder!=null"> and screen_order=#{screenOrder}</if>
         order by id desc
         limit 1
     </select>
     <select id="selectDrDetailNotice"
             resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO">
-        select id, chest_radiograph_code chestRadiographCode, outcome, remark,create_time createTime
+        select id, chest_radiograph_code chestRadiographCode, outcome, remark,create_time createTime,screen_order screenOrder
         from tb_screen_chest_radiograph
-        where outcome is not null and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY) and id_num=#{idNum} and screen_type=#{screenType}
+        where outcome is not null and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY) and id_num=#{idNum} and screen_type=#{screenType} and deleted=0
         <if test="screenOrder!=null"> and screen_order=#{screenOrder}</if>
         order by id desc
         limit 1
@@ -436,7 +436,7 @@
             resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO">
         select id,screen_order screenOrder,create_time createTime
         from tb_screen_collect
-        where outcome is not null and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY) and id_num=#{idNum} and screen_type=#{screenType}
+        where outcome is not null and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY) and id_num=#{idNum} and screen_type=#{screenType} and deleted=0
         <if test="screenOrder!=null"> and screen_order=#{screenOrder}</if>
         order by id desc
         limit 1

@@ -1453,6 +1453,14 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             ppdUpdateNotice.setPpdDetail(BeanUtils.toBean(ppdDO, PpdDetailRespVO.class));
             ppdUpdateNotice.setNoticeMsg(PPD_UPDATE_NOTICE.getValue());
             noticeRespVO.setPpdUpdateNotice(ppdUpdateNotice);
+            // dr筛查通知
+            ScreenChestRadiographDO chestRadiographDO = getDrDetailNotice(idNum, curDate, screenType, ppdDO.getScreenOrder());
+            if (BeanUtil.isEmpty(chestRadiographDO) || chestRadiographDO.getScreenOrder()<ppdDO.getScreenOrder()){
+                NoticeBase drNoticeBase = new NoticeBase();
+                drNoticeBase.setDate(ppdDO.getCreateTime().format(fmt));
+                drNoticeBase.setNoticeMsg(DR_NOTICE.getValue());
+                noticeRespVO.setDrNotice(drNoticeBase);
+            }
         }
 
 //        ct结果更新通知
