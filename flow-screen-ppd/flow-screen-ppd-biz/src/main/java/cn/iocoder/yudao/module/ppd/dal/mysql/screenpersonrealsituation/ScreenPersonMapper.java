@@ -97,6 +97,13 @@ public interface ScreenPersonMapper extends BaseMapperX<ScreenPersonDO> {
         return selectPage(reqVO, wrapper);
     }
 
+    /**
+     * 根据监护人手机号查询自己孩子的相关信息,默认为新生筛查
+     * @param tel 手机号 string
+     * @param screenType 筛查类型
+     * @return StudentInfoReqVO
+     */
+    List<StudentInfo> selectStudentByGuardianTel(String tel,Integer screenType);
 
 
     /**

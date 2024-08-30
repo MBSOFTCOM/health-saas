@@ -1359,5 +1359,15 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         }
     }
 
-
+    @Override
+    public List<StudentInfo> getStudentByGuardianTel(String tel, Integer screenType) {
+        if (screenType==null){
+            screenType=2;
+        }
+        List<StudentInfo> studentInfoReqVOS = screenPersonMapper.selectStudentByGuardianTel(tel, screenType);
+        List<StudentInfo> list= studentInfoReqVOS.stream().collect(Collectors.groupingBy(StudentInfo::getIdcard)).values()
+                .stream().flatMap(e-> Arrays.asList(e.stream().sorted(Comparator.comparing(StudentInfo::getYear).reversed()).findFirst().get())
+                        .stream()).collect(Collectors.toList());
+        return list;
+    }
 }

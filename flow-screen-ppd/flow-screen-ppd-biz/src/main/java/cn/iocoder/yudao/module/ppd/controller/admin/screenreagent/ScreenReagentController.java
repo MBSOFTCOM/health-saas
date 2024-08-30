@@ -7,6 +7,8 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo.ScreenConsumePageReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.StudentInfo;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.StudentInfoReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenreagent.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenconsume.ScreenConsumeDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenreagent.ScreenReagentDO;
@@ -26,13 +28,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
-
+import static cn.iocoder.yudao.framework.common.pojo.CommonResult.successMsg;
 
 
 @Tag(name = "管理后台 - 试剂")
@@ -166,7 +167,15 @@ public class ScreenReagentController {
     }
     @PostMapping("/postObj")
     public Object post(Object o){
-        ScreenReagentPageReqVO pageReqVO = BeanUtils.toBean(o, ScreenReagentPageReqVO.class);
-        return screenReagentService.getUsableReagent(pageReqVO);
+        List<StudentInfo> list=new ArrayList<>();
+        list.add(new StudentInfo(1L,"小刘","17856","93000001","宜春","初一二班","2023"));
+        list.add(new StudentInfo(2L,"小刘","17856","93000001","宜春","初二二班","2024"));
+        list.add(new StudentInfo(3L,"王五","17856","93000002","宜春","二班","2025"));
+        list.add(new StudentInfo(3L,"王五","17856","93000002","宜春","二班","2024"));
+        list.add(new StudentInfo(4L,"小刘","17856","93000001","宜春","初三二班","2025"));
+        List<StudentInfo> list1= list.stream().collect(Collectors.groupingBy(StudentInfoReqVO::getIdcard)).values()
+                .stream().flatMap(e-> Arrays.asList(e.stream().sorted(Comparator.comparing(StudentInfo::getYear).reversed()).findFirst().get())
+                        .stream()).collect(Collectors.toList());
+        return successMsg(list1);
     }
 }

@@ -151,4 +151,12 @@ public interface ScreenPersonService {
      * 统计表导出体检表
      */
     void exportScreenPersonArchive2(ScreenPersonStatisticsReqVO reqVO, HttpServletRequest request, HttpServletResponse response);
+
+    /**
+     * 根据监护人手机号查询自己孩子的相关信息,默认为新生筛查
+     * @param tel 手机号 string
+     * @param screenType 筛查类型
+     * @return StudentInfoReqVO
+     */
+    List<StudentInfo> getStudentByGuardianTel(String tel,Integer screenType);
 }

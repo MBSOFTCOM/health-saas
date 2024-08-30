@@ -67,6 +67,13 @@ public class CommonResult<T> implements Serializable {
         result.msg = "";
         return result;
     }
+    public static <T> CommonResult<T> successMsg(T data) {
+        CommonResult<T> result = new CommonResult<>();
+        result.code = GlobalErrorCodeConstants.SUCCESS.getCode();
+        result.data = data;
+        result.msg = "success";
+        return result;
+    }
 
     public static boolean isSuccess(Integer code) {
         return Objects.equals(code, GlobalErrorCodeConstants.SUCCESS.getCode());

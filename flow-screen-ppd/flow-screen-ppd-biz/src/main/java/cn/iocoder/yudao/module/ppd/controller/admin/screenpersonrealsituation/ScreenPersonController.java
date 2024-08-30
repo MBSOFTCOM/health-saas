@@ -24,6 +24,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -41,6 +42,7 @@ import java.util.Map;
 import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
+import static cn.iocoder.yudao.framework.common.pojo.CommonResult.successMsg;
 import static cn.iocoder.yudao.module.infra.enums.ErrorCodeConstants.FILE_IS_EMPTY;
 
 
@@ -371,7 +373,6 @@ public class ScreenPersonController {
 
     }
 
-
     @GetMapping("/statistics-export")
     @Operation(summary = "工作进展报告--统计表--导出表格")
     @ApiAccessLog(operateType = EXPORT)
@@ -379,7 +380,6 @@ public class ScreenPersonController {
                                         HttpServletResponse response) {
         screenPersonService.exportStatistics(reqVO, response);
     }
-
 
     @GetMapping("/archives-export")
     @Operation(summary = "工作进展报告--统计表--导出知情同意书")
@@ -389,8 +389,6 @@ public class ScreenPersonController {
         screenPersonService.exportScreenPersonArchive(reqVO, request, response);
     }
 
-
-
     @GetMapping("/archives-export2")
     @Operation(summary = "工作进展报告--统计表--导出档案")
     @ApiAccessLog(operateType = EXPORT)
@@ -398,5 +396,12 @@ public class ScreenPersonController {
                                           HttpServletRequest request, HttpServletResponse response) throws IOException {
         System.out.println(reqVO);
         screenPersonService.exportScreenPersonArchive2(reqVO, request, response);
+    }
+    @PostMapping("/student/list")
+    @Operation(summary = "小程序-获取学生信息")
+    @PreAuthorize("@ss.hasPermission('tb:screen-person:student-query')")
+    public CommonResult<List<StudentInfoReqVO>> getStudentInfo(@RequestBody @NotEmpty  @RequestParam("tel")String tel){
+        List<StudentInfo> studentInfoReqVOList = screenPersonService.getStudentByGuardianTel(tel, null);
+        return successMsg(BeanUtils.toBean(studentInfoReqVOList, StudentInfoReqVO.class));
     }
 }

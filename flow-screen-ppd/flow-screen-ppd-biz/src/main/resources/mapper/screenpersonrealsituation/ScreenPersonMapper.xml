@@ -398,5 +398,12 @@
         FROM tb_screen_person
         WHERE id_num = #{idNum} AND year = #{year} AND screen_type = #{screenType} AND deptId=#{deptId} AND deleted = 0
     </select>
+    <select id="selectStudentByGuardianTel"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.StudentInfo">
+        select id,name,tel phone,school_or_temple schoolName,classroom calssName,id_num idcard,year
+        from tb_screen_person
+        where deleted=0 and guardian_tel=#{tel} and screen_type=#{screenType}
+
+    </select>
 
 </mapper>
