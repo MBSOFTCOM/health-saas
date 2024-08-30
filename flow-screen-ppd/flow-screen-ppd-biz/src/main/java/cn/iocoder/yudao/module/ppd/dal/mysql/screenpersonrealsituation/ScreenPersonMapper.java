@@ -5,11 +5,15 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
 import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screencomputedtomography.ScreenComputedTomographyDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -288,4 +292,32 @@ public interface ScreenPersonMapper extends BaseMapperX<ScreenPersonDO> {
      * @return
      */
     StatisticExportVO getByPatientInfo(PatientInfoReqVO obj);
+
+    /**
+     * 获取某筛查人员的ppd结果通知
+     * @param idNum 身份证号
+     * @param curDate 当前时间
+     * @param screenType 筛查类型
+     * @param screenOrder 筛查次序
+     * @return ScreenPpdDO ppd详情
+     */
+    ScreenPpdDO selectPpdDetailNotice(String idNum, Date curDate,Integer screenType,Integer screenOrder);
+    /**
+     * 获取某筛查人员的ct结果通知
+     * @param idNum 身份证号
+     * @param curDate 当前时间
+     * @param screenType 筛查类型
+     * @param screenOrder 筛查次序
+     * @return ScreenPpdDO ppd详情
+     */
+    ScreenComputedTomographyDO selectCtDetailNotice(String idNum, Date curDate, Integer screenType, Integer screenOrder);
+    /**
+     * 获取某筛查人员的dr结果通知
+     * @param idNum 身份证号
+     * @param curDate 当前时间
+     * @param screenType 筛查类型
+     * @param screenOrder 筛查次序
+     * @return ScreenPpdDO ppd详情
+     */
+    ScreenChestRadiographDO selectDrDetailNotice(String idNum, Date curDate, Integer screenType, Integer screenOrder);
 }

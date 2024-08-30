@@ -9,6 +9,7 @@ import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
 import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.nitoce.NoticeRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screendistrict.ScreenDistrictMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenpoint.ScreenPointMapper;
@@ -403,5 +404,12 @@ public class ScreenPersonController {
     public CommonResult<List<StudentInfoReqVO>> getStudentInfo(@RequestBody @NotEmpty  @RequestParam("tel")String tel){
         List<StudentInfo> studentInfoReqVOList = screenPersonService.getStudentByGuardianTel(tel, null);
         return successMsg(BeanUtils.toBean(studentInfoReqVOList, StudentInfoReqVO.class));
+    }
+    @PostMapping("/student/notice")
+    @Operation(summary = "小程序-获取学生检查通知")
+    @PreAuthorize("@ss.hasPermission('tb:screen-person:student-query')")
+    public CommonResult<NoticeRespVO> getNotice(@RequestBody @NotEmpty @RequestParam("idcard") String idcard){
+        NoticeRespVO notice = screenPersonService.getStudentNoticeByIdNum(idcard, null, null);
+        return success(notice);
     }
 }

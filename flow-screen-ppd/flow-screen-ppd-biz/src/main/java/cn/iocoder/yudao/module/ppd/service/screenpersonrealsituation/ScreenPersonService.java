@@ -2,17 +2,21 @@ package cn.iocoder.yudao.module.ppd.service.screenpersonrealsituation;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.nitoce.NoticeRespVO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screencomputedtomography.ScreenComputedTomographyDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenrepeatperson.ScreenRepeatPersonDO;
 import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -159,4 +163,40 @@ public interface ScreenPersonService {
      * @return StudentInfoReqVO
      */
     List<StudentInfo> getStudentByGuardianTel(String tel,Integer screenType);
+
+    /**
+     * 获取某筛查人员的ppd结果通知
+     * @param idNum 身份证号
+     * @param curDate 当前时间
+     * @param screenType 筛查类型
+     * @param screenOrder 筛查次序
+     * @return ScreenPpdDO ppd详情
+     */
+    ScreenPpdDO getPpdDetailNotice(String idNum, Date curDate,Integer screenType,Integer screenOrder);
+    /**
+     * 获取某筛查人员的ppd结果通知
+     * @param idNum 身份证号
+     * @param curDate 当前时间
+     * @param screenType 筛查类型
+     * @param screenOrder 筛查次序
+     * @return ScreenPpdDO ppd详情
+     */
+    ScreenComputedTomographyDO getCtDetailNotice(String idNum, Date curDate, Integer screenType, Integer screenOrder);
+    /**
+     * 获取某筛查人员的ppd结果通知
+     * @param idNum 身份证号
+     * @param curDate 当前时间
+     * @param screenType 筛查类型
+     * @param screenOrder 筛查次序
+     * @return ScreenPpdDO ppd详情
+     */
+    ScreenChestRadiographDO getDrDetailNotice(String idNum, Date curDate, Integer screenType, Integer screenOrder);
+    /**
+     * 获取某筛查人员的ppd结果通知
+     * @param idNum 身份证号
+     * @param curDate 当前时间
+     * @param screenType 筛查类型
+     * @return ScreenPpdDO ppd详情
+     */
+    NoticeRespVO getStudentNoticeByIdNum( String idNum, Date curDate,Integer screenType);
 }

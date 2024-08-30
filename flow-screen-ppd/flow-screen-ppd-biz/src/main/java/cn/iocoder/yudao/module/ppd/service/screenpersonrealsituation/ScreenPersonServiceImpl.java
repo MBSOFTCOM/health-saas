@@ -14,9 +14,12 @@ import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.infra.api.file.FileApi;
 import cn.iocoder.yudao.module.ppd.controller.admin.screendiagnosis.vo.TBHealthScreening;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.nitoce.*;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencomputedtomography.ScreenComputedTomographyDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenimages.ScreenImagesDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenrepeatperson.ScreenRepeatPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screencomputedtomography.ScreenComputedTomographyMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screendistrict.ScreenDistrictMapper;
@@ -53,6 +56,7 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -64,6 +68,7 @@ import static cn.iocoder.yudao.module.cd.enums.ErrorCodeConstants.*;
 import static cn.iocoder.yudao.module.cd.enums.MatchRules.ID_NUMBER;
 import static cn.iocoder.yudao.module.cd.enums.MatchRules.TEL;
 import static cn.iocoder.yudao.module.cd.enums.MatchRulesMsg.*;
+import static cn.iocoder.yudao.module.ppd.service.screenpersonrealsituation.NoticeMsg.*;
 
 
 /**
@@ -1369,5 +1374,84 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
                 .stream().flatMap(e-> Arrays.asList(e.stream().sorted(Comparator.comparing(StudentInfo::getYear).reversed()).findFirst().get())
                         .stream()).collect(Collectors.toList());
         return list;
+    }
+
+    @Override
+    public ScreenPpdDO getPpdDetailNotice(String idNum, Date curDate,Integer screenType,Integer screenOrder) {
+        if (curDate==null){
+            // 获取当前时间
+            curDate = new Date();
+        }
+        if (screenType==null){
+            screenType=2;
+        }
+        ScreenPpdDO screenPpdDO = screenPersonMapper.selectPpdDetailNotice(idNum,curDate,screenType,screenOrder);
+        return screenPpdDO;
+    }
+
+    @Override
+    public ScreenComputedTomographyDO getCtDetailNotice(String idNum, Date curDate, Integer screenType, Integer screenOrder) {
+        if (curDate==null){
+            // 获取当前时间
+            curDate = new Date();
+        }
+        if (screenType==null){
+            screenType=2;
+        }
+        ScreenComputedTomographyDO computedTomographyDO = screenPersonMapper.selectCtDetailNotice(idNum, curDate, screenType, screenOrder);
+        return computedTomographyDO;
+    }
+
+    @Override
+    public ScreenChestRadiographDO getDrDetailNotice(String idNum, Date curDate, Integer screenType, Integer screenOrder) {
+        if (curDate==null){
+            // 获取当前时间
+            curDate = new Date();
+        }
+        if (screenType==null){
+            screenType=2;
+        }
+        ScreenChestRadiographDO chestRadiographDO = screenPersonMapper.selectDrDetailNotice(idNum, curDate, screenType, screenOrder);
+        return chestRadiographDO;
+    }
+
+    @Override
+    public NoticeRespVO getStudentNoticeByIdNum(String idNum, Date curDate, Integer screenType) {
+        NoticeRespVO noticeRespVO = new NoticeRespVO();
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // ppd更新通知
+        ScreenPpdDO ppdDO = getPpdDetailNotice(idNum, curDate,screenType,null);
+        if (!BeanUtil.isEmpty(ppdDO)){
+            PpdUpdateNotice ppdUpdateNotice = new PpdUpdateNotice();
+            ppdUpdateNotice.setDate(ppdDO.getCreateTime().format(fmt));
+            ppdUpdateNotice.setPpdDetail(BeanUtils.toBean(ppdDO, PpdDetailRespVO.class));
+            ppdUpdateNotice.setNoticeMsg(PPD_UPDATE_NOTICE.getValue());
+            noticeRespVO.setPpdUpdateNotice(ppdUpdateNotice);
+        }
+
+//        ct结果更新通知
+        ScreenComputedTomographyDO tomographyDO = getCtDetailNotice(idNum, curDate, screenType, null);
+        if (!BeanUtil.isEmpty(tomographyDO)){
+            CtDetailRespVO ctDetailRespVO = BeanUtils.toBean(tomographyDO, CtDetailRespVO.class);
+            CtUpdateNotice ctUpdateNotice = new CtUpdateNotice();
+            ctUpdateNotice.setNoticeMsg(CT_UPDATE_NOTICE.getValue());
+            ctUpdateNotice.setDate(tomographyDO.getCreateTime().format(fmt));
+            ctUpdateNotice.setCtDetailRespVO(ctDetailRespVO);
+            noticeRespVO.setCtUpdateNotice(ctUpdateNotice);
+        }
+        //        dr结果更新通知
+        ScreenChestRadiographDO chestRadiographDO = getDrDetailNotice(idNum, curDate, screenType, null);
+        if (!BeanUtil.isEmpty(chestRadiographDO)){
+            CtDetailRespVO ctDetailRespVO = BeanUtils.toBean(chestRadiographDO, CtDetailRespVO.class);
+            ctDetailRespVO.setComputedTomographyCode(chestRadiographDO.getChestRadiographCode());
+            CtUpdateNotice ctUpdateNotice = new CtUpdateNotice();
+            ctUpdateNotice.setNoticeMsg(DR_UPDATE_NOTICE.getValue());
+            ctUpdateNotice.setDate(chestRadiographDO.getCreateTime().format(fmt));
+            ctUpdateNotice.setCtDetailRespVO(ctDetailRespVO);
+            noticeRespVO.setDrUpdateNotice(ctUpdateNotice);
+        }
+
+
+        return noticeRespVO;
     }
 }
