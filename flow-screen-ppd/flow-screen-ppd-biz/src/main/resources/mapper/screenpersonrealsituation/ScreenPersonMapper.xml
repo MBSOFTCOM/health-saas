@@ -432,6 +432,15 @@
         order by id desc
         limit 1
     </select>
+    <select id="selectPpdNotice"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO">
+        select id,screen_order screenOrder,create_time createTime
+        from tb_screen_collect
+        where outcome is not null and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY) and id_num=#{idNum} and screen_type=#{screenType}
+        <if test="screenOrder!=null"> and screen_order=#{screenOrder}</if>
+        order by id desc
+        limit 1
+    </select>
 
 
 </mapper>

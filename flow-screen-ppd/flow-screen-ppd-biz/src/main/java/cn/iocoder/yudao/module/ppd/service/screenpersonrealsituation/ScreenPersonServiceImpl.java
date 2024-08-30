@@ -16,6 +16,7 @@ import cn.iocoder.yudao.module.ppd.controller.admin.screendiagnosis.vo.TBHealthS
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.nitoce.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencomputedtomography.ScreenComputedTomographyDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenimages.ScreenImagesDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
@@ -1377,6 +1378,19 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
     }
 
     @Override
+    public ScreenCollectDO getPpdNotice(String idNum, Date curDate, Integer screenType, Integer screenOrder) {
+        if (curDate==null){
+            // 获取当前时间
+            curDate = new Date();
+        }
+        if (screenType==null){
+            screenType=2;
+        }
+        ScreenCollectDO screenCollectDO = screenPersonMapper.selectPpdNotice(idNum, curDate, screenType, screenOrder);
+        return screenCollectDO;
+    }
+
+    @Override
     public ScreenPpdDO getPpdDetailNotice(String idNum, Date curDate,Integer screenType,Integer screenOrder) {
         if (curDate==null){
             // 获取当前时间
@@ -1419,6 +1433,18 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
     public NoticeRespVO getStudentNoticeByIdNum(String idNum, Date curDate, Integer screenType) {
         NoticeRespVO noticeRespVO = new NoticeRespVO();
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // ppd筛查通知
+        ScreenCollectDO ppdNotice = getPpdNotice(idNum, curDate, screenType, null);
+        if (!BeanUtil.isEmpty(ppdNotice)){
+            ScreenPpdDO ppdNoticeDO = getPpdDetailNotice(idNum, curDate,screenType,ppdNotice.getScreenOrder());
+            if (!BeanUtil.isEmpty(ppdNotice) && (BeanUtil.isEmpty(ppdNoticeDO) || ppdNoticeDO.getScreenOrder() <ppdNotice.getScreenOrder())){
+                NoticeBase ppdBase = new NoticeBase();
+                ppdBase.setDate(ppdNotice.getCreateTime().format(fmt));
+                ppdBase.setNoticeMsg(PPD_NOTICE.getValue());
+                noticeRespVO.setPpdNotice(ppdBase);
+            }
+        }
+
         // ppd更新通知
         ScreenPpdDO ppdDO = getPpdDetailNotice(idNum, curDate,screenType,null);
         if (!BeanUtil.isEmpty(ppdDO)){

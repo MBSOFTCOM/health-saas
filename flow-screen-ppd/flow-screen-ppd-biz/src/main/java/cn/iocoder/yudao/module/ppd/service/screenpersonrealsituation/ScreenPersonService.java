@@ -4,6 +4,7 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.nitoce.NoticeRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencomputedtomography.ScreenComputedTomographyDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
@@ -164,6 +165,15 @@ public interface ScreenPersonService {
      */
     List<StudentInfo> getStudentByGuardianTel(String tel,Integer screenType);
 
+    /**
+     * 获取某筛查人员的ppd结果通知
+     * @param idNum 身份证号
+     * @param curDate 当前时间
+     * @param screenType 筛查类型
+     * @param screenOrder 筛查次序
+     * @return ScreenCollectDO ppd详情
+     */
+    ScreenCollectDO getPpdNotice(String idNum, Date curDate, Integer screenType, Integer screenOrder);
     /**
      * 获取某筛查人员的ppd结果通知
      * @param idNum 身份证号

@@ -6,6 +6,7 @@ import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
 import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencomputedtomography.ScreenComputedTomographyDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
@@ -293,6 +294,15 @@ public interface ScreenPersonMapper extends BaseMapperX<ScreenPersonDO> {
      */
     StatisticExportVO getByPatientInfo(PatientInfoReqVO obj);
 
+    /**
+     * 获取某筛查人员的ppd结果通知
+     * @param idNum 身份证号
+     * @param curDate 当前时间
+     * @param screenType 筛查类型
+     * @param screenOrder 筛查次序
+     * @return ScreenPpdDO ppd详情
+     */
+    ScreenCollectDO selectPpdNotice(String idNum, Date curDate, Integer screenType, Integer screenOrder);
     /**
      * 获取某筛查人员的ppd结果通知
      * @param idNum 身份证号
