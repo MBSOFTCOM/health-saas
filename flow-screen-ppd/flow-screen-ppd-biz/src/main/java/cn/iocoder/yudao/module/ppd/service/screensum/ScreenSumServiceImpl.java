@@ -73,4 +73,12 @@ public class ScreenSumServiceImpl implements ScreenSumService {
     public Integer countByPersonId(CommonReq req) {
         return screenSumMapper.countByPersonId(req);
     }
+
+    @Override
+    public ScreenSumDO getSumByIdNumLast(String idNum, Integer screenType) {
+        if (screenType==null){
+            screenType=2;
+        }
+        return screenSumMapper.selectSumByIdNumLast(idNum,screenType);
+    }
 }

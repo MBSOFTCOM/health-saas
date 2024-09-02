@@ -6,6 +6,7 @@ import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
 import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenchestradiograph.vo.*;
 import cn.iocoder.yudao.module.ppd.controller.admin.screendiagnosis.vo.TBHealthScreening;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.nitoce.CtDetailRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import org.apache.ibatis.annotations.Mapper;
@@ -69,4 +70,6 @@ public interface ScreenChestRadiographMapper extends BaseMapperX<ScreenChestRadi
      * 同步-ct/dr 分页 条数
      */
     Long getCtDrCount(ScreenChestRadiographPageReqVO reqVO);
+
+    CtDetailRespVO selectCtDetail(Long id);
 }

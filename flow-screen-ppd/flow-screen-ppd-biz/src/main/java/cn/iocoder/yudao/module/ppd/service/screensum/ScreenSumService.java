@@ -53,4 +53,12 @@ public interface ScreenSumService {
     PageResult<ScreenSumDO> getScreenSumPage(ScreenSumPageReqVO pageReqVO);
 
     Integer countByPersonId(CommonReq req);
+
+    /**
+     * 获取最近的体检单
+     * @param idNum 身份证
+     * @param screenType 筛查类型,默认为2
+     * @return ScreenSumDO
+     */
+    ScreenSumDO getSumByIdNumLast(String idNum,Integer screenType);
 }

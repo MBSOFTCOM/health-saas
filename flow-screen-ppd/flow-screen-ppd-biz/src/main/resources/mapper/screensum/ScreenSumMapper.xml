@@ -48,5 +48,13 @@
         from tb_screen_sum
         where id_num=${idNum} and `year`=${year} and screen_type=${screenType}
     </select>
+    <select id="selectSumByIdNumLast"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screensum.ScreenSumDO">
+        select *
+        from tb_screen_sum
+        where id_num=#{idNum} and screen_type=#{screenType}
+        order by id
+        limit 1
+    </select>
 
 </mapper>

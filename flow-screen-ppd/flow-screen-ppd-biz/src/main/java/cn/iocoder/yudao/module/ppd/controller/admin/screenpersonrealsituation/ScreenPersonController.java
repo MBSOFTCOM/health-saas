@@ -9,6 +9,7 @@ import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
 import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.examinationForm.ExaminationFormRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.nitoce.NoticeRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screendistrict.ScreenDistrictMapper;
@@ -411,5 +412,12 @@ public class ScreenPersonController {
     public CommonResult<NoticeRespVO> getNotice(@RequestBody @NotEmpty @RequestParam("idcard") String idcard){
         NoticeRespVO notice = screenPersonService.getStudentNoticeByIdNum(idcard, null, null);
         return successMsg(notice);
+    }
+    @PostMapping("/student/examination-form")
+    @Operation(summary = "小程序-获取学生体检单")
+    @PreAuthorize("@ss.hasPermission('tb:screen-person:student-query')")
+    public CommonResult<ExaminationFormRespVO> getExaminationForm(@RequestBody @NotEmpty @RequestParam("idcard") String idcard){
+        ExaminationFormRespVO examinationForm = screenPersonService.getExaminationForm(idcard, null);
+        return successMsg(examinationForm);
     }
 }

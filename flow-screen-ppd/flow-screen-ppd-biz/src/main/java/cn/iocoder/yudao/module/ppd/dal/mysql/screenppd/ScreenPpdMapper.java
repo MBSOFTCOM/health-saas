@@ -5,6 +5,7 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
 import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
 import cn.iocoder.yudao.module.ppd.controller.admin.screendiagnosis.vo.TBHealthScreening;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.nitoce.PpdDetailRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenppd.vo.ScreenPpdPageReqVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
@@ -56,4 +57,6 @@ public interface ScreenPpdMapper extends BaseMapperX<ScreenPpdDO> {
      * @return ppd筛查记录数据
      */
     TBHealthScreening selectByPersonIdLastTime(@Param("personId") Long personId);
+
+    PpdDetailRespVO selectPpdDetail(Long id);
 }

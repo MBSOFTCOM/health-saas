@@ -61,4 +61,12 @@ public interface ScreenSumMapper extends BaseMapperX<ScreenSumDO> {
      */
     List<ScreenSumDO> selectExists(CommonReq reqVO);
 
+    /**
+     * 根据身份证获取最近的sum记录
+     * @param idNum 身份证
+     * @param screenType 筛查类型,默认为2
+     * @return ScreenSumDO
+     */
+    ScreenSumDO selectSumByIdNumLast(String idNum,Integer screenType);
+
 }

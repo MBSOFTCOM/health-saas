@@ -14,6 +14,7 @@ import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.infra.api.file.FileApi;
 import cn.iocoder.yudao.module.ppd.controller.admin.screendiagnosis.vo.TBHealthScreening;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.examinationForm.ExaminationFormRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.nitoce.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
@@ -22,13 +23,19 @@ import cn.iocoder.yudao.module.ppd.dal.dataobject.screenimages.ScreenImagesDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenrepeatperson.ScreenRepeatPersonDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screensum.ScreenSumDO;
+import cn.iocoder.yudao.module.ppd.dal.mysql.screenchestradiograph.ScreenChestRadiographMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screencomputedtomography.ScreenComputedTomographyMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screendistrict.ScreenDistrictMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenimages.ScreenImagesMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenpersonrealsituation.ScreenPersonMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenpoint.ScreenPointMapper;
+import cn.iocoder.yudao.module.ppd.dal.mysql.screenppd.ScreenPpdMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenrepeatperson.ScreenRepeatPersonMapper;
+import cn.iocoder.yudao.module.ppd.service.screencomputedtomography.ScreenComputedTomographyService;
 import cn.iocoder.yudao.module.ppd.service.screendiagnosis.ScreenDiagnosisService;
+import cn.iocoder.yudao.module.ppd.service.screenppd.ScreenPpdService;
+import cn.iocoder.yudao.module.ppd.service.screensum.ScreenSumService;
 import cn.iocoder.yudao.module.system.api.dict.DictDataApi;
 import cn.iocoder.yudao.module.system.api.dict.dto.DictDataRespDTO;
 import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
@@ -104,7 +111,16 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
     private DeptService deptService;
     @Resource
     private Configuration configuration;
-
+    @Resource
+    private ScreenSumService sumService;
+    @Resource
+    private ScreenPpdMapper screenPpdMapper;
+    @Resource
+    private ScreenPpdService screenPpdService;
+    @Resource
+    private ScreenChestRadiographMapper screenChestRadiographMapper;
+    @Resource
+    private ScreenComputedTomographyService screenComputedTomographyService;
     @Override
     public Long createScreenPerson(ScreenPersonSaveReqVO createReqVO) {
         // 插入
@@ -1494,5 +1510,28 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
 
 
         return noticeRespVO;
+    }
+
+    @Override
+    public ExaminationFormRespVO getExaminationForm(String idNum, Integer screenType) {
+        ScreenSumDO last = sumService.getSumByIdNumLast(idNum, screenType);
+        if (BeanUtil.isEmpty(last)){
+            throw exception(EMPTY);
+        }
+        ExaminationFormRespVO examinationFormRespVO = new ExaminationFormRespVO();
+        if (last.getPpdId()!=null){
+            PpdDetailRespVO screenPpd = screenPpdMapper.selectPpdDetail(last.getPpdId());
+            examinationFormRespVO.setPpdDetail(screenPpd);
+        }
+        if (last.getChestRadiographId()!=null){
+            CtDetailRespVO drDetailRespVO = screenChestRadiographMapper.selectCtDetail(last.getChestRadiographId());
+            examinationFormRespVO.setDrDetail(drDetailRespVO);
+        }
+        if (last.getComputedTomographyId()!=null){
+            ScreenComputedTomographyDO computedTomographyDO = screenComputedTomographyMapper.selectById(last.getComputedTomographyId());
+            CtDetailRespVO ctDetailRespVO = BeanUtils.toBean(computedTomographyDO, CtDetailRespVO.class);
+            examinationFormRespVO.setCtDetail(ctDetailRespVO);
+        }
+        return examinationFormRespVO;
     }
 }

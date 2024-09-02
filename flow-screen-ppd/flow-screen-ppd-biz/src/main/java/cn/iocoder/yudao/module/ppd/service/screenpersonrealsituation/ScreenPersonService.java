@@ -2,6 +2,7 @@ package cn.iocoder.yudao.module.ppd.service.screenpersonrealsituation;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.examinationForm.ExaminationFormRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.nitoce.NoticeRespVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenChestRadiographDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
@@ -209,4 +210,12 @@ public interface ScreenPersonService {
      * @return ScreenPpdDO ppd详情
      */
     NoticeRespVO getStudentNoticeByIdNum( String idNum, Date curDate,Integer screenType);
+
+    /**
+     * 获取体检单
+     * @param idNum 身份证
+     * @param screenType 筛查类型
+     * @return 体检单
+     */
+    ExaminationFormRespVO getExaminationForm(String idNum,Integer screenType);
 }

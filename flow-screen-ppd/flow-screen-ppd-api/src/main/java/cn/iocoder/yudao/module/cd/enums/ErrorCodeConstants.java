@@ -4,7 +4,8 @@ package cn.iocoder.yudao.module.cd.enums;
 import cn.iocoder.yudao.framework.common.exception.ErrorCode;
 
 public interface ErrorCodeConstants{
-    ErrorCode EXCEL_EMPTY=new ErrorCode(30000,"excel中没有数据");
+    ErrorCode EXCEL_EMPTY=new ErrorCode(30001,"excel中没有数据");
+    ErrorCode EMPTY=new ErrorCode(30000,"没有数据");
 
     // ========== 摸底  ==========
     ErrorCode SCREEN_PERSON_NOT_EXISTS = new ErrorCode(10001, "患者不存在");

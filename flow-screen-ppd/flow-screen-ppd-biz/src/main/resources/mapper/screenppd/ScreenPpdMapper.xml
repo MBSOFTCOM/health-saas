@@ -46,4 +46,10 @@
             and sp1.injection=#{injection}
         </if>
     </select>
+    <select id="selectPpdDetail"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.nitoce.PpdDetailRespVO">
+        select *
+        from tb_screen_ppd
+        where id=#{id} and deleted=0
+    </select>
 </mapper>

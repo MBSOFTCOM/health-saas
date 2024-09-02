@@ -149,4 +149,10 @@
             and sc.outcome=#{outcome}
         </if>
     </select>
+    <select id="selectCtDetail"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.nitoce.CtDetailRespVO">
+        select id,outcome,remark,chest_radiograph_code computedTomographyCode
+        from tb_screen_chest_radiograph
+        where id=#{id} and deleted=0
+    </select>
 </mapper>
