@@ -231,6 +231,7 @@
 </template>
 <script setup lang="ts">
 import {ScreenPersonApi} from '@/api/tb/screenpersonrealsituation'
+import {ScreenStaticsHistoryApi} from '@/api/tb/screenstaticshistory'
 import {onMounted, ref, reactive, computed} from 'vue'
 import download from "@/utils/download";
 import * as DeptApi from "@/api/system/dept";
@@ -306,7 +307,6 @@ const open = async (ids: any) => {
   await getDeptList()
   await getDistrictList()
   formLoading.value = false
-
 
 }
 defineExpose({open}) // 提供 open 方法，用于打开弹窗
@@ -406,7 +406,56 @@ const combinedLength = computed(() => calculateLength('select'));
 
 // 计算属性：计算报告数据的总长度
 const combinedReportLength = computed(() => calculateLength('report'));
+/**
+ * 获取历史选项
+ */
+const historyOptions = async () => {
+  const data=await ScreenStaticsHistoryApi.getScreenStaticsHistory()
+  if (data){
+    formData.value=data
+  }
 
+  setFormatter()
+}
+const setFormatter = () => {
+  // 判断school是否为空，不为空则赋值selectSchool为1
+  if(formData.value.school){
+    formData.value.selectSchool=[1]
+  }else {
+    formData.value.selectSchool=[0]
+  }
+  if(formData.value.hospital){
+    formData.value.selectHospital=[1]
+  }else {
+    formData.value.selectHospital=[0]
+  }
+  if(formData.value.district){
+    formData.value.selectDistrict=[1]
+  }else {
+    formData.value.selectDistrict=[0]
+  }
+  if(formData.value.contact){
+    formData.value.selectContact=[1]
+  }else {
+    formData.value.selectContact=[0]
+  }
+  if(formData.value.contactPhone){
+    formData.value.selectContactPhone=[1]
+  }else {
+    formData.value.selectContactPhone=[0]
+  }
+  if(formData.value.checkPeople){
+    formData.value.selectCheckPeople=[1]
+  }else {
+    formData.value.selectCheckPeople=[0]
+  }
+  if(formData.value.injectionPeople){
+    formData.value.selectInjectionPeople=[1]
+  }else {
+    formData.value.selectInjectionPeople=[0]
+  }
+
+}
 // 重置表单
 const resetFormData = () => {
   formData.value = {

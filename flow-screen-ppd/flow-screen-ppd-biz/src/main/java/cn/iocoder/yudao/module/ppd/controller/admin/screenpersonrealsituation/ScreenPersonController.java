@@ -11,10 +11,12 @@ import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.*;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.examinationForm.ExaminationFormRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.nitoce.NoticeRespVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenstaticshistory.vo.ScreenStaticsHistorySaveReqVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screendistrict.ScreenDistrictMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenpoint.ScreenPointMapper;
 import cn.iocoder.yudao.module.ppd.service.screenpersonrealsituation.ScreenPersonService;
+import cn.iocoder.yudao.module.ppd.service.screenstaticshistory.ScreenStaticsHistoryService;
 import cn.iocoder.yudao.module.ppd.utils.CustomSheetWriteHandler;
 import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import cn.iocoder.yudao.module.system.service.dept.DeptService;
@@ -66,6 +68,8 @@ public class ScreenPersonController {
 
     @Resource
     private DeptService deptService;
+    @Resource
+    private ScreenStaticsHistoryService screenStaticsHistoryService;
 
 
     @PostMapping("/create")
@@ -380,7 +384,8 @@ public class ScreenPersonController {
     @ApiAccessLog(operateType = EXPORT)
     public void exportScreenPersonExcel(@Valid ScreenPersonStatisticsReqVO reqVO,
                                         HttpServletResponse response) {
-        screenPersonService.exportStatistics(reqVO, response);
+        screenStaticsHistoryService.recoverScreenStaticsHistory(BeanUtils.toBean(reqVO, ScreenStaticsHistorySaveReqVO.class));
+//        screenPersonService.exportStatistics(reqVO, response);
     }
 
     @GetMapping("/archives-export")
