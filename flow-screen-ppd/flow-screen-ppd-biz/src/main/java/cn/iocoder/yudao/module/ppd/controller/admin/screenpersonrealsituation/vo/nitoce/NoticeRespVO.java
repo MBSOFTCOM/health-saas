@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NoticeRespVO {
     private NoticeBase drNotice;
+    private NoticeBase ctNotice;
     private NoticeBase ppdNotice;
     private CtUpdateNotice ctUpdateNotice;
     private CtUpdateNotice drUpdateNotice;
