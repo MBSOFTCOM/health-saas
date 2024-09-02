@@ -74,7 +74,7 @@
                     "description" : "支付宝原生扫码组件，包体积仅0.7MB，15分钟即可完成接入。同时，mPaaS提供「扫码分析」大盘",
                     "platforms" : "Android,iOS",
                     "url" : "https://ext.dcloud.net.cn/plugin?id=2636",
-                    "android_package_name" : "com.flow.text",
+                    "android_package_name" : "com.flowtb.ppd",
                     "ios_bundle_id" : "",
                     "isCloud" : true,
                     "bought" : 1,
@@ -98,20 +98,6 @@
                     }
                 }
             },
-            "YY-TomatoOCR" : {
-                "__plugin_info__" : {
-                    "name" : "本地离线文字、身份证识别TomatoOCR - [试用版，仅用于自定义调试基座]",
-                    "description" : "本地离线文字识别，身份证识别，支持Android系统和IOS系统",
-                    "platforms" : "Android,iOS",
-                    "url" : "https://ext.dcloud.net.cn/plugin?id=7907",
-                    "android_package_name" : "",
-                    "ios_bundle_id" : "",
-                    "isCloud" : true,
-                    "bought" : 0,
-                    "pid" : "7907",
-                    "parameters" : {}
-                }
-            },
             "Ba-ImageEditor" : {
                 "__plugin_info__" : {
                     "name" : "图片编辑插件（涂鸦、贴图、滤镜、裁剪、美颜、文字） Ba-ImageEditor",
@@ -123,6 +109,20 @@
                     "isCloud" : true,
                     "bought" : 1,
                     "pid" : "9095",
+                    "parameters" : {}
+                }
+            },
+            "YY-TomatoOCR" : {
+                "__plugin_info__" : {
+                    "name" : "本地离线文字、身份证识别TomatoOCR",
+                    "description" : "本地离线文字识别，身份证识别，支持Android系统和IOS系统",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=7907",
+                    "android_package_name" : "com.flowtb.ppd",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "7907",
                     "parameters" : {}
                 }
             }

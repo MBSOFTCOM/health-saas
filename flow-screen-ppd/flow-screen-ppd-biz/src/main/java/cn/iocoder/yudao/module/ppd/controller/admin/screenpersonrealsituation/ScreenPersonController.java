@@ -385,7 +385,7 @@ public class ScreenPersonController {
     public void exportScreenPersonExcel(@Valid ScreenPersonStatisticsReqVO reqVO,
                                         HttpServletResponse response) {
         screenStaticsHistoryService.recoverScreenStaticsHistory(BeanUtils.toBean(reqVO, ScreenStaticsHistorySaveReqVO.class));
-//        screenPersonService.exportStatistics(reqVO, response);
+        screenPersonService.exportStatistics(reqVO, response);
     }
 
     @GetMapping("/archives-export")
