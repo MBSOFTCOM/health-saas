@@ -1491,8 +1491,8 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
         }
         //        dr结果更新通知
         ScreenChestRadiographDO chestRadiographDO = getDrDetailNotice(idNum, curDate, screenType, null);
-        ScreenComputedTomographyDO tomographyDOOrder = getCtDetailNotice(idNum, curDate, screenType, chestRadiographDO.getScreenOrder());
         if (!BeanUtil.isEmpty(chestRadiographDO)){
+            ScreenComputedTomographyDO tomographyDOOrder = getCtDetailNotice(idNum, curDate, screenType, chestRadiographDO.getScreenOrder());
             CtDetailRespVO ctDetailRespVO = BeanUtils.toBean(chestRadiographDO, CtDetailRespVO.class);
             ctDetailRespVO.setComputedTomographyCode(chestRadiographDO.getChestRadiographCode());
             CtUpdateNotice ctUpdateNotice = new CtUpdateNotice();
@@ -1502,7 +1502,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             noticeRespVO.setDrUpdateNotice(ctUpdateNotice);
             if (BeanUtil.isEmpty(tomographyDOOrder) || (!BeanUtil.isEmpty(tomographyDOOrder) && tomographyDOOrder.getScreenOrder() < chestRadiographDO.getScreenOrder())){
                 NoticeBase ctNotice = new NoticeBase();
-                ctNotice.setDate(ppdDO.getCreateTime().format(fmt));
+                ctNotice.setDate(chestRadiographDO.getCreateTime().format(fmt));
                 ctNotice.setNoticeMsg(CT_NOTICE.getValue());
                 noticeRespVO.setCtNotice(ctNotice);
             }

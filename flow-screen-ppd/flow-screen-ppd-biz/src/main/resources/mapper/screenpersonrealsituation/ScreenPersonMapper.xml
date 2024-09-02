@@ -411,7 +411,7 @@
         from tb_screen_ppd
         where outcome is not null and id_num=#{idNum} and screen_type=#{screenType} and deleted=0
         <if test="screenOrder!=null"> and screen_order=#{screenOrder}</if>
-        <if test="curDate!=null and curDate!=''"> and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY)</if>
+        <if test="curDate!=null "> and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY)</if>
         order by id desc
         limit 1
     </select>
@@ -421,7 +421,7 @@
         from tb_screen_computed_tomography
         where outcome is not null and id_num=#{idNum} and screen_type=#{screenType} and deleted=0
         <if test="screenOrder!=null"> and screen_order=#{screenOrder}</if>
-        <if test="curDate!=null and curDate!=''"> and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY)</if>
+        <if test="curDate!=null "> and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY)</if>
         order by id desc
         limit 1
     </select>
@@ -431,7 +431,7 @@
         from tb_screen_chest_radiograph
         where outcome is not null and id_num=#{idNum} and screen_type=#{screenType} and deleted=0
         <if test="screenOrder!=null"> and screen_order=#{screenOrder}</if>
-        <if test="curDate!=null and curDate!=''"> and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY)</if>
+        <if test="curDate!=null"> and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY)</if>
         order by id desc
         limit 1
     </select>
@@ -441,7 +441,7 @@
         from tb_screen_collect
         where outcome is not null and id_num=#{idNum} and screen_type=#{screenType} and deleted=0
         <if test="screenOrder!=null"> and screen_order=#{screenOrder}</if>
-        <if test="curDate!=null and curDate!=''"> and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY)</if>
+        <if test="curDate!=null "> and #{curDate} between create_time and  DATE_ADD(create_time, INTERVAL 7 DAY)</if>
         order by id desc
         limit 1
     </select>
