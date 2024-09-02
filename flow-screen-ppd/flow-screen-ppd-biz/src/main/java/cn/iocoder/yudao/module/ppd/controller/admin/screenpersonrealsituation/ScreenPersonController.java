@@ -410,6 +410,6 @@ public class ScreenPersonController {
     @PreAuthorize("@ss.hasPermission('tb:screen-person:student-query')")
     public CommonResult<NoticeRespVO> getNotice(@RequestBody @NotEmpty @RequestParam("idcard") String idcard){
         NoticeRespVO notice = screenPersonService.getStudentNoticeByIdNum(idcard, null, null);
-        return success(notice);
+        return successMsg(notice);
     }
 }

@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Set;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
+import static cn.iocoder.yudao.framework.common.pojo.CommonResult.successMsg;
 import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertSet;
 import static cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
 
@@ -77,7 +78,7 @@ public class AuthController {
         reqVO.setUsername("wxloginUser");
         reqVO.setPassword("wxFlow123");
         AuthLoginReqVO authLoginReqVO = BeanUtils.toBean(reqVO, AuthLoginReqVO.class);
-        return success(authService.wxLogin(authLoginReqVO));
+        return successMsg(authService.wxLogin(authLoginReqVO));
     }
 
     @PostMapping("/logout")
