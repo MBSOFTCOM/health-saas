@@ -8,79 +8,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-row  type="flex" justify="space-between">
-        <el-col :span="4">
-          <el-form-item label="姓名" prop="name">
-            <el-input
-              v-model="queryParams.name"
-              placeholder="请输入姓名"
-              clearable
-              @keyup.enter="handleQuery"
-              class="!w-160px"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="联系电话" prop="tel">
-            <el-input
-              v-model="queryParams.tel"
-              placeholder="请输入联系电话"
-              clearable
-              @keyup.enter="handleQuery"
-              class="!w-160px"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="现住址" prop="address">
-            <el-input
-              v-model="queryParams.address"
-              placeholder="请输入现住址"
-              clearable
-              @keyup.enter="handleQuery"
-              class="!w-160px"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="民族" prop="nation">
-            <el-select
-              v-model="queryParams.nation"
-              filterable
-              :filter-method="PinyinMatchFun"
-              placeholder="请选择民族"
-              clearable
-              class="!w-160px"
-            >
-              <el-option
-                v-for="item in ethnicList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="学生类别" prop="studentType">
-            <el-select
-              v-model="queryParams.studentType"
-              placeholder="请选择"
-              clearable
-              class="!w-160px"
-            >
-              <el-option
-                v-for="dict in getIntDictOptions(DICT_TYPE.STUDENT_TYPE)"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-
-      <el-row  type="flex" justify="space-between">
+      <el-row type="flex" justify="space-between">
         <el-col :span="4">
           <el-form-item label="第一人群分类" prop="firstType" label-width="97">
             <el-select
@@ -120,22 +48,28 @@
           </el-form-item>
         </el-col>
         <el-col :span="4">
-          <el-form-item label="筛查类型" prop="screenType">
-            <el-select
-              v-model="queryParams.screenType"
-              placeholder="请选择筛查类型"
+          <el-form-item label="联系电话" prop="tel">
+            <el-input
+              v-model="queryParams.tel"
+              placeholder="请输入联系电话"
               clearable
+              @keyup.enter="handleQuery"
               class="!w-160px"
-            >
-              <el-option
-                v-for="dict in getIntDictOptions(DICT_TYPE.TB_SCREEN_TYPE)"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-              />
-            </el-select>
+            />
           </el-form-item>
         </el-col>
+        <el-col :span="4" v-if="false">
+          <el-form-item label="现住址" prop="address">
+            <el-input
+              v-model="queryParams.address"
+              placeholder="请输入现住址"
+              clearable
+              @keyup.enter="handleQuery"
+              class="!w-160px"
+            />
+          </el-form-item>
+        </el-col>
+
         <el-col :span="4">
           <el-form-item label="单位(学校)" prop="schoolOrTemple" label-width="85">
             <el-input
@@ -159,7 +93,89 @@
           </el-form-item>
         </el-col>
       </el-row>
-
+      <el-row type="flex" justify="space-between">
+        <el-col :span="4">
+          <el-form-item label="姓名" prop="name">
+            <el-input
+              v-model="queryParams.name"
+              placeholder="请输入姓名"
+              clearable
+              @keyup.enter="handleQuery"
+              class="!w-160px"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="性别" prop="sex">
+            <el-select
+              v-model="queryParams.sex"
+              placeholder="请选择"
+              clearable
+              class="!w-160px"
+            >
+              <el-option
+                v-for="dict in getIntDictOptions(DICT_TYPE.PATIENT_SEX)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"/>
+            </el-select>
+            <!--        <el-radio-group v-model="queryParams.sex">
+                      <el-radio v-for="dict in getIntDictOptions(DICT_TYPE.PATIENT_SEX)"
+                                :key="dict.value"
+                                :label="dict.value">
+                        {{ dict.label }}
+                      </el-radio>
+                    </el-radio-group>-->
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="民族" prop="nation">
+            <el-select
+              v-model="queryParams.nation"
+              filterable
+              :filter-method="PinyinMatchFun"
+              placeholder="请选择民族"
+              clearable
+              class="!w-160px"
+            >
+              <el-option
+                v-for="item in ethnicList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="身份证号" prop="idNum" >
+            <el-input
+              v-model="queryParams.idNum"
+              placeholder="请输入身份证号"
+              clearable
+              @keyup.enter="handleQuery"
+              class="!w-160px"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="学生类别" prop="studentType">
+            <el-select
+              v-model="queryParams.studentType"
+              placeholder="请选择"
+              clearable
+              class="!w-160px"
+            >
+              <el-option
+                v-for="dict in getIntDictOptions(DICT_TYPE.STUDENT_TYPE)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-row type="flex" justify="space-between">
         <el-col :span="4">
           <el-form-item label="筛查点" prop="screenPoint">
@@ -197,56 +213,40 @@
           </el-form-item>
         </el-col>
         <el-col :span="4">
-          <el-form-item label="性别" prop="sex">
+          <el-form-item label="筛查类型" prop="screenType">
             <el-select
-              v-model="queryParams.sex"
+              v-model="queryParams.screenType"
+              placeholder="请选择筛查类型"
+              clearable
+              class="!w-160px"
+            >
+              <el-option
+                v-for="dict in getIntDictOptions(DICT_TYPE.TB_SCREEN_TYPE)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="是否需筛查" prop="isNew" label-width="85">
+            <el-select
+              v-model="queryParams.isNew"
               placeholder="请选择"
               clearable
               class="!w-160px"
             >
               <el-option
-                v-for="dict in getIntDictOptions(DICT_TYPE.PATIENT_SEX)"
+                v-for="dict in getIntDictOptions(DICT_TYPE.IS_NEW)"
                 :key="dict.value"
                 :label="dict.label"
-                :value="dict.value"/>
+                :value="dict.value"
+              />
             </el-select>
-            <!--        <el-radio-group v-model="queryParams.sex">
-                      <el-radio v-for="dict in getIntDictOptions(DICT_TYPE.PATIENT_SEX)"
-                                :key="dict.value"
-                                :label="dict.value">
-                        {{ dict.label }}
-                      </el-radio>
-                    </el-radio-group>-->
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="身份证号" prop="idNum" >
-            <el-input
-              v-model="queryParams.idNum"
-              placeholder="请输入身份证号"
-              clearable
-              @keyup.enter="handleQuery"
-              class="!w-160px"
-            />
           </el-form-item>
         </el-col>
       </el-row>
-
-      <el-form-item label="是否需筛查" prop="isNew" label-width="85">
-        <el-select
-          v-model="queryParams.isNew"
-          placeholder="请选择"
-          clearable
-          class="!w-160px"
-        >
-          <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.IS_NEW)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
       <el-form-item label="是否已筛查" prop="isScreened" label-width="85">
         <el-select
           v-model="queryParams.isScreened"
