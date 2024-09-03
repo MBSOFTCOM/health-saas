@@ -107,18 +107,18 @@
 
     </select>
     <select id="getTypeStatistics" resultType="cn.iocoder.yudao.module.ppd.controller.admin.screencomputedtomography.vo.ComputedTomographyStatistics">
-        select count(case when c.outcome=0 then 1 end) normal,count(case when c.outcome=1 then 1 end) suspected
+        select count(case when c.outcome is not null then 1 end) allNUm,count(case when c.outcome=0 then 1 end) normal,count(case when c.outcome=1 then 1 end) suspected
         from tb_screen_computed_tomography c  join tb_screen_sum s on s.id_num=c.id_num
-        where c.screen_type=#{screenType} and c.year=#{year}
+        where c.screen_type=#{screenType} and c.year=#{year} and  c.deleted=0
     </select>
     <select id="getYearTimeStatistics" resultType="java.lang.Integer">
-        SELECT ifnull(count(DISTINCT person_id),0) num FROM tb_screen_computed_tomography WHERE YEAR(screen_time) = #{year} and screen_type=#{screenType}
+        SELECT ifnull(count(DISTINCT person_id),0) num FROM tb_screen_computed_tomography WHERE YEAR(screen_time) = #{year} and screen_type=#{screenType} and deleted=0
     </select>
     <select id="getMonthTimeStatistics" resultType="java.lang.Integer">
-        SELECT ifnull(count(DISTINCT person_id),0) num FROM tb_screen_computed_tomography WHERE YEAR(screen_time) = #{year} and MONTH(screen_time)=#{month} and screen_type=#{screenType}
+        SELECT ifnull(count(DISTINCT person_id),0) num FROM tb_screen_computed_tomography WHERE YEAR(screen_time) = #{year} and MONTH(screen_time)=#{month} and screen_type=#{screenType} and deleted=0
     </select>
     <select id="getDayTimeStatistics" resultType="java.lang.Integer">
-        SELECT ifnull(count(DISTINCT person_id),0) num FROM tb_screen_computed_tomography WHERE DATE (screen_time) = #{curDay} and screen_type=#{screenType}
+        SELECT ifnull(count(DISTINCT person_id),0) num FROM tb_screen_computed_tomography WHERE DATE (screen_time) = #{curDay} and screen_type=#{screenType} and deleted=0
     </select>
     <select id="getOutcomeByOrder" resultType="java.lang.Integer">
         select outcome from tb_screen_computed_tomography where screen_type=#{screenType} and screen_order=#{screenOrder} and  id_num=#{idNum} and year=#{year}

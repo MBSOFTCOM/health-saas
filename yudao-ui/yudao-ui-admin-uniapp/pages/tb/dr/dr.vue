@@ -92,7 +92,7 @@
 						<view class="card-text">
 							总人数
 							<span class="sp-text">
-								{{ count.suspected + count.normal }}<span style="font-size: 18px;">人</span>
+								{{ count.allNum }}<span style="font-size: 18px;">人</span>
 							</span>
 						</view>
 					</view>
@@ -404,7 +404,7 @@ export default {
 				}
 			],
 			personTypeForProcess,
-			count: { yearNum: 0, monthNum: 0, dayNum: 0 },
+			count: { yearNum: 0, monthNum: 0, dayNum: 0 ,normal: 0, suspected: 0 ,all:0},
 			dateRange: [],
 			overflowVisible: false, // 初始时设置为 false
 			showSelectCrowd: false, // 控制子组件显示的布尔值
@@ -786,21 +786,19 @@ export default {
 			this.show = true;
 		},
 		async sta() {
-			let data = await getTypeStatistics();
+			let rspData = await getSta({ screenType: uni.$screenType });
+			this.count = rspData.data;
+			console.log(this.count);
+			/*
 			this.count.normal = data.normal;
 			this.count.suspected = data.suspected;
-		},
-		async getTimeSta() {
-			let rspData = await getSta({ screenType: uni.$screenType });
-			let data = rspData.data;
-			// console.log("sta=",rspData)
-			this.count = data;
+			this.count.all = data.allNum;
+			*/
 		}
 	},
 	async onShow() {
 		await this.getPatientList();
 		await this.sta();
-		await this.getTimeSta();
 	}
 };
 </script>

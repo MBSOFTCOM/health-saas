@@ -51,27 +51,32 @@
 			</view>
 		</view>
 		<view class="main-bottom">
-      <view style="width: 95px;margin-top: 5px;">2年内是否有与结核病患者的接触史:</view>
-      <up-radio-group
-          v-model="contacted"
-		  disabled
-          placement="column">
-        <up-radio
-            :customStyle="{marginBottom: '8px'}"
-            v-for="(item, index) in radiolist1"
-            :key="index"
-            :label="item.name"
-            :name="item.value"
-            @change="radioChange"
-        />
-      </up-radio-group>
 			<view class="bom-t">
 				<view style="width: 95px;margin-top: 5px;">选择症状</view>
 				<view class="bom-mup" style="width: 70%">
 					<uni-data-checkbox multiple v-model="checkbox" :localdata="items" disabled></uni-data-checkbox>
 				</view>
 			</view>
-
+			<view style="display: flex;">
+				<view style="width: 590rpx;margin-top: 10rpx;">2年内是否有与结核病患者的接触史:</view>
+				<span style="display: flex;">
+					<up-radio-group
+						v-model="contacted"
+						placement="row"
+						>
+						<up-radio
+							:customStyle="{marginRight: '12px'}"
+							v-for="(item, index) in radiolist1"
+							labelSize="21px"
+							size="29px"
+							:key="index"
+							:label="item.name"
+							:name="item.value"
+							@change="radioChange"
+						/>
+					</up-radio-group>
+				</span>
+			</view>
 			<view class="bom-m">
 				<view>医生签名</view>
 				<view class="sign-imgbg">

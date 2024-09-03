@@ -323,7 +323,7 @@ export default {
 		},
 		// 平板到pc
 		async PadToPc() {
-			let person=await SynchronizeApi.getPersonCount(self.queryParams.screenId, self.queryParams.screenPoint,'not null', -1, self.pageSize)
+			let person=await SynchronizeApi.getPersonCount(this.queryParams.screenId, this.queryParams.screenPoint,'not null', -1, this.pageSize)
 			console.log(person);
 			if(person[0].num>=1){
 				uni.showToast({

@@ -576,7 +576,7 @@ export async function getPatientPage(pageNo, pageSize, name, idNum, firstType, m
 			}
 		}
 		if (screenId) {
-			queryWhere += ` p.screenId like '${screenId}%' and `
+			queryWhere += ` p.screenId like '%${screenId}%' and `
 		}
 		if ((startTime && endTime)) {
 			queryWhere += ` date(c.${timeCol}) between date('${startTime}') and  date('${endTime}') and `

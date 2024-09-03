@@ -588,8 +588,8 @@ export default {
 					if (ret) {
 						this.FormData.name = ret.result.name;
 						this.FormData.idNum = ret.result.number;
-						this.FormData.address = ret.result.address;
-						this.FormData.nation = ret.result.nation;
+						this.FormData.permanentAddress = ret.result.address;
+						// this.FormData.nation = ret.result.nation;
 					}
 				}
 			);

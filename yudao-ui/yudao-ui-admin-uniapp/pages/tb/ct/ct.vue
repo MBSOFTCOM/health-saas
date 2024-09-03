@@ -91,7 +91,7 @@
 						<view class="card-text">
 							总人数
 							<span class="sp-text">
-								{{ count.suspected + count.normal }}<span style="font-size: 18px;">人</span>
+								{{ count.all }}<span style="font-size: 18px;">人</span>
 							</span>
 						</view>
 					</view>
@@ -382,7 +382,7 @@ import UniTable from '../../../uni_modules/uni-table/components/uni-table/uni-ta
 import UniForms from '../../../uni_modules/uni-forms/components/uni-forms/uni-forms.vue';
 import UniFormsItem from '../../../uni_modules/uni-forms/components/uni-forms-item/uni-forms-item.vue';
 import { splitDecimalIntoList, getPatientPage } from '../../../utils/sqlite';
-import { currentDayMonthYearStatistics, getOrderAndTime, getTypeStatistics } from '../../../api/screen/dr';
+import { currentDayMonthYearStatistics, getOrderAndTime, getTypeStatistics ,getPersonWithOutCome} from '../../../api/screen/dr';
 import { getAll } from '../../../api/screen/img';
 import { parsePatientType, parseNext } from '../../../utils/common';
 
@@ -403,7 +403,7 @@ export default {
 			personType,
 			personTypeForProcess,
 			timeCount: { yearNum: 0, monthNum: 0, dayNum: 0 },
-			count: { normal: 0, suspected: 0 },
+			count: { normal: 0, suspected: 0 ,all:0},
 			dateRange: [],
 			overflowVisible: false, // 初始时设置为 false
 			showSelectCrowd: false, // 控制子组件显示的布尔值
@@ -605,6 +605,7 @@ export default {
 		getLabelByValue,
 		getOrderAndTime,
 		getTypeStatistics,
+		getPersonWithOutCome,
 		currentDayMonthYearStatistics,
 		getValueByKey,
 		splitDecimalIntoList,
@@ -792,6 +793,7 @@ export default {
 			let data = await getTypeStatistics();
 			this.count.normal = data.normal;
 			this.count.suspected = data.suspected;
+			this.count.all = data.allNum;
 		},
 		async getTimeSta() {
 			let data = await currentDayMonthYearStatistics();

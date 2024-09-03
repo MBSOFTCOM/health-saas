@@ -157,12 +157,15 @@ export async function getPatientPage(pageNo, pageSize, name, idNum, firstType,mo
 }
 
 export async function getPersonWithOutCome(){
-
+	let sql=`select count(*) as num from ${tbScreenChestRadiograph} c  join ${tbScreenSum} s on s.personId=c.personId and s.chestRadiographNum=c.screenOrder where c.screenType=${uni.$screenType} and c.outcome is not null`
+    let data=await promise(dbName,sql)
+    // console.log("count=",data)
+    return data[0]
 }
 export async function getTypeStatistics(){
     let normal=getValueByLabel(ctOutcome,'正常')
     let suspected=getValueByLabel(ctOutcome,'疑似结核')
-    let sql=`select count(case when c.outcome=${normal} then 1 end) normal,count(case when c.outcome=${suspected} then 1 end) suspected from ${tbScreenChestRadiograph} c  join ${tbScreenSum} s on s.personId=c.personId and s.chestRadiographNum=c.screenOrder where c.screenType=${uni.$screenType}`
+    let sql=`select count(case when c.outcome is not null then 1 end) allNum,count(case when c.outcome=${normal} then 1 end) normal,count(case when c.outcome=${suspected} then 1 end) suspected from ${tbScreenChestRadiograph} c  join ${tbScreenSum} s on s.personId=c.personId and s.chestRadiographNum=c.screenOrder where c.screenType=${uni.$screenType}`
     let data=await promise(dbName,sql)
     // console.log("count=",data)
     return data[0]
