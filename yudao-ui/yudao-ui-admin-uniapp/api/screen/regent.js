@@ -29,14 +29,13 @@ export const insData = async (data) => {
  * @param {[Object]} data
  */
 export const coverData = async (data) => {
-	console.log(111);
    if (!data || data.length==0){
        return
    }
   emptyData(tbScreenReagent).then(async ()=>{
       await insData(data)
       let local=await getDataFromLocal()
-      console.log(local)
+      // console.log(local)
   })
 }
 /**

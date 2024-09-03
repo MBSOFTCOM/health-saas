@@ -22,14 +22,12 @@ export const getDistrictDataFromLocal=async()=>{
  * @param data {[]}
  */
 export const  insData=async(data)=>{
-	console.log("添加数据");
-	console.log(data);
+	// console.log("添加数据");
+	// console.log(data);
 	for (let i = 0; i < data.length; i++) {
 		dbUtils.addTabItem(dbName,tbScreenDistrict,data[i])
 	}
 	console.log("数据写入完成");
-	// let disData=await getDistrictDataFromLocal()
-	// console.log(disData);
 }
 /**
  * 覆盖区划数据

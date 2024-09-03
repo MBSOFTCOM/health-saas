@@ -196,11 +196,20 @@ export default {
 	},
 	methods: {
 		coverRegent(){
+			uni.showLoading({
+				title: '加载中...',
+				mask: true
+			});
 			regentApi.coverDataAuto()
-      this.coverConsume()
-			regentApi.getDataFromLocal().then((res)=>{
-				// console.log(res);
-			})
+			this.coverConsume()
+			uni.showToast({
+				title: '载入成功',
+				icon: 'success',
+				duration: 1000
+			}) 
+			setTimeout(()=>{
+				uni.hideLoading();
+			},1000)
 		},
 		coverConsume(){
 			consumeApi.coverDataAuto()

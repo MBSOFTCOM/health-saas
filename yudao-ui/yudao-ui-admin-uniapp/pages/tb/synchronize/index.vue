@@ -36,7 +36,7 @@
 					<up-button
 						@click="districtCover"
 						:plain="true"
-            style="margin-right: 10px"
+						style="margin-right: 10px"
 						text="同步区划数据"
 						v-if="activeItem === 0"
 						class="custom-style"
@@ -774,7 +774,19 @@ updateArray(number) {
 		 * 覆盖区划数据
 		 */
 		districtCover(){
+			uni.showLoading({
+				title: '加载中...',
+				mask: true
+			});
 			DistrictApi.coverData()
+			uni.showToast({
+				title: '载入成功',
+				icon: 'success',
+				duration: 1000
+			}) 
+			setTimeout(()=>{
+				uni.hideLoading();
+			},1000)
 		},
 		//工作队伍 同步
 		workTeam() {
