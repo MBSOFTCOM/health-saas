@@ -132,7 +132,7 @@
 						v-model="queryParam.name"
 						clearButton="always"
 						placeholder="患者姓名"
-						style="width: 165px"
+						style="width: 230px"
 						cancelButton="none"
 						@clear="queryParam.name = ''"
 					></uni-search-bar>
@@ -145,6 +145,7 @@
 				<select-crowd
 					style="margin-left: 15px"
 					@updateValues="handleUpdateValues"
+					:is-visible="showSelectCrowd"
 				/>
 				<view class="search-btn">
 					<up-button @click="handleSearch" :plain="true" class="custom-search" text="搜索"></up-button>
@@ -406,6 +407,7 @@ export default {
 			count: { yearNum: 0, monthNum: 0, dayNum: 0 },
 			dateRange: [],
 			overflowVisible: false, // 初始时设置为 false
+			showSelectCrowd: false, // 控制子组件显示的布尔值
 			addUrl: '/pages/tb/addCt/addCt',
 			dialogShow: false,
 			// 弹框信息
@@ -669,6 +671,7 @@ export default {
 			this.queryParam.screenId = null;
 			this.queryParam.startTime = null;
 			this.queryParam.endTim = null;
+			this.showSelectCrowd = !this.showSelectCrowd;
 			this.queryParam.firstType = [];
 			this.queryParam.moreType = [];
 			this.handleSearch();

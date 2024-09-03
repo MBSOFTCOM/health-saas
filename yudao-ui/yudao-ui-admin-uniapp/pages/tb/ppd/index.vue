@@ -238,7 +238,7 @@
 						v-model="searchName"
 						clearButton="always"
 						placeholder="患者姓名"
-						style="width: 165px"
+						style="width: 230px"
 						cancelButton="none"
 						@clear="clearName"
 					></uni-search-bar>
@@ -248,6 +248,12 @@
 			<view class="statistics" style="justify-content: flex-start">
 				<span style="font-size: 18px; margin-left: 10px;width:150rpx">筛查日期</span>
 				<select-date style="margin-left: 10px" ref="componentDate" @selectDate="handleSelectDate" />
+				<span style="font-size: 18px; display: inline-block; margin-left: 60px">人群分类</span>
+				<select-crowd
+					style="margin-left: 15px"
+					@updateValues="handleUpdateValues"
+					:is-visible="showSelectCrowd"
+				/>
 				<view class="search-btn">
 					<up-button @click="handleSearch" :plain="true" class="custom-search" text="搜索"></up-button>
 					<up-button
@@ -643,6 +649,7 @@ export default {
 			],
 			personTypeForProcess,
 			screenNum: '',
+			showSelectCrowd: false, // 控制子组件显示的布尔值
 			overflowVisible: false, // 初始时设置为 false
 			// 每页数据量
 			pageSize: 5,
@@ -1306,6 +1313,11 @@ export default {
 		handleSelectDate(value) {
 			this.dateRange = value;
 		},
+		// 人群分类
+		handleUpdateValues(val) {
+			this.firstType = val.firstVal;
+			this.secondType = val.secondVal;
+		},
 		// 搜索
 		handleSearch() {
 			this.pageCurrent = 1;
@@ -1461,6 +1473,7 @@ export default {
 			this.clearClassify();
 			this.secondType = [];
 			this.firstType = [];
+			this.showSelectCrowd = !this.showSelectCrowd;
 			this.pageCurrent = 1;
 			this.search();
 		},

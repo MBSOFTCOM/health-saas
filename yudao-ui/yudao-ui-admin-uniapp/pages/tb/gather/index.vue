@@ -216,7 +216,7 @@
 						v-model="searchName"
 						clearButton="always"
 						placeholder="患者姓名"
-						style="width: 165px"
+						style="width: 230px"
 						cancelButton="none"
 						@clear="clearName"
 					></uni-search-bar>
