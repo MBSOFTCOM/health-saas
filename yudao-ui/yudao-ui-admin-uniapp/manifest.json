@@ -66,8 +66,8 @@
                 }
             },
             "Mpaas-Scan" : {
-                "AppId" : "ALIPUB0CEC089281011",
-                "License" : "P0B/VA2OeN3iipm9W6GUEtMgpGE1QtL+yeiisuKGD9xEFWDOscVucC3QLlHXKbvN8wFgv9G/HghVh8TIjM2iU3kCVH4NP9Mh+llCaNemFlFmj0KPyCCt5YuuxZtHx1inhskr4KAkbcFsAg0v7KmirMANuXFrO1tThlIPGGg5SbFIx6cNMxzKK2cUcW6jSb62fJIaFynsEETFyKRAL5FVOip76FD8WG4SLXwQJ4tdWyR6cN/Is4dOVZ9qnJEbxLiVdOGdnEd/ON37t8EVqBkHYCGyogJYZZyJoSQb0vlpXJOdPsL2j8FeCu4uj4sZyq3bp0U3VZx1uXZZ4V4PWZIYHQ==",
+                "AppId" : "ALIPUBC91158C031428",
+                "License" : "b94Kl+KXN+0uzW/fWLmvf8oyBzBkeBQlvqeCAeWGGuKaGfQTPK4rOjUGAqAzCjBuLPl0IKrWsC0XzWqdDpA6RB2pMk2ySEHdq4S00Lgzb2qVpMswS/y1CQ9387n7zcN5yI3iXLBpHsfTxXh7TmmXPaI8qhWaxt3sQGDZbN75hLCxRfMP71rULBWCAmf18NUj1c4Xab3skAaA7ZFVG8QjW7RJNQ9cQ3nyC7YOE0HjHpOnHVmdrFNdlaWxxtPZ4r3wIkNYtHNuu2ZrAl9sCyXgLzmNGglTK/+AJKema/gBBTdLhzTzKbo93XW7wC3yHtv8PHTDRfQEAZ4koygeZxVMoA==",
                 "WorkspaceId" : "default",
                 "__plugin_info__" : {
                     "name" : "支付宝原生扫码插件",

@@ -45,7 +45,7 @@ export default {
 			globalConfig: this.$config,
 			loginForm: {
 				// username: 'wanzhouqu0001',
-				username: 'zengjw',
+				username: 'xiejun',
 				password: '123456',
 				captchaVerification: ''
 			}

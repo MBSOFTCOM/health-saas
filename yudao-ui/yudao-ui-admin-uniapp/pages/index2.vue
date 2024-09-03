@@ -162,7 +162,7 @@ export default {
 		justify-content: center;
 		align-items: center;
 		padding: 0 20px;
-		left: 10%;
+		left: 30%;
 		top: 11%;
 
 		.top-circles {

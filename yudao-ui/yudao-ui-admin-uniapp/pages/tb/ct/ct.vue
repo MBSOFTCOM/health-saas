@@ -28,7 +28,7 @@
 						iconColor="#fff"
 						color="#fff"
 						:plain="true"
-						text="扫描"
+						text="扫描搜索"
 					></up-button>
 				</view>
 			</view>
@@ -819,14 +819,14 @@ export default {
     }
 	::v-deep .uni-table-td:nth-child(2),.uni-table-th:nth-child(2) {
 	    position: sticky;
-	    left: 59px;
+	    left: 58px;
 	    top: 0;
 	    background-color: #fff;
 	    z-index: 100;
 	}
 	::v-deep .uni-table-td:nth-child(3),.uni-table-th:nth-child(3) {
 	    position: sticky;
-	    left: 228px;
+	    left: 225px;
 	    top: 0;
 	    background-color: #fff;
 	    z-index: 100;

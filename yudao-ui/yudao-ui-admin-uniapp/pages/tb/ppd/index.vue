@@ -28,7 +28,7 @@
 						iconColor="#fff"
 						color="#fff"
 						:plain="true"
-						text="扫描"
+						text="扫描搜索"
 					></up-button>
 				</view>
 			</view>
@@ -246,7 +246,7 @@
 			</view>
 			<!-- 输入框和搜索按钮 -->
 			<view class="statistics" style="justify-content: flex-start">
-				<span style="font-size: 18px; margin-left: 10px;width:50rpx">筛查日期</span>
+				<span style="font-size: 18px; margin-left: 10px;width:150rpx">筛查日期</span>
 				<select-date style="margin-left: 10px" ref="componentDate" @selectDate="handleSelectDate" />
 				<view class="search-btn">
 					<up-button @click="handleSearch" :plain="true" class="custom-search" text="搜索"></up-button>
@@ -264,6 +264,8 @@
 						text="查看筛查流程"/>
 			</view>
 		</view>
+    </view>
+
       <view class="uni-container">
         <uni-table :style="tableStyle" ref="table" :loading="loading" stripe emptyText="暂无更多数据">
           <uni-tr>
@@ -411,6 +413,7 @@
             @change="change"
           />
         </view>
+      </view>
         <!-- 注射弹窗 -->
         <u-popup :show="show" mode="center">
           <view class="injection">
@@ -590,8 +593,6 @@
           </view>
         </u-popup>
       </view>
-    </view>
-	</view>
 </template>
 
 <script>
@@ -915,7 +916,7 @@ export default {
 		print(val) {
 			this.prtScreenId = val.screenId;
 			const qr = new UQRCode();
-			qr.data = '姓名：' + val.name + ' 年龄：' + val.age + ' 身份证：' + val.idNum + ' 现住址：' + val.address;
+			qr.data = val.name + ';' + val.idNum + ';' + val.screenId;
 			qr.make();
 			this.modules = qr.modules;
 			this.showGather = true;
@@ -1561,7 +1562,7 @@ export default {
 	::v-deep .uni-table-td:nth-child(2),
 	.uni-table-th:nth-child(2) {
 		position: sticky;
-		left: 60px;
+		left: 55px;
 		top: 0;
 		background-color: #fff;
 		z-index: 100;
@@ -1569,7 +1570,7 @@ export default {
 	::v-deep .uni-table-td:nth-child(3),
 	.uni-table-th:nth-child(3) {
 		position: sticky;
-		left: 229px;
+		left: 224px;
 		top: 0;
 		background-color: #fff;
 		z-index: 100;
