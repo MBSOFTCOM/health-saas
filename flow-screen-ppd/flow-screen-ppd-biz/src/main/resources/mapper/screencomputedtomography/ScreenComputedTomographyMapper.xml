@@ -33,7 +33,7 @@
         select p.*,c.cur_finish from tb_screen_person p left join tb_screen_sum c on p.id_num=c.id_num
         <where>
             <if test="name!=null and name!=''">name like concat('%',#{name},'%')</if>
-            <if test="idNum!=null and idNum !=''">and   id_num like concat('%',#{idNum},'%')</if>
+            <if test="idNum!=null and idNum !=''">and   p.id_num like concat('%',#{idNum},'%')</if>
             <if test="screenId!=null and screenId !=''">and   screen_id =#{screenId}</if>
             <if test="screenType!=null and screenType !=''">and   p.screen_type =#{screenType}</if>
             <if test="year!=null and year !=''">and   p.year =#{year}</if>
@@ -61,7 +61,7 @@
         select count(DISTINCT p.id) from tb_screen_person p left join tb_screen_sum c on p.id_num=c.id_num
         <where>
             <if test="name!=null and name!=''">name like concat('%',#{name},'%')</if>
-            <if test="idNum!=null and idNum !=''">and   id_num like concat('%',#{idNum},'%')</if>
+            <if test="idNum!=null and idNum !=''">and   p.id_num like concat('%',#{idNum},'%')</if>
             <if test="screenId!=null and screenId !=''">and   screen_id =#{screenId}</if>
             <if test="screenType!=null and screenType !=''">and   p.screen_type =#{screenType}</if>
             <if test="(firstType!=null and !firstType.isEmpty())||(moreType!=null and !moreType.isEmpty())">

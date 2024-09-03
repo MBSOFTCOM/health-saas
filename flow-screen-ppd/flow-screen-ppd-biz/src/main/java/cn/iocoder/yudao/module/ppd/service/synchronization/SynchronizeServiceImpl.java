@@ -322,22 +322,23 @@ public class SynchronizeServiceImpl implements SynchronizeService{
         String agency = Optional.ofNullable(screenPointInfo.getAgency()).orElse("");
         Integer year = screenPointInfo.getYear();
 
-        if(screenPointInfo.getWorker()!=null && screenPointInfo.getWorker()!="0"){
+        if(screenPointInfo.getWorker()!=null && !"0".equals(screenPointInfo.getWorker())){
             // 队长信息
             Long capitalId = Long.parseLong(screenPointInfo.getWorker());
             UserInfoVO capitalInfo = synchronizeMapper.getUserInfo(capitalId);
             workTeamList.add(createWorkTeamVO(capitalInfo, agency, name, year, "队长"));
         }
 
-        if(screenPointInfo.getCollectWorker()!=null && screenPointInfo.getCollectWorker()!="0"){
+        String collectWorker = screenPointInfo.getCollectWorker();
+        if(collectWorker !=null && !"0".equals(collectWorker)){
             // 采集组
-            Arrays.stream(screenPointInfo.getCollectWorker().split(", "))
+            Arrays.stream(collectWorker.split(", "))
                     .map(Long::parseLong)
                     .map(synchronizeMapper::getUserInfo)
                     .map(userInfo -> createWorkTeamVO(userInfo, agency, name, year, GROUP_NAMES.get("collectWorker")))
                     .forEach(workTeamList::add);
         }
-        if(screenPointInfo.getPpdWorker()!=null && screenPointInfo.getPpdWorker()!="0"){
+        if(screenPointInfo.getPpdWorker()!=null && !"0".equals(screenPointInfo.getPpdWorker())){
             // PPD组
             Arrays.stream(screenPointInfo.getPpdWorker().split(", "))
                     .map(Long::parseLong)
@@ -345,7 +346,7 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                     .map(userInfo -> createWorkTeamVO(userInfo, agency, name, year, GROUP_NAMES.get("ppdWorker")))
                     .forEach(workTeamList::add);
         }
-        if(screenPointInfo.getDrctWorker()!=null && screenPointInfo.getDrctWorker()!="0"){
+        if(screenPointInfo.getDrctWorker()!=null && !"0".equals(screenPointInfo.getDrctWorker())){
             // DR/CT组
             Arrays.stream(screenPointInfo.getDrctWorker().split(", "))
                     .map(Long::parseLong)
@@ -353,7 +354,7 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                     .map(userInfo -> createWorkTeamVO(userInfo, agency, name, year, GROUP_NAMES.get("drctWorker")))
                     .forEach(workTeamList::add);
         }
-        if(screenPointInfo.getSputumWorker()!=null && screenPointInfo.getSputumWorker()!="0"){
+        if(screenPointInfo.getSputumWorker()!=null && !"0".equals(screenPointInfo.getSputumWorker())){
             // 痰检组
             Arrays.stream(screenPointInfo.getSputumWorker().split(", "))
                     .map(Long::parseLong)
@@ -361,7 +362,7 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                     .map(userInfo -> createWorkTeamVO(userInfo, agency, name, year, GROUP_NAMES.get("sputumWorker")))
                     .forEach(workTeamList::add);
         }
-        if(screenPointInfo.getExperimentWorker()!=null && screenPointInfo.getExperimentWorker()!="0"){
+        if(screenPointInfo.getExperimentWorker()!=null && !"0".equals(screenPointInfo.getExperimentWorker())){
             // 实验组
             Arrays.stream(screenPointInfo.getExperimentWorker().split(", "))
                     .map(Long::parseLong)
@@ -369,7 +370,7 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                     .map(userInfo -> createWorkTeamVO(userInfo, agency, name, year, GROUP_NAMES.get("electrocardiogramWorker")))
                     .forEach(workTeamList::add);
         }
-        if(screenPointInfo.getElectrocardiogramWorker()!=null && screenPointInfo.getElectrocardiogramWorker()!="0"){
+        if(screenPointInfo.getElectrocardiogramWorker()!=null && !"0".equals(screenPointInfo.getElectrocardiogramWorker())){
             // 心电组
             Arrays.stream(screenPointInfo.getElectrocardiogramWorker().split(", "))
                     .map(Long::parseLong)
@@ -377,7 +378,7 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                     .map(userInfo -> createWorkTeamVO(userInfo, agency, name, year, GROUP_NAMES.get("experimentWorker")))
                     .forEach(workTeamList::add);
         }
-        if(screenPointInfo.getDiagnosisWorker()!=null && screenPointInfo.getDiagnosisWorker()!="0"){
+        if(screenPointInfo.getDiagnosisWorker()!=null && !"0".equals(screenPointInfo.getDiagnosisWorker())){
             // 诊断组
             Arrays.stream(screenPointInfo.getDiagnosisWorker().split(", "))
                     .map(Long::parseLong)

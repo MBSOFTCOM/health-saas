@@ -555,7 +555,7 @@ export async function getPatientPage(pageNo, pageSize, name, idNum, firstType, m
 			queryWhere += ` name like '%${name}%' and `
 		}
 		if (idNum) {
-			queryWhere += ` idNum like '%${idNum}%' and `
+			queryWhere += ` p.idNum like '%${idNum}%' and `
 		}
 		if ((firstType && firstType.length > 0) || (moreType && moreType.length > 0)) {
 			queryWhere += '('
