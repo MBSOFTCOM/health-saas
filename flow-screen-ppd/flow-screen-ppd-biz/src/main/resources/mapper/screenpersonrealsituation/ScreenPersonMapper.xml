@@ -154,6 +154,8 @@
           AND year = #{year}
           AND screen_type = #{screenType}
           AND deleted = 0
+        order by id
+        limit 1
     </select>
 
 
