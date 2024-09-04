@@ -820,7 +820,7 @@ export default {
 		// 查看检验单
 		inspections(val) {
 			uni.navigateTo({
-				url: '/pages/tb/MedicalExaminationForm/MedicalExaminationForm?val=' + JSON.stringify(val)
+				url: '/pages/tb/MedicalExaminationForm/index?val=' + JSON.stringify(val)
 			});
 		},
 		// 修改患者信息

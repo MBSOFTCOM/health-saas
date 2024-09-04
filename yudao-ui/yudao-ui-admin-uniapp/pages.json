@@ -291,7 +291,7 @@
 			}
 		},
 		{
-			"path": "pages/tb/MedicalExaminationForm/MedicalExaminationForm",
+			"path": "pages/tb/MedicalExaminationForm/index",
 			"style": {
 				"navigationBarTitleText": "检验单",
 				"navigationBarBackgroundColor": "#fff",
