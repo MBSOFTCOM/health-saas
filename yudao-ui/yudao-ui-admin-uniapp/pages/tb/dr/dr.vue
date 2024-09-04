@@ -29,7 +29,7 @@
 						iconColor="#fff"
 						color="#fff"
 						:plain="true"
-						text="扫描"
+						text="扫描搜索"
 					></up-button>
 				</view>
 			</view>

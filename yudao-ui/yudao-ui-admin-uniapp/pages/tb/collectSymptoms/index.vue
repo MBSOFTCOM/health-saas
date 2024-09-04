@@ -70,6 +70,7 @@
 								v-for="(item, index) in radiolist1"
 								labelSize="21px"
 								size="29px"
+								icon-size="20px"
 								:key="index"
 								:label="item.name"
 								:name="item.value"
