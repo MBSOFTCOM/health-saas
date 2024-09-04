@@ -142,8 +142,8 @@
 						<uni-data-select
 							v-model="FormData.permanentAddressProvince"
 							:localdata="permanentAddressProvince"
-              class="districtSelect"
-              placeholder="请选择户籍地址"
+							class="districtSelect"
+							placeholder="请选择户籍地址"
 							@change="selectpermanentAddressProvince"/>
 						</view>
 						<view class="select">
@@ -151,8 +151,8 @@
 						<uni-data-select
 							v-model="FormData.permanentAddressCity"
 							:localdata="permanentAddressCity"
-              class="districtSelect"
-              placeholder="请选择户籍地址"
+							class="districtSelect"
+							placeholder="请选择户籍地址"
 							@change="selectpermanentAddressCity"/>
 						</view>
 						<view class="select">
@@ -160,16 +160,16 @@
 						<uni-data-select
 							v-model="FormData.permanentAddressCounty"
 							:localdata="permanentAddressCounty"
-              class="districtSelect"
-              placeholder="请选择户籍地址"
+							class="districtSelect"
+							placeholder="请选择户籍地址"
 							@change="selectpermanentAddressCounty"/>
 						</view>
 						<view class="select">
 							<span class="se-sp">乡镇</span>
 						<uni-data-select
 							v-model="FormData.permanentAddressTown"
-              class="districtSelect"
-              placeholder="请选择户籍地址"
+							class="districtSelect"
+							placeholder="请选择户籍地址"
 							:localdata="permanentAddressTown"/>
 						</view>
 					</view>
@@ -749,6 +749,7 @@ export default {
 							weight: this.FormData.weight??'',
 							permanentAddress: this.FormData.permanentAddress??'',
 							permanentAddressProvince: this.FormData.permanentAddressProvince??'',
+							permanentAddressCity: this.FormData.permanentAddressCity??'',
 							permanentAddressCounty: this.FormData.permanentAddressCounty??'',
 							permanentAddressTown: this.FormData.permanentAddressTown??'',
 							address: this.FormData.address,
@@ -823,7 +824,7 @@ export default {
 							uni.$u.toast('该人员信息已经存在');
 							return;
 						}
-
+						console.log(FormData2);
 						updatePerson(FormData2, this.FormData.id);
 						//返回上一页
 						uni.navigateBack({

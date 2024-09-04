@@ -219,7 +219,7 @@
 								采集
 							</span>
 							<span class="btn-span" style="color:  rgba(51, 176, 19, 1);border: 1px solid  rgba(51, 176, 19, 1);" @click="navTo(item, getItemByLabel(state(), '详情'))">详情</span>
-							<span v-if="flase" class="btn-span" style="color: rgba(102, 68, 216, 1.0);border: 1px solid rgba(102, 68, 216, 1.0);margin: 0 5px;" @click="revise(item)">
+							<span v-if="false" class="btn-span" style="color: rgba(102, 68, 216, 1.0);border: 1px solid rgba(102, 68, 216, 1.0);margin: 0 5px;" @click="revise(item)">
 								修改患者信息
 							</span>
 						</view>
@@ -592,11 +592,10 @@ export default {
 			let param = {
 				year: this.list[index].year,
 				screenOrder: this.list[index].screenOrder,
-				personId: this.list[index].id,
+				idNum: this.list[index].idNum,
 				screenType: uni.$screenType
 			};
 			getCTOutcomeByOrder(param).then((res) => {
-				// console.log(res)
 				this.list[index].outcome = res.data;
 			});
 		},
@@ -788,12 +787,6 @@ export default {
 		async sta() {
 			let rspData = await getSta({ screenType: uni.$screenType });
 			this.count = rspData.data;
-			console.log(this.count);
-			/*
-			this.count.normal = data.normal;
-			this.count.suspected = data.suspected;
-			this.count.all = data.allNum;
-			*/
 		}
 	},
 	async onShow() {

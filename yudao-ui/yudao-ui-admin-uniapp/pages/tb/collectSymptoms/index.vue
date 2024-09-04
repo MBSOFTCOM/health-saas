@@ -229,7 +229,7 @@ export default {
 	onLoad(e) {
 		this.isNewStudent = e.isNewStudent;
 		this.patient = e;
-		// console.log("e",e);
+		console.log("e",e);
 		this.refreshMark();
 		//生成次序和时间
 		this.newOrderAndTime();
@@ -459,7 +459,7 @@ export default {
 							createTime: this.orderAndTime.time
 						};
 						
-						// console.log(collect);
+						console.log(collect);
 						//结果·校验
 						if (collect.outcome == '' || collect.outcome == null || collect.outcome == undefined) {
 							collect.outcome = 0;
