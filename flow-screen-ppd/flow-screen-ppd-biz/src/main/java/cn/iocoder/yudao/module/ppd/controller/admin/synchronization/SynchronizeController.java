@@ -110,7 +110,8 @@ public class SynchronizeController {
 //    @PreAuthorize("@ss.hasPermission('tb:synchronization:query')")
     public CommonResult<PageResult<ScreenPpdRespVO>> getTableData3(ScreenPpdPageReqVO pageReqVO) {
         PageResult<ScreenPpdDO> pageResult = synchronizeService.getPpdPage(pageReqVO);
-        return success(BeanUtils.toBean(pageResult, ScreenPpdRespVO.class));
+        PageResult<ScreenPpdRespVO> data = BeanUtils.toBean(pageResult, ScreenPpdRespVO.class);
+        return success(data);
 
     }
 

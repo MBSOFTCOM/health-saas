@@ -37,6 +37,14 @@ public class ScreenPpdRespVO {
     @ExcelProperty("纵径 单位mm")
     private BigDecimal longitudinalDiameter;
 
+    @Schema(description = "横径 单位mm")
+    @ExcelProperty("横径 单位mm")
+    private BigDecimal blushTransverseDiameter;
+
+    @Schema(description = "纵径 单位mm")
+    @ExcelProperty("纵径 单位mm")
+    private BigDecimal blushLongitudinalDiameter;
+
     @Schema(description = "是否含有水泡/双圈/坏死/淋巴管炎/ 1-是 0-否")
     @ExcelProperty("是否含有水泡/双圈/坏死/淋巴管炎/ 1-是 0-否")
     private Integer bleb;

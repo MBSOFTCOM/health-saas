@@ -110,7 +110,7 @@
 import * as SynchronizeApi from '@/api/synchronize/synchronize';
 import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
 import { dbName, getById, tbScreenCollect, tbScreenSum } from '@/utils/sqlite';
-import { collectSymptoms, screenType, getLabelByValue } from '@/utils/dict.js';
+import { collectSymptoms, screenType, getLabelByValue ,collectSymptoms_new} from '@/utils/dict.js';
 
 export default {
 	data() {
@@ -282,24 +282,19 @@ export default {
 			if (value == null || value == 'null') {
 				return '';
 			}
-			if (value.toString() == '0') {
-				return '无卡痕';
-			}
-			if (value.toString() == '9') {
-				return '有卡痕';
-			}
+			
 			let data = value.toString().split('');
 			// console.log(data);
 			let str = '';
 			// console.log(collectSymptoms[0].text);
-
+		
 			for (let i = 0; i < data.length; i++) {
 				if (data[i] === '9') {
 					continue;
 				} else {
-					for (let j = 0; j < collectSymptoms.length; j++) {
-						if (parseInt(data[i]) === collectSymptoms[j].value) {
-							str += collectSymptoms[j].text;
+					for (let j = 0; j < collectSymptoms_new.length; j++) {
+						if (parseInt(data[i]) == collectSymptoms_new[j].value) {
+							str += collectSymptoms_new[j].text;
 						}
 					}
 					if (i < data.length - 1) {
@@ -307,11 +302,7 @@ export default {
 					}
 				}
 			}
-			if (value.toString().includes('9')) {
-				str += ',有卡痕';
-			} else {
-				str += ',无卡痕';
-			}
+			
 			return str;
 		},
 		// pc到平板

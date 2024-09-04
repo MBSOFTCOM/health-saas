@@ -80,8 +80,10 @@
 					<uni-th width="5%" align="center">筛查类型</uni-th>
 					<uni-th width="10%" align="center">工作年度</uni-th>
 					<uni-th width="8%" align="center">患者姓名</uni-th>
-					<uni-th width="5%" align="center">横径(mm)</uni-th>
-					<uni-th width="5%" align="center">纵径(mm)</uni-th>
+					<uni-th width="5%" align="center">硬结横径(mm)</uni-th>
+					<uni-th width="5%" align="center">硬结纵径(mm)</uni-th>
+					<uni-th width="5%" align="center">红晕横径(mm)</uni-th>
+					<uni-th width="5%" align="center">红晕纵径(mm)</uni-th>
 					<uni-th width="8%" align="center">是否含有水泡/双圈/坏死/淋巴管炎</uni-th>
 					<uni-th width="8%" align="center">是否提交注射结果</uni-th>
 					<uni-th width="8%" align="center">注射方式</uni-th>
@@ -99,6 +101,8 @@
 					<uni-td align="center">{{ item.name }}</uni-td>
 					<uni-td align="center">{{ item.transverseDiameter }}</uni-td>
 					<uni-td align="center">{{ item.longitudinalDiameter }}</uni-td>
+					<uni-td align="center">{{ item.blushTransverseDiameter }}</uni-td>
+					<uni-td align="center">{{ item.blushLongitudinalDiameter }}</uni-td>
 					<uni-td align="center">{{ ppdOutcome(item.bleb) }}</uni-td>
 					<uni-td align="center">{{ transform(item.injection) }}</uni-td>
 					<uni-td align="center">{{ injection(item.injectionWay) }}</uni-td>
