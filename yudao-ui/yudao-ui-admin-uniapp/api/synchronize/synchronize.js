@@ -205,7 +205,7 @@ export function getCollectData(screenId,screenPoint,statusFlag,pageNo,pageSize){
 			   where sp.screenPoint = '${screenPoint}'
 			   `
 	if(screenId){
-		sql+=`and screenId like '%${screenId}%'`
+		sql+=` and sc.screenId like '%${screenId}%'`
 	}
 	if(statusFlag){
 		if(statusFlag=='null'){
@@ -250,7 +250,7 @@ export function getCollectCount(screenId,screenPoint,statusFlag){
 			   where sp.screenPoint = '${screenPoint}'
 			   `
 	if(screenId){
-		sql+=`and screenId like '%${screenId}%'`
+		sql+=` and sc.screenId like '%${screenId}%'`
 	}
 	if(statusFlag){
 		if(statusFlag=='null'){

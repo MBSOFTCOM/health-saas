@@ -428,6 +428,7 @@ import {
 } from '@/utils/sqlite';
 import {
 	collectSymptoms,
+	collectSymptoms_new,
 	screenType,
 	getLabelByValue,
 	genderMap,
@@ -738,12 +739,7 @@ updateArray(number) {
 			if (value == null || value == 'null') {
 				return '';
 			}
-			if (value.toString() == '0') {
-				return '无卡痕';
-			}
-			if (value.toString() == '9') {
-				return '有卡痕';
-			}
+			
 			let data = value.toString().split('');
 			// console.log(data);
 			let str = '';
@@ -753,9 +749,9 @@ updateArray(number) {
 				if (data[i] === '9') {
 					continue;
 				} else {
-					for (let j = 0; j < collectSymptoms.length; j++) {
-						if (parseInt(data[i]) === collectSymptoms[j].value) {
-							str += collectSymptoms[j].text;
+					for (let j = 0; j < collectSymptoms_new.length; j++) {
+						if (parseInt(data[i]) == collectSymptoms_new[j].value) {
+							str += collectSymptoms_new[j].text;
 						}
 					}
 					if (i < data.length - 1) {
@@ -763,11 +759,7 @@ updateArray(number) {
 					}
 				}
 			}
-			if (value.toString().includes('9')) {
-				str += ',有卡痕';
-			} else {
-				str += ',无卡痕';
-			}
+			
 			return str;
 		},
 		/**
@@ -1194,6 +1186,7 @@ updateArray(number) {
 		},
 		// 访问本地数据库
 		search(item) {
+			console.log(item);
 			switch (item) {
 				case 0:
 					SynchronizeApi.getWorkTeamCount(this.queryParams.groupName).then((res) => {
@@ -1238,7 +1231,6 @@ updateArray(number) {
 				case 2:
 					SynchronizeApi.getCollectCount(this.queryParams.screenId, this.queryParams.screenPoint,null).then(
 						(res) => {
-							// console.log(res);
 							if (res[0].num > 0) {
 								this.total = res[0].num;
 								SynchronizeApi.getCollectData(
@@ -1418,7 +1410,14 @@ updateArray(number) {
 		},
 		//筛查类型
 		screenType(value) {
-			return getLabelByValue(screenType, value);
+			let label=''
+			for (let item of screenType) {
+				   if (item.value==value){
+					   // console.log(item.label)
+					   label= item.label
+			   }
+			}
+			return label
 		},
 		//胸片结果转换
 		chestRadiographOutcome(value) {

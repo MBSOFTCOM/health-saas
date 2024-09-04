@@ -471,7 +471,16 @@ export default {
 							// console.log(self.SyncData);
 
 							// 上传
-							SynchronizeApi.updateTableData1(self.SyncData).then((res) => {
+							SynchronizeApi.updateTableData1(self.SyncData).then(async(res) => {
+								for (var i = 0; i < res.data.length; i++) {
+									// console.log(tableData);
+									await SynchronizeApi.updatePersonId(tbScreenPerson,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
+									await SynchronizeApi.updatePersonIdOnly(tbScreenSum,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
+									await SynchronizeApi.updatePersonIdOnly(tbScreenCollect,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
+									await SynchronizeApi.updatePersonIdOnly(tbScreenPpd,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
+									await SynchronizeApi.updatePersonIdOnly(tbScreenChestRadiograph,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
+									await SynchronizeApi.updatePersonIdOnly(tbScreenImages,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
+								}
 								if (res.data) {
 									uni.showToast({
 										title: '上传成功',

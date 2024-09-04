@@ -432,3 +432,33 @@ export const collectSymptoms = [
 		value: 9
 	}
 ]
+export const collectSymptoms_new = [
+	{
+		text: '咳嗽、咳痰（超过两周）',
+		value: 1
+	},
+	{
+		text: '血痰或咯血',
+		value: 2
+	},
+	{
+		text: '乏力、盗汗',
+		value: 3
+	},
+	{
+		text: '体重减轻（超过6斤）',
+		value: 4
+	},
+	{
+		text: '发热',
+		value: 5
+	},
+	{
+		text: '食欲不振',
+		value: 6
+	},
+	{
+		text: '胸痛',
+		value: 7
+	}
+]

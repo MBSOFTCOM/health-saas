@@ -107,7 +107,7 @@ export const tableSqls = [
 		tableName: 'tb_screen_collect',
 		sql: `CREATE TABLE "tb_screen_collect" (
 			"id" INTEGER PRIMARY KEY AUTOINCREMENT ,-- 主键
-			"screenId" INTEGER , -- 筛查编号
+			"screenId" TEXT , -- 筛查编号(生成的编码)
 			"syncId" INTEGER , -- 同步时唯一编码
 			"personId" INTEGER , -- 对应摸底表中id
 			"idNum" TEXT , -- 身份证号
