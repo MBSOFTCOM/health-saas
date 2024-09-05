@@ -79,10 +79,10 @@ body {
 /* 表格内字体样式和大小 */
 .el-table td {
   .cell {
-    font-family: 'Helvetica';
+    font-family: 'Song';
     font-weight: 500;
     font-size: 16px;
-    color: #606266;
+    color: #000;
   }
 }
 /* 全局修改label字体 */
