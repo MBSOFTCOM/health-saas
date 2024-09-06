@@ -57,4 +57,22 @@
         and sc.deleted=0
         and sp.deleted=0
     </select>
+    <select id="selectWxLastTime"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO">
+        SELECT *
+        FROM
+        tb_screen_collect
+        WHERE deleted=0 and person_id = #{personId}
+        <if test="year != null">
+            AND `year` = #{year}
+        </if>
+        <if test="screenType != null">
+            AND `screen_type` = #{screenType}
+        </if>
+        <if test="dataSource != null">
+            AND `data_sources` = #{dataSource}
+        </if>
+        ORDER BY screen_order DESC
+        LIMIT 1
+    </select>
 </mapper>

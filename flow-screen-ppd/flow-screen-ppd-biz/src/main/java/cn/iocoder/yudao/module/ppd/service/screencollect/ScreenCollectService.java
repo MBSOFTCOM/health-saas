@@ -4,6 +4,7 @@ package cn.iocoder.yudao.module.ppd.service.screencollect;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.ppd.controller.admin.screencollect.vo.ScreenCollectPageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screencollect.vo.ScreenCollectSaveReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screencollect.vo.WxCollectReqVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
 import jakarta.validation.Valid;
 
@@ -21,7 +22,15 @@ public interface ScreenCollectService {
      * @return 编号
      */
     Long createScreenCollect(@Valid ScreenCollectSaveReqVO createReqVO);
+    /**
+     * 微信小程序创建采集
+     *
+     * @param createReqVO 创建信息
+     * @return 编号
+     */
+    Long createScreenCollect(@Valid WxCollectReqVO createReqVO);
 
+    Integer getLastOrder(Integer screenType,Integer year,Long personId,Integer dataSource);
     /**
      * 更新采集
      *

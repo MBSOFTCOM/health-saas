@@ -989,7 +989,7 @@ export default {
 					let recordData={
 						consumeId:this.injectionReagent.id,
 						changeNumber:1,
-						type:4,
+						type:1,
 						createTime: this.screenTime,
 						updateTime: this.screenTime,
 						creator: uni.$person.id,

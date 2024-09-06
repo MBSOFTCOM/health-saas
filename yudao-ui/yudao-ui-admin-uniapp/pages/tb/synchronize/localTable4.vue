@@ -368,8 +368,12 @@ export default {
 									let updateDr=await SynchronizeApi.updateTableData4(self.SyncData)
 									console.log(updateDr);
 									for (var i = 0; i < updateDr.data.length; i++) {
-										await SynchronizeApi.updateIdAndStatusFlag(tbScreenChestRadiograph,updateDr.data[i].id,updateDr.data[i].newId,updateDr.data[i].idNum)
-										await SynchronizeApi.updateSumFieldId(updateDr.data[i].id,updateDr.data[i].newId,updateDr.data[i].idNum,'chestRadiographId')
+										if(res.data[i].id == res.data[i].newId){
+											SynchronizeApi.updateStatusFlagOnly(tbScreenChestRadiograph,res.data[i].id,res.data[i].idNum)
+										}else{										
+											await SynchronizeApi.updateIdAndStatusFlag(tbScreenChestRadiograph,res.data[i].id,res.data[i].newId,res.data[i].idNum)
+											await SynchronizeApi.updateSumFieldId(res.data[i].id,res.data[i].newId,res.data[i].idNum,'chestRadiographId')
+										}
 									}
 									//上传汇总表
 									for (let i = 0; i < self.SyncData.length; i++) {
@@ -456,8 +460,12 @@ export default {
 							// 上传
 							SynchronizeApi.updateTableData4(self.SyncData).then(async(res) => {
 								for (var i = 0; i < res.data.length; i++) {
-									await SynchronizeApi.updateIdAndStatusFlag(tbScreenChestRadiograph,res.data[i].id,res.data[i].newId,res.data[i].idNum)
-									await SynchronizeApi.updateSumFieldId(res.data[i].id,res.data[i].newId,res.data[i].idNum,'chestRadiographId')
+									if(res.data[i].id == res.data[i].newId){
+										SynchronizeApi.updateStatusFlagOnly(tbScreenChestRadiograph,res.data[i].id,res.data[i].idNum)
+									}else{										
+										await SynchronizeApi.updateIdAndStatusFlag(tbScreenChestRadiograph,res.data[i].id,res.data[i].newId,res.data[i].idNum)
+										await SynchronizeApi.updateSumFieldId(res.data[i].id,res.data[i].newId,res.data[i].idNum,'chestRadiographId')
+									}
 								}
 								if (res.data) {
 									uni.showToast({

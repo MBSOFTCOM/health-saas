@@ -101,4 +101,9 @@ public class ScreenCollectDO extends BaseDO {
      */
     private Integer screenType;
 
+    /**
+     * 数据来源 0-非微信小程序 1-微信小程序;默认1
+     */
+    private Integer dataSources;
+
 }

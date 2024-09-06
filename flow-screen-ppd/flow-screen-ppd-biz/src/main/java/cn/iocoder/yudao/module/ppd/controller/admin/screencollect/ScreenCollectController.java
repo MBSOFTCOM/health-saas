@@ -10,6 +10,7 @@ import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screencollect.vo.ScreenCollectPageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screencollect.vo.ScreenCollectRespVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screencollect.vo.ScreenCollectSaveReqVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screencollect.vo.WxCollectReqVO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
 import cn.iocoder.yudao.module.ppd.service.screencollect.ScreenCollectService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
+import static cn.iocoder.yudao.framework.common.pojo.CommonResult.successMsg;
 
 @Tag(name = "管理后台 - 采集")
 @RestController
@@ -42,6 +44,12 @@ public class ScreenCollectController {
     @PreAuthorize("@ss.hasPermission('tb:screen-collect:create')")
     public CommonResult<Long> createScreenCollect(@Valid @RequestBody ScreenCollectSaveReqVO createReqVO) {
         return success(screenCollectService.createScreenCollect(createReqVO));
+    }
+    @PostMapping("/wx/create")
+    @Operation(summary = "创建采集")
+    @PreAuthorize("@ss.hasPermission('tb:screen-collect:wx-create')")
+    public CommonResult<Long> createScreenCollect(@Valid @RequestBody WxCollectReqVO createReqVO) {
+        return successMsg(screenCollectService.createScreenCollect(createReqVO));
     }
 
     @PutMapping("/update")

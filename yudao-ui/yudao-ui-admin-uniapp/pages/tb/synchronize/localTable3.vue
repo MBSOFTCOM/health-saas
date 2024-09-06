@@ -242,6 +242,7 @@ export default {
 						this.pageNo,
 						this.pageSize
 					).then((resp) => {
+						// console.log(resp);
 						this.pageData = resp.map((item) => ({
 							...item,
 							injectionAgency: this.agency
@@ -348,7 +349,7 @@ export default {
 		// 平板到pc
 		async PadToPc() {
 			let person=await SynchronizeApi.getPersonCount(this.queryParams.screenId, this.queryParams.screenPoint,'not null', -1, this.pageSize)
-			console.log(person);
+			// console.log(person);
 			if(person[0].num>=1){
 				uni.showToast({
 					title: '待筛查人员信息还有未上传的改动，请先同步待筛查人员信息',
@@ -437,12 +438,10 @@ export default {
 										consume[i].updateTime = new Date(consume[i].updateTime).getTime();
 									}
 								}
-								// console.log(consume);
 								let consumeResult=await ConsumeRecordApi.upload(consume)
 								// 上传ppd组图片
 								await SynchronizeApi.uploadOfflineImage(2);
-								if(consumeResult.data){
-									
+								if(consumeResult || consumeResult.data!=null){
 									uni.hideLoading();
 									uni.showToast({
 									title: '上传成功',
@@ -500,58 +499,40 @@ export default {
 							});
 							// console.log(self.SyncData);
 							// 上传
-							SynchronizeApi.updateTableData3(self.SyncData).then(async(res) => {
-								for (var i = 0; i < res.data.length; i++) {
-									await SynchronizeApi.updateIdAndStatusFlag(tbScreenPpd,res.data[i].id,res.data[i].newId,res.data[i].idNum)
-									await SynchronizeApi.updateSumFieldId(res.data[i].id,res.data[i].newId,res.data[i].idNum,'ppdId')
-								}
-								if (res.data) {
-									uni.showToast({
-										title: '上传成功',
-										mask: true,
-										icon: 'success',
-										duration: 1500
-									});
-									// 记录本次同步时间(存缓存)
-									let time = self.getCurrentTime()
-									uni.setStorage({
-										key:'ppdPad',
-										data:time
-									})
-									self.synchronizeTime=time
-									uni.setStorage({
-										key:'ppd',
-										data:time
-									})
-								}
-							});
-							//上传汇总表
-							for (let i = 0; i < self.SyncData.length; i++) {
-								SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId).then(res=>{
-									res.forEach(item=>{
-										if(item.lastCollectTime){
-											item.lastCollectTime = new Date(item.lastCollectTime).getTime();
-										}
-										if(item.lastPpdTime){
-											item.lastPpdTime = new Date(item.lastPpdTime).getTime();
-										}
-										if(item.lastChestRadiographTime){
-											item.lastChestRadiographTime = new Date(item.lastChestRadiographTime).getTime();
-										}
-										if(item.lastSputumExaminationTime){
-											item.lastSputumExaminationTime = new Date(item.lastSputumExaminationTime).getTime();
-										}
-										if(item.lastElectrocardiogramTime){
-											item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
-										}
-										
-									})
-									SynchronizeApi.uploadSumData(res);
-								})
+							let updatePpd=await SynchronizeApi.updateTableData3(self.SyncData)
+							for (var i = 0; i < updatePpd.data.length; i++) {
+								await SynchronizeApi.updateIdAndStatusFlag(tbScreenPpd,updatePpd.data[i].id,updatePpd.data[i].newId,updatePpd.data[i].idNum)
+								await SynchronizeApi.updateSumFieldId(updatePpd.data[i].id,updatePpd.data[i].newId,updatePpd.data[i].idNum,'ppdId')
 							}
-							self.SyncData.forEach((item) => {
+							//上传汇总表
+							console.log(1);
+							for (let i = 0; i < self.SyncData.length; i++) {
+								console.log("i"+1);
+								let sumData=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId)
+								console.log(sumData);
+								sumData.forEach(item=>{
+									if(item.lastCollectTime){
+										item.lastCollectTime = new Date(item.lastCollectTime).getTime();
+									}
+									if(item.lastPpdTime){
+										item.lastPpdTime = new Date(item.lastPpdTime).getTime();
+									}
+									if(item.lastChestRadiographTime){
+										item.lastChestRadiographTime = new Date(item.lastChestRadiographTime).getTime();
+									}
+									if(item.lastSputumExaminationTime){
+										item.lastSputumExaminationTime = new Date(item.lastSputumExaminationTime).getTime();
+									}
+									if(item.lastElectrocardiogramTime){
+										item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
+									}
+								})
+								console.log(sumData);
+								await SynchronizeApi.uploadSumData(sumData);
+							}
+							await self.SyncData.forEach(async(item) => {
 								// 上传ppd组图片
-								SynchronizeApi.uploadOfflineImageOne(
+								await SynchronizeApi.uploadOfflineImageOne(
 									2,
 									item.screenId,
 									item.personId,
@@ -560,6 +541,25 @@ export default {
 									item.screenType
 								);
 							});
+							
+							uni.showToast({
+								title: '上传完成',
+								mask: true,
+								icon: 'success',
+								duration: 1500
+							});
+							// 记录本次同步时间(存缓存)
+							let time = self.getCurrentTime()
+							uni.setStorage({
+								key:'ppdPad',
+								data:time
+							})
+							self.synchronizeTime=time
+							uni.setStorage({
+								key:'ppd',
+								data:time
+							})
+						
 							self.SyncData = []; //清空同步数组
 							self.$refs.table.clearSelection(); //清除勾选内容
 							self.selectedIndexs.length = 0; // 清空索引数组

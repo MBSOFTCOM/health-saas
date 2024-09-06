@@ -56,4 +56,13 @@ public interface ScreenCollectMapper extends BaseMapperX<ScreenCollectDO> {
     ScreenCollectDO selectByPersonIdLastTime(@Param("personId") Long personId,
                                              @Param("year") Integer year,
                                              @Param("screenType") Integer screenType);
+    /**
+     * 根据摸底表id获取到采集组中最近一次采集结果数据
+     * @param personId 摸底表id
+     * @param year 筛查年份
+     * @param screenType 筛查类型
+     * @return 采集结果数据
+     */
+    ScreenCollectDO selectWxLastTime(@Param("personId") Long personId, @Param("year") Integer year,
+                                     @Param("screenType") Integer screenType,@Param("dataSource") Integer dataSource);
 }

@@ -1136,7 +1136,7 @@ export function uploadOfflineImageOne(type, screenId, personId, screenOrder, yea
 			inType = ' IN (8) '
 			break;
 		case 2:
-			inType = ' IN (9)'
+			inType = ' IN (9,16,17,18)'
 			break;
 		case 3:
 			inType = ' IN (1, 2, 10, 11) '
@@ -1168,7 +1168,7 @@ export function uploadOfflineImageOne(type, screenId, personId, screenOrder, yea
 							method: 'PUT',
 							name: 'imageFile',
 							filePath: item.path
-						}).then(res => {
+						}).then(async(res) => {
 							if (res) {
 								let url = res.data;
 
@@ -1177,6 +1177,7 @@ export function uploadOfflineImageOne(type, screenId, personId, screenOrder, yea
 									personId: item.personId,
 									type: item.type,
 									path: item.path,
+									idNum: item.idNum,
 									url: url,
 									screenTime: item.screenTime,
 									screenOrder: item.screenOrder,
@@ -1184,16 +1185,16 @@ export function uploadOfflineImageOne(type, screenId, personId, screenOrder, yea
 									createTime: item.createTime,
 									// 筛查年份、类型
 									year: currentYear,
-									screenType: uni.$screenType
+									screenType: screenType
 								};
 
+								console.log(data);
 								// 创建移动端各组离线图片信息
-								const createResult = request({
+								await request({
 									url: '/tb/screen-images/create',
 									'method': 'POST',
 									data: data
 								});
-								console.log(createResult);
 							}
 						})
 					}
@@ -1244,6 +1245,7 @@ export function uploadOfflineImage(type) {
 			WHERE
 				"type" ${inType} `,
 		success(res) {
+			console.log(res);
 			if (res) {
 				for (let i = 0; i < res.length; i++) {
 					if (res[i].path) {
@@ -1254,10 +1256,10 @@ export function uploadOfflineImage(type) {
 							method: 'PUT',
 							name: 'imageFile',
 							filePath: item.path
-						}).then(res => {
+						}).then(async(res) => {
+							console.log(res);
 							if (res) {
 								let url = res.data;
-
 								let data = {
 									screenId: item.screenId,
 									personId: item.personId,
@@ -1274,7 +1276,7 @@ export function uploadOfflineImage(type) {
 									screenType: item.screenType
 								};
 								// 创建移动端各组离线图片信息
-								const createResult = request({
+								await request({
 									url: '/tb/screen-images/create',
 									'method': 'POST',
 									data: data
@@ -1359,6 +1361,17 @@ export async function updatePersonIdOnly(table,id,newId,idNum,screenId){
  */
 export async function updateIdAndStatusFlag(table,id,newId,idNum){
 	let sql=`update ${table} set id=${newId},statusFlag=null where id=${id} and idNum=${idNum} `
+	console.log(sql);
+	return promise(dbName,sql)
+}
+/**
+ * 更新数据状态statusFlag
+ * @param {string} table 表名
+ * @param {number} id 旧的id
+ * @param {string} idNum 患者身份证
+ */
+export async function updateStatusFlagOnly(table,id,idNum){
+	let sql=`update ${table} set statusFlag=null where id=${id} and idNum=${idNum} `
 	console.log(sql);
 	return promise(dbName,sql)
 }

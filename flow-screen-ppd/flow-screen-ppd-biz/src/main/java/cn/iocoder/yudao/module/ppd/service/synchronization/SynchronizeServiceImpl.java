@@ -117,6 +117,9 @@ public class SynchronizeServiceImpl implements SynchronizeService{
             //           有记录 -- 查询表中id的最大值 ， 更新待插入数据的id值 再插入
             Long id = synchronizeMapper.selectPersonIdByIndex(item.getScreenType(),item.getYear(),item.getIdNum());
             if (id != null ) {
+                syncRespVO.setNewId(item.getId());
+                syncRespVO.setScreenId(item.getScreenId());
+                result.add(syncRespVO);
                 synchronizeMapper.updateScreenPerson(item,id);
             }else{
                 /*Long result = synchronizeMapper.selectCountById("tb_screen_person", item.getId());
@@ -170,6 +173,8 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                 ScreenCollectDO collectDO = BeanUtils.toBean(item, ScreenCollectDO.class);
                 Long id = synchronizeMapper.selectCollectIdByIndex(item.getScreenId(), item.getScreenOrder(), item.getPersonId());
                 if(id != null){
+                    syncRespVO.setNewId(collectDO.getId());
+                    result.add(syncRespVO);
                     screenCollectMapper.updateById(collectDO);
                 }
             }
@@ -208,6 +213,8 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                 ScreenPpdDO screenPpdDO = BeanUtils.toBean(item, ScreenPpdDO.class);
                 Long id = synchronizeMapper.selectPpdIdByIndex(item.getScreenId(), item.getScreenOrder(), item.getPersonId());
                 if(id != null){
+                    syncRespVO.setNewId(screenPpdDO.getId());
+                    result.add(syncRespVO);
                     screenPpdMapper.updateById(screenPpdDO);
                 }
             }
@@ -246,6 +253,8 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                 ScreenChestRadiographDO radiographDO = BeanUtils.toBean(item, ScreenChestRadiographDO.class);
                 Long id = synchronizeMapper.selectChestRadiographIdByIndex(item.getScreenId(), item.getScreenOrder(), item.getPersonId());
                 if(id != null){
+                    syncRespVO.setNewId(radiographDO.getId());
+                    result.add(syncRespVO);
                     screenChestRadiographMapper.updateById(radiographDO);
                 }
             }

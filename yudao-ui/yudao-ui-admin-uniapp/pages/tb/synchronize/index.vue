@@ -164,15 +164,7 @@
 						<uni-th width="8%" align="center">身高</uni-th>
 						<uni-th width="8%" align="center">体重</uni-th>
 						<uni-th width="8%" align="center">户籍地址</uni-th>
-						<uni-th width="8%" align="center">户籍地址-省</uni-th>
-						<uni-th width="8%" align="center">户籍地址-市</uni-th>
-						<uni-th width="8%" align="center">户籍地址-县</uni-th>
-						<uni-th width="8%" align="center">户籍地址-乡镇</uni-th>
 						<uni-th width="8%" align="center">现住址</uni-th>
-						<uni-th width="8%" align="center">现住址-省</uni-th>
-						<uni-th width="8%" align="center">现住址-市</uni-th>
-						<uni-th width="8%" align="center">现住址-县</uni-th>
-						<uni-th width="8%" align="center">现住址-乡镇</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item, index) in pageData" :key="index">
 						<uni-td align="center">{{ index + 1 }}</uni-td>
@@ -197,15 +189,7 @@
 						<uni-td align="center">{{ item.height }}</uni-td>
 						<uni-td align="center">{{ item.weight }}</uni-td>
 						<uni-td align="center">{{ item.permanentAddress }}</uni-td>
-						<uni-td align="center">{{ item.permanentAddressProvince }}</uni-td>
-						<uni-td align="center">{{ item.permanentAddressCity }}</uni-td>
-						<uni-td align="center">{{ item.permanentAddressCounty }}</uni-td>
-						<uni-td align="center">{{ item.permanentAddressTown }}</uni-td>
 						<uni-td align="center">{{ item.address }}</uni-td>
-						<uni-td align="center">{{ item.province }}</uni-td>
-						<uni-td align="center">{{ item.city }}</uni-td>
-						<uni-td align="center">{{ item.county }}</uni-td>
-						<uni-td align="center">{{ item.town }}</uni-td>
 					</uni-tr>
 				</uni-table>
 				<!-- 采集组数据 -->

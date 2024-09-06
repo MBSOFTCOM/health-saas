@@ -15,6 +15,11 @@ public interface ErrorCodeConstants{
 
 
     // ========= 实验室组 =========
+    ErrorCode WX_COLLECT_ADD_FAIL=new ErrorCode(10050,"提交问卷调查失败");
+
+
+
+    // ========= 实验室组 =========
     ErrorCode SCREEN_EXPERIMENT_NOT_EXISTS = new ErrorCode(10003, "实验室组不存在");
     ErrorCode SCREEN_EXPERIMENT_DATA_EXISTS = new ErrorCode(100031, "实验室组数据重复");
 
