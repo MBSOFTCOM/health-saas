@@ -159,7 +159,7 @@
               阴性
               </#if>
             </td>
-            <td class="text-left">医生签名:</td>
+            <td class="text-left">医生签名:<#if ppdDoctorSignature><img src="${ppdDoctorSignature}" width="100" height="50"/></#if></td>
           </tr>
           <tr>
             <td class="trs">√</td>
@@ -176,7 +176,7 @@
               <br />
               <div>机器中与患者对应的编码：${chestXRayCode}</div>
             </td>
-            <td class="text-left">医生签名:</td>
+            <td class="text-left">医生签名:<#if chestXRayDoctorSignature><img src="${chestXRayDoctorSignature}" width="100" height="50"/></#if></td>
           </tr>
         </table>
       </div>

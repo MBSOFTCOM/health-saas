@@ -7,6 +7,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
+import cn.hutool.poi.word.PicType;
 import cn.hutool.poi.word.Word07Writer;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
@@ -20,6 +21,7 @@ import cn.iocoder.yudao.module.ppd.dal.dataobject.screenchestradiograph.ScreenCh
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencomputedtomography.ScreenComputedTomographyDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenimages.ScreenImagesDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.screeninformedconsentform.ScreenInformedConsentFormDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenrepeatperson.ScreenRepeatPersonDO;
@@ -28,6 +30,7 @@ import cn.iocoder.yudao.module.ppd.dal.mysql.screenchestradiograph.ScreenChestRa
 import cn.iocoder.yudao.module.ppd.dal.mysql.screencomputedtomography.ScreenComputedTomographyMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screendistrict.ScreenDistrictMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenimages.ScreenImagesMapper;
+import cn.iocoder.yudao.module.ppd.dal.mysql.screeninformedconsentform.ScreenInformedConsentFormMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenpersonrealsituation.ScreenPersonMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenpoint.ScreenPointMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenppd.ScreenPpdMapper;
@@ -61,6 +64,8 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 import java.awt.*;
 import java.io.*;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -121,6 +126,8 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
     private ScreenChestRadiographMapper screenChestRadiographMapper;
     @Resource
     private ScreenComputedTomographyService screenComputedTomographyService;
+    @Resource
+    private ScreenInformedConsentFormMapper screenInformedConsentFormMapper;
     @Override
     public Long createScreenPerson(ScreenPersonSaveReqVO createReqVO) {
         // 插入
@@ -1147,6 +1154,10 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
                 String idCardNumber = obj.getIdNum();
                 String school = obj.getSchool();
                 String classroom = obj.getClassroom();
+                ScreenInformedConsentFormDO informedConsentFormDO = screenInformedConsentFormMapper.selectLastOne(obj.getId());
+                String signaturePath = informedConsentFormDO.getSignature();
+                String reason = informedConsentFormDO.getReason();
+
                 // 添加段落（标题）
                 writer.addText(ParagraphAlignment.CENTER, new Font("黑体", Font.PLAIN, 16), "结核病筛查PPD皮肤试验知情告知书");
                 writer.addText(new Font("宋体", Font.PLAIN, 16), "");
@@ -1181,9 +1192,22 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
                 writer.addText(new Font("宋体", Font.PLAIN, 10), "");
                 writer.addText(new Font("宋体", Font.PLAIN, 10), "请仔细阅读并理解以上内容，受试者健康状况良好，无皮试禁忌症，愿意接受PPD皮肤试验。");
                 writer.addText(new Font("宋体", Font.PLAIN, 10), "");
-                writer.addText(new Font("宋体", Font.PLAIN, 10), "如拒绝接受PPD皮肤试验，请说明原因_______________________________________");
+                if (!BeanUtil.isEmpty(informedConsentFormDO) && !reason.isBlank()){
+                    writer.addText(new Font("宋体", Font.PLAIN, 10), "如拒绝接受PPD皮肤试验，请说明原因_____"+reason+"_____");
+                }else {
+                    writer.addText(new Font("宋体", Font.PLAIN, 10), "如拒绝接受PPD皮肤试验，请说明原因_______________________________________");
+                }
                 writer.addText(new Font("宋体", Font.PLAIN, 10), "");
-                writer.addText(ParagraphAlignment.RIGHT, new Font("宋体", Font.PLAIN, 10), "家长确认签名：____________________");
+                if (!BeanUtil.isEmpty(informedConsentFormDO) && !signaturePath.isEmpty()){
+                    //获取网络图片生成inputstream
+                    InputStream inputStream = new URL(signaturePath).openStream();
+                    writer.addText(ParagraphAlignment.RIGHT, new Font("宋体", Font.PLAIN, 10), "家长确认签名:");
+                    //添加图片
+                    writer.addPicture(inputStream, PicType.PNG,"签名",100,50,ParagraphAlignment.RIGHT);
+//                    writer.addPicture()
+                }else {
+                    writer.addText(ParagraphAlignment.RIGHT, new Font("宋体", Font.PLAIN, 10), "家长确认签名：____________________");
+                }
                 writer.addText(new Font("宋体", Font.PLAIN, 10), "");
                 writer.addText(ParagraphAlignment.RIGHT, new Font("宋体", Font.PLAIN, 10), "年   月   日");
 
@@ -1203,6 +1227,12 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             }
         } catch (IORuntimeException e) {
             e.printStackTrace();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         writeToZip(response, files);
     }

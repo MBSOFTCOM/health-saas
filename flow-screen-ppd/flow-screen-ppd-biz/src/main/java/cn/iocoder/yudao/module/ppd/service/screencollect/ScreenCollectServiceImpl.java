@@ -91,7 +91,7 @@ public class ScreenCollectServiceImpl implements ScreenCollectService {
         screenCollectDO.setScreenType(2);
         screenCollectDO.setScreenPoint(screenPerson.getScreenPoint());
         screenCollectDO.setYear(yearNow);
-        screenCollectDO.setScreenOrder(order);
+        screenCollectDO.setScreenOrder(order+1);
         screenCollectMapper.insert(screenCollectDO);
         return screenCollectDO.getId();
     }
