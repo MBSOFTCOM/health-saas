@@ -30,7 +30,7 @@ public interface ScreenCollectService {
      */
     Long createScreenCollect(@Valid WxCollectReqVO createReqVO);
 
-    Integer getLastOrder(Integer screenType,Integer year,Long personId,Integer dataSource);
+    Integer getLastOrder(Integer screenType,Integer year,Long personId);
     /**
      * 更新采集
      *

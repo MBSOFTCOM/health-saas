@@ -79,7 +79,7 @@ public class ScreenCollectServiceImpl implements ScreenCollectService {
         }else {
             age = yearNow - year-1;
         }
-        order=getLastOrder(2,yearNow,screenPerson.getId(),2);
+        order=getLastOrder(2,yearNow,screenPerson.getId());
         screenCollectDO.setDataSources(1);
         screenCollectDO.setIdNum(idNum);
         screenCollectDO.setAge(age);
@@ -170,8 +170,8 @@ public class ScreenCollectServiceImpl implements ScreenCollectService {
     }
 
     @Override
-    public Integer getLastOrder(Integer screenType, Integer year, Long personId, Integer dataSource) {
-        ScreenCollectDO wxLastTime = screenCollectMapper.selectWxLastTime(personId, year, screenType, dataSource);
+    public Integer getLastOrder(Integer screenType, Integer year, Long personId) {
+        ScreenCollectDO wxLastTime = screenCollectMapper.selectByPersonIdLastTime(personId, year, screenType);
         if (BeanUtil.isEmpty(wxLastTime) || wxLastTime.getScreenOrder()==null){
             return 1;
         }

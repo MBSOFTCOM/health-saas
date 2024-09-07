@@ -93,7 +93,8 @@ public class SynchronizeController {
     @Operation(summary = "获取采集组数据")
 //    @PreAuthorize("@ss.hasPermission('tb:synchronization:query')")
     public CommonResult<PageResult<ScreenCollectRespVO>> getTableData2(ScreenCollectPageReqVO pageReqVO) {
-        PageResult<ScreenCollectDO> pageResult = synchronizeService.getCollectPage(pageReqVO);
+        pageReqVO.setDataSource(0);
+        PageResult<ScreenCollectDO> pageResult = synchronizeService.getCollectPageDiffSource(pageReqVO);
         return success(BeanUtils.toBean(pageResult, ScreenCollectRespVO.class));
     }
 

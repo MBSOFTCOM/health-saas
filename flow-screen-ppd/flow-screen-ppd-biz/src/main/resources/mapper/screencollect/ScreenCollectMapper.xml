@@ -18,7 +18,7 @@
         FROM
             tb_screen_collect
         WHERE
-            person_id = #{personId}
+            person_id = #{personId} and deleted=0
         <if test="year != null">
             AND `year` = #{year}
         </if>
@@ -74,5 +74,40 @@
         </if>
         ORDER BY screen_order DESC
         LIMIT 1
+    </select>
+    <select id="selectCollectDataDiffSource"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO">
+        select sc.*,sp.screen_point,sp.name
+        from tb_screen_collect sc
+        left join tb_screen_person sp on sc.person_id = sp.id
+        where sp.screen_point=#{screenPoint}
+        and sc.year=#{year}
+        <if test="screenId !=null and screenId !=''">
+            and sc.screen_id like concat('%',#{screenId},'%')
+        </if>
+        <if test="dataSource !=null">
+            and sc.data_sources=#{dataSource}
+        </if>
+        and sc.deleted=0
+        and sp.deleted=0
+        order by sc.id desc
+        <if test="pageSize!=-1">
+            limit #{pageNo},#{pageSize}
+        </if>
+    </select>
+    <select id="countCollectDiffSource" resultType="java.lang.Long">
+        select ifnull(count(*),0)
+        from tb_screen_collect sc
+        left join tb_screen_person sp on sc.person_id = sp.id
+        where sp.screen_point=#{screenPoint}
+        and sc.year=#{year}
+        <if test="screenId !=null and screenId !=''">
+            and sc.screen_id like concat('%',#{screenId},'%')
+        </if>
+        <if test="dataSource !=null">
+            and sc.data_sources=#{dataSource}
+        </if>
+        and sc.deleted=0
+        and sp.deleted=0
     </select>
 </mapper>

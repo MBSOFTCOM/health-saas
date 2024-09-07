@@ -139,7 +139,7 @@ export default {
 				pageNo: 1,
 				screenId: undefined,
 				screenPoint: undefined,
-				year: uni.$user.year,
+				year: uni.$user.year
 				// 当前所选筛查类型
 				// screenType:uni.$screenType
 			},

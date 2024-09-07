@@ -40,11 +40,19 @@ public interface ScreenCollectMapper extends BaseMapperX<ScreenCollectDO> {
      * 同步-采集组分页
      */
     List<ScreenCollectDO> getCollectData(ScreenCollectPageReqVO reqVO);
+    /**
+     * 同步-采集组数据分页
+     */
+    List<ScreenCollectDO> selectCollectDataDiffSource(ScreenCollectPageReqVO reqVO);
 
     /**
      * 同步-采集组分页 条数
      */
     Long getCollectCount(ScreenCollectPageReqVO reqVO);
+    /**
+     * 同步-采集组分页 条数
+     */
+    Long countCollectDiffSource(ScreenCollectPageReqVO reqVO);
 
     /**
      * 根据摸底表id获取到采集组中最近一次采集结果数据

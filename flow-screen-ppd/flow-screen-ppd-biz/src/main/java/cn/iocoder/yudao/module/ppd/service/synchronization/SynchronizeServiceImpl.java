@@ -150,6 +150,14 @@ public class SynchronizeServiceImpl implements SynchronizeService{
         PageResult<ScreenCollectDO> pageResult=new PageResult<>(screenCollectMapper.getCollectData(pageReqVO),screenCollectMapper.getCollectCount(pageReqVO));
         return pageResult;
     }
+    @Override
+    public PageResult<ScreenCollectDO> getCollectPageDiffSource(ScreenCollectPageReqVO pageReqVO) {
+        if(pageReqVO.getPageNo()!=-1){
+            pageReqVO.setPageNo((pageReqVO.getPageNo()-1)*pageReqVO.getPageSize());
+        }
+        PageResult<ScreenCollectDO> pageResult=new PageResult<>(screenCollectMapper.selectCollectDataDiffSource(pageReqVO),screenCollectMapper.countCollectDiffSource(pageReqVO));
+        return pageResult;
+    }
 
     @Override
     public List<SyncRespVO> updateCollect(List<ScreenCollectSaveReqVO> list) {

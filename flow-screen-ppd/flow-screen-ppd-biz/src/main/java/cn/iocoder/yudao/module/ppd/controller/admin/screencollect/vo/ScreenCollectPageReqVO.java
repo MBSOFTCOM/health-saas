@@ -50,4 +50,7 @@ public class ScreenCollectPageReqVO extends PageParam {
 
     @Schema(description = "筛查类型")
     private Integer screenType;
+
+    @Schema(description = "数据类型 0-非小程序 1-小程序")
+    private Integer dataSource;
 }

@@ -48,6 +48,12 @@ public interface SynchronizeService {
      * @return
      */
     PageResult<ScreenCollectDO> getCollectPage(ScreenCollectPageReqVO pageReqVO);
+    /**
+     * 获取采集表分页数据
+     * @param pageReqVO
+     * @return
+     */
+    PageResult<ScreenCollectDO> getCollectPageDiffSource(ScreenCollectPageReqVO pageReqVO);
 
     /**
      * 更新采集表数据
