@@ -6,16 +6,22 @@ import cn.iocoder.yudao.framework.common.exception.ErrorCode;
 public interface ErrorCodeConstants{
     ErrorCode EXCEL_EMPTY=new ErrorCode(30001,"excel中没有数据");
     ErrorCode EMPTY=new ErrorCode(30000,"没有数据");
+    ErrorCode VALUE_ERROR=new ErrorCode(300002,"值错误");
 
     // ========== 摸底  ==========
     ErrorCode SCREEN_PERSON_NOT_EXISTS = new ErrorCode(10001, "患者不存在");
     ErrorCode SCREEN_PERSON_IMPORT_ORDER_NOT_NUMBER = new ErrorCode(100010, "excel中的序号必须全部是大于0的正整数");
-
     ErrorCode IDNUM_ESITS = new ErrorCode(10002, "身份证号重复！");
 
 
+    // ========= 知情同意书 =========
+    ErrorCode SCREEN_INFORMED_CONSENT_FORM_NOT_EXISTS = new ErrorCode(100040, "知情同意书不存在");
+    ErrorCode SCREEN_INFORMED_CONSENT_FORM_PATH = new ErrorCode(100041, "知情同意书中家长签名未提供");
+    ErrorCode SCREEN_INFORMED_CONSENT_FORM_REASON = new ErrorCode(100042, "知情同意书中拒绝原因未提供");
+    ErrorCode SCREEN_INFORMED_CONSENT_FORM_IS_SIGN_VALUE_ERROR = new ErrorCode(100042, "知情同意书中是否签署的值错误");
+
     // ========= 实验室组 =========
-    ErrorCode WX_COLLECT_ADD_FAIL=new ErrorCode(10050,"提交问卷调查失败");
+    ErrorCode WX_COLLECT_ADD_FAIL=new ErrorCode(100050,"提交问卷调查失败");
 
 
 

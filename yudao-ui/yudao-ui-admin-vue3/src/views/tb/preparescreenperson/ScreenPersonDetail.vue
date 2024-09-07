@@ -379,12 +379,15 @@
               <li>保持PPD注射部位清洁干燥，禁揉搓、抓挠、涂擦药物，腕部禁止佩戴手表及饰品。</li>
               <li>受试者于PPD注射后72小时查验反应结果。</li>
             </ol>
-            <p><text><strong>【受试者姓名】</strong></text>______{{formData.name}}_____<text><strong>身份证号码</strong></text>_______{{formData.idNum}}_______</p>
-            <p><text><strong>【学校班级】</strong></text>___________{{formData.schoolOrTemple}}___{{formData.classroom}}_________________________________</p>
-            <p>请仔细阅读并理解以上内容，受试者健康状况良好，无皮试禁忌症，愿意接受PPD皮肤试验。<text><strong>如拒绝接受PPD皮肤试验，请说明原因</strong></text>_______________________________________</p>
+            <p><text><strong>【受试者姓名】</strong></text><u>&nbsp; &nbsp; &nbsp; &nbsp;{{informedConsentForm.name}}&nbsp; &nbsp; &nbsp; &nbsp;</u><text><strong>【身份证号码】</strong></text><u>&nbsp; &nbsp; &nbsp; &nbsp;{{informedConsentForm.idNum}}&nbsp; &nbsp; &nbsp; &nbsp;</u></p>
+            <p><text><strong>【学校班级】</strong></text><u>&nbsp; &nbsp; &nbsp; &nbsp;{{informedConsentForm.schoolName}}&nbsp; &nbsp; &nbsp; &nbsp;</u><u>{{informedConsentForm.classroom}}&nbsp; &nbsp; &nbsp; &nbsp;</u></p>
+            <p>请仔细阅读并理解以上内容，受试者健康状况良好，无皮试禁忌症，愿意接受PPD皮肤试验。<text><strong>如拒绝接受PPD皮肤试验，请说明原因</strong></text>
+              <el-row><u>{{informedConsentForm.reason}}&nbsp; &nbsp; &nbsp; &nbsp; </u></el-row>
+            </p>
             <div style="text-align: right;">
-              <p><text><strong>家长确认签名：</strong></text>____________________</p>
-              <p>年   月   日</p>
+              <p><text><strong>家长确认签名：</strong></text> <el-image v-if="informedConsentForm.signature" style="width: 100px; height: 100px;margin-bottom: -40px;" :src="informedConsentForm.signature" fit="contain" /></p>
+              <p v-if="informedConsentForm.createTime" style="margin-top: 40px;">{{new Date(informedConsentForm.createTime).toLocaleDateString('zh-CN',{ year: 'numeric', month: 'long', day: 'numeric' })}}</p>
+              <p v-else>年&nbsp; &nbsp; 月&nbsp; &nbsp; 日</p>
             </div>
           </div>
 
@@ -500,6 +503,7 @@ import ContentWrap from "@/components/ContentWrap/src/ContentWrap.vue"
 import type {TabsPaneContext} from 'element-plus'
 import {dateFormatter2} from '@/utils/formatTime'
 import ImageForm from './ImageForm.vue'
+import {ScreenInformedConsentFormApi} from "@/api/tb/screeninformedconsentform"
 
 
 const activeName = ref('first')
@@ -596,7 +600,8 @@ const tbHealthScreening = ref({
   hivorAIDS: undefined,
   ppdOutcome: undefined,
 })
-
+// 知情同意书
+const informedConsentForm=ref({})
 /** 打开弹窗 */
 const open = async (id: number, year: number, screenType: number) => {
   activeName.value = 'first'
@@ -607,6 +612,7 @@ const open = async (id: number, year: number, screenType: number) => {
     try {
       formData.value = await ScreenPersonApi.getScreenPerson(id)
       const data = await ScreenPersonApi.getPatientInfoList(id, year, screenType)
+      const infomedForm=await ScreenInformedConsentFormApi.getLastInformedConsentForm(id)
       checkList.value = data.checkList //采集组数据
       PPDList.value = data.ppdlist // PPD组数据
       DRList.value = data.drlist // DR组数据
@@ -615,6 +621,7 @@ const open = async (id: number, year: number, screenType: number) => {
       electList.value = data.electList // 心电图组数据
       diagnoList.value = data.diagnoList // 诊断组数据*/
       tbHealthScreening.value = data.tbHealthScreening //体检单数据
+      informedConsentForm.value=infomedForm
     } finally {
       formLoading.value = false
     }
