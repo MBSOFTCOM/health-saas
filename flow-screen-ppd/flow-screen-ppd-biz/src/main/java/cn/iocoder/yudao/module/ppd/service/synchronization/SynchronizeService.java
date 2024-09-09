@@ -2,6 +2,7 @@ package cn.iocoder.yudao.module.ppd.service.synchronization;
 
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.cd.enums.TableName;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenchestradiograph.vo.ScreenChestRadiographPageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenchestradiograph.vo.ScreenChestRadiographSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screencollect.vo.ScreenCollectPageReqVO;
@@ -117,4 +118,19 @@ public interface SynchronizeService {
     */
 
     void updateSum(List<ScreenSumSaveReqVO> list);
+
+    /**
+     * 根据某表的pad唯一标识获取数据主键
+     * @param table 表名
+     * @param padId pad唯一标识
+     * @return 数据主键
+     */
+    Long getPadIdFromSomeTable(String table,String  padId);
+    /**
+     * 根据某表的pad唯一标识获取数据主键
+     * @param table 表名
+     * @param padId pad唯一标识
+     * @return 数据主键
+     */
+    Long getPadIdFromSomeTable(TableName tableName, String padId);
 }

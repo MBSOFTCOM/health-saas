@@ -69,4 +69,12 @@ public interface ScreenSumMapper extends BaseMapperX<ScreenSumDO> {
      */
     ScreenSumDO selectSumByIdNumLast(String idNum,Integer screenType);
 
+    /**
+     * 根据平板上的唯一id查询某表的主键
+     * @param table 表名
+     * @param padId 唯一数据标识
+     * @return 主键
+     */
+    Long selectIdFromSomeTable(String table,String padId);
+
 }

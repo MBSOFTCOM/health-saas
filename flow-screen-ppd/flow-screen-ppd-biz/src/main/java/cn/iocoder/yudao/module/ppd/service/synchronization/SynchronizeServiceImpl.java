@@ -2,6 +2,7 @@ package cn.iocoder.yudao.module.ppd.service.synchronization;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
+import cn.iocoder.yudao.module.cd.enums.TableName;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenchestradiograph.vo.ScreenChestRadiographPageReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenchestradiograph.vo.ScreenChestRadiographSaveReqVO;
 import cn.iocoder.yudao.module.ppd.controller.admin.screencollect.vo.ScreenCollectPageReqVO;
@@ -170,14 +171,24 @@ public class SynchronizeServiceImpl implements SynchronizeService{
             // 无记录 -- 根据id查记录
             //           无记录 -- 插入
             //           有记录 -- 查询表中id的最大值 ， 更新待插入数据的id值 再插入
+            Long dataId = getPadIdFromSomeTable(TableName.COLLECT, item.getPadId());
             if (item.getStatusFlag()==1){
-                ScreenCollectDO collectDO = BeanUtils.toBean(item, ScreenCollectDO.class);
-                collectDO.setId(null);
-                syncRespVO.setId(item.getId());
-                screenCollectMapper.insert(collectDO);
-                syncRespVO.setNewId(collectDO.getId());
+// 表中未存在pad唯一标识的数据
+                if (dataId==0L){  // 执行插入
+                    ScreenCollectDO collectDO = BeanUtils.toBean(item, ScreenCollectDO.class);
+                    collectDO.setId(null);
+                    syncRespVO.setId(item.getId());
+                    screenCollectMapper.insert(collectDO);
+                    syncRespVO.setNewId(collectDO.getId());
+                }else {
+                    ScreenCollectDO collectDO = BeanUtils.toBean(item, ScreenCollectDO.class);
+                    collectDO.setId(dataId);
+                    syncRespVO.setNewId(collectDO.getId());
+                    screenCollectMapper.updateById(collectDO);
+                    result.add(syncRespVO);
+                }
                 result.add(syncRespVO);
-            } else if (item.getStatusFlag() == 2) {
+            } else if (item.getStatusFlag() == 2) {  // 执行更新
                 ScreenCollectDO collectDO = BeanUtils.toBean(item, ScreenCollectDO.class);
                 Long id = synchronizeMapper.selectCollectIdByIndex(item.getScreenId(), item.getScreenOrder(), item.getPersonId());
                 if(id != null){
@@ -686,5 +697,17 @@ public class SynchronizeServiceImpl implements SynchronizeService{
     public Integer getMoreType() {
         Integer type[] = {1,2,4,8,16,32,64};
         return type[new Random().nextInt(7)];
+    }
+    public Long getPadIdFromSomeTable(String table,String padId){
+        Long id = screenSumMapper.selectIdFromSomeTable(table, padId);
+        if (id==null){
+            return 0L;
+        }
+        return id;
+    }
+
+    @Override
+    public Long getPadIdFromSomeTable(TableName tableName, String padId) {
+        return getPadIdFromSomeTable(tableName.getTableName(),padId);
     }
 }

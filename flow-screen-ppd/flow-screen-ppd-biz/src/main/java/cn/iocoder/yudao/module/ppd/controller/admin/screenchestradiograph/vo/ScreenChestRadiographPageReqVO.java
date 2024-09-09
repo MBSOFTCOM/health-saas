@@ -64,4 +64,8 @@ public class ScreenChestRadiographPageReqVO extends PageParam {
     @Schema(description = "筛查点")
     private String screenPoint;
 
+    /**
+     * pad上的主键加上身份证号，作为唯一判断
+     */
+    private Long padId;
 }

@@ -58,5 +58,9 @@ public class ScreenCollectSaveReqVO {
      * 标识pad上数据是否新增、或者修改
      */
     private Integer statusFlag;
+    /**
+     * pad上的主键加上身份证号，作为唯一判断
+     */
+    private String  padId;
 
 }

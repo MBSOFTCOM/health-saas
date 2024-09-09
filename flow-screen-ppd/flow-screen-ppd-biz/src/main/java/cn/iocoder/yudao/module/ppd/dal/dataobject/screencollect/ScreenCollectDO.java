@@ -106,4 +106,9 @@ public class ScreenCollectDO extends BaseDO {
      */
     private Integer dataSources;
 
+    /**
+     * pad上的主键加上身份证号，作为唯一判断
+     */
+    private String  padId;
+
 }

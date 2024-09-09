@@ -107,4 +107,8 @@ public class ScreenSumPageReqVO extends PageParam {
     @Schema(description = "诊断表id", example = "16567")
     private Long diagnosisId;
 
+    /**
+     * pad上的主键加上身份证号，作为唯一判断
+     */
+    private Long padId;
 }

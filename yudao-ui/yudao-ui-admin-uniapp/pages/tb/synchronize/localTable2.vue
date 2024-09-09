@@ -358,11 +358,12 @@ export default {
 								});
 							} else {
 								// 获取本地数据 上传到pc端
-								let local=await SynchronizeApi.getCollectData(self.queryParams.screenId, self.queryParams.screenPoint,1, -1, self.pageSize)
+								let local=await SynchronizeApi.getCollectData(self.queryParams.screenId, self.queryParams.screenPoint,'not null', -1, self.pageSize)
 								// console.log(local);
 								self.SyncData = local.map((item) => ({
-								  ...item,
-								  screenAgency: self.agency
+									...item,
+									screenAgency: self.agency,
+									padId:""+item.id+item.idNum
 								}));
 								// 筛查时间转换成时间戳
 								self.SyncData.forEach((item) => {
@@ -372,14 +373,14 @@ export default {
 								// 上传
 								SynchronizeApi.updateTableData2(self.SyncData).then(async(res) => {
 								  // console.log(res);
-								for (var i = 0; i < res.data.length; i++) {
-									if(res.data[i].id == res.data[i].newId) {
-										SynchronizeApi.updateStatusFlagOnly(tbScreenCollect, res.data[i].id, res.data[i].idNum)
-									}else{
-										await SynchronizeApi.updateIdAndStatusFlag(tbScreenCollect,res.data[i].id,res.data[i].newId,res.data[i].idNum)
-										await SynchronizeApi.updateSumFieldId(res.data[i].id,res.data[i].newId,res.data[i].idNum,'collectId')
+									for (var i = 0; i < res.data.length; i++) {
+										if(res.data[i].id == res.data[i].newId) {
+											SynchronizeApi.updateStatusFlagOnly(tbScreenCollect, res.data[i].id, res.data[i].idNum)
+										}else{
+											await SynchronizeApi.updateIdAndStatusFlag(tbScreenCollect,res.data[i].id,res.data[i].newId,res.data[i].idNum)
+											await SynchronizeApi.updateSumFieldId(res.data[i].id,res.data[i].newId,res.data[i].idNum,'collectId')
+										}
 									}
-								}
 								//上传汇总表
 								for (let i = 0; i < self.SyncData.length; i++) {
 									let localSum=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId,self.SyncData[i].idNum)
