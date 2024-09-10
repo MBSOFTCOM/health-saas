@@ -69,5 +69,6 @@ public class ScreenImagesDO {
     private String screenPoint;
     private Integer year;
     private Integer screenType;
+    private String  padId;
 
 }

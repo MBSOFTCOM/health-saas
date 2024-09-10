@@ -185,7 +185,6 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                     collectDO.setId(dataId);
                     syncRespVO.setNewId(collectDO.getId());
                     screenCollectMapper.updateById(collectDO);
-                    result.add(syncRespVO);
                 }
                 result.add(syncRespVO);
             } else if (item.getStatusFlag() == 2) {  // 执行更新

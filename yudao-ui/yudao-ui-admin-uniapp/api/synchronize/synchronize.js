@@ -254,11 +254,11 @@ export function getCollectCount(screenId,screenPoint,statusFlag){
 	}
 	if(statusFlag){
 		if(statusFlag=='null'){
-			sql+=` and statusFlag is null `
+			sql+=` and sc.statusFlag is null `
 		}else  if(statusFlag== 'not null'){
-			sql+=` and statusFlag is not null `
+			sql+=` and sc.statusFlag is not null `
 		}else{
-			sql+=` and statusFlag = ${statusFlag} `
+			sql+=` and sc.statusFlag = ${statusFlag} `
 		}
 	}
 	// console.log("SQL:" + sql);
@@ -715,6 +715,7 @@ export function uploadSumData(params) {
 	return request({
 		url: '/tb/synchronize/update-sum-data',
 		'method': 'PUT',
+		timeout:60 * 1000,
 		data: params
 	})
 }
@@ -1244,23 +1245,30 @@ export function uploadOfflineImage(type) {
 				"tb_screen_images" 
 			WHERE
 				"type" ${inType} `,
-		success(res) {
+		success:async (res)=> {
 			console.log(res);
+			uni.showLoading({
+				title: '上传图片中...',
+				mask: true
+			});
 			if (res) {
-				for (let i = 0; i < res.length; i++) {
-					if (res[i].path) {
-						let item = res[i];
-						// 单张离线图片上传
-						upload({
-							url: '/admin-api/tb/screen-images/updateImage',
-							method: 'PUT',
-							name: 'imageFile',
-							filePath: item.path
-						}).then(async(res) => {
-							console.log(res);
-							if (res) {
-								let url = res.data;
+				let errorData=[]
+					for (let i = 0; i < res.length; i++) {
+						if (res[i].path) {
+							let item = res[i];
+							try{
+							// 单张离线图片上传
+							let uploadResp=await upload({
+								url: '/admin-api/tb/screen-images/updateImage',
+								method: 'PUT',
+								name: 'imageFile',
+								filePath: item.path
+							})
+							console.log(uploadResp);
+							if (uploadResp) {
+								let url = uploadResp.data;
 								let data = {
+									padId:""+item.id+item.idNum,
 									screenId: item.screenId,
 									personId: item.personId,
 									type: item.type,
@@ -1281,10 +1289,44 @@ export function uploadOfflineImage(type) {
 									'method': 'POST',
 									data: data
 								});
-								// console.log(createResult);
+									// console.log(createResult);
+								}
+							}catch(e){
+								errorData.push(res[i])
+								//TODO handle the exception
 							}
-						})
+						}
 					}
+				if(errorData.length>0){
+					uni.showModal({
+						title: '提示',
+						content: '图片丢失，是否重试？',
+						success: (res)=> {
+							if (res.confirm) {
+								for (var i = 0; i < errorData.length; i++) {
+									try{
+										uploadPic(errorData[i])
+									}catch{
+										uni.showToast({
+											title: '重试失败，请检查需要上传的图片是否被删除，或等待网络状态良好后重试',
+											icon: 'none',
+											duration: 2000
+										})  
+									}
+								}
+							} 
+							else {
+								// 执行取消后的操作
+							}
+						}
+					})
+				}else{
+					uni.hideLoading();
+					uni.showToast({
+						title: '图片上传成功',
+						icon: 'success',
+						duration: 2000
+					})
 				}
 			}
 		},
@@ -1292,6 +1334,44 @@ export function uploadOfflineImage(type) {
 			console.log(e);
 		}
 	});
+}
+/**
+ * 上传图片
+ * @param {{}}  
+ */
+export const uploadPic=async(item)=> {
+	let uploadResp = await upload({
+		url: '/admin-api/tb/screen-images/updateImage',
+		method: 'PUT',
+		name: 'imageFile',
+		filePath: item.path
+	})
+	console.log(uploadResp);
+	if (uploadResp) {
+		let url = uploadResp.data;
+		let data = {
+			padId: "" + item.id + item.idNum,
+			screenId: item.screenId,
+			personId: item.personId,
+			type: item.type,
+			idNum: item.idNum,
+			path: item.path,
+			url: url,
+			screenTime: item.screenTime,
+			screenOrder: item.screenOrder,
+			screenPoint: item.screenPoint,
+			createTime: item.createTime,
+			// 筛查年份、类型
+			year: currentYear,
+			screenType: item.screenType
+		};
+		// 创建移动端各组离线图片信息
+		await request({
+			url: '/tb/screen-images/create',
+			'method': 'POST',
+			data: data
+		});
+	}
 }
 /**
  * @param {string} idNum

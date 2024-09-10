@@ -45,4 +45,5 @@ public class ScreenImagesSaveReqVO {
 
     @Schema(description = "筛查类型")
     private Integer screenType;
+    private String  padId;
 }

@@ -331,7 +331,7 @@ export default {
 		// 平板到pc
 		async PadToPc() {
 			let person=await SynchronizeApi.getPersonCount(this.queryParams.screenId, this.queryParams.screenPoint,'not null', -1, this.pageSize)
-			console.log(person);
+			// console.log(person);
 			if(person[0].num>=1){
 				uni.showToast({
 					title: '待筛查人员信息还有未上传的改动，请先同步待筛查人员信息',
@@ -358,33 +358,67 @@ export default {
 								});
 							} else {
 								// 获取本地数据 上传到pc端
-								let local=await SynchronizeApi.getCollectData(self.queryParams.screenId, self.queryParams.screenPoint,'not null', -1, self.pageSize)
-								// console.log(local);
-								self.SyncData = local.map((item) => ({
-									...item,
-									screenAgency: self.agency,
-									padId:""+item.id+item.idNum
-								}));
-								// 筛查时间转换成时间戳
-								self.SyncData.forEach((item) => {
-								  item.screenTime = new Date(item.screenTime).getTime();
+								console.log(11);
+								let collectCount=await SynchronizeApi.getCollectCount(this.queryParams.screenId, this.queryParams.screenPoint,'not null')
+								let pageCount=Math.ceil(collectCount[0].num / self.pageSize)
+								console.log(pageCount);
+								let errorPageNo=[]
+								uni.showLoading({
+									title: '正在上传采集组数据...',
+									mask: true
 								});
+								for (let j = 1; j <= pageCount; j++) {
+									let local=await SynchronizeApi.getCollectData(self.queryParams.screenId, self.queryParams.screenPoint,'not null', j, self.pageSize)
+									// console.log(local);
+									self.SyncData = local.map((item) => ({
+										...item,
+										screenAgency: self.agency,
+										padId:""+item.id+item.idNum
+									}));
+									// 筛查时间转换成时间戳
+									self.SyncData.forEach((item) => {
+									  item.screenTime = new Date(item.screenTime).getTime();
+									});
 								// console.log(self.SyncData);
 								// 上传
-								SynchronizeApi.updateTableData2(self.SyncData).then(async(res) => {
-								  // console.log(res);
-									for (var i = 0; i < res.data.length; i++) {
-										if(res.data[i].id == res.data[i].newId) {
-											SynchronizeApi.updateStatusFlagOnly(tbScreenCollect, res.data[i].id, res.data[i].idNum)
-										}else{
-											await SynchronizeApi.updateIdAndStatusFlag(tbScreenCollect,res.data[i].id,res.data[i].newId,res.data[i].idNum)
-											await SynchronizeApi.updateSumFieldId(res.data[i].id,res.data[i].newId,res.data[i].idNum,'collectId')
+									try{
+										let updateDataRes=await SynchronizeApi.updateTableData2(self.SyncData)
+										console.log(updateDataRes);
+										if(!updateDataRes || updateDataRes.data ==null){
+											throw Error("未收到响应")
 										}
+										  // console.log(res);
+										for (let i = 0; i < updateDataRes.data.length; i++) {
+											console.log(33);
+											if(updateDataRes.data[i].id == updateDataRes.data[i].newId) {
+												console.log(331);
+												await SynchronizeApi.updateStatusFlagOnly(tbScreenCollect, updateDataRes.data[i].id, updateDataRes.data[i].idNum)
+											}else{
+												console.log(332);
+												await SynchronizeApi.updateIdAndStatusFlag(tbScreenCollect,updateDataRes.data[i].id,updateDataRes.data[i].newId,updateDataRes.data[i].idNum)
+												await SynchronizeApi.updateSumFieldId(updateDataRes.data[i].id,updateDataRes.data[i].newId,updateDataRes.data[i].idNum,'collectId')
+											}
+										}
+										
+									}catch(e){
+										errorPageNo.push(j)
 									}
+								}
+								uni.hideLoading();
+								uni.showToast({
+									title: '图片上传成功',
+									icon: 'success',
+									duration: 2000
+								})
+								uni.showLoading({
+									title: '正在上传汇总数据...',
+									mask: true
+								});
 								//上传汇总表
 								for (let i = 0; i < self.SyncData.length; i++) {
 									let localSum=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId,self.SyncData[i].idNum)
 									await localSum.forEach(item=>{
+										item.padId=""+item.id+item.idNum
 										if(item.lastCollectTime){
 										  item.lastCollectTime = new Date(item.lastCollectTime).getTime();
 										}
@@ -400,11 +434,36 @@ export default {
 										if(item.lastElectrocardiogramTime){
 										  item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
 										}
-								  })
-								  await SynchronizeApi.uploadSumData(localSum);
-								}
+									})
+									let errorSumData=[]
+									if(localSum.length>200){
+										let onceLength=100 // 步长
+										let start =0  // 开始索引
+										let end =0  // 结束索引
+										let num=Math.ceil(localSum.length / onceLength)
+										for (var k = 0; k < num; k++) {
+											end =start+onceLength
+											let updateReq=localSum.slice(start,end+1)
+											let sumResp=await SynchronizeApi.uploadSumData(updateReq);
+											if(!sumResp || !sumResp.data ){
+												errorSumData.push(updateReq)
+											}
+										}
+									}else{
+										let sumResp=await SynchronizeApi.uploadSumData(localSum);
+										if(!sumResp || !sumResp.data ){
+											errorSumData.push(localSum)
+										}
+									}
+									}
+									uni.hideLoading();
+									uni.showToast({
+										title: '汇总数据上传成功',
+										icon: 'success',
+										duration: 2000
+									})
 								// 上传采集组图片
-								SynchronizeApi.uploadOfflineImage(1);
+								await SynchronizeApi.uploadOfflineImage(1);
 								if (res.data) {
 									uni.showToast({
 									  title: '上传成功',
@@ -424,7 +483,7 @@ export default {
 									  data:time
 									})
 								  }
-								});
+								
 								}
 						} else if (res.cancel) {
 							uni.showToast({
