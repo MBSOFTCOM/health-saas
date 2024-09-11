@@ -358,7 +358,6 @@ export default {
 								});
 							} else {
 								// 获取本地数据 上传到pc端
-								console.log(11);
 								let collectCount=await SynchronizeApi.getCollectCount(this.queryParams.screenId, this.queryParams.screenPoint,'not null')
 								let pageCount=Math.ceil(collectCount[0].num / self.pageSize)
 								console.log(pageCount);
@@ -389,12 +388,9 @@ export default {
 										}
 										  // console.log(res);
 										for (let i = 0; i < updateDataRes.data.length; i++) {
-											console.log(33);
 											if(updateDataRes.data[i].id == updateDataRes.data[i].newId) {
-												console.log(331);
 												await SynchronizeApi.updateStatusFlagOnly(tbScreenCollect, updateDataRes.data[i].id, updateDataRes.data[i].idNum)
 											}else{
-												console.log(332);
 												await SynchronizeApi.updateIdAndStatusFlag(tbScreenCollect,updateDataRes.data[i].id,updateDataRes.data[i].newId,updateDataRes.data[i].idNum)
 												await SynchronizeApi.updateSumFieldId(updateDataRes.data[i].id,updateDataRes.data[i].newId,updateDataRes.data[i].idNum,'collectId')
 											}
@@ -406,7 +402,7 @@ export default {
 								}
 								uni.hideLoading();
 								uni.showToast({
-									title: '图片上传成功',
+									title: '采集组数据上传成功',
 									icon: 'success',
 									duration: 2000
 								})
@@ -455,13 +451,13 @@ export default {
 											errorSumData.push(localSum)
 										}
 									}
-									}
-									uni.hideLoading();
-									uni.showToast({
-										title: '汇总数据上传成功',
-										icon: 'success',
-										duration: 2000
-									})
+								}
+								uni.hideLoading();
+								uni.showToast({
+									title: '汇总数据上传成功',
+									icon: 'success',
+									duration: 2000
+								})
 								// 上传采集组图片
 								await SynchronizeApi.uploadOfflineImage(1);
 								if (res.data) {

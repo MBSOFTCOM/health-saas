@@ -346,6 +346,39 @@ export default {
 		injection(value) {
 			return injectionWayMap[value];
 		},
+		async uploadPPD(screenId,injection,screenPoint,statusFlag,pageNo,pageSize){
+			let SyncData=[]
+			let ppdData=await SynchronizeApi.getPpdData(screenId,injection,screenPoint,statusFlag,pageNo,pageSize)
+			// console.log(self.SyncData);
+			SyncData = ppdData.map((item) => ({
+				...item,
+				padId:""+item.id+item.idNum,
+				injectionAgency: this.agency
+			}));
+		
+			// 筛查时间转换成时间戳
+			SyncData.forEach((item) => {
+				let date = new Date(item.screenTime);
+				item.screenTime = date.getTime();
+			});
+			// console.log(self.SyncData);
+			// 上传
+			try{
+				let updatePpd=await SynchronizeApi.updateTableData3(SyncData)
+				console.log(updatePpd);
+				if(!updatePpd || updatePpd.data ==null){
+					throw new Error("未收到响应")
+				}
+				for (var i = 0; i < updatePpd.data.length; i++) {
+					await SynchronizeApi.updateIdAndStatusFlag(tbScreenPpd,updatePpd.data[i].id,updatePpd.data[i].newId,updatePpd.data[i].idNum)
+					await SynchronizeApi.updateSumFieldId(updatePpd.data[i].id,updatePpd.data[i].newId,updatePpd.data[i].idNum,'ppdId')
+				}
+			}catch(e){
+				console.log(e);
+				return -1
+			}
+		return 1;
+		},
 		// 平板到pc
 		async PadToPc() {
 			let person=await SynchronizeApi.getPersonCount(this.queryParams.screenId, this.queryParams.screenPoint,'not null', -1, this.pageSize)
@@ -375,42 +408,61 @@ export default {
 									duration: 1500
 								});
 							} else {
-								uni.showLoading({
-									title: '上传中...'
-								})
 								// 获取本地数据 上传到pc端
-								let ppdData=await SynchronizeApi.getPpdData(
-									self.queryParams.screenId,
-									self.queryParams.injection,
-									self.queryParams.screenPoint,
-									'not null',
-									-1,
-									self.pageSize
-								)
-								// console.log(self.SyncData);
-									// return
-								self.SyncData = ppdData.map((item) => ({
-									...item,
-									injectionAgency: self.agency
-								}));
-							
-								// 筛查时间转换成时间戳
-								self.SyncData.forEach((item) => {
-									let date = new Date(item.screenTime);
-									item.screenTime = date.getTime();
+								let ppdCount=await SynchronizeApi.getPpdCount(this.queryParams.screenId,this.queryParams.injection,this.queryParams.screenPoint,'not null')
+								let pageCount=Math.ceil(ppdCount[0].num / self.pageSize)
+								let errorPageNo=[]
+								let errorSumData=[]
+								uni.showLoading({
+									title: '正在上传PPD组数据...',
+									mask: true
 								});
-								// console.log(self.SyncData);
-								// 上传
-								let updatePpd=await SynchronizeApi.updateTableData3(self.SyncData)
-								for (var i = 0; i < updatePpd.data.length; i++) {
-									await SynchronizeApi.updateIdAndStatusFlag(tbScreenPpd,updatePpd.data[i].id,updatePpd.data[i].newId,updatePpd.data[i].idNum)
-									await SynchronizeApi.updateSumFieldId(updatePpd.data[i].id,updatePpd.data[i].newId,updatePpd.data[i].idNum,'ppdId')
+								for (let j = 1; j <= pageCount; j++) {
+									let ppdData=await SynchronizeApi.getPpdData(self.queryParams.screenId,self.queryParams.injection,self.queryParams.screenPoint,'not null',-1,self.pageSize)
+									// console.log(self.SyncData);
+									self.SyncData = ppdData.map((item) => ({
+										...item,
+										padId:""+item.id+item.idNum,
+										injectionAgency: self.agency
+									}));
+								
+									// 筛查时间转换成时间戳
+									self.SyncData.forEach((item) => {
+										let date = new Date(item.screenTime);
+										item.screenTime = date.getTime();
+									});
+									// console.log(self.SyncData);
+									// 上传
+									try{
+										let updatePpd=await SynchronizeApi.updateTableData3(self.SyncData)
+										if(!updatePpd || updatePpd.data ==null){
+											console.error("没有响应");
+											throw new Error("未收到响应")
+										}
+										for (var i = 0; i < updatePpd.data.length; i++) {
+											await SynchronizeApi.updateIdAndStatusFlag(tbScreenPpd,updatePpd.data[i].id,updatePpd.data[i].newId,updatePpd.data[i].idNum)
+											await SynchronizeApi.updateSumFieldId(updatePpd.data[i].id,updatePpd.data[i].newId,updatePpd.data[i].idNum,'ppdId')
+										}
+									}catch(e){
+										errorPageNo.push(j)
+										console.log(e);
+									}
 								}
+								uni.hideLoading();
+								uni.showToast({
+									title: 'PPD组数据上传成功',
+									icon: 'success',
+									duration: 2000
+								})
+								uni.showLoading({
+									title: '正在上传汇总数据...',
+									mask: true
+								});
 								//上传汇总表
 								for (let i = 0; i < self.SyncData.length; i++) {
-									let sumData=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId,self.SyncData[i].idNum)
+									let localSum=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId,self.SyncData[i].idNum)
 									// console.log(sumData);
-									sumData.forEach(item=>{
+									await localSum.forEach(item=>{
 										if(item.lastCollectTime){
 											item.lastCollectTime = new Date(item.lastCollectTime).getTime();
 										}
@@ -426,9 +478,80 @@ export default {
 										if(item.lastElectrocardiogramTime){
 											item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
 										}
-										})
-									await SynchronizeApi.uploadSumData(sumData);
+									})
+									
+									if(localSum.length>200){
+										let onceLength=100 // 步长
+										let start =0  // 开始索引
+										let end =0  // 结束索引
+										let num=Math.ceil(localSum.length / onceLength)
+										for (var k = 0; k < num; k++) {
+											end =start+onceLength
+											let updateReq=localSum.slice(start,end+1)
+											let sumResp=await SynchronizeApi.uploadSumData(updateReq);
+											if(!sumResp || !sumResp.data ){
+												errorSumData.push(updateReq)
+											}
+										}
+									}else{
+										let sumResp=await SynchronizeApi.uploadSumData(localSum);
+										if(!sumResp || !sumResp.data ){
+											errorSumData.push(localSum)
+										}
+									}
 								}
+								if(errorPageNo.length>0 || errorSumData.length>0){
+									uni.showModal({
+										title: '提示',
+										content: '部分数据上传失败，是否重新上传？',
+										success:async (res)=> {
+											if (res.confirm) {
+												uni.showLoading({
+													title: '重试中...',
+													mask: true
+												});
+												if(errorPageNo.length>0){
+													for (let i = 0; i < errorPageNo.length; i++) {
+														let result=await this.uploadPPD(self.queryParams.screenId,self.queryParams.injection,self.queryParams.screenPoint,'not null',errorPageNo[i],self.pageSize)
+														if(result==1){
+															errorPageNo.pop(errorPageNo[i])
+														}
+													}
+													uni.hideLoading();
+													if(errorPageNo.length>0){
+														uni.showModal({
+															title: '失败',
+															content: '重试失败，请在网络稳定时重试',
+															success: (res)=> {
+																if (res.confirm) {
+																	// 执行确认后的操作
+																} 
+																else {
+																	// 执行取消后的操作
+																}
+															}
+														})
+													}else{
+														uni.showToast({
+															title: '重试成功',
+															icon: 'success',
+															duration: 2000
+														})  
+													}
+												}
+											} 
+											else {
+												// 执行取消后的操作
+											}
+										}
+									})
+								}
+								uni.hideLoading();
+								uni.showToast({
+									title: '汇总数据上传成功',
+									icon: 'success',
+									duration: 2000
+								})
 								let consume=await ConsumeRecordApi.selectLocalData()
 								for (var i = 0; i < consume.length; i++) {
 									if(consume[i].createTime){

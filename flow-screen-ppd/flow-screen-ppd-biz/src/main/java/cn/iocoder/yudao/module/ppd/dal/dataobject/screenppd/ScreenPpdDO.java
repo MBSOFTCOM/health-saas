@@ -119,4 +119,6 @@ public class ScreenPpdDO extends BaseDO {
      */
     private Integer screenType;
 
+    private String padId;
+
 }

@@ -220,13 +220,22 @@ public class SynchronizeServiceImpl implements SynchronizeService{
             // 无记录 -- 根据id查记录
             //           无记录 -- 插入
             //           有记录 -- 查询表中id的最大值 ， 更新待插入数据的id值 再插入
+            Long dataId = getPadIdFromSomeTable(TableName.PPD, item.getPadId());
             if (item.getStatusFlag()==1){
                 ScreenPpdDO screenPpdDO = BeanUtils.toBean(item, ScreenPpdDO.class);
-                screenPpdDO.setId(null);
-                syncRespVO.setId(item.getId());
-                screenPpdMapper.insert(screenPpdDO);
-                syncRespVO.setNewId(screenPpdDO.getId());
-                result.add(syncRespVO);
+                if (dataId==0L) {  // 执行插入
+                    screenPpdDO.setId(null);
+                    syncRespVO.setId(item.getId());
+                    screenPpdMapper.insert(screenPpdDO);
+                    syncRespVO.setNewId(screenPpdDO.getId());
+                    result.add(syncRespVO);
+                }else {
+                    screenPpdDO.setId(dataId);
+                    syncRespVO.setNewId(item.getId());
+                    screenPpdMapper.updateById(screenPpdDO);
+                    result.add(syncRespVO);
+                }
+
             } else if (item.getStatusFlag() == 2) {
                 ScreenPpdDO screenPpdDO = BeanUtils.toBean(item, ScreenPpdDO.class);
                 Long id = synchronizeMapper.selectPpdIdByIndex(item.getScreenId(), item.getScreenOrder(), item.getPersonId());

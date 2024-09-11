@@ -85,4 +85,6 @@ public class ScreenPpdSaveReqVO {
 
     private Integer statusFlag;
 
+    private String padId;
+
 }
