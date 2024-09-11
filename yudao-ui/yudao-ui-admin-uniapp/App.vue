@@ -13,6 +13,16 @@ export default {
     // this.initDistrict()
   },
 	onShow:function() {
+		uni.onNetworkStatusChange(function (res) {
+			console.log(res);
+			if (!res.isConnected) {
+				uni.showToast({
+					title: '当前无网络连接',
+					icon: 'none'
+				});
+			throw new Error("无网络连接")
+			}
+		});
 		this.initDateBase()
     // this.initDistrict()
 	},

@@ -33,6 +33,7 @@ import cn.iocoder.yudao.module.ppd.dal.mysql.synchronization.SynchronizeMapper;
 import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import jakarta.annotation.Resource;
+import org.dromara.hutool.core.bean.BeanUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -494,8 +495,11 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                 "诊断组",6
         );
         list.forEach(item->{
-            ScreenSumInfo info = synchronizeMapper.selectSumIdByIndex(Integer.parseInt(item.getYear()), item.getScreenType(), item.getScreenId(), item.getPersonId());
-            if(info!=null){
+//            ScreenSumInfo info = synchronizeMapper.selectSumIdByIndex(Integer.parseInt(item.getYear()), item.getScreenType(), item.getScreenId(), item.getPersonId());
+            ScreenSumInfo info=null;
+            ScreenSumDO screenSumDO = screenSumMapper.selectOne(ScreenSumDO::getPadId, item.getPadId());
+            if (!BeanUtil.isEmpty(screenSumDO)){
+                info=new ScreenSumInfo(screenSumDO.getId(),screenSumDO.getCurFinish());
                 // 当前已完成分组的值小于数据库中已完成分组的值时，不更新这个字段值
                 if (item.getCurFinish()!=null && !"null".equals(item.getCurFinish())){
                     Integer preValue = groupMap.get(info.getCurFinish());
@@ -509,12 +513,9 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                 synchronizeMapper.updateSum(item,info.getId());
 
             }else{
-                Long result = synchronizeMapper.selectCountById("tb_screen_sum", item.getId());
-                if(result>0){
-                    Long maxId = synchronizeMapper.selectMaxId("tb_screen_sum");
-                    item.setId(maxId+1);
-                }
-                synchronizeMapper.insertSum(item);
+                ScreenSumDO insertBean = BeanUtils.toBean(item, ScreenSumDO.class);
+                insertBean.setId(null);
+                screenSumMapper.insert(insertBean);
             }
         });
 

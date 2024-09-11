@@ -108,4 +108,6 @@ public class ScreenSumSaveReqVO {
      * 实验组id
      */
     private Long experimentId;
+
+    private String padId;
 }

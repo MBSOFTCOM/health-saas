@@ -150,4 +150,6 @@ public class ScreenSumDO {
      */
     private Long experimentId;
 
+    private String padId;
+
 }
