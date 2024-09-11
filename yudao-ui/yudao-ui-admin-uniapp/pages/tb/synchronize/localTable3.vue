@@ -379,8 +379,31 @@ export default {
 			}
 		return 1;
 		},
+		listenNet(){
+      // 添加实时监听网络状态，当无网络连接时抛出错误
+			uni.onNetworkStatusChange(function (res) {
+				console.log(res);
+				if (!res.isConnected) {
+					uni.showToast({
+						title: '当前无网络连接',
+						icon: 'none'
+					});
+				throw new Error("无网络连接")
+				}
+			});
+		},
 		// 平板到pc
 		async PadToPc() {
+			try{
+				await uni.getNetworkType({
+					success: async (res)=> {
+						if( !res || res.networkType == "null" || res.networkType=='none' || !res.networkType){
+					uni.showToast({
+						title: '当前无网络连接',
+						icon: 'none'
+					});
+            }else {
+
 			let person=await SynchronizeApi.getPersonCount(this.queryParams.screenId, this.queryParams.screenPoint,'not null', -1, this.pageSize)
 			// console.log(person);
 			if(person[0].num>=1){
@@ -399,6 +422,7 @@ export default {
 					cancelText: '取消',
 					confirmText: '确认',
 					success: async (res)=> {
+						try{
 						if (res.confirm) {
 							if (self.pageData.length == 0) {
 								uni.showToast({
@@ -463,6 +487,7 @@ export default {
 									let localSum=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId,self.SyncData[i].idNum)
 									// console.log(sumData);
 									await localSum.forEach(item=>{
+										item.padId=""+item.id+item.idNum
 										if(item.lastCollectTime){
 											item.lastCollectTime = new Date(item.lastCollectTime).getTime();
 										}
@@ -488,15 +513,25 @@ export default {
 										for (var k = 0; k < num; k++) {
 											end =start+onceLength
 											let updateReq=localSum.slice(start,end+1)
-											let sumResp=await SynchronizeApi.uploadSumData(updateReq);
-											if(!sumResp || !sumResp.data ){
-												errorSumData.push(updateReq)
+											try{
+												let sumResp=await SynchronizeApi.uploadSumData(updateReq);
+												if(!sumResp || !sumResp.data ){
+													throw new Error("未接收响应")
+												}
+											}catch(e){
+												errorSumData.push(...updateReq)
+												console.error(e);
 											}
 										}
 									}else{
-										let sumResp=await SynchronizeApi.uploadSumData(localSum);
-										if(!sumResp || !sumResp.data ){
-											errorSumData.push(localSum)
+										try{
+											let sumResp=await SynchronizeApi.uploadSumData(localSum);
+											if(!sumResp || !sumResp.data ){
+												throw new Error("未接收响应")
+											}
+										}catch(e){
+											errorSumData.push(...localSum)
+											console.error(e);
 										}
 									}
 								}
@@ -510,6 +545,59 @@ export default {
 													title: '重试中...',
 													mask: true
 												});
+												if(errorSumData.length>0){
+													await errorSumData.forEach(item=>{
+															item.padId=""+item.id+item.idNum
+															if(item.lastCollectTime){
+																item.lastCollectTime = new Date(item.lastCollectTime).getTime();
+															}
+															if(item.lastPpdTime){
+																item.lastPpdTime = new Date(item.lastPpdTime).getTime();
+															}
+															if(item.lastChestRadiographTime){
+																item.lastChestRadiographTime = new Date(item.lastChestRadiographTime).getTime();
+															}
+															if(item.lastSputumExaminationTime){
+																item.lastSputumExaminationTime = new Date(item.lastSputumExaminationTime).getTime();
+															}
+															if(item.lastElectrocardiogramTime){
+																item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
+															}
+														})
+														
+														if(errorSumData.length>200){
+															let onceLength=100 // 步长
+															let start =0  // 开始索引
+															let end =0  // 结束索引
+															let num=Math.ceil(errorSumData.length / onceLength)
+															for (var k = 0; k < num; k++) {
+																try{
+																	end =start+onceLength
+																	let updateReq=errorSumData.slice(start,end+1)
+																	console.log(updateReq);
+																	let sumResp=await SynchronizeApi.uploadSumData(updateReq);
+																	if(sumResp && sumResp.data ){
+																		errorSumData.pop(updateReq)
+																	}
+																}catch(e){
+																	console.error(e);
+																	break
+																	
+																}
+															}
+														}else{
+															try{
+																// console.log(errorSumData);
+																let sumResp=await SynchronizeApi.uploadSumData(errorSumData);
+																if(sumResp && sumResp.data ){
+																	errorSumData=[]
+																}
+															}catch(e){
+																console.error(e);
+															}
+														}
+
+												}
 												if(errorPageNo.length>0){
 													for (let i = 0; i < errorPageNo.length; i++) {
 														let result=await this.uploadPPD(self.queryParams.screenId,self.queryParams.injection,self.queryParams.screenPoint,'not null',errorPageNo[i],self.pageSize)
@@ -517,27 +605,29 @@ export default {
 															errorPageNo.pop(errorPageNo[i])
 														}
 													}
-													uni.hideLoading();
-													if(errorPageNo.length>0){
-														uni.showModal({
-															title: '失败',
-															content: '重试失败，请在网络稳定时重试',
-															success: (res)=> {
-																if (res.confirm) {
-																	// 执行确认后的操作
-																} 
-																else {
-																	// 执行取消后的操作
-																}
+													
+												}
+												uni.hideLoading();
+												if(errorPageNo.length>0 || errorSumData.length>0){
+													uni.showModal({
+														title: '失败',
+														content: '重试失败，请在网络稳定时重试',
+														success: (res)=> {
+															if (res.confirm) {
+																// 执行确认后的操作
+															} 
+															else {
+																// 执行取消后的操作
 															}
-														})
-													}else{
-														uni.showToast({
-															title: '重试成功',
-															icon: 'success',
-															duration: 2000
-														})  
-													}
+														}
+													})
+												}else{
+													uni.hideLoading();
+													uni.showToast({
+														title: '重试成功',
+														icon: 'success',
+														duration: 2000
+													})  
 												}
 											} 
 											else {
@@ -586,6 +676,7 @@ export default {
 								}
 								
 							}
+
 						} else if (res.cancel) {
 							uni.showToast({
 								title: '取消上传',
@@ -594,6 +685,15 @@ export default {
 								duration: 1500
 							});
 						}
+						
+          }catch(e){
+            uni.showToast({
+              title: e,
+              mask: true,
+              icon: 'error',
+              duration: 1500
+            });
+          }
 					}
 				});
 			} else {
@@ -696,6 +796,24 @@ export default {
 						}
 					}
 				});
+			}
+			}
+				},
+				fail(e) {
+					uni.showToast({
+						title: '网络状态异常',
+						icon: 'error',
+						duration: 2000
+					})  
+				}
+			});
+			}catch(e){
+				uni.showToast({
+					title: e,
+					icon: 'none',
+					duration:2000
+				})
+				return
 			}
 		},
 		// 多选处理

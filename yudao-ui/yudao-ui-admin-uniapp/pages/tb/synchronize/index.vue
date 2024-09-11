@@ -1174,7 +1174,6 @@ updateArray(number) {
 		},
 		// 访问本地数据库
 		search(item) {
-			console.log(item);
 			switch (item) {
 				case 0:
 					SynchronizeApi.getWorkTeamCount(this.queryParams.groupName).then((res) => {

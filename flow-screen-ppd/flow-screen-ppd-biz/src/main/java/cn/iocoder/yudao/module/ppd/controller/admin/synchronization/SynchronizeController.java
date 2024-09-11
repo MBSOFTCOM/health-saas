@@ -180,7 +180,7 @@ public class SynchronizeController {
     @Operation(summary = "更新汇总表数据")
     public CommonResult<Boolean> updateSumData(@RequestBody List<ScreenSumSaveReqVO> list) {
         synchronizeService.updateSum(list);
-        return success(null);
+        return success(true);
     }
 
     @GetMapping("/test/get")
