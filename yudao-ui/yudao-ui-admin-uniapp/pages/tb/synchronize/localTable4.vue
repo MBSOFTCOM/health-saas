@@ -355,6 +355,7 @@ export default {
 									self.SyncData = local;
 
 									self.SyncData.forEach((item) => {
+										item.padId=""+item.id+item.idNum
 										// 筛查时间转换成时间戳
 										item.screenTime = new Date(item.screenTime).getTime();
 										// 采集时间转换成时间戳
@@ -367,38 +368,38 @@ export default {
 									// 上传
 									let updateDr=await SynchronizeApi.updateTableData4(self.SyncData)
 									console.log(updateDr);
-									for (var i = 0; i < updateDr.data.length; i++) {
-										if(res.data[i].id == res.data[i].newId){
-											SynchronizeApi.updateStatusFlagOnly(tbScreenChestRadiograph,res.data[i].id,res.data[i].idNum)
-										}else{										
-											await SynchronizeApi.updateIdAndStatusFlag(tbScreenChestRadiograph,res.data[i].id,res.data[i].newId,res.data[i].idNum)
-											await SynchronizeApi.updateSumFieldId(res.data[i].id,res.data[i].newId,res.data[i].idNum,'chestRadiographId')
+									if(updateDr && updateDr.data){
+										for (var i = 0; i < updateDr.data.length; i++) {
+											if(res.data[i].id == res.data[i].newId){
+												SynchronizeApi.updateStatusFlagOnly(tbScreenChestRadiograph,res.data[i].id,res.data[i].idNum)
+											}else{										
+												await SynchronizeApi.updateIdAndStatusFlag(tbScreenChestRadiograph,res.data[i].id,res.data[i].newId,res.data[i].idNum)
+												await SynchronizeApi.updateSumFieldId(res.data[i].id,res.data[i].newId,res.data[i].idNum,'chestRadiographId')
+											}
 										}
 									}
 									//上传汇总表
-									for (let i = 0; i < self.SyncData.length; i++) {
-										await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId,self.SyncData[i].idNum).then(res=>{
-											res.forEach(item=>{
-												if(item.lastCollectTime){
-													item.lastCollectTime = new Date(item.lastCollectTime).getTime();
-												}
-												if(item.lastPpdTime){
-													item.lastPpdTime = new Date(item.lastPpdTime).getTime();
-												}
-												if(item.lastChestRadiographTime){
-													item.lastChestRadiographTime = new Date(item.lastChestRadiographTime).getTime();
-												}
-												if(item.lastSputumExaminationTime){
-													item.lastSputumExaminationTime = new Date(item.lastSputumExaminationTime).getTime();
-												}
-												if(item.lastElectrocardiogramTime){
-													item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
-												}
-												
-											})
-										SynchronizeApi.uploadSumData(res);
+									let sumDate=await SynchronizeApi.getLocalSumDataTypeAndYear(2,uni.$user.year)
+									await sumDate.forEach(item=>{
+										if(item.lastCollectTime){
+											item.lastCollectTime = new Date(item.lastCollectTime).getTime();
+										}
+										if(item.lastPpdTime){
+											item.lastPpdTime = new Date(item.lastPpdTime).getTime();
+										}
+										if(item.lastChestRadiographTime){
+											item.lastChestRadiographTime = new Date(item.lastChestRadiographTime).getTime();
+										}
+										if(item.lastSputumExaminationTime){
+											item.lastSputumExaminationTime = new Date(item.lastSputumExaminationTime).getTime();
+										}
+										if(item.lastElectrocardiogramTime){
+											item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
+										}
 									})
-								}
+									console.log(sumDate);
+									await SynchronizeApi.uploadSumData(sumDate);
+								
 									// 上传dr/ct组图片
 									SynchronizeApi.uploadOfflineImage(3).then(res=>{
 										if (res.data) {

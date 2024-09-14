@@ -54,5 +54,6 @@ public class ScreenChestRadiographSaveReqVO {
     @Schema(description = "其他异常说明", example = "你猜")
     private String remark;
     private Integer statusFlag;
+    private String padId;
 
 }

@@ -58,13 +58,18 @@
       :default-expand-all="isExpandAll"
       v-if="refreshTable"
     >
-      <el-table-column prop="name" label="单位名称" />
+      <el-table-column prop="name" label="单位名称" width="300"/>
       <el-table-column prop="leader" label="负责人">
         <template #default="scope">
           {{ userList.find((user) => user.id === scope.row.leaderUserId)?.nickname }}
         </template>
       </el-table-column>
-      <el-table-column prop="sort" label="排序" />
+<!--      <el-table-column prop="sort" label="排序" />-->
+      <el-table-column prop="type" label="单位类型" >
+        <template #default="scope">
+          {{typeList.find((item)=>item.type == scope.row.type )?.label}}
+        </template>
+      </el-table-column>
       <el-table-column prop="status" label="状态">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />
@@ -134,7 +139,7 @@ const queryFormRef = ref() // 搜索的表单
 const isExpandAll = ref(true) // 是否展开，默认全部展开
 const refreshTable = ref(true) // 重新渲染表格状态
 const userList = ref<UserApi.UserVO[]>([]) // 用户列表
-
+const typeList=ref([{type:1,label:"学校"},{type:2,label:"医疗机构"},{type:3,label:"管理机构"}])
 /** 查询部门列表 */
 const getList = async () => {
   loading.value = true
@@ -206,7 +211,7 @@ const getDeptList = async () =>{
 
 // 根据代码获取对应的名称
 const getNameByCode = (code) => {
-  const item = deptList.value.find(d => d.code === code);
+  const item = deptList.value.find(d => d.code == code);
   return item ? item.name : '未知'; // 默认值为 '未知'
 };
 

@@ -6,23 +6,28 @@ import {tableSqls} from "@/utils/sqlite.js"
 import {dbName} from "@/utils/sqlite.js"
 import { getAccessToken } from '@/utils/auth';
 import { onShow } from '@dcloudio/uni-app'
+import dbUtils from '@/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils'
 export default {
 	onLaunch: function () {
 		this.initApp();
-    districtInitSql(this.$dbUtils)
+		this.initDateBase()
+		districtInitSql(this.$dbUtils)
     // this.initDistrict()
   },
-	onShow:function() {
-		uni.onNetworkStatusChange(function (res) {
+	async onShow() {
+		try{
+			let res=await this.listenToNetworkStatus()
 			console.log(res);
-			if (!res.isConnected) {
-				uni.showToast({
-					title: '当前无网络连接',
-					icon: 'none'
-				});
-			throw new Error("无网络连接")
-			}
-		});
+		}catch(e){
+			console.error(e);
+			// 不需要图标，icon用none，可选图标（'success' 、'error' 、'worining'）
+			uni.showToast({
+				title: e,
+				icon: 'error',
+				duration: 2000
+			})  
+			//TODO handle the exception
+		}
 		this.initDateBase()
     // this.initDistrict()
 	},
@@ -31,14 +36,25 @@ export default {
     }
   },
 	methods: {
-    initDistrict(){
-      districtInitSql(this.$dbUtils)
-    },
+		async listenToNetworkStatus() {
+		  return new Promise((resolve, reject) => {
+		    uni.onNetworkStatusChange((res) => {
+		      if (!res.isConnected) {
+		        reject(new Error('当前无网络连接'));
+		      } else {
+		        resolve(res);
+		      }
+		    });
+		  });
+		},
+		initDistrict(){
+		  districtInitSql(this.$dbUtils)
+		},
 		// 初始化数据库
 		initDateBase(){
-			this.$dbUtils.openDb("tb_screen")
-			this.$dbUtils.init("tb_screen",tableSqls)
-			this.$dbUtils.closeSQL("th_screen")
+			dbUtils.openDb("tb_screen")
+			dbUtils.init("tb_screen",tableSqls)
+			// this.$dbUtils.closeSQL("th_screen")
 		},
 		// 初始化应用
 		initApp() {

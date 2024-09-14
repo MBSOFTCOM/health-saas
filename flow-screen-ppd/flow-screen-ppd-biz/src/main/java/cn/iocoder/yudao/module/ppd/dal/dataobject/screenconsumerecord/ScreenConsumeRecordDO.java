@@ -39,4 +39,5 @@ public class ScreenConsumeRecordDO extends BaseDO {
      */
     private Long consumeId;
 
+    private String padId; // 字符串的 pad上id + 用户id + 日期  如 1 20240913 112
 }

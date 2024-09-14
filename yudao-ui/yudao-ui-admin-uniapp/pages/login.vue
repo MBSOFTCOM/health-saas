@@ -23,6 +23,7 @@
 			<view class="log-btn">
 				<up-button @click="localLogin" class="local">离线登录</up-button>
 				<up-button @click="handleLogin" class="handle">在线登录</up-button>
+				<up-button @click="handleCom" class="handle">同步</up-button>
 			</view>
 		</view>
 	</view>
@@ -45,7 +46,7 @@ export default {
 			globalConfig: this.$config,
 			loginForm: {
 				// username: 'wanzhouqu0001',
-				username: 'xiejun',
+				username: 'zengjw',
 				password: '123456',
 				captchaVerification: ''
 			}
@@ -53,6 +54,33 @@ export default {
 	},
 	onLoad: function () {},
 	methods: {
+		async handleCom(){
+			try{
+				let re=await this.getNetworkStatus()
+				console.log(re);
+			}catch(e){
+				console.error(e);
+			}
+		},
+		// utils/network.js
+		getNetworkStatus() {
+			console.log(222);
+			return new Promise((resolve, reject) => {
+		    uni.getNetworkType({
+		      success(res) {
+		        if (res.networkType === 'none') {
+		          reject(new Error('当前无网络连接'));
+		        } else {
+		          resolve(res.networkType);
+		        }
+		      },
+		      fail(err) {
+		        reject(new Error('获取网络状态失败'));
+		      }
+		    });
+		  });
+		},
+
 		//本地登录
 		async localLogin() {
 			if (this.loginForm.username === '') {

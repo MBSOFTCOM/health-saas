@@ -86,6 +86,9 @@ public class ScreenDistrictServiceImpl implements ScreenDistrictService {
 
     @Override
     public String getDistrictCode(Long deptId) {
+        if (deptId==0){
+            return "0";
+        }
         return districtMapper.getDistrictCode(deptId);
     }
 

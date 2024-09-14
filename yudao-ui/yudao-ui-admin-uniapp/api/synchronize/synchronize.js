@@ -220,6 +220,7 @@ export function getCollectData(screenId,screenPoint,statusFlag,pageNo,pageSize){
 	if(pageNo!=-1){
 		let offset = (pageNo-1)*pageSize
 		sql+=` limit ${offset},${pageSize}`
+	console.log(`limit ${offset},${pageSize}`);
 	}
 	// console.log("SQL:" + sql);
 
@@ -936,6 +937,17 @@ export function getLocalSumData(screenId,screenType,year,personId,idNum){
 	 return promise(dbName,sql)
 	 // console.log(data);
 }
+export function getLocalSumDataTypeAndYear(screenType,year){
+	let sql = `
+				SELECT *
+				from ${tbScreenSum}
+				where screenType=${screenType}
+				and year=${year}
+			   `
+	console.log("SQL:" + sql);
+	 return promise(dbName,sql)
+	 // console.log(data);
+}
 
 // ========================== 工作队 ==========================
 // 获取筛查点和筛查单位
@@ -1464,6 +1476,6 @@ export async function updateStatusFlagOnly(table,id,idNum){
  */
 export async function updateSumFieldId(id,newId,idNum,field){
 	let sql=`update ${tbScreenSum} set ${field}=${newId} where ${field}=${id} and idNum=${idNum} `
-	console.log(sql);
+	// console.log(sql);
 	return promise(dbName,sql)
 }

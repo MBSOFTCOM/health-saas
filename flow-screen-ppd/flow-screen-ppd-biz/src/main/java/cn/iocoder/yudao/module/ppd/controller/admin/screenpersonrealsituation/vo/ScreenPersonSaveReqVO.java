@@ -143,4 +143,5 @@ public class ScreenPersonSaveReqVO {
     @Schema(description = "部门id")
     private Long deptId;
 
+    private String padId;
 }

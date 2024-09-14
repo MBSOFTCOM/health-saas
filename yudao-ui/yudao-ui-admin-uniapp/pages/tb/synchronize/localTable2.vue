@@ -124,6 +124,8 @@ export default {
 					isActive: true
 				}
 			],
+			// 中断标识，为true就中断循环
+			stop: false,
 			loading: false,
 			// 数据总量
 			total: 0,
@@ -161,6 +163,22 @@ export default {
 		this.search();
 	},
 	methods: {
+		/**
+		 * 开启网络监控
+		 */
+		listenToNetworkStatus() {
+		  return new Promise((resolve, reject) => {
+		    uni.onNetworkStatusChange((res) => {
+		      if (!res.isConnected) {
+				  this.stop=true
+		        reject(new Error('当前无网络连接'));
+		      } else {
+				  this.stop=false
+		        resolve(res);
+		      }
+		    });
+		  });
+		},
 		clearScreenId() {
 			this.queryParams.screenId = undefined;
 		},
@@ -215,7 +233,7 @@ export default {
 							...item,
 							screenAgency: this.agency
 						}));
-						// console.log(this.pageData);
+						console.log(this.pageData);
 						// this.pageData=resp
 					});
 				} else {
@@ -394,7 +412,12 @@ export default {
 								confirmText: '确认',
 								success: async (res)=> {
 									if (res.confirm) {
-										if (self.pageData.length == 0) {
+										let pageSize=100
+										let collectCount=await SynchronizeApi.getCollectCount(this.queryParams.screenId, this.queryParams.screenPoint,'not null')
+										console.log(collectCount);
+										let pageCount=Math.ceil(collectCount[0].num / pageSize)
+										console.log(pageCount);
+										if (pageCount == 0) {
 											uni.showToast({
 												title: '暂无数据，上传失败',
 												mask: true,
@@ -403,31 +426,41 @@ export default {
 											});
 										} else {
 											// 获取本地数据 上传到pc端
-											let collectCount=await SynchronizeApi.getCollectCount(this.queryParams.screenId, this.queryParams.screenPoint,'not null')
-											let pageCount=Math.ceil(collectCount[0].num / self.pageSize)
-											console.log(pageCount);
+											
 											let errorPageNo=[]
 											let errorSumData=[]
 											uni.showLoading({
 												title: '正在上传采集组数据...',
 												mask: true
 											});
-											for (let j = 1; j <= pageCount; j++) {
-												let local=await SynchronizeApi.getCollectData(self.queryParams.screenId, self.queryParams.screenPoint,'not null', j, self.pageSize)
-												// console.log(local);
-												self.SyncData = local.map((item) => ({
+											let local=await SynchronizeApi.getCollectData(self.queryParams.screenId, self.queryParams.screenPoint,'not null', -1, pageSize)
+											console.log(local)
+											console.log(local.length);
+											let localCollect=await local.map((item) => ({
 													...item,
 													screenAgency: self.agency,
 													padId:""+item.id+item.idNum
 												}));
 												// 筛查时间转换成时间戳
-												self.SyncData.forEach((item) => {
+												await localCollect.forEach((item) => {
 												  item.screenTime = new Date(item.screenTime).getTime();
 												});
-											// console.log(self.SyncData);
+											let collectStart=0
+											let collectEnd=0
+											
+											for (let j = 1; j <= pageCount; j++) {
+												if(this.stop){
+													break
+												}
+												collectEnd=collectStart+pageSize
+												console.log(`${collectStart}----${collectEnd}`);
+												let updateReq=localCollect.slice(collectStart,collectEnd)
+												collectStart+=pageSize
+												
 											// 上传
 												try{
-													let updateDataRes=await SynchronizeApi.updateTableData2(self.SyncData)
+													this.listenToNetworkStatus()
+													let updateDataRes=await SynchronizeApi.updateTableData2(updateReq)
 													console.log(updateDataRes);
 													if(!updateDataRes || updateDataRes.data ==null){
 														throw Error("未收到响应")
@@ -442,12 +475,19 @@ export default {
 														}
 													}
 												}catch(e){
+													this.stop=true
 													errorPageNo.push(j)
+													uni.hideLoading();
+													uni.showToast({
+														title: '无网络连接',
+														icon: 'error',
+														duration: 2000
+													})  
 												}
 											}
 											uni.hideLoading();
 											uni.showToast({
-												title: '采集组数据上传成功',
+												title: '采集组数据上传完成',
 												icon: 'success',
 												duration: 2000
 											})
@@ -456,38 +496,48 @@ export default {
 												mask: true
 											});
 											//上传汇总表
-											for (let i = 0; i < self.SyncData.length; i++) {
-												let localSum=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId,self.SyncData[i].idNum)
-												await localSum.forEach(item=>{
-													item.padId=""+item.id+item.idNum
-													if(item.lastCollectTime){
-													  item.lastCollectTime = new Date(item.lastCollectTime).getTime();
-													}
-													if(item.lastPpdTime){
-													  item.lastPpdTime = new Date(item.lastPpdTime).getTime();
-													}
-													if(item.lastChestRadiographTime){
-													  item.lastChestRadiographTime = new Date(item.lastChestRadiographTime).getTime();
-													}
-													if(item.lastSputumExaminationTime){
-													  item.lastSputumExaminationTime = new Date(item.lastSputumExaminationTime).getTime();
-													}
-													if(item.lastElectrocardiogramTime){
-													  item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
-													}
-												})
+										
+											let localSum=await SynchronizeApi.getLocalSumDataTypeAndYear(2,uni.$user.year)
+											console.log(localSum);
+											await localSum.forEach(item=>{
+												item.padId=""+item.id+item.idNum
+												if(item.lastCollectTime){
+												  item.lastCollectTime = new Date(item.lastCollectTime).getTime();
+												}
+												if(item.lastPpdTime){
+												  item.lastPpdTime = new Date(item.lastPpdTime).getTime();
+												}
+												if(item.lastChestRadiographTime){
+												  item.lastChestRadiographTime = new Date(item.lastChestRadiographTime).getTime();
+												}
+												if(item.lastSputumExaminationTime){
+												  item.lastSputumExaminationTime = new Date(item.lastSputumExaminationTime).getTime();
+												}
+												if(item.lastElectrocardiogramTime){
+												  item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
+												}
+											})
+											try{
+												this.listenToNetworkStatus()
 												if(localSum.length>200){
 													let onceLength=100 // 步长
 													let start =0  // 开始索引
 													let end =0  // 结束索引
 													let num=Math.ceil(localSum.length / onceLength)
+													console.log(num);
 													for (var k = 0; k < num; k++) {
+														if(this.stop){
+															break
+														}
 														end =start+onceLength
-														let updateReq=localSum.slice(start,end+1)
+														console.log(`${start}---${end}`);
+														let updateReq=localSum.slice(start,end)
 														let sumResp=await SynchronizeApi.uploadSumData(updateReq);
+														console.log(updateReq);
 														if(!sumResp || !sumResp.data ){
 															errorSumData.push(...updateReq)
 														}
+														start=start+onceLength
 													}
 												}else{
 													let sumResp=await SynchronizeApi.uploadSumData(localSum);
@@ -495,6 +545,13 @@ export default {
 														errorSumData.push(...localSum)
 													}
 												}
+											}catch(e){
+												uni.hideLoading();
+												uni.showToast({
+													title: '无网络连接',
+													icon: 'error',
+													duration: 2000
+												})  
 											}
 											if(errorPageNo.length>0 || errorSumData.length>0){
 												uni.showModal({
@@ -532,6 +589,9 @@ export default {
 																		let end =0  // 结束索引
 																		let num=Math.ceil(errorSumData.length / onceLength)
 																		for (var k = 0; k < num; k++) {
+																			if(this.stop){
+																				break
+																			}
 																			try{
 																				end =start+onceLength
 																				let updateReq=errorSumData.slice(start,end+1)
@@ -542,8 +602,6 @@ export default {
 																				}
 																			}catch(e){
 																				console.error(e);
-																				break
-																				
 																			}
 																		}
 																	}else{

@@ -4,17 +4,18 @@ import { dbName, tbScreenCollect} from "../../../../utils/sqlite";
  * 打开数据库
  */
 const openDb = (name) => {
+	console.log(3343);
 	//如果数据库存在则打开，不存在则创建。
 	return new Promise((resolve, reject) => {
 		plus.sqlite.openDatabase({
 			name: name, //数据库名称
 			path: `_doc/${name}.db`, //数据库地址
 			success(e) {
-				// console.info("11", e)
+				console.info("11", e)
 				resolve(e);
 			},
 			fail(e) {
-				// console.info("22", e)
+				console.info("22", e)
 				reject(e);
 			}
 		})
@@ -30,7 +31,7 @@ const init = (name, tableSqls) => {
 			// console.info("表已存在res："+res)
 			// console.info("表已存在："+data.tableName)
 			if(!res){
-				// console.info("初始化表：",data.tableName)
+				console.info("初始化表：",data.tableName)
 				addTab(name, data.sql);
 			}
 		}).catch(e => {

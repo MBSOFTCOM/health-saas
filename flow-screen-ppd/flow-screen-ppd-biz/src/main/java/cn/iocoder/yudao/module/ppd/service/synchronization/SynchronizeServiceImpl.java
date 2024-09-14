@@ -98,7 +98,7 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                 // 根据乡镇区划、年度以及筛查类型找到个人最大排序号 如果当前乡镇还没有患者，则从1开始排序
                 String maxOrderNum = synchronizeMapper.selectMaxOrderNum(item.getYear(), item.getTown(), item.getScreenType());
                 String orderNum=null;
-                if(maxOrderNum!=null){
+                if(maxOrderNum!=null && !"".equals(maxOrderNum)){
                     orderNum = String.format("%05d", Integer.parseInt(maxOrderNum) + 1);
                 }else{
                     orderNum = String.format("%05d", 1);
@@ -119,10 +119,9 @@ public class SynchronizeServiceImpl implements SynchronizeService{
             //           有记录 -- 查询表中id的最大值 ， 更新待插入数据的id值 再插入
             Long id = synchronizeMapper.selectPersonIdByIndex(item.getScreenType(),item.getYear(),item.getIdNum());
             if (id != null ) {
-                syncRespVO.setNewId(item.getId());
                 syncRespVO.setScreenId(item.getScreenId());
-                result.add(syncRespVO);
                 synchronizeMapper.updateScreenPerson(item,id);
+                syncRespVO.setNewId(item.getId());
             }else{
                 /*Long result = synchronizeMapper.selectCountById("tb_screen_person", item.getId());
                 if (result > 0) {
@@ -135,11 +134,11 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                 ScreenPersonDO screenPersonDO = BeanUtils.toBean(item, ScreenPersonDO.class);
                 screenPersonDO.setId(null);
                 screenPersonDO.setDeptId(dept.getId());
+                syncRespVO.setScreenId(screenPersonDO.getScreenId());
                 screenPersonMapper.insert(screenPersonDO);
                 syncRespVO.setNewId(screenPersonDO.getId());
-                syncRespVO.setScreenId(screenPersonDO.getScreenId());
-                result.add(syncRespVO);
             }
+            result.add(syncRespVO);
         });
         return result;
     }
@@ -173,30 +172,19 @@ public class SynchronizeServiceImpl implements SynchronizeService{
             //           无记录 -- 插入
             //           有记录 -- 查询表中id的最大值 ， 更新待插入数据的id值 再插入
             Long dataId = getPadIdFromSomeTable(TableName.COLLECT, item.getPadId());
-            if (item.getStatusFlag()==1){
 // 表中未存在pad唯一标识的数据
-                if (dataId==0L){  // 执行插入
-                    ScreenCollectDO collectDO = BeanUtils.toBean(item, ScreenCollectDO.class);
-                    collectDO.setId(null);
-                    syncRespVO.setId(item.getId());
-                    screenCollectMapper.insert(collectDO);
-                    syncRespVO.setNewId(collectDO.getId());
-                }else {
-                    ScreenCollectDO collectDO = BeanUtils.toBean(item, ScreenCollectDO.class);
-                    collectDO.setId(dataId);
-                    syncRespVO.setNewId(collectDO.getId());
-                    screenCollectMapper.updateById(collectDO);
-                }
-                result.add(syncRespVO);
-            } else if (item.getStatusFlag() == 2) {  // 执行更新
-                ScreenCollectDO collectDO = BeanUtils.toBean(item, ScreenCollectDO.class);
-                Long id = synchronizeMapper.selectCollectIdByIndex(item.getScreenId(), item.getScreenOrder(), item.getPersonId());
-                if(id != null){
-                    syncRespVO.setNewId(collectDO.getId());
-                    result.add(syncRespVO);
-                    screenCollectMapper.updateById(collectDO);
-                }
+            ScreenCollectDO collectDO = BeanUtils.toBean(item, ScreenCollectDO.class);
+            if (dataId==0L){  // 执行插入
+                collectDO.setId(null);
+                syncRespVO.setId(item.getId());
+                screenCollectMapper.insert(collectDO);
+                syncRespVO.setNewId(collectDO.getId());
+            }else {
+                collectDO.setId(dataId);
+                screenCollectMapper.updateById(collectDO);
+                syncRespVO.setNewId(item.getId());
             }
+            result.add(syncRespVO);
         });
         return result;
     }
@@ -222,30 +210,19 @@ public class SynchronizeServiceImpl implements SynchronizeService{
             //           无记录 -- 插入
             //           有记录 -- 查询表中id的最大值 ， 更新待插入数据的id值 再插入
             Long dataId = getPadIdFromSomeTable(TableName.PPD, item.getPadId());
-            if (item.getStatusFlag()==1){
-                ScreenPpdDO screenPpdDO = BeanUtils.toBean(item, ScreenPpdDO.class);
-                if (dataId==0L) {  // 执行插入
-                    screenPpdDO.setId(null);
-                    syncRespVO.setId(item.getId());
-                    screenPpdMapper.insert(screenPpdDO);
-                    syncRespVO.setNewId(screenPpdDO.getId());
-                    result.add(syncRespVO);
-                }else {
-                    screenPpdDO.setId(dataId);
-                    syncRespVO.setNewId(item.getId());
-                    screenPpdMapper.updateById(screenPpdDO);
-                    result.add(syncRespVO);
-                }
-
-            } else if (item.getStatusFlag() == 2) {
-                ScreenPpdDO screenPpdDO = BeanUtils.toBean(item, ScreenPpdDO.class);
-                Long id = synchronizeMapper.selectPpdIdByIndex(item.getScreenId(), item.getScreenOrder(), item.getPersonId());
-                if(id != null){
-                    syncRespVO.setNewId(screenPpdDO.getId());
-                    result.add(syncRespVO);
-                    screenPpdMapper.updateById(screenPpdDO);
-                }
+            ScreenPpdDO screenPpdDO = BeanUtils.toBean(item, ScreenPpdDO.class);
+            syncRespVO.setId(item.getId());
+            if (dataId==0L) {  // 执行插入
+                screenPpdDO.setId(null);
+                screenPpdMapper.insert(screenPpdDO);
+                syncRespVO.setNewId(screenPpdDO.getId());
+            }else {
+                screenPpdDO.setId(dataId);
+                screenPpdMapper.updateById(screenPpdDO);
+                syncRespVO.setNewId(item.getId());
             }
+            result.add(syncRespVO);
+
         });
         return result;
     }
@@ -270,22 +247,19 @@ public class SynchronizeServiceImpl implements SynchronizeService{
             // 无记录 -- 根据id查记录
             //           无记录 -- 插入
             //           有记录 -- 查询表中id的最大值 ， 更新待插入数据的id值 再插入
-            if (item.getStatusFlag()==1){
-                ScreenChestRadiographDO radiographDO = BeanUtils.toBean(item, ScreenChestRadiographDO.class);
+            Long dataId = getPadIdFromSomeTable(TableName.CHEST_RADIOGRAPH, item.getPadId());
+            ScreenChestRadiographDO radiographDO = BeanUtils.toBean(item, ScreenChestRadiographDO.class);
+            syncRespVO.setId(item.getId());
+            if (dataId==0){
                 radiographDO.setId(null);
-                syncRespVO.setId(item.getId());
                 screenChestRadiographMapper.insert(radiographDO);
                 syncRespVO.setNewId(radiographDO.getId());
-                result.add(syncRespVO);
-            } else if (item.getStatusFlag() == 2) {
-                ScreenChestRadiographDO radiographDO = BeanUtils.toBean(item, ScreenChestRadiographDO.class);
-                Long id = synchronizeMapper.selectChestRadiographIdByIndex(item.getScreenId(), item.getScreenOrder(), item.getPersonId());
-                if(id != null){
-                    syncRespVO.setNewId(radiographDO.getId());
-                    result.add(syncRespVO);
-                    screenChestRadiographMapper.updateById(radiographDO);
-                }
+            } else {
+                radiographDO.setId(dataId);
+                screenChestRadiographMapper.updateById(radiographDO);
+                syncRespVO.setNewId(item.getId());
             }
+            result.add(syncRespVO);
         });
         return result;
     }
@@ -495,14 +469,14 @@ public class SynchronizeServiceImpl implements SynchronizeService{
                 "诊断组",6
         );
         list.forEach(item->{
-//            ScreenSumInfo info = synchronizeMapper.selectSumIdByIndex(Integer.parseInt(item.getYear()), item.getScreenType(), item.getScreenId(), item.getPersonId());
-            ScreenSumInfo info=null;
-            ScreenSumDO screenSumDO = screenSumMapper.selectOne(ScreenSumDO::getPadId, item.getPadId());
-            if (!BeanUtil.isEmpty(screenSumDO)){
-                info=new ScreenSumInfo(screenSumDO.getId(),screenSumDO.getCurFinish());
+            ScreenSumInfo info = synchronizeMapper.selectSumIdByIndex(Integer.parseInt(item.getYear()), item.getScreenType(), item.getScreenId(), item.getPersonId());
+            if (!BeanUtil.isEmpty(info)){
                 // 当前已完成分组的值小于数据库中已完成分组的值时，不更新这个字段值
                 if (item.getCurFinish()!=null && !"null".equals(item.getCurFinish())){
-                    Integer preValue = groupMap.get(info.getCurFinish());
+                    Integer preValue=0;
+                    if (!info.getCurFinish().isEmpty()){
+                        preValue = groupMap.get(info.getCurFinish());
+                    }
                     Integer curValue = groupMap.get(item.getCurFinish());
                     if(preValue>curValue){
                         item.setCurFinish(info.getCurFinish());

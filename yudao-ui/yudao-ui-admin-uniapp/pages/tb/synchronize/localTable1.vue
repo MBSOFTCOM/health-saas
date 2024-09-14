@@ -378,7 +378,7 @@ export default {
 								});
 							} else {
 								// 获取本地数据 上传到pc端
-								let local=await SynchronizeApi.getPersonData(self.queryParams.screenId, self.queryParams.screenPoint, 1,1, self.pageSize)
+								let local=await SynchronizeApi.getPersonData(self.queryParams.screenId, self.queryParams.screenPoint, 'not null',-1, self.pageSize)
 								self.SyncData = local;
 								// console.log(self.SyncData);
 

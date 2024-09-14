@@ -392,6 +392,16 @@ export default {
 				}
 			});
 		},
+		/**
+		 * 获取当前时间的日期字符串
+		 */
+		getCurrentDateString() {
+		  const date = new Date();
+		  const year = date.getFullYear();
+		  const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份从0开始，需要加1
+		  const day = String(date.getDate()).padStart(2, '0');
+		  return `${year}${month}${day}`;
+		},
 		// 平板到pc
 		async PadToPc() {
 			try{
@@ -422,7 +432,7 @@ export default {
 					cancelText: '取消',
 					confirmText: '确认',
 					success: async (res)=> {
-						try{
+						// try{
 						if (res.confirm) {
 							if (self.pageData.length == 0) {
 								uni.showToast({
@@ -535,6 +545,30 @@ export default {
 										}
 									}
 								}
+								let errorConsume=[]
+									let consume=await ConsumeRecordApi.selectLocalData()
+									let str=this.getCurrentDateString()
+									for (var i = 0; i < consume.length; i++) {
+										console.log(i);
+										consume[i].padId=''+consume[i].id+uni.$person.id+str
+										console.log(consume[i]);
+										if(consume[i].createTime){
+											consume[i].createTime = new Date(consume[i].createTime).getTime();
+										}
+										if(consume[i].updateTime){
+											consume[i].updateTime = new Date(consume[i].updateTime).getTime();
+										}
+									}
+								try{
+									let consumeResult=await ConsumeRecordApi.upload(consume)
+									if(!consumeResult || consumeResult.data==null){
+										throw new Error('上传试剂消耗失败')
+									}else{
+										errorConsume=[]
+									}
+								}catch(e){
+									errorConsume=consume
+								}
 								if(errorPageNo.length>0 || errorSumData.length>0){
 									uni.showModal({
 										title: '提示',
@@ -636,22 +670,14 @@ export default {
 										}
 									})
 								}
+								
 								uni.hideLoading();
 								uni.showToast({
 									title: '汇总数据上传成功',
 									icon: 'success',
 									duration: 2000
 								})
-								let consume=await ConsumeRecordApi.selectLocalData()
-								for (var i = 0; i < consume.length; i++) {
-									if(consume[i].createTime){
-										consume[i].createTime = new Date(consume[i].createTime).getTime();
-									}
-									if(consume[i].updateTime){
-										consume[i].updateTime = new Date(consume[i].updateTime).getTime();
-									}
-								}
-								let consumeResult=await ConsumeRecordApi.upload(consume)
+								
 								// 上传ppd组图片
 								await SynchronizeApi.uploadOfflineImage(2);
 								if(consumeResult || consumeResult.data!=null){
@@ -686,14 +712,14 @@ export default {
 							});
 						}
 						
-          }catch(e){
+          /*}catch(e){
             uni.showToast({
               title: e,
               mask: true,
               icon: 'error',
               duration: 1500
             });
-          }
+          }*/
 					}
 				});
 			} else {

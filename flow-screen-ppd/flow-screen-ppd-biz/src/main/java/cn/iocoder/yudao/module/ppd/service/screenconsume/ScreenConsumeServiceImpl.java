@@ -386,12 +386,18 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
         }
         Integer successNum = 0;
         for (ScreenConsumeRecordDO screenConsumeRecordDO : list) {
-            screenConsumeRecordDO.setId(null);
+            ScreenConsumeRecordDO one = screenConsumeRecordMapper.selectOne(ScreenConsumeRecordDO::getPadId, screenConsumeRecordDO.getPadId());
             ScreenConsumeDO screenConsumeDO = screenConsumeMapper.selectById(screenConsumeRecordDO.getConsumeId());
             if (screenConsumeDO.getCurrentNumber() - screenConsumeRecordDO.getChangeNumber() >= 0) {
-                screenConsumeMapper.decreaseScreenConsume(screenConsumeRecordDO.getConsumeId(), screenConsumeRecordDO.getChangeNumber());
+            if (BeanUtil.isEmpty(one)){
+                screenConsumeRecordDO.setId(null);
                 screenConsumeRecordMapper.insert(screenConsumeRecordDO);
-                successNum++;
+            }else {
+                screenConsumeRecordDO.setId(one.getId());
+                screenConsumeRecordMapper.updateById(screenConsumeRecordDO);
+            }
+            screenConsumeMapper.decreaseScreenConsume(screenConsumeRecordDO.getConsumeId(), screenConsumeRecordDO.getChangeNumber());
+            successNum++;
             }
         }
         return successNum;

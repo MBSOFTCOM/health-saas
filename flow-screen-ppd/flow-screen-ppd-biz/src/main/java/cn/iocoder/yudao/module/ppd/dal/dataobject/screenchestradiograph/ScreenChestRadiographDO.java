@@ -89,4 +89,6 @@ public class ScreenChestRadiographDO extends BaseDO {
      */
     private String remark;
 
+    private String padId;
+
 }
