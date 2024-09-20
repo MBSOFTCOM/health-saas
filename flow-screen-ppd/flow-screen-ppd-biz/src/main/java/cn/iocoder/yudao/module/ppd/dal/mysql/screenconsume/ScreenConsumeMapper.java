@@ -88,6 +88,20 @@ public interface ScreenConsumeMapper extends BaseMapperX<ScreenConsumeDO> {
                      @Param("deptId") Long deptId);
 
     /**
+     * 获取某试剂的最大消耗序位
+     * @param reagentId 试剂id
+     * @param deptId 机构id
+     * @return 最大消耗序位
+     */
+    Integer selectMaxOrderByReagent(@Param("reagentId") Long reagentId,@Param("deptId") Long deptId);
+    /**
+     * 获取某试剂的最大消耗序位
+     * @param reagentId 试剂id
+     * @param deptId 机构id
+     * @return 最大消耗序位
+     */
+    Integer countOrderByReagent(@Param("reagentId") Long reagentId,@Param("deptId") Long deptId,@Param("consumeOrder") Integer consumeOrder);
+    /**
      * 查询时间区间内的消耗数据
      */
     List<ScreenConsumeDO> selectByTime(@Param("startDateTime") LocalDateTime startDateTime,

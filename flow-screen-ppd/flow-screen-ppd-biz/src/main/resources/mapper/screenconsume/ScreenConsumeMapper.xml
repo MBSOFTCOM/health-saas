@@ -95,6 +95,18 @@
         select ifnull(sum(current_number),0) from tb_screen_consume where usable=0 and deleted=0 and reagent_id=#{reagentId} and dept_id=#{deptId}
 
     </select>
+    <select id="selectMaxOrderByReagent" resultType="java.lang.Integer">
+        select consume_order
+        from tb_screen_consume
+        WHERE deleted = 0 and dept_id=#{deptId} and reagent_id=#{reagentId}
+        order by consume_order desc
+        limit 1
+    </select>
+    <select id="countOrderByReagent" resultType="java.lang.Integer">
+        select ifnull(count(*),0)
+        from tb_screen_consume
+        WHERE deleted = 0 and dept_id=#{deptId} and reagent_id=#{reagentId} and consume_order=#{consumeOrder}
+    </select>
 
 
 </mapper>

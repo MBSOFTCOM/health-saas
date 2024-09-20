@@ -60,6 +60,11 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
 
         Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
 
+        Integer countOrder = screenConsumeMapper.countOrderByReagent(createReqVO.getReagentId(), deptId,createReqVO.getConsumeOrder());
+        if (countOrder!=null && countOrder>0){
+            throw exception(SCREEN_CONSUME_ORDER_IS_EXISTS);
+        }
+
         Integer count =
                 screenConsumeMapper.isExist(screenConsume.getReagentId(),
                         screenConsume.getConsumeOrder(), screenConsume.getBathNumber(),

@@ -163,11 +163,11 @@ const showLabelForSelect = (item) => {
   return item.name+" - "+typeLabel+" - "+item.reagentSpecsNum+" 人份 - "+potency +" / "+item.specification +resolveDict(item.specificationUnit, DICT_TYPE.TB_SPECIFICATION)+" / "+resolveDict(item.packageUnit, DICT_TYPE.TB_PACKAGE)+" - "+(item.manufacturer??'')
 }
 const formRules = reactive({
-  reagentId: [{ required: true, message: '试剂名称不能为空', trigger: 'change' }],
+  reagentId: [{ required: true, message: '试剂不能为空', trigger: 'change' }],
   reagentType: [{ required: true, message: '试剂类型不能为空', trigger: 'change' }],
   consumeOrder: [
     { required: true, message: '消耗序位不能为空', trigger: 'blur' },
-    { pattern: /^[1-9]$/, message: '消耗序位只能是1到9的整数', trigger: 'blur' }
+    { pattern: /^[1-99]$/, message: '消耗序位只能是1到99的整数', trigger: 'blur' }
   ],
   bathNumber: [{required: true, message: '批次号不能为空', trigger: 'blur'},
     {max: 20, message: '批次号长度不能超过20个字符', trigger: 'blur'},
@@ -216,10 +216,10 @@ const submitForm = async () => {
 
       if (formData.value.consumeOrder !== undefined) {
         // 使用 some 方法来检查 consumeOrder 是否在数组中的对象里
-        const exists = reagentConsumeList.value.some(item => item.consumeOrder == formData.value.consumeOrder);
+        /*const exists = reagentConsumeList.value.some(item => item.consumeOrder == formData.value.consumeOrder);
         if (exists) {
           return message.error("列表中已存在该消耗次序！");
-        }
+        }*/
       }
 
       data.currentNumber = data.inboundNumber

@@ -1,6 +1,8 @@
 package cn.iocoder.yudao.module.ppd.controller.admin.screenconsume.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -24,6 +26,9 @@ public class ScreenConsumeSaveReqVO {
     private Integer reagentType;
 
     @Schema(description = "消耗序位")
+    @NotNull
+    @Max(99)
+    @Min(1)
     private Integer consumeOrder;
 
     @Schema(description = "批次号")
@@ -39,6 +44,8 @@ public class ScreenConsumeSaveReqVO {
     private LocalDateTime manufactureDate;
 
     @Schema(description = "转换系数（人次）")
+    @Min(1)
+    @NotNull
     private Integer reagentSpecsNum;
 
     @Schema(description = "库存预警值（按试剂）")

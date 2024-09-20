@@ -71,6 +71,7 @@ public interface ErrorCodeConstants{
     ErrorCode SCREEN_CONSUME_RECORD_NOT_EXISTS = new ErrorCode(20003, "消耗管理记录不存在");
     ErrorCode SCREEN_CONSUME_CURRENT_NUMBER_IS_NOT_ENOUGH = new ErrorCode(20004, "当前库存不足已减少");
     ErrorCode SCREEN_CONSUME_IS_EXISTS = new ErrorCode(20005, "消耗管理中有相应的试剂记录了！");
+    ErrorCode SCREEN_CONSUME_ORDER_IS_EXISTS = new ErrorCode(20005, "该试剂的消耗序位已存在！");
 
     // ========== 工作进展报告-统计表-导出的历史选项 TODO 补充编号 ==========
     ErrorCode SCREEN_STATICS_HISTORY_NOT_EXISTS = new ErrorCode(200100, "工作进展报告-统计表-导出的历史选项不存在");
