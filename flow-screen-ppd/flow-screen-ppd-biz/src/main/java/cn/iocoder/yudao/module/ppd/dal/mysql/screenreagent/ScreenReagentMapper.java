@@ -81,6 +81,10 @@ public interface ScreenReagentMapper extends BaseMapperX<ScreenReagentDO> {
      * 获取试剂列表
      */
     List<ScreenReagentDO> getReagentList(@Param("deptId") Long deptId);
+    /**
+     * 获取试剂全信息列表
+     */
+    List<ScreenReagentDO> getReagentInfoList(@Param("deptId") Long deptId);
 
     /**
      * 获取试剂列表--名称

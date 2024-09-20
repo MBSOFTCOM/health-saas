@@ -110,7 +110,7 @@ public class ScreenConsumeController {
     @Operation(summary = "获取试剂列表")
     @PreAuthorize("@ss.hasPermission('tb:screen-consume:create')")
     public CommonResult<List<ScreenReagentDO>> getReagentList() {
-        List<ScreenReagentDO> list = screenReagentService.getReagentList();
+        List<ScreenReagentDO> list = screenReagentService.getReagentInfoList();
         return success(list);
     }
 

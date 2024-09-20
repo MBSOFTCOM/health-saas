@@ -92,6 +92,10 @@ public interface ScreenReagentService {
      * 获取试剂列表
      */
     List<ScreenReagentDO> getReagentList();
+    /**
+     * 获取试剂列表
+     */
+    List<ScreenReagentDO> getReagentInfoList();
 
     /**
      * 获取试剂列表--名称

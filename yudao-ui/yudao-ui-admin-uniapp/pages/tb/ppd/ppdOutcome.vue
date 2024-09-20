@@ -544,13 +544,22 @@ export default {
 				updater: this.FormData.updater, //修改者
 				updateTime: this.FormData.updateTime //修改时间
 			};
-			// console.log(data);
-			const isNull = this.ifNull(data);
-			if (!isNull) {
-				uni.$u.toast('表单数据存在空,请检查表单,并填写完整!');
-				return;
+			if(![0,1].includes(this.FormData.outcome)){
+				uni.showToast({
+					title: '请选择皮肤反应类型',
+					icon: 'none',
+					duration: 2000
+				}) 
+				return
 			}
-
+			if(!this.FormData.doctorSignature){
+				uni.showToast({
+					title: '请医生签名',
+					icon: 'none',
+					duration: 2000
+				})  
+				return
+			}
 			openTransaction()
 				.then(async (r) => {
 					//提交信息

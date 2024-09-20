@@ -312,6 +312,9 @@ public class ScreenReagentServiceImpl implements ScreenReagentService {
         return screenReagentMapper.getReagentList2(deptId);
     }
 
-
-
+    @Override
+    public List<ScreenReagentDO> getReagentInfoList() {
+        Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
+        return screenReagentMapper.getReagentInfoList(deptId);
+    }
 }

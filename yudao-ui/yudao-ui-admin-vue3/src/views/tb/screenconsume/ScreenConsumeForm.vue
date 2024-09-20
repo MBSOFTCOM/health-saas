@@ -7,18 +7,19 @@
       label-width="100px"
       v-loading="formLoading"
     >
-      <el-form-item label="试剂名称" prop="reagentId">
+      <el-form-item label="试剂" prop="reagentId" style="width: 500px">
         <el-select
           v-model="formData.reagentId"
           placeholder="请选择试剂"
           clearable
           class="!w-250px"
+
           @change="selectReagent(formData.reagentId)"
         >
           <el-option
             v-for="item in reagentList"
             :key="item.id"
-            :label="item.name"
+            :label="showLabelForSelect(item)"
             :value="item.id"
           />
         </el-select>
@@ -140,7 +141,27 @@ const checkInboundNumber = (rule, value) => {
   }
   return Promise.resolve();
 };
+// 处理品规的回显
+const resolveDict = (value, dict) => {
+  let list = getIntDictOptions(dict)
+  const item = list.find(item => item.value === value);
+  if (item) {
+    return item.label; // 返回找到的对象的 label 属性
+  } else {
+    return ''; // 如果找不到对应的 value，
+  }
+};
 
+const showLabelForSelect = (item) => {
+  if (!item){
+    return ''
+  }
+  let dictList=getIntDictOptions(DICT_TYPE.DOSAGE_FORM)
+  console.log(dictList)
+  let typeLabel=dictList.find(e=> item.type == e.value)?.label
+  let potency=item.titer+resolveDict(item.potencyUnit, DICT_TYPE.TB_POTENCY_UNIT)
+  return item.name+" - "+typeLabel+" - "+item.reagentSpecsNum+" 人份 - "+potency +" / "+item.specification +resolveDict(item.specificationUnit, DICT_TYPE.TB_SPECIFICATION)+" / "+resolveDict(item.packageUnit, DICT_TYPE.TB_PACKAGE)+" - "+(item.manufacturer??'')
+}
 const formRules = reactive({
   reagentId: [{ required: true, message: '试剂名称不能为空', trigger: 'change' }],
   reagentType: [{ required: true, message: '试剂类型不能为空', trigger: 'change' }],

@@ -224,7 +224,7 @@
                 {{ scope.row.outcome.includes('5') ? '有' : '无' }}
               </template>
             </el-table-column>
-            <el-table-column label="食欲不振" align="center">
+            <el-table-column label="食欲不振" align="center" width="100">
               <template #default="scope">
                 {{ scope.row.outcome.includes('6') ? '有' : '无' }}
               </template>
@@ -612,6 +612,11 @@ const open = async (id: number, year: number, screenType: number) => {
       const data = await ScreenPersonApi.getPatientInfoList(id, year, screenType)
       const infomedForm=await ScreenInformedConsentFormApi.getLastInformedConsentForm(id)
       checkList.value = data.checkList //采集组数据
+      for (let i = 0; i < checkList.value.length; i++) {
+        if (!checkList.value[i].outcome){
+          checkList.value[i].outcome=''
+        }
+      }
       PPDList.value = data.ppdlist // PPD组数据
       DRList.value = data.drlist // DR组数据
       CTList.value = data.ctlist // CT组数据

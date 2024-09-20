@@ -110,4 +110,20 @@
         and sc.deleted=0
         and sp.deleted=0
     </select>
+    <select id="selectByPersonId"
+            resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.CollectVO">
+        SELECT id, outcome, screen_agency, screen_time, screen_order, person_id, contacted
+        FROM
+        tb_screen_collect
+        WHERE
+        person_id = #{personId} and deleted=0
+        <if test="year != null">
+            AND `year` = #{year}
+        </if>
+        <if test="screenType != null">
+            AND `screen_type` = #{screenType}
+        </if>
+        ORDER BY screen_order DESC
+    </select>
+
 </mapper>

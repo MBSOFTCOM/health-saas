@@ -974,7 +974,16 @@ export default {
 				});
 				return;
 			}
-			
+			console.log(this.regentId);
+			console.log(!this.regentId);
+			if(!this.regentId){
+				uni.showToast({
+					title: '请先选择试剂',
+					icon: 'none',
+					duration: 2000
+				})  
+				return
+			}
 			uni.showLoading({
 				title: '保存中',
 				mask: true

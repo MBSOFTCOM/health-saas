@@ -1,13 +1,11 @@
 package cn.iocoder.yudao.module.ppd.service.screendiagnosis;
 
 
-import cn.hutool.core.util.ObjectUtil;
-import cn.iocoder.yudao.module.ppd.controller.admin.screendiagnosis.vo.*;
+import cn.iocoder.yudao.module.ppd.controller.admin.screendiagnosis.vo.TBHealthScreening;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screencollect.ScreenCollectDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenchestradiograph.ScreenChestRadiographMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screencollect.ScreenCollectMapper;
-import cn.iocoder.yudao.module.ppd.dal.mysql.screendiagnosis.ScreenDiagnosisMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenimages.ScreenImagesMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenpersonrealsituation.ScreenPersonMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenppd.ScreenPpdMapper;
@@ -20,7 +18,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static cn.iocoder.yudao.module.cd.enums.ErrorCodeConstants.SCREEN_DIAGNOSIS_NOT_EXISTS;
 import static cn.iocoder.yudao.module.cd.enums.ErrorCodeConstants.SCREEN_PERSON_NOT_EXISTS;
 
 /**
@@ -70,39 +67,40 @@ public class ScreenDiagnosisServiceImpl implements ScreenDiagnosisService {
 //        tbHealthScreening.setCheckMark(null);
 
         if(screenCollectDO != null){
-            // 症状结果
-            String outcome = screenCollectDO.getOutcome();
+
 
             // 体检日期
             if(screenCollectDO.getScreenTime() != null){
                 tbHealthScreening.setExaminationDate(DateTimeFormatter.ofPattern("yyyy年MM月dd日")
                         .format(screenCollectDO.getScreenTime()));
             }
-
-            // 症状部分内容
-            // 咳嗽、咳痰（超过 2 周）
-            tbHealthScreening.setCoughOrSputumForMoreThanOneWeek(outcome.contains("1"));
-            // 咯血或血痰
-            tbHealthScreening.setHemoptysisOrBloodSputum(outcome.contains("2"));
-            // 发热
-            tbHealthScreening.setFever(outcome.contains("5"));
-            // 反复发烧2周以上
+            if (screenCollectDO.getOutcome()!=null && screenCollectDO.getOutcome().isEmpty()) {
+                // 症状结果
+                String outcome = screenCollectDO.getOutcome();
+                // 症状部分内容
+                // 咳嗽、咳痰（超过 2 周）
+                tbHealthScreening.setCoughOrSputumForMoreThanOneWeek(outcome.contains("1"));
+                // 咯血或血痰
+                tbHealthScreening.setHemoptysisOrBloodSputum(outcome.contains("2"));
+                // 发热
+                tbHealthScreening.setFever(outcome.contains("5"));
+                // 反复发烧2周以上
 //            tbHealthScreening.setPersistentFever(outcome.contains("3") && isNewStud);
-            // 淋巴结肿大
+                // 淋巴结肿大
 //            tbHealthScreening.setLymphoidEnlargement(outcome.contains("4") && isNewStud);
-            // 胸痛
-            tbHealthScreening.setChestPain(outcome.contains("7"));
-            // 乏力、盗汗
-            tbHealthScreening.setNightSweats(outcome.contains("3"));
-            // 食欲不振
-            tbHealthScreening.setLossOfAppetite(outcome.contains("6"));
-            // 乏力
+                // 胸痛
+                tbHealthScreening.setChestPain(outcome.contains("7"));
+                // 乏力、盗汗
+                tbHealthScreening.setNightSweats(outcome.contains("3"));
+                // 食欲不振
+                tbHealthScreening.setLossOfAppetite(outcome.contains("6"));
+                // 乏力
 //            tbHealthScreening.setFatigue(outcome.contains("7") && !isNewStud);
-            // 体重减轻（超过 6 斤）
-            tbHealthScreening.setWeightLossOverSixPounds(outcome.contains("4"));
-            // 有无卡痕
+                // 体重减轻（超过 6 斤）
+                tbHealthScreening.setWeightLossOverSixPounds(outcome.contains("4"));
+                // 有无卡痕
 //            tbHealthScreening.setCheckMark(outcome.contains("9") && !isNewStud);
-
+            }
             // 采集组医生签名
             String url = screenImagesMapper.selectLastTimeUrl(personId, 8, year, screenType);
             tbHealthScreening.setCollectDoctorSignature(url);

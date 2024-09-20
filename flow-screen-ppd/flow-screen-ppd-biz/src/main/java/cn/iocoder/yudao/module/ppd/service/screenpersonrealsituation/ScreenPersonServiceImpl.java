@@ -27,6 +27,7 @@ import cn.iocoder.yudao.module.ppd.dal.dataobject.screenppd.ScreenPpdDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenrepeatperson.ScreenRepeatPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screensum.ScreenSumDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenchestradiograph.ScreenChestRadiographMapper;
+import cn.iocoder.yudao.module.ppd.dal.mysql.screencollect.ScreenCollectMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screencomputedtomography.ScreenComputedTomographyMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screendistrict.ScreenDistrictMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenimages.ScreenImagesMapper;
@@ -128,6 +129,8 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
     private ScreenComputedTomographyService screenComputedTomographyService;
     @Resource
     private ScreenInformedConsentFormMapper screenInformedConsentFormMapper;
+    @Resource
+    private ScreenCollectMapper screenCollectMapper;
     @Override
     public Long createScreenPerson(ScreenPersonSaveReqVO createReqVO) {
         // 插入
@@ -867,8 +870,8 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
     @Override
     public PatientInfoList getPatientInfoList(Long patientId, Integer year, Integer screenType) {
         // 使用并行流来提高性能
-        List<CollectVO> checkList =
-                screenPersonMapper.getCheckList(patientId, year, screenType).parallelStream().collect(Collectors.toList());
+        List<CollectVO> checkList =screenCollectMapper.selectByPersonId(patientId,year,screenType);
+//                screenPersonMapper.getCheckList(patientId, year, screenType).parallelStream().collect(Collectors.toList());
 
         List<ChestRadiographVO> drList =
                 screenPersonMapper.getDRList(patientId, year, screenType).parallelStream().collect(Collectors.toList());
