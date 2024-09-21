@@ -145,12 +145,12 @@
 					</view>
 				</view>
 			</view>
-			<view class="card-main">
+			<view class="card-main" v-if="showDetail">
 				<view class="card-top various3">症状人数统计</view>
 				<view class="card-tle">
 					<view class="card-sp">
 						<view class="card-text">
-							横经&ge;10mm
+							硬结横经&ge;10mm
 							<span class="sp-text">
 								{{ statisticsData.xLengthGtTenNum }}
 								<span style="font-size: 18px">人</span>
@@ -167,7 +167,7 @@
 					<view class="line"></view>
 					<view class="card-sp">
 						<view class="card-text">
-							纵经&le;10mm
+							硬结纵经&le;10mm
 							<span class="sp-text">
 								{{ statisticsData.yLengthLtTenNum }}
 								<span style="font-size: 18px">人</span>
@@ -263,6 +263,7 @@
 						:plain="true"
 						text="重置"/>
 					<up-button
+						v-if="showFlow"
 						@click="reviewProcess"
 						style="width: 115px"
 						type="primary"
@@ -279,7 +280,7 @@
             <uni-th width="110" align="center">筛查编号</uni-th>
             <uni-th width="100" align="center">姓名</uni-th>
             <uni-th width="180" align="center">筛查次序/时间</uni-th>
-            <uni-th width="180" align="center">下一步检查</uni-th>
+            <uni-th width="180" align="center" v-if="showFlow">下一步检查</uni-th>
             <uni-th width="170" align="center">操作</uni-th>
             <uni-th width="180" align="center">身份证号</uni-th>
             <uni-th width="60" align="center">性别</uni-th>
@@ -307,7 +308,7 @@
                 ></uni-data-select>
               </view>
             </uni-td>
-            <uni-td align="left">
+            <uni-td align="left" v-if="showFlow">
               <view v-if="checkLength(item.next)">{{ item.next }}</view>
               <view v-else>
                 <up-text text="点击查看" type="success" @click="clickTextHandler(item.next)"></up-text>
@@ -638,6 +639,8 @@ import {staticsConsumeById} from "../../../api/screen/consume";
 export default {
 	data() {
 		return {
+			showFlow:uni.$showFlow,
+			showDetail:false,
 			nav: [
 				{
 					value: '常规筛查'

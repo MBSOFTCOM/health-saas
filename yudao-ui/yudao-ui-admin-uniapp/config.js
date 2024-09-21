@@ -1,8 +1,8 @@
 export default {
   // baseUrl: 'http://api-dashboard.yudao.iocoder.cn',
-  baseUrl: 'http://192.168.220.129:48089',
+  // baseUrl: 'http://192.168.220.129:48089',
     // baseUrl: 'http://172.16.1.49:48082',
-  // baseUrl: '172.16.1.49:48082',
+  baseUrl: 'http://1.119.159.138:48084',
   baseApi: '/admin-api',
   // 应用信息
   appInfo: {

@@ -180,7 +180,7 @@ export function statisticsNum(time) {
 					COUNT(CASE WHEN strftime('%Y-%m', screenTime) = strftime('%Y-%m', '${time}') AND a.outcome = 0 THEN 1 END) AS monthlyYinNum,
   					COUNT(CASE WHEN strftime('%Y-%m-%d', screenTime) = strftime('%Y-%m-%d', '${time}') THEN 1 END) AS dayNum,
   					COUNT(CASE WHEN strftime('%Y-%m-%d', screenTime) = strftime('%Y-%m-%d', '${time}') AND a.outcome = 1 THEN 1 END ) AS dayYangNum,
-					COUNT(CASE WHEN strftime('%Y-%m-%d', screenTime) = strftime('%Y-%m-%d', '${time}') AND a.outcome = 1 THEN 1 END ) AS dayYinNum,
+					COUNT(CASE WHEN strftime('%Y-%m-%d', screenTime) = strftime('%Y-%m-%d', '${time}') AND a.outcome = 0 THEN 1 END ) AS dayYinNum,
 					COUNT(CASE WHEN a.injectionWay = 1 THEN 1 END ) AS ppdNum,
 					COUNT(CASE WHEN a.injectionWay = 2 THEN 1 END ) AS ecNum,
 					COUNT(CASE WHEN a.injectionWay = 3 THEN 1 END ) AS igraNum,

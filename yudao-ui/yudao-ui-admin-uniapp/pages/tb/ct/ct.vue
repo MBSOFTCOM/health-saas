@@ -157,6 +157,7 @@
 						text="重置"
 					></up-button>
 					<up-button
+						v-if="showFlow"
 						@click="reviewProcess"
 						style="width: 115px;"
 						type="primary"
@@ -177,7 +178,7 @@
 					<uni-th width="100" align="center">姓名</uni-th>
 					<uni-th width="180" align="center">筛查次序/时间</uni-th>
 					<uni-th width="150" align="center">检测结果</uni-th>
-					<uni-th width="180" align="center">下一步检查</uni-th>
+					<uni-th width="180" align="center" v-if="showFlow">下一步检查</uni-th>
 					<uni-th width="350" align="center">操作</uni-th>
 					<uni-th width="180" align="center">身份证号</uni-th>
 					<uni-th width="80" align="center">年龄</uni-th>
@@ -203,7 +204,7 @@
 						</view>
 					</uni-td>
 					<uni-td align="center">{{ getLabelByValue(ctOutcome(), item.outcome) }}</uni-td>
-					<uni-td align="left">
+					<uni-td align="left" v-if="showFlow">
 						<view v-if="checkLength(item.next)">{{ item.next }}</view>
 						<view v-else>
 							<up-text text="点击查看" type="success" @click="clickTextHandler(item.next)"></up-text>
@@ -390,6 +391,7 @@ export default {
 	components: { UniFormsItem, UniForms, UniTable, UPopup, UniPopup, UniPopupDialog },
 	data() {
 		return {
+			showFlow:uni.$showFlow,
 			nav: [
 				{
 					value: '常规筛查'

@@ -91,13 +91,13 @@
 				</view>
 			</view>
 			<view class="card-main">
-				<view class="card-top various2">卡痕人数统计</view>
+				<view class="card-top various2">与结核病患者接触史人数统计</view>
 				<view class="card-tle">
 					<view class="card-sp">
 						<view class="card-text">
-							有卡痕人数
+							2年内有接触史的人数
 							<span class="sp-text">
-								{{ statisticsData.CardMark }}
+								{{ statisticsData.contacted }}
 								<span style="font-size: 18px">人</span>
 							</span>
 						</view>
@@ -105,9 +105,9 @@
 					<view class="line"></view>
 					<view class="card-sp">
 						<view class="card-text">
-							无卡痕人数
+							2年内无接触的人数
 							<span class="sp-text">
-								{{ statisticsData.noCardMark }}
+								{{ statisticsData.noContacted }}
 								<span style="font-size: 18px">人</span>
 							</span>
 						</view>
@@ -117,7 +117,7 @@
 						<view class="card-text">
 							总人数
 							<span class="sp-text">
-								{{ statisticsData.noCardMark + statisticsData.CardMark }}
+								{{ statisticsData.contacted + statisticsData.noContacted }}
 								<span style="font-size: 18px">人</span>
 							</span>
 						</view>
@@ -129,14 +129,14 @@
 				<view class="card-tle">
 					<view class="card-sp">
 						<view class="card-text">
-							咳血、血痰
+							血痰或咯血
 							<span class="sp-text">
 								{{ statisticsData.hemoptysisNum }}
 								<span style="font-size: 18px">人</span>
 							</span>
 						</view>
 						<view class="card-text1">
-							夜间盗汗
+							乏力
 							<span class="sp-text" style="color: #000">
 								{{ statisticsData.nightSweatNum }}
 								<span style="font-size: 18px">人</span>
@@ -163,13 +163,13 @@
 					<view class="line"></view>
 					<view class="card-sp">
 						<view class="card-text">
-							乏力
+							体重减轻
 							<span class="sp-text">
-								{{ statisticsData.weakNum }}
+								{{ statisticsData.loseWeight }}
 								<span style="font-size: 18px">人</span>
 							</span>
 						</view>
-						<view class="card-text1" style="margin-left: 110px">
+						<view class="card-text1" style="margin-left: 75px">
 							胸痛
 							<span class="sp-text" style="color: #000">
 								{{ statisticsData.chestPainNum }}
@@ -242,6 +242,7 @@
 						text="重置"
 					></up-button>
 					<up-button
+						v-if="showFlow"
 						@click="reviewProcess"
 						style="width: 115px"
 						type="primary"
@@ -260,7 +261,7 @@
 					<uni-th width="110" align="center">筛查编号</uni-th>
 					<uni-th width="100" align="center">姓名</uni-th>
 					<uni-th width="180" align="center">筛查次序/时间</uni-th>
-					<uni-th width="180" align="center">下一步检查</uni-th>
+					<uni-th width="180" align="center" v-if="showFlow">下一步检查</uni-th>
 					<uni-th width="220" align="center">采集操作</uni-th>
 					<uni-th width="180" align="center">身份证号</uni-th>
 					<uni-th width="60" align="center">性别</uni-th>
@@ -288,7 +289,7 @@
 							></uni-data-select>
 						</view>
 					</uni-td>
-					<uni-td align="left">
+					<uni-td align="left" v-if="showFlow">
 						<view v-if="checkLength(item.next)">{{ item.next }}</view>
 						<view v-else>
 							<up-text text="点击查看" type="success" @click="clickTextHandler(item.next)"></up-text>
@@ -525,6 +526,7 @@ import { ethnic } from '@/utils/dict.js';
 export default {
 	data() {
 		return {
+			showFlow:uni.$showFlow,
 			nav: [
 				{
 					value: '常规筛查'
@@ -973,10 +975,13 @@ export default {
 						yearAbnormalNum: 0,
 						monthlyNum: 0,
 						monthlyAbnormalNum: 0,
+						noContacted:0,
+						contacted:0,
 						dayNum: 0,
 						dayAbnormalNum: 0,
 						CardMark: 0,
 						noCardMark: 0,
+						loseWeight:0,
 						hemoptysisNum: 0,
 						feverNum: 0,
 						chestPainNum: 0,

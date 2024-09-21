@@ -23,7 +23,6 @@
 			<view class="log-btn">
 				<up-button @click="localLogin" class="local">离线登录</up-button>
 				<up-button @click="handleLogin" class="handle">在线登录</up-button>
-				<up-button @click="handleCom" class="handle">同步</up-button>
 			</view>
 		</view>
 	</view>
@@ -54,14 +53,6 @@ export default {
 	},
 	onLoad: function () {},
 	methods: {
-		async handleCom(){
-			try{
-				let re=await this.getNetworkStatus()
-				console.log(re);
-			}catch(e){
-				console.error(e);
-			}
-		},
 		// utils/network.js
 		getNetworkStatus() {
 			console.log(222);
@@ -119,6 +110,7 @@ export default {
 			// console.log(uni.$person);
 			//置为离线
 			uni.$loginStatus = false;
+			uni.$showFlow = false
 			this.$tab.reLaunch('/pages/index');
 		},
 		// 隐私协议
@@ -170,6 +162,7 @@ export default {
 					// console.log(temp);
 					uni.$person = temp;
 					uni.$user = temp;
+					uni.$showFlow = false
 					SynchronizeApi.getYear(temp.name).then((response) => {
 						// console.log(response);
 						if (response[0].year) {

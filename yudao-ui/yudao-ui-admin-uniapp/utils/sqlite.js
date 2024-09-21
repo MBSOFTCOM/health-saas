@@ -64,6 +64,7 @@ uni.$user = {}
 //登录状态。true为在线
 uni.$loginStatus = true;
 
+uni.$showFlow = false
 
 
 //初始化的表
@@ -1085,32 +1086,32 @@ export function statisticsNum(time, setData) {
 			)
 		})
 		sql = `SELECT COUNT(CASE WHEN strftime('%Y', screenTime) = strftime('%Y', '${time}') THEN 1 END) AS yearNum,
-					  COUNT(CASE WHEN strftime('%Y-%m', screenTime) = strftime('%Y-%m', '${time}') THEN 1 END) AS monthlyNum,
-					  COUNT(CASE WHEN strftime('%Y-%m-%d', screenTime) = strftime('%Y-%m-%d', '${time}') THEN 1 END) AS dayNum
-				   COUNT(CASE WHEN a.outcome LIKE '%8%' THEN 1 END) AS CardMark,
-				   COUNT(CASE WHEN a.outcome NOT LIKE '%8%' THEN 1 END) AS noCardMark,
-					  COUNT(CASE WHEN a.outcome GLOB '*[1-7]*' THEN 1 END) AS symptom,
-					  COUNT(CASE WHEN a.outcome NOT GLOB '*[1-7]*' THEN 1 END) AS noSymptom
-			   FROM (SELECT MAX(screenTime) AS screenTime,outcome FROM ${tbScreenCollect} GROUP BY screenId) AS a
+					COUNT(CASE WHEN strftime('%Y-%m', screenTime) = strftime('%Y-%m', '${time}') THEN 1 END) AS monthlyNum,
+					COUNT(CASE WHEN strftime('%Y-%m-%d', screenTime) = strftime('%Y-%m-%d', '${time}') THEN 1 END) AS dayNum
+					COUNT(CASE WHEN a.contacted = 0 THEN 1 END) AS noContacted,
+				    COUNT(CASE WHEN a.contacted = 1 THEN 1 END) AS contacted,
+					COUNT(CASE WHEN a.outcome GLOB '*[1-7]*' THEN 1 END) AS symptom,
+					COUNT(CASE WHEN a.outcome NOT GLOB '*[1-7]*' THEN 1 END) AS noSymptom
+			   FROM (SELECT MAX(screenTime) AS screenTime,outcome,contacted FROM ${tbScreenCollect} GROUP BY screenId) AS a
 			   WHERE ${setData}
 			   GROUP BY screenId`;
 	} else {
 		sql =
 			`SELECT COUNT(CASE WHEN strftime('%Y', screenTime) = strftime('%Y', '${time}') THEN 1 END) AS yearNum,
-					  COUNT(CASE WHEN strftime('%Y', screenTime) = strftime('%Y', '${time}')  AND (a.outcome GLOB '*[1-8]*' OR a.outcome NOT LIKE '%9%') THEN 1 END) AS yearAbnormalNum,
+					  COUNT(CASE WHEN strftime('%Y', screenTime) = strftime('%Y', '${time}')  AND (a.outcome GLOB '*[1-7]*') THEN 1 END) AS yearAbnormalNum,
 					  COUNT(CASE WHEN strftime('%Y-%m', screenTime) = strftime('%Y-%m', '${time}')  THEN 1 END) AS monthlyNum,
-					  COUNT(CASE WHEN strftime('%Y-%m', screenTime) = strftime('%Y-%m', '${time}') AND (a.outcome GLOB '*[1-8]*' OR a.outcome NOT LIKE '%9%') THEN 1 END) AS monthlyAbnormalNum,
+					  COUNT(CASE WHEN strftime('%Y-%m', screenTime) = strftime('%Y-%m', '${time}') AND (a.outcome GLOB '*[1-7]*') THEN 1 END) AS monthlyAbnormalNum,
 					  COUNT(CASE WHEN strftime('%Y-%m-%d', screenTime) = strftime('%Y-%m-%d', '${time}') THEN 1 END) AS dayNum,
-					  COUNT(CASE WHEN strftime('%Y-%m-%d', screenTime) = strftime('%Y-%m-%d', '${time}') AND (a.outcome GLOB '*[1-8]*' OR a.outcome NOT LIKE '%9%') THEN 1 END ) AS dayAbnormalNum,
-					  COUNT(CASE WHEN a.outcome LIKE '%8%' THEN 1 END) AS CardMark,
-					  COUNT(CASE WHEN a.outcome NOT LIKE '%8%' THEN 1 END) AS noCardMark,
+					  COUNT(CASE WHEN strftime('%Y-%m-%d', screenTime) = strftime('%Y-%m-%d', '${time}') AND (a.outcome GLOB '*[1-7]*') THEN 1 END ) AS dayAbnormalNum,
+					  COUNT(CASE WHEN a.contacted = 0 THEN 1 END) AS noContacted,
+					  COUNT(CASE WHEN a.contacted = 1 THEN 1 END) AS contacted,
 					  COUNT(CASE WHEN a.outcome LIKE '%2%' THEN 1 END) AS hemoptysisNum,
-					  COUNT(CASE WHEN a.outcome LIKE '%3%' THEN 1 END) AS feverNum,
-					  COUNT(CASE WHEN a.outcome LIKE '%4%' THEN 1 END) AS chestPainNum,
-					  COUNT(CASE WHEN a.outcome LIKE '%5%' THEN 1 END) AS nightSweatNum,
+					  COUNT(CASE WHEN a.outcome LIKE '%3%' THEN 1 END) AS nightSweatNum,
+					  COUNT(CASE WHEN a.outcome LIKE '%4%' THEN 1 END) AS loseWeight,
+					  COUNT(CASE WHEN a.outcome LIKE '%5%' THEN 1 END) AS feverNum,
 					  COUNT(CASE WHEN a.outcome LIKE '%6%' THEN 1 END) AS anorexiaNum,
-					  COUNT(CASE WHEN a.outcome LIKE '%7%' THEN 1 END) AS weakNum
-			   FROM (SELECT MAX(screenTime) AS screenTime,outcome FROM ${tbScreenCollect} WHERE screenType = ${uni.$screenType} AND year=${uni.$person.year} GROUP BY screenId) AS a;`;
+					  COUNT(CASE WHEN a.outcome LIKE '%7%' THEN 1 END) AS chestPainNum
+			   FROM (SELECT MAX(screenTime) AS screenTime,outcome,contacted FROM ${tbScreenCollect} WHERE screenType = ${uni.$screenType} AND year=${uni.$person.year} GROUP BY screenId) AS a;`;
 
 
 		/* 		sql = `SELECT COUNT(CASE WHEN strftime('%Y-%m-%d', screenTime) = strftime('%Y-%m-%d', '${time}') AND (a.outcome NOT LIKE '%9%') THEN 1 END ) AS dayAbnormalNum
