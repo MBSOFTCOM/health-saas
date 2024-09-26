@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -940,7 +939,12 @@ public class ReportServiceImpl implements ReportService {
             writer.merge(1, 2, 4, 4, "有肺结核可以症状或密切接触史人数", true);
             writer.merge(1, 2, 5, 5, "PPD皮试人数", true);
             writer.merge(1, 2, 6, 6, "PPD复验人数", true);
+            writer.writeCellValue(7, 2, "阳性", true);
+            writer.writeCellValue(8, 2, "阴性", true);
             writer.merge(1, 2, 9, 9, "不适宜PPD筛查人数（禁忌症）", true);
+            writer.writeCellValue(10, 2, "总数", true);
+            writer.writeCellValue(11, 2, "未见异常", true);
+            writer.writeCellValue(12, 2, "异常", true);
 
             //response为HttpServletResponse对象
             response.setContentType("application/vnd.ms-excel;charset=utf-8");
@@ -995,6 +999,9 @@ public class ReportServiceImpl implements ReportService {
             writer.merge(0,1,0,0,"筛查机构所在区",true);
             writer.merge(0,1,1,1,"筛查机构全称",true);
             writer.merge(0,1,2,2,"PPD试验人数",true);
+            writer.writeCellValue(3, 1, "复验结果人数", true);
+            writer.writeCellValue(4, 1, "阴性", true);
+            writer.writeCellValue(5, 1, "阳性", true);
 
             //response为HttpServletResponse对象
             response.setContentType("application/vnd.ms-excel;charset=utf-8");

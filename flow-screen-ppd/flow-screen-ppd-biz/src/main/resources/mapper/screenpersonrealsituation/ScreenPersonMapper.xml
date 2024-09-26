@@ -376,7 +376,7 @@
                                    screen_order AS maxScreenOrder1
                             FROM tb_screen_ppd
                             WHERE year = #{year}
-                              AND deleted = 0
+                              AND deleted = 0 and id_num = #{idNum}
                             GROUP BY id_num, outcome, screen_type, screen_time, transverse_diameter,
                                      longitudinal_diameter, bleb, screen_order
                             ORDER BY maxScreenOrder1 DESC
@@ -385,7 +385,7 @@
                  LEFT JOIN (SELECT id_num, photo_time, outcome, screen_type, screen_order AS maxScreenOrder2
                             FROM tb_screen_chest_radiograph
                             WHERE year = #{year}
-                              AND deleted = 0
+                              AND deleted = 0 AND id_num = #{idNum}
                             GROUP BY outcome, photo_time, id_num, screen_type, screen_order
                             ORDER BY maxScreenOrder2 DESC
                             LIMIT 1) AS tscr
@@ -398,7 +398,7 @@
     <select id="isNullByIdNumYearDeptId" resultType="java.lang.Long">
         SELECT id
         FROM tb_screen_person
-        WHERE id_num = #{idNum} AND year = #{year} AND screen_type = #{screenType} AND deptId=#{deptId} AND deleted = 0
+        WHERE id_num = #{idNum} AND year = #{year} AND screen_type = #{screenType} AND dept_id=#{deptId} AND deleted = 0
     </select>
     <select id="selectStudentByGuardianTel"
             resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.StudentInfo">

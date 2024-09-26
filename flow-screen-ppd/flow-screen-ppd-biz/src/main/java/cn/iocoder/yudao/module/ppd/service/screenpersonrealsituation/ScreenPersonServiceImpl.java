@@ -1158,8 +1158,12 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
                 String school = obj.getSchool();
                 String classroom = obj.getClassroom();
                 ScreenInformedConsentFormDO informedConsentFormDO = screenInformedConsentFormMapper.selectLastOne(obj.getId());
-                String signaturePath = informedConsentFormDO.getSignature();
-                String reason = informedConsentFormDO.getReason();
+                String signaturePath = "";
+                String reason = "";
+                if (!BeanUtil.isEmpty(informedConsentFormDO)){
+                    signaturePath = informedConsentFormDO.getSignature();
+                    reason = informedConsentFormDO.getReason();
+                }
 
                 // 添加段落（标题）
                 writer.addText(ParagraphAlignment.CENTER, new Font("黑体", Font.PLAIN, 16), "结核病筛查PPD皮肤试验知情告知书");
@@ -1381,7 +1385,11 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
 
     // 导出表格--处理是否平均长度小于15mm
     private void setDiameterFlag(StatisticExportVO source, StatisticExportVO2 target) {
-        target.setDiameterFlag(source.getDiameterFlag() == 1 ? " √ " : " × ");
+        if (source.getDiameterFlag()==null){
+            target.setDiameterFlag("");
+        }else {
+            target.setDiameterFlag(source.getDiameterFlag() == 1 ? " √ " : " × ");
+        }
     }
 
     // 导出表格--处理ppd判读结果
@@ -1406,7 +1414,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
     private void setOutcomeDr(StatisticExportVO source, StatisticExportVO2 target) {
         if (ObjectUtil.isNotNull(source.getOutcomeDr())) {
             switch (source.getOutcomeDr()) {
-                case 1 -> target.setOutcomeDr("疑似结合");
+                case 1 -> target.setOutcomeDr("疑似");
                 case 2 -> target.setOutcomeDr("其他异常");
                 case 0 -> target.setOutcomeDr("无异常");
                 default -> target.setOutcomeDr("无结果");

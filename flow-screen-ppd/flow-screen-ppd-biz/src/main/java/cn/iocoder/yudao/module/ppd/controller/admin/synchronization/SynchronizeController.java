@@ -85,7 +85,7 @@ public class SynchronizeController {
 //    @PreAuthorize("@ss.hasPermission('tb:synchronization:query')")
     public CommonResult<List<SyncRespVO>> updateTableData1(@RequestBody List<ScreenPersonSaveReqVO> list) {
         List<SyncRespVO> syncRespVOS = synchronizeService.updateScreenPerson(list);
-        return success(null);
+        return success(syncRespVOS);
     }
 
 
@@ -103,7 +103,7 @@ public class SynchronizeController {
 //    @PreAuthorize("@ss.hasPermission('tb:synchronization:query')")
     public CommonResult<List<SyncRespVO>> updateTableData2(@RequestBody List<ScreenCollectSaveReqVO> list) {
         List<SyncRespVO> syncRespVOS = synchronizeService.updateCollect(list);
-        return success(null);
+        return success(syncRespVOS);
     }
 
     @GetMapping("/get-tableData3")
@@ -144,7 +144,7 @@ public class SynchronizeController {
 //    @PreAuthorize("@ss.hasPermission('tb:synchronization:query')")
     public CommonResult<List<SyncRespVO>> updateTableData4(@RequestBody List<ScreenChestRadiographSaveReqVO> list) {
         List<SyncRespVO> respVOS = synchronizeService.updateChestRadiograph(list);
-        return success(null);
+        return success(respVOS);
     }
 
     @GetMapping("/get-workTeam")
@@ -173,7 +173,7 @@ public class SynchronizeController {
 //        PageResult<ScreenSumDO> pageResult = synchronizeService.getSumPage(pageReqVO);
 //        return success(BeanUtils.toBean(pageResult, ScreenSumRespVO.class));
         List<ScreenSumDO> sumPage = synchronizeService.getSumPage(pageReqVO);
-        return success(null);
+        return success(sumPage);
     }
 
     @PutMapping("/update-sum-data")
