@@ -18,6 +18,7 @@
 						style="margin-left: 10px"
 						type="success"
 						icon="download"
+						:disabled="!disabledType"
 						iconColor="#fff"
 						:plain="true"
 						class="custom-sync"
@@ -141,6 +142,7 @@ import { tbScreenImages } from '../../../utils/screenImages';
 export default {
 	data() {
 		return {
+			disabledType:uni.$netType,
 			nav: [
 				{
 					value: '数据同步'
@@ -360,6 +362,8 @@ export default {
 		
 		// 平板到pc
 		PadToPc() {
+			console.log(this.disabledType);
+			console.log(uni.$netType);
 			if (this.selectedIndexs.length == 0) {
 				let self = this;
 				uni.showModal({
@@ -384,11 +388,16 @@ export default {
 
 								// 筛查时间转换成时间戳
 								self.SyncData.forEach((item) => {
-								  let date = new Date(item.screenTime);
-								  item.screenTime = date.getTime();
+									console.log(item.screenStartTime);
+									console.log(item.screenEndTime);
+								  let startDate = new Date(item.screenStartTime);
+								  item.screenStartTime = startDate.getTime();
+								  let endDate = new Date(item.screenEndTime);
+								  item.screenEndTime = endDate.getTime();
+								  console.log(item);
 								});
 								// console.log(self.SyncData);
-
+console.log(234);
 								// 上传
 								SynchronizeApi.updateTableData1(self.SyncData).then(async(res) => {
 									console.log(res);
