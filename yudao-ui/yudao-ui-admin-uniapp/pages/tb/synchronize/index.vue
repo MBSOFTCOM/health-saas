@@ -179,7 +179,7 @@
 						<uni-td align="center">{{ screenStatus(item.isScreened) }}</uni-td>
 						<uni-td align="center">{{ firstType(item.firstType) }}</uni-td>
 						<uni-td align="center">{{ moreType(item) }}</uni-td>
-						<uni-td align="center">{{ formatDate(item.screenTime) }}</uni-td>
+						<uni-td align="center">{{ item.screenStartTime }}-{{item.screenEndTime}}</uni-td>
 						<uni-td align="center">{{ gender(item.sex) }}</uni-td>
 						<uni-td align="center">{{ item.age }}</uni-td>
 						<uni-td align="center">{{ item.tel }}</uni-td>
