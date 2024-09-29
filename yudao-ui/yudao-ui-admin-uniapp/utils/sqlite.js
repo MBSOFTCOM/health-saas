@@ -50,7 +50,7 @@ export const tbScreenUser = "tb_screen_user"
 export const tbScreenSum = "tb_screen_sum"
 // 移动端各组离线图片信息表
 export const tbScreenImages = "tb_screen_images"
-
+export const errorKey="errorUpload"
 //全局变量
 //登录人员信息（离线）
 uni.$person = {}
@@ -65,7 +65,6 @@ uni.$user = {}
 uni.$loginStatus = true;
 
 uni.$showFlow = false
-
 
 //初始化的表
 export const tableSqls = [
@@ -352,6 +351,7 @@ export const tableSqls = [
 			"experimentId" INTEGER, -- 实验组id
 			"electrocardiogramId" INTEGER, -- 心电图表id
 			"diagnosisId" INTEGER, -- 诊断表id
+			"statusFlag" INTEGER, --状态标识（1-新增 2-修改）
 			"createTime" DATE --创建时间
 			  );`
 	},

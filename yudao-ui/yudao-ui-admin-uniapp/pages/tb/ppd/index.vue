@@ -977,8 +977,6 @@ export default {
 				});
 				return;
 			}
-			console.log(this.regentId);
-			console.log(!this.regentId);
 			if(!this.regentId){
 				uni.showToast({
 					title: '请先选择试剂',
@@ -1076,6 +1074,7 @@ export default {
 							ppdId: pddId[0].id,
 							ppdNum: inData.screenOrder,
 							lastPpdTime: this.screenTime,
+							statusFlag:1,
 							curFinish: 'ppd组'
 						};
 						console.log(gather);
@@ -1086,6 +1085,7 @@ export default {
 							ppdId: pddId[0].id,
 							ppdNum: inData.screenOrder,
 							lastPpdTime: this.screenTime,
+							statusFlag:2,
 							curFinish: 'ppd组'
 						};
 						// console.log(gather);
@@ -1361,6 +1361,7 @@ export default {
 				.then(async (results) => {
 					// results 是一个包含两个 Promise 结果的数组
 					let patientPageRes = results[0];
+					console.log(patientPageRes);
 					this.total = patientPageRes.total;
 					let collectRes = results[1];
 

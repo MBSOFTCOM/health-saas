@@ -525,10 +525,12 @@ export default {
 
 						//为null不存在
 						if (length == null || length.length == 0) {
+							gather.statusFlag=1
 							// console.log("aaa");
 							//插入
 							await dbUtils.addTabItem(dbName, tbScreenSum, gather);
 						} else {
+							gather.statusFlag=2
 							await updateOne(gather, this.patient.id, this.patient.year, uni.$screenType);
 						}
 					} else {

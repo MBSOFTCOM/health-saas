@@ -5,6 +5,7 @@ import { count,promise } from '@/utils/sqlite';
 import { login } from '../login';
 import { func } from '../../uni_modules/uview-plus/libs/function/test';
 import tab from '../../plugins/tab';
+import {errorKey} from "../../utils/sqlite";
 
 const dbName = 'tb_screen'
 // ppd表
@@ -220,7 +221,7 @@ export function getCollectData(screenId,screenPoint,statusFlag,pageNo,pageSize){
 	if(pageNo!=-1){
 		let offset = (pageNo-1)*pageSize
 		sql+=` limit ${offset},${pageSize}`
-	console.log(`limit ${offset},${pageSize}`);
+	// console.log(`limit ${offset},${pageSize}`);
 	}
 	// console.log("SQL:" + sql);
 
@@ -943,6 +944,7 @@ export function getLocalSumDataTypeAndYear(screenType,year){
 				from ${tbScreenSum}
 				where screenType=${screenType}
 				and year=${year}
+				and statusFlag is not null
 			   `
 	console.log("SQL:" + sql);
 	 return promise(dbName,sql)
@@ -1453,7 +1455,7 @@ export async function updatePersonIdOnly(table,id,newId,idNum,screenId){
  */
 export async function updateIdAndStatusFlag(table,id,newId,idNum){
 	let sql=`update ${table} set id=${newId},statusFlag=null where id=${id} and idNum=${idNum} `
-	console.log(sql);
+	// console.log(sql);
 	return promise(dbName,sql)
 }
 /**
@@ -1464,7 +1466,7 @@ export async function updateIdAndStatusFlag(table,id,newId,idNum){
  */
 export async function updateStatusFlagOnly(table,id,idNum){
 	let sql=`update ${table} set statusFlag=null where id=${id} and idNum=${idNum} `
-	console.log(sql);
+	// console.log(sql);
 	return promise(dbName,sql)
 }
 /**
@@ -1478,4 +1480,51 @@ export async function updateSumFieldId(id,newId,idNum,field){
 	let sql=`update ${tbScreenSum} set ${field}=${newId} where ${field}=${id} and idNum=${idNum} `
 	// console.log(sql);
 	return promise(dbName,sql)
+}
+export async function updateErrorFlag(type,data){
+	try{
+		let start=await uni.getStorage({key:errorKey})
+		let copList=Object.assign([],start.data)
+		let copObj=new Set(copList)
+		// 缓存中有值
+		if (start && start.data && start.data.length >0){
+			if (type){
+				// 判断data的类型是不是数组
+				if (Array.isArray(data)) {
+					data.forEach(element => copObj.add(element));
+				}else{
+					copObj.add(data);
+				}
+			}else{ // 删除元素
+				if (Array.isArray(data)) {
+					data.forEach(element => copObj.delete(element));
+				}else{
+					copObj.delete(data);
+				}
+			}
+		}else {
+			if (type){  // 添加
+				if (!Array.isArray(data)) {
+					let list=[]
+					list.push(data)
+					copObj=new Set(list)
+				}else {
+					copObj=new Set(data)
+				}
+			}else {  // 删除
+
+			}
+		}
+		console.log([...copObj]);
+		uni.setStorage({
+			key:errorKey,
+			data: Array.from(copObj)
+		})
+	}catch (e) {
+		console.log(e)
+		uni.setStorage({
+			key:errorKey,
+			data:[]
+		})
+	}
 }

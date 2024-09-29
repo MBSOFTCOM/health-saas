@@ -25,6 +25,10 @@
 						text="同步"
 					></up-button>
 				</view>
+        <up-row>
+          上次传输失败数据：<b style="color: #b31d28" v-if="errorStr !='无'">{{errorStr}}</b>
+          <b v-else>{{errorStr}}</b>
+        </up-row>
 			</view>
 			<view class="top">
 				<view class="top-left">
@@ -101,7 +105,7 @@
 					<uni-td align="center">{{ screenStatus(item.isScreened) }}</uni-td>
 					<uni-td align="center">{{ firstType(item.firstType) }}</uni-td>
 					<uni-td align="center">{{ moreType(item) }}</uni-td>
-					<uni-td align="center">{{ formatDate(item.screenTime) }}</uni-td>
+					<uni-td align="center">{{ item.screenStartTime }}-{{item.screenEndTime}}</uni-td>
 					<uni-td align="center">{{ gender(item.sex) }}</uni-td>
 					<uni-td align="center">{{ item.age }}</uni-td>
 					<uni-td align="center">{{ item.tel }}</uni-td>
@@ -123,8 +127,9 @@
 
 <script>
 import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
-import { dbName, tbScreenChestRadiograph, tbScreenCollect, tbScreenPerson, tbScreenPpd, tbScreenSum, updatePerson } from '@/utils/sqlite';
+import { dbName, tbScreenChestRadiograph, tbScreenCollect, tbScreenPerson, tbScreenPpd, tbScreenSum, updatePerson ,errorKey} from '@/utils/sqlite';
 import {
+  errorUpload,
 	screenType,
 	getLabelByValue,
 	genderMap,
@@ -138,10 +143,13 @@ import {
 } from '@/utils/dict.js';
 import * as SynchronizeApi from '@/api/synchronize/synchronize';
 import { tbScreenImages } from '../../../utils/screenImages';
+import {updateErrorFlag} from "../../../api/synchronize/synchronize";
 
 export default {
 	data() {
 		return {
+      errorUpload,
+      errorStr:'无',
 			disabledType:uni.$netType,
 			nav: [
 				{
@@ -173,7 +181,19 @@ export default {
 		};
 	},
 	//页面加载时自动调用
-	onLoad() {
+	async onLoad() {
+    try{
+      let v = await uni.getStorage({key:errorKey})
+      let show=[]
+      if (v.data.length>0){
+        v.data.forEach(i=>{
+          show.push(getLabelByValue(errorUpload,i))
+        })
+        this.errorStr=show
+      }
+    }catch(e){
+      // this.errorStr
+    }
 		this.getLastSynchronizeTime()
 		let screenPoint = uni.$user.screenPoint.toString().split(',');
 		if (screenPoint.length > 1) {
@@ -190,6 +210,7 @@ export default {
 		this.search();
 	},
 	methods: {
+    getLabelByValue,
 		clearScreenId() {
 			this.queryParams.screenId = undefined;
 		},
@@ -359,11 +380,30 @@ export default {
 		nation(value) {
 			return nationMap[value];
 		},
-		
+    //返回当前网络状态，有网true ，断网 false
+    getNetworkStatus() {
+      return new Promise((resolve, reject) => {
+        uni.getNetworkType({
+          success: (res) => {
+            resolve(res.networkType !== 'none');
+          },
+          fail: (err) => {
+            reject(err);
+          }
+        });
+      });
+    },
 		// 平板到pc
-		PadToPc() {
-			console.log(this.disabledType);
-			console.log(uni.$netType);
+		async PadToPc() {
+      let netType=await this.getNetworkStatus()
+      if (!netType){
+        uni.showToast({
+          title: '当前无网络连接',
+          mask: true,
+          icon: 'none',
+          duration: 1500
+        });
+      }
 			if (this.selectedIndexs.length == 0) {
 				let self = this;
 				uni.showModal({
@@ -373,6 +413,7 @@ export default {
 					confirmText: '确认',
 					success: async (res)=> {
 						if (res.confirm) {
+              await SynchronizeApi.updateErrorFlag(1, '0')
 							if (self.pageData.length == 0) {
 								uni.showToast({
 									title: '暂无数据，上传失败',
@@ -384,8 +425,6 @@ export default {
 								// 获取本地数据 上传到pc端
 								let local=await SynchronizeApi.getPersonData(self.queryParams.screenId, self.queryParams.screenPoint, 'not null',-1, self.pageSize)
 								self.SyncData = local;
-								// console.log(self.SyncData);
-
 								// 筛查时间转换成时间戳
 								self.SyncData.forEach((item) => {
 									console.log(item.screenStartTime);
@@ -397,10 +436,12 @@ export default {
 								  console.log(item);
 								});
 								// console.log(self.SyncData);
-console.log(234);
+                uni.showLoading({
+                  title: '正在上传...',
+                  mask: true
+                });
 								// 上传
 								SynchronizeApi.updateTableData1(self.SyncData).then(async(res) => {
-									console.log(res);
 									for (var i = 0; i < res.data.length; i++) {
 										// console.log(res.data[i]);
 										let tableData=await SynchronizeApi.listDataByIdNumAndPersonId(res.data[i].idNum,res.data[i].id,tbScreenPerson)
@@ -413,6 +454,8 @@ console.log(234);
 										await SynchronizeApi.updatePersonIdOnly(tbScreenImages,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
 									}
 								  if (res.data) {
+                    await SynchronizeApi.updateErrorFlag(0, '0')
+                    uni.hideLoading();
 									uni.showToast({
 									  title: '上传成功',
 									  mask: true,
@@ -452,6 +495,7 @@ console.log(234);
 					confirmText: '确认',
 					success: function (res) {
 						if (res.confirm) {
+              SynchronizeApi.updateErrorFlag(1,'0')
 							self.selectedIndexs.map((i) => {
 								self.SyncData.push(self.pageData[i]);
 							});
@@ -462,7 +506,10 @@ console.log(234);
 								item.screenTime = date.getTime();
 							});
 							// console.log(self.SyncData);
-
+              uni.showLoading({
+                title: '正在上传...',
+                mask: true
+              });
 							// 上传
 							SynchronizeApi.updateTableData1(self.SyncData).then(async(res) => {
 								for (var i = 0; i < res.data.length; i++) {
@@ -475,6 +522,8 @@ console.log(234);
 									await SynchronizeApi.updatePersonIdOnly(tbScreenImages,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
 								}
 								if (res.data) {
+                  await SynchronizeApi.updateErrorFlag(0, '0')
+                  uni.hideLoading();
 									uni.showToast({
 										title: '上传成功',
 										mask: true,

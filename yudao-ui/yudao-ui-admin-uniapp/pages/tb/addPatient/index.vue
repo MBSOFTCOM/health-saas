@@ -1003,6 +1003,9 @@ export default {
 		//修改传输进来的数据
 		async uData(e) {
 			this.FormData = JSON.parse(e.val);
+			if(!this.FormData.nation || !this.FormData.hasOwnProperty('nation')){
+				this.FormData.nation=''
+			}
 			// console.log('p', this.FormData);
 			selectDistrictForSelect(this.FormData.province).then((res) => {
 				this.city = res;

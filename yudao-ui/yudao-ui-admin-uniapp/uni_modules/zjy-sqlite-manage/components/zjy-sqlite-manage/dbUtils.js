@@ -4,7 +4,6 @@ import { dbName, tbScreenCollect} from "../../../../utils/sqlite";
  * 打开数据库
  */
 const openDb = (name) => {
-	console.log(3343);
 	//如果数据库存在则打开，不存在则创建。
 	return new Promise((resolve, reject) => {
 		plus.sqlite.openDatabase({

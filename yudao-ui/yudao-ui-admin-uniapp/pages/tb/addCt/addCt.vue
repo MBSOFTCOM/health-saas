@@ -550,6 +550,7 @@ export default {
 								param.chestRadiographId = last.id;
 								param.screenId = last.screenId;
 								param.year = this.patient.year;
+								param.statusFlag=2;
 								param.curFinish = '胸片组';
 
 								await updateSum(this.formData.personId, param, this.$dbUtils);
@@ -607,10 +608,12 @@ export default {
 					screenType: uni.$screenType
 				});
 				if (data[0].count == 0) {
+					param.statusFlag=1
 					await insertToSum(param, this.$dbUtils);
 				} else {
 					let personId = param.personId;
 					delete param.personId;
+					param.statusFlag=2
 					await updateSum(personId, param, this.$dbUtils);
 				}
 				await this.$modal.msgSuccess('保存成功');

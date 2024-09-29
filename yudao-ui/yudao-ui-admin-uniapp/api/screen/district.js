@@ -35,7 +35,11 @@ export const  insData=async(data)=>{
 export const coverData=()=>{
 	emptyData(tbScreenDistrict).then(()=>{
 		getDistrictData().then((res)=>{
+			console.log(res);
 			insData(res.data)
+		}).catch(e=>{
+			console.log(e);
 		})
 	})
+	console.log(789);
 }

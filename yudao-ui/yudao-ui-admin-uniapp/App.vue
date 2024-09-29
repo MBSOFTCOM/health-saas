@@ -11,23 +11,24 @@ export default {
 	onLaunch: function () {
 		this.initApp();
 		this.initDateBase()
-		districtInitSql(this.$dbUtils)
+		// districtInitSql(this.$dbUtils)
     // this.initDistrict()
   },
 	async onShow() {
-		try{
-			let res=await this.listenToNetworkStatus()
+		uni.onNetworkStatusChange((res) => {
 			console.log(res);
-		}catch(e){
-			console.error(e);
-			// 不需要图标，icon用none，可选图标（'success' 、'error' 、'worining'）
-			uni.showToast({
-				title: e,
-				icon: 'error',
-				duration: 2000
-			})  
-			//TODO handle the exception
-		}
+		  if (!res.isConnected) {
+			  uni.$netType = false
+			  uni.hideLoading();
+			  uni.showToast({
+			  	title: '当前无网络连接',
+			  	icon: 'none',
+			  	duration: 2000
+			  })
+		  } else {
+
+		  }
+		});
 		this.initDateBase()
     // this.initDistrict()
 	},

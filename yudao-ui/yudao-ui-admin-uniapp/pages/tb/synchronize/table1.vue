@@ -485,8 +485,8 @@ export default {
 									//处理数据
 									let newList = newData.map((item) => ({
 										...item,
-										screenTime:
-											item.screenTime == 'null' || item.screenTime == null ? '' : item.screenTime,
+                    screenStartTime: item.screenStartTime == 'null' || item.screenStartTime == null ? '' : item.screenStartTime,
+										screenEndTime: item.screenEndTime == 'null' || item.screenEndTime == null ? '' : item.screenEndTime,
 										remark: item.remark == 'null' || item.remark == null ? '' : item.remark
 									}));
 
@@ -494,7 +494,15 @@ export default {
 
 									let i = 0;
 									newList.forEach((item) => {
-										// 根据 筛查类型screenType, year(筛查年份),idNum查询 是否有对应记录的id
+                    // 遍历对象的属性，判断如果值为null，就删除这个属性
+                    Object.keys(item).forEach(key => {
+                      // console.log(`${key}--${item[key]}`)
+                      if (item[key] == null || item[key] == 'null') {
+                        delete item[key];
+                      }
+                    });
+                    console.log(item)
+                    // 根据 筛查类型screenType, year(筛查年份),idNum查询 是否有对应记录的id
 										// 有记录 -- 更新
 										// 无记录 -- 根据id查记录
 										//           无记录 -- 插入
@@ -508,12 +516,7 @@ export default {
 												let personId = res[0].id;
 												let updateData = { ...item };
 												delete updateData.id; // 删除 id 属性
-                        // 遍历对象的属性，判断如果值为null，就删除这个属性
-                        Object.keys(updateData).forEach(key => {
-                          if (updateData[key] === null) {
-                            delete updateData[key];
-                          }
-                        });
+
 												SynchronizeApi.updateTable(tbScreenPerson, updateData, personId);
 											} else {
 												getById(dbName, tbScreenPerson, item.id).then((res) => {
