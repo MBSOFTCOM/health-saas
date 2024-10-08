@@ -1171,7 +1171,7 @@ export function uploadOfflineImageOne(type, screenId, personId, screenOrder, yea
 			FROM
 				"tb_screen_images" 
 			WHERE
-				"type" ${inType} and screenId = ${screenId} and personId = ${personId} and screenOrder = ${screenOrder} and year = ${year} and screenType = ${screenType}`,
+				"type" ${inType} and screenId = ${screenId} and personId = ${personId} and screenOrder = ${screenOrder} and year = ${year} and screenType = ${screenType} and statusFlag is not null`,
 		success(res) {
 			if (res) {
 				for (let i = 0; i < res.length; i++) {
@@ -1210,6 +1210,7 @@ export function uploadOfflineImageOne(type, screenId, personId, screenOrder, yea
 									'method': 'POST',
 									data: data
 								});
+								await updateFlagTableById(tbScreenImages,item.id,null)
 							}
 						})
 					}
@@ -1258,7 +1259,7 @@ export function uploadOfflineImage(type) {
 			FROM
 				"tb_screen_images" 
 			WHERE
-				"type" ${inType} `,
+				statusFlag is not null and "type" ${inType} `,
 		success:async (res)=> {
 			console.log(res);
 			uni.showLoading({
@@ -1266,81 +1267,44 @@ export function uploadOfflineImage(type) {
 				mask: true
 			});
 			if (res) {
-				let errorData=[]
-					for (let i = 0; i < res.length; i++) {
-						if (res[i].path) {
-							let item = res[i];
-							try{
-							// 单张离线图片上传
-							let uploadResp=await upload({
-								url: '/admin-api/tb/screen-images/updateImage',
-								method: 'PUT',
-								name: 'imageFile',
-								filePath: item.path
-							})
-							console.log(uploadResp);
-							if (uploadResp) {
-								let url = uploadResp.data;
-								let data = {
-									padId:""+item.id+item.idNum,
-									screenId: item.screenId,
-									personId: item.personId,
-									type: item.type,
-									idNum:item.idNum,
-									path: item.path,
-									url: url,
-									screenTime: item.screenTime,
-									screenOrder: item.screenOrder,
-									screenPoint: item.screenPoint,
-									createTime: item.createTime,
-									// 筛查年份、类型
-									year: currentYear,
-									screenType: item.screenType
-								};
-								// 创建移动端各组离线图片信息
-								await request({
-									url: '/tb/screen-images/create',
-									'method': 'POST',
-									data: data
-								});
-									// console.log(createResult);
-								}
-							}catch(e){
-								errorData.push(res[i])
-								//TODO handle the exception
+				console.log(res.length)
+				for (let i = 0; i < res.length; i++) {
+					if (res[i].path) {
+						let item = res[i];
+						// 单张离线图片上传
+						let uploadResp=await upload({
+							url: '/admin-api/tb/screen-images/updateImage',
+							method: 'PUT',
+							name: 'imageFile',
+							filePath: item.path
+						})
+						if (uploadResp) {
+							let url = uploadResp.data;
+							let data = {
+								padId:""+item.id+item.idNum,
+								screenId: item.screenId,
+								personId: item.personId,
+								type: item.type,
+								idNum:item.idNum,
+								path: item.path,
+								url: url,
+								screenTime: item.screenTime,
+								screenOrder: item.screenOrder,
+								screenPoint: item.screenPoint,
+								createTime: item.createTime,
+								// 筛查年份、类型
+								year: currentYear,
+								screenType: item.screenType
+							};
+							// 创建移动端各组离线图片信息
+							await request({
+								url: '/tb/screen-images/create',
+								'method': 'POST',
+								data: data
+							});
+							await updateFlagTableById(tbScreenImages,item.id,null)
 							}
-						}
 					}
-				if(errorData.length>0){
-					uni.showModal({
-						title: '提示',
-						content: '图片丢失，是否重试？',
-						success: (res)=> {
-							if (res.confirm) {
-								for (var i = 0; i < errorData.length; i++) {
-									try{
-										uploadPic(errorData[i])
-									}catch{
-										uni.showToast({
-											title: '重试失败，请检查需要上传的图片是否被删除，或等待网络状态良好后重试',
-											icon: 'none',
-											duration: 2000
-										})  
-									}
-								}
-							} 
-							else {
-								// 执行取消后的操作
-							}
-						}
-					})
-				}else{
-					uni.hideLoading();
-					uni.showToast({
-						title: '图片上传成功',
-						icon: 'success',
-						duration: 2000
-					})
 				}
 			}
 		},
@@ -1398,6 +1362,17 @@ export async function listDataByIdNumAndPersonId(idNum,personId,table){
 		sql=`select * from ${table} where idNum='${idNum}' and id=${personId}`
 	}
 	console.log(sql);
+	return promise(dbName,sql)
+}
+
+/**
+ * 根据id更新
+ * @param table
+ * @param id
+ * @return {Promise<void>}
+ */
+export async function updateFlagTableById(table,id,flag){
+	let sql=`update ${table} set statusFlag=${flag} where id=${id}`
 	return promise(dbName,sql)
 }
 /**

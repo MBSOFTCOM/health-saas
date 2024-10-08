@@ -11,8 +11,8 @@ export const screenType=setDictByList(['常规筛查','新生入学筛查','应�
 export const ppdOutcome=setDictByList(['水泡','双圈','坏死','淋巴管炎'],[1,2,3,4])
 
 /** 上传失败标识*/
-export const errorUpload=setDictByList(['待筛查人员','采集组数据','采集组的汇总数据','采集组的图片','PPD组数据','PPD组的汇总数据','PPD组的图片','CT/DR组数据','CT/DR组的汇总数据','CT/DR组的图片'],
-	['0','1','2','3','4','5','6','7','8','9'])
+export const errorUpload=setDictByList(['待筛查人员','采集组数据','采集组的汇总数据','采集组的图片','PPD组数据','PPD组的汇总数据','PPD组的图片','CT/DR组数据','CT/DR组的汇总数据','CT/DR组的图片','PPD组的试剂消耗'],
+	['0','1','2','3','4','5','6','7','8','9','10'])
 /** 筛查人群分类*/
 export const personTypeForProcess=
 	[

@@ -593,6 +593,7 @@ export default {
 						path: this.FormData.doctorSignature,
 						personId: this.patient.id,
 						screenId: this.patient.screenId,
+            statusFlag: 1,
 						type: 9
 					};
 					// console.log(imageData);

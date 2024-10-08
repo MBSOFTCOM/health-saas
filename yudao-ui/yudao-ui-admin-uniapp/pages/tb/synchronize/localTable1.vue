@@ -18,18 +18,16 @@
 						style="margin-left: 10px"
 						type="success"
 						icon="download"
-						:disabled="!disabledType"
 						iconColor="#fff"
 						:plain="true"
 						class="custom-sync"
-						text="同步"
-					></up-button>
+						text="同步"/>
 				</view>
-        <up-row>
-          上次传输失败数据：<b style="color: #b31d28" v-if="errorStr !='无'">{{errorStr}}</b>
-          <b v-else>{{errorStr}}</b>
-        </up-row>
 			</view>
+      <up-row>
+        上次传输失败数据：<b style="color: #b31d28" v-if="errorStr !='无'">{{errorStr}}</b>
+        <b v-else>{{errorStr}}</b>
+      </up-row>
 			<view class="top">
 				<view class="top-left">
 					<span style="font-size: 16px">筛查编号 </span>
@@ -150,7 +148,6 @@ export default {
 		return {
       errorUpload,
       errorStr:'无',
-			disabledType:uni.$netType,
 			nav: [
 				{
 					value: '数据同步'
@@ -413,69 +410,84 @@ export default {
 					confirmText: '确认',
 					success: async (res)=> {
 						if (res.confirm) {
-              await SynchronizeApi.updateErrorFlag(1, '0')
-							if (self.pageData.length == 0) {
-								uni.showToast({
-									title: '暂无数据，上传失败',
-									mask: true,
-									icon: 'none',
-									duration: 1500
-								});
-							} else {
-								// 获取本地数据 上传到pc端
-								let local=await SynchronizeApi.getPersonData(self.queryParams.screenId, self.queryParams.screenPoint, 'not null',-1, self.pageSize)
-								self.SyncData = local;
+                let pageSize=100
+                let personCount=await SynchronizeApi.getPersonCount(this.queryParams.screenId, this.queryParams.screenPoint, 'not null')
+                let pageCount=Math.ceil(personCount[0].num / pageSize)
+              if (pageCount == 0) {
+                uni.showToast({
+                  title: '暂无需上传的数据',
+                  mask: true,
+                  icon: 'none',
+                  duration: 1500
+                });
+                return
+              }
+              // 获取本地数据 上传到pc端
+                let local=await SynchronizeApi.getPersonData(this.queryParams.screenId, this.queryParams.screenPoint, 'not null',-1, this.pageSize)
 								// 筛查时间转换成时间戳
-								self.SyncData.forEach((item) => {
-									console.log(item.screenStartTime);
-									console.log(item.screenEndTime);
+								local.forEach((item) => {
 								  let startDate = new Date(item.screenStartTime);
 								  item.screenStartTime = startDate.getTime();
 								  let endDate = new Date(item.screenEndTime);
 								  item.screenEndTime = endDate.getTime();
-								  console.log(item);
 								});
+              let personStart=0
+              let personEnd=0
 								// console.log(self.SyncData);
                 uni.showLoading({
                   title: '正在上传...',
                   mask: true
                 });
+                await this.updateErrorFlag(1, '0')
 								// 上传
-								SynchronizeApi.updateTableData1(self.SyncData).then(async(res) => {
-									for (var i = 0; i < res.data.length; i++) {
-										// console.log(res.data[i]);
-										let tableData=await SynchronizeApi.listDataByIdNumAndPersonId(res.data[i].idNum,res.data[i].id,tbScreenPerson)
-										// console.log(tableData);
-										await SynchronizeApi.updatePersonId(tbScreenPerson,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
-										await SynchronizeApi.updatePersonIdOnly(tbScreenSum,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
-										await SynchronizeApi.updatePersonIdOnly(tbScreenCollect,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
-										await SynchronizeApi.updatePersonIdOnly(tbScreenPpd,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
-										await SynchronizeApi.updatePersonIdOnly(tbScreenChestRadiograph,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
-										await SynchronizeApi.updatePersonIdOnly(tbScreenImages,res.data[i].id,res.data[i].newId,res.data[i].idNum,res.data[i].screenId)
-									}
-								  if (res.data) {
-                    await SynchronizeApi.updateErrorFlag(0, '0')
-                    uni.hideLoading();
-									uni.showToast({
-									  title: '上传成功',
-									  mask: true,
-									  icon: 'success',
-									  duration: 1500
-									});
-									// 记录本次同步时间(存缓存)
-									let time = self.getCurrentTime()
-									uni.setStorage({
-									  key:'personPad',
-									  data:time
-									})
-									self.synchronizeTime=time
-									uni.setStorage({
-									  key:'person',
-									  data:time
-									})
-								  }
-								});
-							}
+                try {
+                  for (let j = 0; j < local.length; j++) {
+                    personEnd = personStart + pageSize
+                    let updateReq = localCollect.slice(personStart, personEnd)
+                    personStart += pageSize
+                    let res = SynchronizeApi.updateTableData1(updateReq)
+                    if(!updateDataRes || updateDataRes.data ==null){
+                      throw new Error("未收到响应")
+                    }
+                    for (var i = 0; i < res.data.length; i++) {
+                      await SynchronizeApi.updatePersonId(tbScreenPerson, res.data[i].id, res.data[i].newId, res.data[i].idNum, res.data[i].screenId)
+                      await SynchronizeApi.updatePersonIdOnly(tbScreenSum, res.data[i].id, res.data[i].newId, res.data[i].idNum, res.data[i].screenId)
+                      await SynchronizeApi.updatePersonIdOnly(tbScreenCollect, res.data[i].id, res.data[i].newId, res.data[i].idNum, res.data[i].screenId)
+                      await SynchronizeApi.updatePersonIdOnly(tbScreenPpd, res.data[i].id, res.data[i].newId, res.data[i].idNum, res.data[i].screenId)
+                      await SynchronizeApi.updatePersonIdOnly(tbScreenChestRadiograph, res.data[i].id, res.data[i].newId, res.data[i].idNum, res.data[i].screenId)
+                      await SynchronizeApi.updatePersonIdOnly(tbScreenImages, res.data[i].id, res.data[i].newId, res.data[i].idNum, res.data[i].screenId)
+                    }
+                  }
+                }catch (e) {
+                  console.error(e)
+                  uni.hideLoading();
+                  uni.showToast({
+                    title:'上传失败',
+                    icon: 'error',
+                    duration: 1000
+                  })
+                  return
+                }
+              await SynchronizeApi.updateErrorFlag(0, '0')
+              uni.hideLoading();
+                uni.showToast({
+                  title: '上传成功',
+                  mask: true,
+                  icon: 'success',
+                  duration: 1500
+                });
+                // 记录本次同步时间(存缓存)
+                let time = self.getCurrentTime()
+                uni.setStorage({
+                  key:'personPad',
+                  data:time
+                })
+                self.synchronizeTime=time
+                uni.setStorage({
+                  key:'person',
+                  data:time
+                })
+
 						} else if (res.cancel) {
 							uni.showToast({
 								title: '取消上传',

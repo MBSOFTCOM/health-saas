@@ -587,6 +587,7 @@ export default {
 						//插入离线图片表
 						const setScreenImagesData = {
 							path: this.formData.doctorSignature,
+              statusFlag:2
 						};
 
 						await ScreenImages.updateOne(

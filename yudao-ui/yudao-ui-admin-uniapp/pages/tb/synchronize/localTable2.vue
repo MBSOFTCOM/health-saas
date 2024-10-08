@@ -448,7 +448,6 @@ export default {
      * @param {[]|{}} data 数组或单个对象
      * */
     async updateErrorFlag(type,data){
-      console.log(999)
       try{
         let start=await uni.getStorage({key:errorKey})
         let copList=Object.assign([],start.data)
@@ -512,7 +511,7 @@ export default {
 				return
 			}
       uni.showLoading({
-        title: '加载中...',
+        title: '上传中...',
         mask: true
       });
       await this.updateErrorFlag(1,'2')
@@ -540,41 +539,43 @@ export default {
         let end =0  // 结束索引
         let num=Math.ceil(localSum.length / onceLength)
         console.log(num);
-        for (var k = 0; k < num; k++) {
-          end =start+onceLength
-          console.log(`${start}---${end}`);
-          let updateReq=localSum.slice(start,end)
-          start=start+onceLength
-          try{
-             let sumResp=await SynchronizeApi.uploadSumData(updateReq);
-             console.log(updateReq);
-             for (var i = 0; i < updateReq.length; i++) {
-               await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, updateReq[i].id, updateReq[i].idNum)
-             }
-           }catch(e){
-             uni.hideLoading();
-             uni.showToast({
-               title: `${e.message},请重新上传汇总表数据`,
-               mask: true,
-               icon: 'none',
-               duration: 1500
-             });
-           }
-        }
-      }else{
         try{
-          let sumResp=await SynchronizeApi.uploadSumData(localSum);
-          for (var i = 0; i < localSum.length; i++) {
-            await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, localSum[i].id, localSum[i].idNum)
+          for (var k = 0; k < num; k++) {
+            end =start+onceLength
+            console.log(`${start}---${end}`);
+            let updateReq=localSum.slice(start,end)
+            start=start+onceLength
+            let sumResp=await SynchronizeApi.uploadSumData(updateReq);
+            console.log(updateReq);
+            for (var i = 0; i < sumResp.length; i++) {
+              await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp[i].id, sumResp[i].idNum)
+            }
           }
         }catch(e){
           uni.hideLoading();
           uni.showToast({
-            title: `${e.message},请重新上传汇总表数据`,
+            title: `上传失败,请重新上传`,
             mask: true,
             icon: 'none',
-            duration: 1500
+            duration: 1000
           });
+          return
+        }
+      }else{
+        try{
+          let sumResp=await SynchronizeApi.uploadSumData(localSum);
+          for (var i = 0; i < sumResp.length; i++) {
+            await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp[i].id, sumResp[i].idNum)
+          }
+        }catch(e){
+          uni.hideLoading();
+          uni.showToast({
+            title: `上传失败,请重新上传`,
+            mask: true,
+            icon: 'none',
+            duration: 1000
+          });
+          return
         }
       }
       await this.updateErrorFlag(0,'2')
@@ -589,7 +590,6 @@ export default {
 			try{
 				await this.updateErrorFlag(1,'3')
 				await SynchronizeApi.uploadOfflineImage(1);
-        await this.updateErrorFlag(0,'3')
 			}catch(e){
 				uni.hideLoading();
 				uni.showToast({
@@ -598,6 +598,7 @@ export default {
 				  icon: 'none',
 				  duration: 1500
 				});
+        return
 			}
 			uni.hideLoading();
 			uni.showToast({
@@ -606,7 +607,7 @@ export default {
 			  icon: 'success',
 			  duration: 1500
 			});
-			
+     await this.updateErrorFlag(0,'3')
 		},
 		// 平板到pc
 		async PadToPc() {
@@ -645,12 +646,13 @@ export default {
 										console.log(pageCount);
 										if (pageCount == 0) {
 											uni.showToast({
-												title: '暂无数据，上传失败',
+												title: '暂无需上传的数据',
 												mask: true,
 												icon: 'none',
 												duration: 1500
 											});
-										} else {
+                      return
+										}
                       await this.updateErrorFlag(1, ["1", '2', '3'])
 											// 获取本地数据 上传到pc端
 // 处理采集组数据
@@ -660,10 +662,10 @@ export default {
 													screenAgency: self.agency,
 													padId:""+item.id+item.idNum
 												}));
-												// 筛查时间转换成时间戳
-												await localCollect.forEach((item) => {
-												  item.screenTime = new Date(item.screenTime).getTime();
-												});
+                      // 筛查时间转换成时间戳
+                      await localCollect.forEach((item) => {
+                        item.screenTime = new Date(item.screenTime).getTime();
+                      });
 											let collectStart=0
 											let collectEnd=0
 // 上传采集组数据
@@ -671,37 +673,39 @@ export default {
                         title: '正在上传采集组数据...',
                             mask: true
                       });
-                      for (let j = 1; j <= pageCount; j++) {
-                        collectEnd=collectStart+pageSize
-                        console.log(`${collectStart}----${collectEnd}`);
-                        let updateReq=localCollect.slice(collectStart,collectEnd)
-                        collectStart+=pageSize
-                          try{
-                            let updateDataRes=await SynchronizeApi.updateTableData2(updateReq)
-                            console.log(updateDataRes);
-                            if(!updateDataRes || updateDataRes.data ==null){
-                              throw new Error("未收到响应")
-                            }
-                            for (let i = 0; i < updateDataRes.data.length; i++) {
-                              if(updateDataRes.data[i].id == updateDataRes.data[i].newId) {
-                                await SynchronizeApi.updateStatusFlagOnly(tbScreenCollect, updateDataRes.data[i].id, updateDataRes.data[i].idNum)
-                              }else{
-                                await SynchronizeApi.updateIdAndStatusFlag(tbScreenCollect,updateDataRes.data[i].id,updateDataRes.data[i].newId,updateDataRes.data[i].idNum)
-                                await SynchronizeApi.updateSumFieldId(updateDataRes.data[i].id,updateDataRes.data[i].newId,updateDataRes.data[i].idNum,'collectId')
-                              }
-                            }
-                          }catch(e){
-                            uni.hideLoading();
-                            uni.showToast({
-                              title: e.message,
-                              icon: 'none',
-                              duration: 2000
-                            })
-                          return
+                      try{
+                        for (let j = 1; j <= pageCount; j++) {
+                          collectEnd=collectStart+pageSize
+                          console.log(`${collectStart}----${collectEnd}`);
+                          let updateReq=localCollect.slice(collectStart,collectEnd)
+                          collectStart+=pageSize
+                          let updateDataRes=await SynchronizeApi.updateTableData2(updateReq)
+                          console.log(updateDataRes);
+                          if(!updateDataRes || updateDataRes.data ==null){
+                            throw new Error("未收到响应")
                           }
-                      }
+                          for (let i = 0; i < updateDataRes.data.length; i++) {
+                            if(updateDataRes.data[i].id == updateDataRes.data[i].newId) {
+                              await SynchronizeApi.updateStatusFlagOnly(tbScreenCollect, updateDataRes.data[i].id, updateDataRes.data[i].idNum)
+                            }else{
+                              await SynchronizeApi.updateIdAndStatusFlag(tbScreenCollect,updateDataRes.data[i].id,updateDataRes.data[i].newId,updateDataRes.data[i].idNum)
+                              await SynchronizeApi.updateSumFieldId(updateDataRes.data[i].id,updateDataRes.data[i].newId,updateDataRes.data[i].idNum,'collectId')
+                            }
+                          }
+                        }
+                      }catch(e){
+                        console.error(e)
+                        uni.hideLoading();
+                        uni.showToast({
+                          title:'上传失败',
+                          icon: 'error',
+                          duration: 1000
+                        })
+                        return
+                    }
                       await this.updateErrorFlag(0, '1')
 //上传汇总表
+                      uni.hideLoading();
                       uni.showLoading({
                         title: '正在上传汇总表数据...',
                         mask: true
@@ -737,13 +741,17 @@ export default {
                           start = start + onceLength
                           try {
                             let sumResp = await SynchronizeApi.uploadSumData(updateReq);
+                            for (var i = 0; i < sumResp.length; i++) {
+                              await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp[i].id, sumResp[i].idNum)
+                            }
                             console.log(updateReq);
                           } catch (e) {
+                            console.error(e)
                             uni.hideLoading();
                             uni.showToast({
-                              title: e.message,
-                              icon: 'none',
-                              duration: 2000
+                              title:'上传失败',
+                              icon: 'error',
+                              duration: 1000
                             })
                             return
                           }
@@ -752,19 +760,35 @@ export default {
 // 汇总表总数据量小于200
                         try{
                           let sumResp=await SynchronizeApi.uploadSumData(localSum);
+                          for (var i = 0; i < sumResp.length; i++) {
+                            await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp[i].id, sumResp[i].idNum)
+                          }
                         }catch(e){
+                          console.error(e)
                           uni.hideLoading();
                           uni.showToast({
-                            title: e.message,
-                            icon: 'none',
-                            duration: 2000
+                            title:'上传失败',
+                            icon: 'error',
+                            duration: 1000
                           })
+                          return
                         }
                       }
                       uni.hideLoading();
                       await this.updateErrorFlag(0, '2')
 // 上传采集组图片
-											await SynchronizeApi.uploadOfflineImage(1);
+                      try {
+                        await SynchronizeApi.uploadOfflineImage(1);
+                      }catch (e) {
+                        console.error(e)
+                        uni.hideLoading()
+                        uni.showToast({
+                          title:'上传失败',
+                          icon: 'error',
+                          duration: 1000
+                        })
+                        return
+                      }
                       await this.updateErrorFlag(0, '3')
 												uni.showToast({
 												  title: '上传成功',
@@ -783,7 +807,7 @@ export default {
 												  key:'collect',
 												  data:time
 												})
-											}
+
 									} else if (res.cancel) {
 										uni.showToast({
 											title: '取消上传',
@@ -813,44 +837,65 @@ export default {
 											item.screenTime = date.getTime();
 										});
 										// console.log(self.SyncData);
-										// 上传
-										let collectData=await SynchronizeApi.updateTableData2(self.SyncData)
-											// console.log(res);
-                    for (var i = 0; i < collectData.data.length; i++) {
-                      if(collectData.data[i].id == collectData.data[i].newId) {
-                        SynchronizeApi.updateStatusFlagOnly(tbScreenCollect, collectData.data[i].id, collectData.data[i].idNum)
-                      }else{
-                        await SynchronizeApi.updateIdAndStatusFlag(tbScreenCollect,collectData.data[i].id,collectData.data[i].newId,collectData.data[i].idNum)
-                        await SynchronizeApi.updateSumFieldId(collectData.data[i].id,collectData.data[i].newId,collectData.data[i].idNum,'collectId')
+                    try{
+// 上传采集组数据
+                      let collectData=await SynchronizeApi.updateTableData2(self.SyncData)
+                      for (let i = 0; i < collectData.data.length; i++) {
+                        if(collectData.data[i].id == collectData.data[i].newId) {
+                          SynchronizeApi.updateStatusFlagOnly(tbScreenCollect, collectData.data[i].id, collectData.data[i].idNum)
+                        }else{
+                          await SynchronizeApi.updateIdAndStatusFlag(tbScreenCollect,collectData.data[i].id,collectData.data[i].newId,collectData.data[i].idNum)
+                          await SynchronizeApi.updateSumFieldId(collectData.data[i].id,collectData.data[i].newId,collectData.data[i].idNum,'collectId')
+                        }
                       }
+                    }catch (e) {
+                      console.error(e)
+                      uni.hideLoading();
+                      uni.showToast({
+                        title:'上传失败',
+                        icon: 'error',
+                        duration: 1000
+                      })
+                      return
                     }
                     await this.updateErrorFlag(0, '1')
-										//上传汇总表
-										for (let i = 0; i < self.SyncData.length; i++) {
-											let sumData=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId)
-                      await sumData.forEach(item=>{
-													if(item.lastCollectTime){
-														item.lastCollectTime = new Date(item.lastCollectTime).getTime();
-													}
-													if(item.lastPpdTime){
-														item.lastPpdTime = new Date(item.lastPpdTime).getTime();
-													}
-													if(item.lastChestRadiographTime){
-														item.lastChestRadiographTime = new Date(item.lastChestRadiographTime).getTime();
-													}
-													if(item.lastSputumExaminationTime){
-														item.lastSputumExaminationTime = new Date(item.lastSputumExaminationTime).getTime();
-													}
-													if(item.lastElectrocardiogramTime){
-														item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
-													}
-													
-												})
-											await SynchronizeApi.uploadSumData(sumData);
-										}
+                    try{
+//上传汇总表
+                      for (let i = 0; i < self.SyncData.length; i++) {
+                        let sumData=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId)
+                        await sumData.forEach(item=>{
+                            if(item.lastCollectTime){
+                              item.lastCollectTime = new Date(item.lastCollectTime).getTime();
+                            }
+                            if(item.lastPpdTime){
+                              item.lastPpdTime = new Date(item.lastPpdTime).getTime();
+                            }
+                            if(item.lastChestRadiographTime){
+                              item.lastChestRadiographTime = new Date(item.lastChestRadiographTime).getTime();
+                            }
+                            if(item.lastSputumExaminationTime){
+                              item.lastSputumExaminationTime = new Date(item.lastSputumExaminationTime).getTime();
+                            }
+                            if(item.lastElectrocardiogramTime){
+                              item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
+                            }
+
+                          })
+                        await SynchronizeApi.uploadSumData(sumData);
+                      }
+                    }catch (e) {
+                      console.error(e)
+                      uni.hideLoading();
+                      uni.showToast({
+                        title:'上传失败',
+                        icon: 'error',
+                        duration: 1000
+                      })
+                      return
+                    }
                     await this.updateErrorFlag(0, '2')
-										self.SyncData.forEach((item) => {
-											// 上传采集组图片
+// 上传采集组图片
+                    self.SyncData.forEach((item) => {
 											SynchronizeApi.uploadOfflineImageOne(
 												1,
 												item.screenId,

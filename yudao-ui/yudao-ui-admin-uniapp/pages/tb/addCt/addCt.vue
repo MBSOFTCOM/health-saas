@@ -508,6 +508,7 @@ export default {
 					if (this.check()) {
 						imgForm.screenOrder = this.formData.screenOrder;
 						if (this.stateFlag == '新增') {
+              imgForm.statusFlag=1
 							await this.insertItem();
 							insertImg(this.$dbUtils, imgForm);
 							if (this.formData.doctorSignature) {
@@ -516,6 +517,9 @@ export default {
 								insertImg(this.$dbUtils, imgForm);
 							}
 						} else {
+              if (!imgForm.statusFlag){
+                imgForm.statusFlag=2
+              }
 							if (this.formData.doctorSignature) {
 								imgForm.type = 10;
 								imgForm.path = this.formData.doctorSignature;
