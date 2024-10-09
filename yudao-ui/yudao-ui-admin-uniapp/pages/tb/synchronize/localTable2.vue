@@ -452,10 +452,8 @@ export default {
         let start=await uni.getStorage({key:errorKey})
         let copList=Object.assign([],start.data)
         let copObj=new Set(copList)
-        console.log(345)
         // 缓存中有值
         if (start && start.data && start.data.length >0){
-          console.log(2)
           if (type){
             // 判断data的类型是不是数组
             if (Array.isArray(data)) {
@@ -471,22 +469,19 @@ export default {
             }
           }
         }else {
-          console.log(1)
           if (type){  // 添加
             if (!Array.isArray(data)) {
-              console.log(11)
               let list=[]
               list.push(data)
               copObj=new Set(list)
             }else {
-              console.log(22)
               copObj=new Set(data)
             }
           }else {  // 删除
 
           }
         }
-        console.log([...copObj]);
+        // console.log([...copObj]);
         uni.setStorage({
           key:errorKey,
           data: Array.from(copObj)

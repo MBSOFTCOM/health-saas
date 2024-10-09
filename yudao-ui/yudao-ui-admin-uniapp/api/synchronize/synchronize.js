@@ -1268,6 +1268,15 @@ export function uploadOfflineImage(type) {
 			});
 			if (res) {
 				console.log(res.length)
+				if(res.length==0){
+					uni.hideLoading();
+					uni.showToast({
+						title: '暂无需要上传的图片',
+						mask: true,
+						icon: 'none',
+						duration: 1500
+					});
+				}
 				for (let i = 0; i < res.length; i++) {
 					if (res[i].path) {
 						let item = res[i];
@@ -1490,7 +1499,7 @@ export async function updateErrorFlag(type,data){
 
 			}
 		}
-		console.log([...copObj]);
+		// console.log([...copObj]);
 		uni.setStorage({
 			key:errorKey,
 			data: Array.from(copObj)

@@ -355,7 +355,7 @@ export default {
         title: '上传中...',
         mask: true
       });
-      await this.updateErrorFlag(1,'8')
+      await SynchronizeApi.updateErrorFlag(1,'8')
       await localSum.forEach(item=>{
         item.padId=""+item.id+item.idNum
         if(item.lastCollectTime){
@@ -419,7 +419,7 @@ export default {
           return
         }
       }
-      await this.updateErrorFlag(0,'8')
+      await SynchronizeApi.updateErrorFlag(0,'8')
       uni.hideLoading()
       uni.showToast({
         title: '上传成功',
