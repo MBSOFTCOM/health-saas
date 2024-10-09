@@ -760,7 +760,7 @@ export default {
 // 汇总表总数据量小于200
                         try{
                           let sumResp=await SynchronizeApi.uploadSumData(localSum);
-                          for (var i = 0; i < sumResp.length; i++) {
+                          for (let i = 0; i < sumResp.length; i++) {
                             await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp[i].id, sumResp[i].idNum)
                           }
                         }catch(e){
@@ -859,11 +859,12 @@ export default {
                       return
                     }
                     await this.updateErrorFlag(0, '1')
-                    try{
 //上传汇总表
+                    try{
                       for (let i = 0; i < self.SyncData.length; i++) {
                         let sumData=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId)
                         await sumData.forEach(item=>{
+                          item.padId=""+item.id+item.idNum
                             if(item.lastCollectTime){
                               item.lastCollectTime = new Date(item.lastCollectTime).getTime();
                             }
@@ -881,7 +882,10 @@ export default {
                             }
 
                           })
-                        await SynchronizeApi.uploadSumData(sumData);
+                        let sumResp=await SynchronizeApi.uploadSumData(sumData);
+                        for (let i = 0; i < sumResp.length; i++) {
+                          await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp[i].id, sumResp[i].idNum)
+                        }
                       }
                     }catch (e) {
                       console.error(e)
@@ -895,16 +899,27 @@ export default {
                     }
                     await this.updateErrorFlag(0, '2')
 // 上传采集组图片
-                    self.SyncData.forEach((item) => {
-											SynchronizeApi.uploadOfflineImageOne(
-												1,
-												item.screenId,
-												item.personId,
-												item.screenOrder,
-												item.year,
-												item.screenType
-											);
-										});
+                    try{
+                      self.SyncData.forEach((item) => {
+                        SynchronizeApi.uploadOfflineImageOne(
+                            1,
+                            item.screenId,
+                            item.personId,
+                            item.screenOrder,
+                            item.year,
+                            item.screenType
+                        );
+                      });
+                    }catch (e) {
+                      console.error(e)
+                      uni.hideLoading();
+                      uni.showToast({
+                        title:'上传失败',
+                        icon: 'error',
+                        duration: 1000
+                      })
+                      return
+                    }
                     await this.updateErrorFlag(0, '3')
 										self.SyncData = []; //清空同步数组
 										self.$refs.table.clearSelection(); //清除勾选内容

@@ -787,7 +787,7 @@ export default {
                         let consume=await ConsumeRecordApi.selectLocalData()
                         let str=this.getCurrentDateString()
                         // 处理数据
-                        for (var i = 0; i < consume.length; i++) {
+                        for (let i = 0; i < consume.length; i++) {
                             console.log(i);
                             consume[i].padId=''+consume[i].id+uni.$person.id+str
                             console.log(consume[i]);
@@ -879,7 +879,7 @@ export default {
                   confirmText: '确认',
                   success: async (res) =>{
                     if (res.confirm) {
-                      await SynchronizeApi.updateErrorFlag(1, '4', '5', '6', '10')
+                      await SynchronizeApi.updateErrorFlag(1, ['4', '5', '6', '10'])
                       self.selectedIndexs.map((i) => {
                         self.SyncData.push(self.pageData[i]);
                       });
@@ -896,8 +896,13 @@ export default {
                         item.screenTime = date.getTime();
                       });
                       // console.log(self.SyncData);
+// 上传ppd组数据
+                      uni.hideLoading();
+                      uni.showLoading({
+                        title: '上传ppd组数据中...',
+                        mask: true
+                      });
                       try{
-        // 上传ppd组数据
                         let updatePpd = await SynchronizeApi.updateTableData3(self.SyncData)
                         for (let i = 0; i < updatePpd.data.length; i++) {
                           if (updatePpd.data[i].id == updatePpd.data[i].newId) {
@@ -918,12 +923,17 @@ export default {
                         return
                       }
                       await this.updateErrorFlag(0, '4')
-        // 上传汇总表
+// 上传汇总表
+                      uni.hideLoading();
+                      uni.showLoading({
+                        title: '上传汇总数据中...',
+                        mask: true
+                      });
                       try{
                         for (let i = 0; i < self.SyncData.length; i++) {
                           let sumData = await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId, self.SyncData[i].screenType, self.SyncData[i].year, self.SyncData[i].personId)
-                          console.log(sumData);
                           sumData.forEach(item => {
+                            item.padId=""+item.id+item.idNum
                             if (item.lastCollectTime) {
                               item.lastCollectTime = new Date(item.lastCollectTime).getTime();
                             }
@@ -940,8 +950,10 @@ export default {
                               item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
                             }
                           })
-                          console.log(sumData);
-                          await SynchronizeApi.uploadSumData(sumData);
+                          let sumResp=await SynchronizeApi.uploadSumData(sumData);
+                          for (let i = 0; i < sumResp.length; i++) {
+                            await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp[i].id, sumResp[i].idNum)
+                          }
                         }
                       }catch (e) {
                         console.error(e)
@@ -954,17 +966,77 @@ export default {
                         return
                       }
                       await this.updateErrorFlag(0, '5')
-        // 上传ppd组图片
-                      await self.SyncData.forEach((item) => {
-                        SynchronizeApi.uploadOfflineImageOne(
-                          2,
-                          item.screenId,
-                          item.personId,
-                          item.screenOrder,
-                          item.year,
-                          item.screenType
-                        );
+// 上传试剂消耗
+                      uni.hideLoading();
+                      uni.showLoading({
+                        title: '上传试剂消耗中...',
+                        mask: true
                       });
+                      let consume=await ConsumeRecordApi.selectLocalData()
+                      let str=this.getCurrentDateString()
+                      // 处理数据
+                      for (let i = 0; i < consume.length; i++) {
+                        console.log(i);
+                        consume[i].padId=''+consume[i].id+uni.$person.id+str
+                        console.log(consume[i]);
+                        if(consume[i].createTime){
+                          consume[i].createTime = new Date(consume[i].createTime).getTime();
+                        }
+                        if(consume[i].updateTime){
+                          consume[i].updateTime = new Date(consume[i].updateTime).getTime();
+                        }
+                      }
+                      // 上传试剂消耗
+                      try{
+                        let consumeResult=await ConsumeRecordApi.upload(consume)
+                        if(!consumeResult || consumeResult.data==null){
+                          throw new Error('上传试剂消耗失败')
+                        }
+                      }catch(e){
+                        console.error(e)
+                        uni.hideLoading()
+                        uni.showToast({
+                          title:'上传失败',
+                          icon: 'error',
+                          duration: 1000
+                        })
+                        return
+                      }
+                      await SynchronizeApi.updateErrorFlag(0, '10')
+                      uni.hideLoading();
+                      uni.showToast({
+                        title: '试剂消耗数据上传成功',
+                        icon: 'none',
+                        duration: 1000
+                      })
+// 上传ppd组图片
+                      uni.hideLoading();
+                      uni.showLoading({
+                        title: '上传图片中...',
+                        mask: true
+                      });
+                      try{
+                        await self.SyncData.forEach((item) => {
+                          SynchronizeApi.uploadOfflineImageOne(
+                              2,
+                              item.screenId,
+                              item.personId,
+                              item.screenOrder,
+                              item.year,
+                              item.screenType
+                          );
+                        });
+                      }catch (e) {
+                        console.error(e)
+                        uni.hideLoading();
+                        uni.showToast({
+                          title:'上传失败',
+                          icon: 'error',
+                          duration: 1000
+                        })
+                        return
+                      }
+
                       await this.updateErrorFlag(0, '6')
                       uni.showToast({
                         title: '上传完成',
