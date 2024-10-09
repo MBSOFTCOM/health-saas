@@ -835,16 +835,18 @@ export default {
 										self.SyncData.forEach((item) => {
 											let date = new Date(item.screenTime);
 											item.screenTime = date.getTime();
+                      item.padId=""+item.id+item.idNum
 										});
 										// console.log(self.SyncData);
                     try{
 // 上传采集组数据
                       let collectData=await SynchronizeApi.updateTableData2(self.SyncData)
+                      // console.log(collectData)
                       for (let i = 0; i < collectData.data.length; i++) {
                         if(collectData.data[i].id == collectData.data[i].newId) {
-                          SynchronizeApi.updateStatusFlagOnly(tbScreenCollect, collectData.data[i].id, collectData.data[i].idNum)
+                          await SynchronizeApi.updateStatusFlagOnly(tbScreenCollect, collectData.data[i].id, collectData.data[i].idNum)
                         }else{
-                          await SynchronizeApi.updateIdAndStatusFlag(tbScreenCollect,collectData.data[i].id,collectData.data[i].newId,collectData.data[i].idNum)
+                          // await SynchronizeApi.updateIdAndStatusFlag(tbScreenCollect,collectData.data[i].id,collectData.data[i].newId,collectData.data[i].idNum)
                           await SynchronizeApi.updateSumFieldId(collectData.data[i].id,collectData.data[i].newId,collectData.data[i].idNum,'collectId')
                         }
                       }
@@ -862,7 +864,7 @@ export default {
 //上传汇总表
                     try{
                       for (let i = 0; i < self.SyncData.length; i++) {
-                        let sumData=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId)
+                        let sumData=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId,self.SyncData[i].idNum)
                         await sumData.forEach(item=>{
                           item.padId=""+item.id+item.idNum
                             if(item.lastCollectTime){
@@ -880,11 +882,10 @@ export default {
                             if(item.lastElectrocardiogramTime){
                               item.lastElectrocardiogramTime = new Date(item.lastElectrocardiogramTime).getTime();
                             }
-
                           })
                         let sumResp=await SynchronizeApi.uploadSumData(sumData);
-                        for (let i = 0; i < sumResp.length; i++) {
-                          await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp[i].id, sumResp[i].idNum)
+                        if (sumResp.data){
+                          await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumData[0].id, sumData[0].idNum)
                         }
                       }
                     }catch (e) {

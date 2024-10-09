@@ -697,16 +697,17 @@ export default {
                       if (item.doctorSignature == null || item.doctorSignature == 'null') {
                         item.doctorSignature = '';
                       }
+                      item.padId=""+item.id+item.idNum
                     });
                     // console.log(self.SyncData);
 // 上传dr数据
                     try {
-                      let res = SynchronizeApi.updateTableData4(self.SyncData)
+                      let res =await SynchronizeApi.updateTableData4(self.SyncData)
                       for (var i = 0; i < res.data.length; i++) {
                         if (res.data[i].id == res.data[i].newId) {
-                          SynchronizeApi.updateStatusFlagOnly(tbScreenChestRadiograph, res.data[i].id, res.data[i].idNum)
+                          // SynchronizeApi.updateStatusFlagOnly(tbScreenChestRadiograph, res.data[i].id, res.data[i].idNum)
                         } else {
-                          await SynchronizeApi.updateIdAndStatusFlag(tbScreenChestRadiograph, res.data[i].id, res.data[i].newId, res.data[i].idNum)
+                          // await SynchronizeApi.updateIdAndStatusFlag(tbScreenChestRadiograph, res.data[i].id, res.data[i].newId, res.data[i].idNum)
                           await SynchronizeApi.updateSumFieldId(res.data[i].id, res.data[i].newId, res.data[i].idNum, 'chestRadiographId')
                         }
                       }
@@ -744,8 +745,8 @@ export default {
 
                         })
                         let sumResp = SynchronizeApi.uploadSumData(sumData);
-                        for (let i = 0; i < sumResp.length; i++) {
-                          await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp[i].id, sumResp[i].idNum)
+                        if (sumResp.data()) {
+                          await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumData[0].id, sumData[0].idNum)
                         }
                       }
                     }catch (e) {

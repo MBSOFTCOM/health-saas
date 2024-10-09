@@ -524,7 +524,8 @@ export default {
               });
               // 上传
               try {
-                let res = SynchronizeApi.updateTableData1(self.SyncData)
+                let res =await SynchronizeApi.updateTableData1(self.SyncData)
+                console.log(res)
                 for (let i = 0; i < res.data.length; i++) {
                   // console.log(tableData);
                   await SynchronizeApi.updatePersonId(tbScreenPerson, res.data[i].id, res.data[i].newId, res.data[i].idNum, res.data[i].screenId)
