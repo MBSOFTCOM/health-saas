@@ -1228,7 +1228,7 @@ export function uploadOfflineImageOne(type, screenId, personId, screenOrder, yea
  * 批量上传离线图片
  * @param {number} type：图片来源 需要上传的图片分组（1：采集，2：PPD，3：DR/CT，4：痰检组， 5：心电图）
  */
-export function uploadOfflineImage(type) {
+export async function uploadOfflineImage(type) {
 	const now = new Date();
 	const currentYear = now.getFullYear();
 
@@ -1252,75 +1252,69 @@ export function uploadOfflineImage(type) {
 			inType = ' IN (4, 15) '
 			break;
 	}
-	plus.sqlite.selectSql({
-		name: dbName,
-		sql: `SELECT
-				*
-			FROM
-				"tb_screen_images" 
-			WHERE
-				statusFlag is not null and "type" ${inType} `,
-		success:async (res)=> {
-			console.log(res);
-			uni.showLoading({
-				title: '上传图片中...',
-				mask: true
+	let sql=`SELECT * FROM "tb_screen_images" WHERE statusFlag is not null and "type" ${inType} `
+	let data=await promise(dbName,sql)
+	console.log(data)
+	uni.showLoading({
+		title: '上传图片中...',
+		mask: true
+	});
+	if (data) {
+		console.log(data.length)
+		if(data.length==0){
+			uni.hideLoading();
+			uni.showToast({
+				title: '暂无需要上传的图片',
+				mask: true,
+				icon: 'none',
+				duration: 1500
 			});
-			if (res) {
-				console.log(res.length)
-				if(res.length==0){
-					uni.hideLoading();
-					uni.showToast({
-						title: '暂无需要上传的图片',
-						mask: true,
-						icon: 'none',
-						duration: 1500
-					});
-				}
-				for (let i = 0; i < res.length; i++) {
-					if (res[i].path) {
-						let item = res[i];
-						// 单张离线图片上传
-						let uploadResp=await upload({
-							url: '/admin-api/tb/screen-images/updateImage',
-							method: 'PUT',
-							name: 'imageFile',
-							filePath: item.path
-						})
-						if (uploadResp) {
-							let url = uploadResp.data;
-							let data = {
-								padId:""+item.id+item.idNum,
-								screenId: item.screenId,
-								personId: item.personId,
-								type: item.type,
-								idNum:item.idNum,
-								path: item.path,
-								url: url,
-								screenTime: item.screenTime,
-								screenOrder: item.screenOrder,
-								screenPoint: item.screenPoint,
-								createTime: item.createTime,
-								// 筛查年份、类型
-								year: currentYear,
-								screenType: item.screenType
-							};
-							// 创建移动端各组离线图片信息
-							await request({
-								url: '/tb/screen-images/create',
-								'method': 'POST',
-								data: data
-							});
-							await updateFlagTableById(tbScreenImages,item.id,null)
-							}
+		}
+		for (let i = 0; i < data.length; i++) {
+			try {
+				if (data[i].path) {
+					let item = data[i];
+					// 单张离线图片上传
+					let uploadResp = await upload({
+						url: '/admin-api/tb/screen-images/updateImage',
+						method: 'PUT',
+						name: 'imageFile',
+						filePath: item.path
+					})
+					if (uploadResp) {
+						let url = uploadResp.data;
+						let data = {
+							padId: "" + item.id + item.idNum,
+							screenId: item.screenId,
+							personId: item.personId,
+							type: item.type,
+							idNum: item.idNum,
+							path: item.path,
+							url: url,
+							screenTime: item.screenTime,
+							screenOrder: item.screenOrder,
+							screenPoint: item.screenPoint,
+							createTime: item.createTime,
+							// 筛查年份、类型
+							year: currentYear,
+							screenType: item.screenType
+						};
+						// 创建移动端各组离线图片信息
+						await request({
+							url: '/tb/screen-images/create',
+							'method': 'POST',
+							data: data
+						});
+						await updateFlagTableById(tbScreenImages, item.id, null)
 					}
 				}
+			}catch (e) {
+				throw new Error('图片上传失败')
+				return
 			}
-		},
-		fail(e) {
-			console.log(e);
 		}
-	});
+}
+
 }
 /**
  * 上传图片
@@ -1511,4 +1505,69 @@ export async function updateErrorFlag(type,data){
 			data:[]
 		})
 	}
+}
+export async function delImgFromDir(dirPath){
+	if (!dirPath){
+		return
+	}// 获取文件系统管理器
+	const fs = plus.io;
+// 解析路径
+	fs.resolveLocalFileSystemURL(dirPath, function(entry) {
+		// 检查是否是目录
+		if (entry.isDirectory) {
+			const directoryReader = entry.createReader();
+
+			// 读取目录中的所有条目
+			directoryReader.readEntries(function(entries) {
+				for (let i = 0; i < entries.length; i++) {
+					const fileEntry = entries[i];
+
+					// 删除文件
+					fileEntry.remove(function() {
+						console.log(`${fileEntry.name} 删除成功`);
+					}, function(error) {
+						if (error.message.includes("不支持当前路径")) {
+							uni.hideLoading();
+							console.error(`删除 ${fileEntry.name} 失败`, error);
+							uni.showToast({
+								title: `删除部分图片，保存在相册中的图片请自行选择删除`,
+								mask: true,
+								icon: 'none',
+								duration: 3000
+							});
+							return; // 退出循环
+						}
+					});
+
+					if (error) break; // 退出循环
+				}
+
+			}, function(error) {
+				console.error('读取目录失败', error);
+			});
+			uni.hideLoading();
+			uni.showToast({
+				title: `删除部分图片，保存在相册中的图片请自行选择删除`,
+				mask: true,
+				icon: 'none',
+				duration: 3000
+			});
+		} else {
+			console.log('该路径不是一个文件夹');
+		}
+	}, function(error) {
+		console.log(error.message)
+		console.log(error.message.includes("不支持当前路径"))
+		if (error.message.includes("不支持当前路径")){
+			uni.hideLoading();
+			uni.showToast({
+				title: `删除部分图片，保存在相册中的图片请自行选择删除`,
+				mask: true,
+				icon: 'none',
+				duration: 2000
+			});
+			return
+		}
+		console.error('解析路径失败', error);
+	});
 }

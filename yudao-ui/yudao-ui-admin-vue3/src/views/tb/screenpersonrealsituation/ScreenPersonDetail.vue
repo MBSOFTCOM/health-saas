@@ -158,7 +158,7 @@
                   <td><b>ppd</b></td>
                   <td class="text-left" colspan="2">
                     注射时间：{{ tbHealthScreening.ppdInjectionTimeStr }} <br/>
-                    结果：{{tbHealthScreening.ppdOutcome == 1 ? "阳性":"阴性"}}
+                    结果：<div v-if="tbHealthScreening.ppdOutcome ==0 || tbHealthScreening.ppdOutcome ==1">{{tbHealthScreening.ppdOutcome == 1 ? "阳性":"阴性"}}</div>
                   </td>
                   <td class="text-left">
                     医生签名:

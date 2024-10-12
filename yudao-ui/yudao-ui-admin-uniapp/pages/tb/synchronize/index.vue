@@ -436,6 +436,7 @@ import {
 import * as SynchronizeApi from '@/api/synchronize/synchronize';
 import * as DistrictApi from '@/api/screen/district';
 import CryptoJS from 'crypto-js';
+import {delImgFromDir} from "../../../api/synchronize/synchronize";
 
 export default {
 	data() {
@@ -1548,6 +1549,7 @@ updateArray(number) {
 							// console.log(self.user.pwd);
 							if (match) {
 								self.truncateAllTable();
+                SynchronizeApi.delImgFromDir('_doc/uniapp_save/')
 								uni.showToast({
 									title: '清除成功',
 									mask: true,

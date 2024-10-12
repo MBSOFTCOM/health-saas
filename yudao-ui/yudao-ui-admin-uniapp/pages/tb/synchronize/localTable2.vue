@@ -13,10 +13,6 @@
 					上次同步时间:{{synchronizeTime}}
 				</view>
 				<view class="top-right1" style="margin-right: 10px">
-          <up-button
-          text="ss"
-          @click="resetErrorFlag()"
-          />
 					<up-button
 						@click="PadToPc"
 						style="margin-left: 10px"
@@ -132,7 +128,7 @@ import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlit
 import { dbName, getById, tbScreenCollect, tbScreenSum } from '@/utils/sqlite';
 import { collectSymptoms, screenType, getLabelByValue ,collectSymptoms_new,errorUpload} from '@/utils/dict.js';
 import * as SynchronizeApi from '@/api/synchronize/synchronize';
-import { getCollectData } from '../../../api/synchronize/synchronize';
+import {delImgFromDir, getCollectData} from '../../../api/synchronize/synchronize';
 import {errorKey} from "../../../utils/sqlite";
 
 export default {
@@ -438,10 +434,8 @@ export default {
       });
     },
     resetErrorFlag(){
-      uni.setStorage({
-        key:errorKey,
-        data:[]
-      })
+      SynchronizeApi.delImgFromDir('_doc/uniapp_save/')
+      // SynchronizeApi.delImgFromDir('/storage/emulated/0/Pictures')
     },
     /** 更新缓存中的上一次失败记录
      * @param {number}type 0:删除 1：添加
@@ -841,7 +835,7 @@ export default {
                         if(collectData.data[i].id == collectData.data[i].newId) {
                           await SynchronizeApi.updateStatusFlagOnly(tbScreenCollect, collectData.data[i].id, collectData.data[i].idNum)
                         }else{
-                          // await SynchronizeApi.updateIdAndStatusFlag(tbScreenCollect,collectData.data[i].id,collectData.data[i].newId,collectData.data[i].idNum)
+                          await SynchronizeApi.updateIdAndStatusFlag(tbScreenCollect,collectData.data[i].id,collectData.data[i].newId,collectData.data[i].idNum)
                           await SynchronizeApi.updateSumFieldId(collectData.data[i].id,collectData.data[i].newId,collectData.data[i].idNum,'collectId')
                         }
                       }

@@ -1199,7 +1199,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
                 writer.addText(new Font("宋体", Font.PLAIN, 10), "");
                 writer.addText(new Font("宋体", Font.PLAIN, 10), "请仔细阅读并理解以上内容，受试者健康状况良好，无皮试禁忌症，愿意接受PPD皮肤试验。");
                 writer.addText(new Font("宋体", Font.PLAIN, 10), "");
-                if (!BeanUtil.isEmpty(informedConsentFormDO) && !reason.isBlank()){
+                if (!BeanUtil.isEmpty(informedConsentFormDO) && reason!=null && !reason.isBlank()){
                     writer.addText(new Font("宋体", Font.PLAIN, 10), "如拒绝接受PPD皮肤试验，请说明原因_____"+reason+"_____");
                 }else {
                     writer.addText(new Font("宋体", Font.PLAIN, 10), "如拒绝接受PPD皮肤试验，请说明原因_______________________________________");

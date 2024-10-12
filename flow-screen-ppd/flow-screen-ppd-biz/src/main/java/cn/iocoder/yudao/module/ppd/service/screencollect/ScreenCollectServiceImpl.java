@@ -128,7 +128,7 @@ public class ScreenCollectServiceImpl implements ScreenCollectService {
         if (reqVO.getContactHistory()==1){
             screenCollectDO.setContacted(1);
         }else if (reqVO.getContactHistory()==2){
-            screenCollectDO.setContacted(2);
+            screenCollectDO.setContacted(0);
         }
         if (!outcome.isEmpty()){
             screenCollectDO.setOutcome(outcome.toString());

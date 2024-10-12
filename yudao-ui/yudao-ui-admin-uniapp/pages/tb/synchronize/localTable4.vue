@@ -705,9 +705,9 @@ export default {
                       let res =await SynchronizeApi.updateTableData4(self.SyncData)
                       for (var i = 0; i < res.data.length; i++) {
                         if (res.data[i].id == res.data[i].newId) {
-                          // SynchronizeApi.updateStatusFlagOnly(tbScreenChestRadiograph, res.data[i].id, res.data[i].idNum)
+                          SynchronizeApi.updateStatusFlagOnly(tbScreenChestRadiograph, res.data[i].id, res.data[i].idNum)
                         } else {
-                          // await SynchronizeApi.updateIdAndStatusFlag(tbScreenChestRadiograph, res.data[i].id, res.data[i].newId, res.data[i].idNum)
+                          await SynchronizeApi.updateIdAndStatusFlag(tbScreenChestRadiograph, res.data[i].id, res.data[i].newId, res.data[i].idNum)
                           await SynchronizeApi.updateSumFieldId(res.data[i].id, res.data[i].newId, res.data[i].idNum, 'chestRadiographId')
                         }
                       }

@@ -407,12 +407,10 @@ export default {
 					});
 				},
 				fail: (e)=>{
-					fail: () => {
-						uni.showToast({
-							title: '照片保存失败',
-							icon: 'none'
-						});
-					}
+          uni.showToast({
+            title: '照片保存失败',
+            icon: 'none'
+          });
 				}
 			});
 			

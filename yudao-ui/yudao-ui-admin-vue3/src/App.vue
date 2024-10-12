@@ -79,7 +79,6 @@ body {
 /* 表格内字体样式和大小 */
 .el-table td {
   .cell {
-    font-family: 'Song';
     font-weight: 500;
     font-size: 16px;
     color: #000;

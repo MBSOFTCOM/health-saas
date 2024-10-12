@@ -908,9 +908,9 @@ export default {
                         let updatePpd = await SynchronizeApi.updateTableData3(self.SyncData)
                         for (let i = 0; i < updatePpd.data.length; i++) {
                           if (updatePpd.data[i].id == updatePpd.data[i].newId) {
-                            // await SynchronizeApi.updateStatusFlagOnly(tbScreenPpd, updatePpd.data[i].id, updatePpd.data[i].idNum)
+                            await SynchronizeApi.updateStatusFlagOnly(tbScreenPpd, updatePpd.data[i].id, updatePpd.data[i].idNum)
                           } else {
-                            // await SynchronizeApi.updateIdAndStatusFlag(tbScreenPpd, updatePpd.data[i].id, updatePpd.data[i].newId, updatePpd.data[i].idNum)
+                            await SynchronizeApi.updateIdAndStatusFlag(tbScreenPpd, updatePpd.data[i].id, updatePpd.data[i].newId, updatePpd.data[i].idNum)
                             await SynchronizeApi.updateSumFieldId(updatePpd.data[i].id, updatePpd.data[i].newId, updatePpd.data[i].idNum, 'ppdId')
                           }
                         }
