@@ -1167,8 +1167,9 @@ export default {
 			// 首先找到 orderVal 对应的索引
 			const index = val.orderVal - 1; // 因为索引是从 0 开始的，而 orderVal 是从 1 开始的，所以要减 1
 			// 然后根据索引获取对应的日期值
+      console.log(22)
+      console.log(val)
 			const dateValue = val.orderTime[index].text.split('/')[1]; // 日期值是在文本中的第二部分
-
 			uni.navigateTo({
 				url:
 					'/pages/tb/ppd/ppdOutcome?id=' +

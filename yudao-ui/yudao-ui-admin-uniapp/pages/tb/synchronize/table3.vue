@@ -133,6 +133,7 @@ import { getById, dbName, tbScreenPpd, tbScreenSum } from '@/utils/sqlite';
 import { screenType, getLabelByValue, commonMap, injectionWayMap, ppdOutcome } from '@/utils/dict.js';
 import * as regentApi from '@/api/screen/regent'
 import * as consumeApi from '@/api/screen/consume'
+import {removeNullProperties} from "../../../api/synchronize/synchronize";
 
 export default {
 	data() {
@@ -430,7 +431,8 @@ export default {
 													) {
 														item.doctorSignature = '';
 													}
-
+                          SynchronizeApi.removeNullProperties(item)
+                          // console.log(item)
 													// 插入到本地数据库前 时间戳转换
 													item.screenTime = self.formatDate(item.screenTime);
 
@@ -501,6 +503,7 @@ export default {
 											if (sumData.length > 0) {
 												SynchronizeApi.truncateTable(tbScreenSum);
 												sumData.forEach((item) => {
+                          delete item['padId']
 													// 时间戳转换
 													if(item.lastCollectTime){
 														item.lastCollectTime = self.formatDate1(
@@ -540,7 +543,7 @@ export default {
 															item.lastDiagnosisTime
 														);
 													}
-													
+                          SynchronizeApi.removeNullProperties(item)
 													// 插入数据
 													dbUtils.addTabItem(dbName, tbScreenSum, item);
 												});
@@ -606,7 +609,7 @@ export default {
 											if (item.doctorSignature == null || item.doctorSignature == 'null') {
 												item.doctorSignature = '';
 											}
-
+                      SynchronizeApi.removeNullProperties(item)
 											// 插入到本地数据库前 时间戳转换
 											item.screenTime = self.formatDate(item.screenTime);
 
@@ -671,6 +674,7 @@ export default {
 										if (sumData.length > 0) {
 											SynchronizeApi.truncateTable(tbScreenSum);
 											sumData.forEach((item) => {
+                        delete item['padId']
 												// 时间戳转换
 												if(item.lastCollectTime){
 													item.lastCollectTime = self.formatDate1(
@@ -710,7 +714,7 @@ export default {
 														item.lastDiagnosisTime
 													);
 												}
-												
+												SynchronizeApi.removeNullProperties(item)
 												// 插入数据
 												dbUtils.addTabItem(dbName, tbScreenSum, item);
 											});

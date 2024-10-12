@@ -111,6 +111,7 @@ import * as SynchronizeApi from '@/api/synchronize/synchronize';
 import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
 import { dbName, getById, tbScreenCollect, tbScreenSum } from '@/utils/sqlite';
 import { collectSymptoms, screenType, getLabelByValue ,collectSymptoms_new} from '@/utils/dict.js';
+import {removeNullProperties} from "../../../api/synchronize/synchronize";
 
 export default {
 	data() {
@@ -363,6 +364,7 @@ export default {
 
 											let i = 0;
 											self.SyncData.forEach((item) => {
+                        SynchronizeApi.removeNullProperties(item)
 												// 根据筛查编号，筛查次序查询 是否有对应记录的id
 												// 有记录 -- 更新
 												// 无记录 -- 根据id查记录
@@ -445,6 +447,7 @@ export default {
 											if (sumData.length > 0) {
 												SynchronizeApi.truncateTable(tbScreenSum);
 												sumData.forEach((item) => {
+                          delete sumData['padId']
 													// 时间戳转换
 													if(item.lastCollectTime){
 														item.lastCollectTime = self.formatDate1(
@@ -484,7 +487,7 @@ export default {
 															item.lastDiagnosisTime
 														);
 													}
-													
+													SynchronizeApi.removeNullProperties(item)
 													// 插入数据
 													dbUtils.addTabItem(dbName, tbScreenSum, item);
 												});
@@ -532,6 +535,7 @@ export default {
 
 									let i = 0;
 									self.SyncData.forEach((item) => {
+                    SynchronizeApi.removeNullProperties(item)
 										// 根据筛查编号，筛查次序查询 是否有对应记录的id
 										// 有记录 -- 更新
 										// 无记录 -- 根据id查记录
@@ -610,7 +614,8 @@ export default {
 										if (sumData.length > 0) {
 											SynchronizeApi.truncateTable(tbScreenSum);
 											sumData.forEach((item) => {
-												// 时间戳转换
+                        delete sumData['padId']
+                        // 时间戳转换
 												if(item.lastCollectTime){
 													item.lastCollectTime = self.formatDate1(
 														item.lastCollectTime
@@ -649,7 +654,7 @@ export default {
 														item.lastDiagnosisTime
 													);
 												}
-												
+                        SynchronizeApi.removeNullProperties(item)
 												// 插入数据
 												dbUtils.addTabItem(dbName, tbScreenSum, item);
 											});

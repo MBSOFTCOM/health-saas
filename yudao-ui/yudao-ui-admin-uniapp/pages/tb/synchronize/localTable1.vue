@@ -248,14 +248,14 @@ export default {
 		},
 		// 搜索
 		search() {
-			SynchronizeApi.getPersonCount(this.queryParams.screenId, this.queryParams.screenPoint,null).then((res) => {
+			SynchronizeApi.getPersonCount(this.queryParams.screenId, this.queryParams.screenPoint,'not null').then((res) => {
 				// console.log(res);
 				if (res[0].num > 0) {
 					this.total = res[0].num;
 					SynchronizeApi.getPersonData(
 						this.queryParams.screenId,
 						this.queryParams.screenPoint,
-						null,
+						'not null',
 						this.pageNo,
 						this.pageSize
 					).then((resp) => {

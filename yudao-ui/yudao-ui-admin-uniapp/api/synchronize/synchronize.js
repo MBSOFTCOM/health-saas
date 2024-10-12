@@ -1506,6 +1506,12 @@ export async function updateErrorFlag(type,data){
 		})
 	}
 }
+
+/**
+ * 删除平板的本地图片
+ * @param dirPath 图片所在目录
+ * @return {Promise<void>}
+ */
 export async function delImgFromDir(dirPath){
 	if (!dirPath){
 		return
@@ -1570,4 +1576,16 @@ export async function delImgFromDir(dirPath){
 		}
 		console.error('解析路径失败', error);
 	});
+}
+
+/**
+ * 删除对象中的空属性
+ * @param obj
+ */
+export function removeNullProperties(obj) {
+	for (let key in obj) {
+		if (obj[key] == null || obj[key] == 'null') {
+			delete obj[key];
+		}
+	}
 }
