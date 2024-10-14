@@ -331,14 +331,26 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             String cityCode = screenDistrictMapper.selectByName(obj.getCity());
             // 根据区/县名称查询对应的区域代码
             String countyCode = screenDistrictMapper.selectByName(obj.getCounty());
-            // 根据户籍乡镇名称查询对应的区域代码
-            String code1 = screenDistrictMapper.selectByName(obj.getPermanentAddressTown());
-            // 根据户籍省名称查询对应的区域代码
-            String provinceCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressProvince());
-            // 根据户籍市/州名称查询对应的区域代码
-            String cityCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressCity());
-            // 根据户籍区/县名称查询对应的区域代码
-            String countyCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressCounty());
+            String code1=null;
+            String provinceCode1=null;
+            String cityCode1=null;
+            String countyCode1=null;
+            if (obj.getPermanentAddressTown()!=null && !obj.getPermanentAddressTown().isEmpty()){
+                // 根据户籍乡镇名称查询对应的区域代码
+                code1 = screenDistrictMapper.selectByName(obj.getPermanentAddressTown());
+            }
+            if (obj.getPermanentAddressTown()!=null && !obj.getPermanentAddressTown().isEmpty()) {
+                // 根据户籍省名称查询对应的区域代码
+                provinceCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressProvince());
+            }
+            if (obj.getPermanentAddressTown()!=null && !obj.getPermanentAddressTown().isEmpty()) {
+                // 根据户籍市/州名称查询对应的区域代码
+                cityCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressCity());
+            }
+            if (obj.getPermanentAddressTown()!=null && !obj.getPermanentAddressTown().isEmpty()) {
+                // 根据户籍区/县名称查询对应的区域代码
+                countyCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressCounty());
+            }
             int order=0;
             StringBuffer  errorMsg=new StringBuffer();
             try {
@@ -359,11 +371,9 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
                     errorMsg.append(ID_NUMBER_MATCH_ERROR);
                 }
             }
-            if (obj.getScreenPoint()==null || obj.getScreenPoint().isEmpty()){
-                errorMsg.append(SCREEN_POINT_EMPTY);
-            }else {
+            if (obj.getScreenPoint()!=null && !obj.getScreenPoint().isEmpty()) {
                 Long pointId = screenPointMapper.getIdByName(obj.getScreenPoint(), year, deptService.getDept(deptId).getName());
-                if (pointId==null){
+                if (pointId == null) {
                     errorMsg.append(SCREEN_POINT_NOT_EXIST);
                 }
             }
@@ -381,8 +391,6 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
                 if (!code1.substring(0, 6).equals(countyCode1.substring(0,6)) || !code1.substring(0, 4).equals(cityCode1.substring(0, 4)) || !code1.substring(0, 2).equals(provinceCode1.substring(0, 2))) {
                     errorMsg.append("该人员户籍省市县乡不匹配;");
                 }
-            }else {
-                errorMsg.append("该人员户籍省市县乡缺失;");
             }
 
             if (code != null && countyCode != null && cityCode != null && provinceCode != null){
@@ -471,14 +479,26 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             String cityCode = screenDistrictMapper.selectByName(obj.getCity());
             // 根据区/县名称查询对应的区域代码
             String countyCode = screenDistrictMapper.selectByName(obj.getCounty());
-            // 根据户籍乡镇名称查询对应的区域代码
-            String code1 = screenDistrictMapper.selectByName(obj.getPermanentAddressTown());
-            // 根据户籍省名称查询对应的区域代码
-            String provinceCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressProvince());
-            // 根据户籍市/州名称查询对应的区域代码
-            String cityCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressCity());
-            // 根据户籍区/县名称查询对应的区域代码
-            String countyCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressCounty());
+            String code1=null;
+            String provinceCode1=null;
+            String cityCode1=null;
+            String countyCode1=null;
+            if (obj.getPermanentAddressTown()!=null && !obj.getPermanentAddressTown().isEmpty()){
+                // 根据户籍乡镇名称查询对应的区域代码
+                code1 = screenDistrictMapper.selectByName(obj.getPermanentAddressTown());
+            }
+            if (obj.getPermanentAddressTown()!=null && !obj.getPermanentAddressTown().isEmpty()) {
+                // 根据户籍省名称查询对应的区域代码
+                provinceCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressProvince());
+            }
+            if (obj.getPermanentAddressTown()!=null && !obj.getPermanentAddressTown().isEmpty()) {
+                // 根据户籍市/州名称查询对应的区域代码
+                cityCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressCity());
+            }
+            if (obj.getPermanentAddressTown()!=null && !obj.getPermanentAddressTown().isEmpty()) {
+                // 根据户籍区/县名称查询对应的区域代码
+                countyCode1 = screenDistrictMapper.selectByName(obj.getPermanentAddressCounty());
+            }
 
             if (obj.getName()==null || obj.getName().isEmpty()){
                 errorMsg.append("姓名未填");
@@ -512,10 +532,7 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
                 if (!code1.substring(0, 6).equals(countyCode1.substring(0, 6)) || !code1.substring(0, 4).equals(cityCode1.substring(0, 4)) || !code1.substring(0, 2).equals(provinceCode1.substring(0, 2))) {
                     errorMsg.append("该重复人员户籍省市县乡不匹配;");
                 }
-            }else {
-                errorMsg.append("该重复人员户籍省市县乡缺失;");
             }
-
             if (code != null && countyCode != null && cityCode != null && provinceCode != null){
                 if (!code.substring(0, 6).equals(countyCode.substring(0, 6)) || !code.substring(0, 4).equals(cityCode.substring(0, 4)) || !code.substring(0,2).equals(provinceCode.substring(0,2))) {
                     errorMsg.append("该重复人员现住址的省市县乡不匹配;");
