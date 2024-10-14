@@ -79,4 +79,5 @@ public class ScreenChestRadiographRespVO {
      * 拍照时间
      */
     private LocalDateTime photoTime;
+    private String padId;
 }

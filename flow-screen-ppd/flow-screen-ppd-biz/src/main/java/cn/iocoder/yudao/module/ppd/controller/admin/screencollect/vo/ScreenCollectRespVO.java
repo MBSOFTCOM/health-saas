@@ -71,4 +71,6 @@ public class ScreenCollectRespVO {
      * 对应摸底表中患者姓名
      */
     private String name;
+
+    private String padId;
 }

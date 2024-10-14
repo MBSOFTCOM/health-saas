@@ -151,6 +151,7 @@ import { dbName, tbScreenPpd, tbScreenSum ,errorKey} from '@/utils/sqlite';
 import { screenType, getLabelByValue, commonMap, injectionWayMap, ppdOutcome ,errorUpload} from '@/utils/dict.js';
 import * as SynchronizeApi from '@/api/synchronize/synchronize';
 import * as ConsumeRecordApi from '@/api/screen/consumeRecord';
+import * as regentApi from '@/api/screen/regent'
 
 export default {
 	data() {
@@ -400,7 +401,7 @@ export default {
       let ppdData=await SynchronizeApi.getPpdData(this.queryParams.screenId,this.queryParams.injection,this.queryParams.screenPoint,'not null',-1,this.pageSize)
       let ppdUploadData = ppdData.map((item) => ({
         ...item,
-        padId:""+item.id+item.idNum,
+        padId:item.padId??""+item.id+item.idNum,
         injectionAgency: self.agency
       }));
       // 筛查时间转换成时间戳
@@ -462,7 +463,7 @@ export default {
       });
       await SynchronizeApi.updateErrorFlag(1,'5')
       await localSum.forEach(item=>{
-        item.padId=""+item.id+item.idNum
+        item.padId=item.padId??(""+item.id+item.idNum)
         if(item.lastCollectTime){
           item.lastCollectTime = new Date(item.lastCollectTime).getTime();
         }
@@ -534,6 +535,10 @@ export default {
     },
     async uploadImage(){
       try{
+        uni.showLoading({
+          title: '上传中...',
+          mask: true
+        });
         await SynchronizeApi.updateErrorFlag(1,'6')
         await SynchronizeApi.uploadOfflineImage(2);
       }catch(e){
@@ -552,7 +557,6 @@ export default {
         icon: 'success',
         duration: 1500
       });
-      console.log(232)
       await SynchronizeApi.updateErrorFlag(0,'6')
     },
     async uploadConsume(){
@@ -567,12 +571,14 @@ export default {
         return
       }
       await SynchronizeApi.updateErrorFlag(1,'10')
+      uni.showLoading({
+        title: '上传中...',
+        mask: true
+      });
       let str=this.getCurrentDateString()
       // 处理数据
       for (let i = 0; i < consume.length; i++) {
-        console.log(i);
-        consume[i].padId=''+consume[i].id+uni.$person.id+str
-        console.log(consume[i]);
+        consume[i].padId=consume[i].padId??(''+consume[i].id+uni.$person.id+str)
         if(consume[i].createTime){
           consume[i].createTime = new Date(consume[i].createTime).getTime();
         }
@@ -583,8 +589,19 @@ export default {
       // 上传试剂消耗
       try{
         let consumeResult=await ConsumeRecordApi.upload(consume)
+        console.log(consumeResult)
+        console.log(consume.length)
         if(!consumeResult || consumeResult.data==null){
           throw new Error('上传试剂消耗失败')
+        }
+        console.log(consumeResult.data !=consume.length)
+        if (consumeResult.data !=consume.length){
+          uni.showToast({
+            title:'部分数据无法上传，请联系相关人员查看使用试剂的现有库存数量',
+            icon: 'none',
+            duration: 3000
+          })
+          return
         }
       }catch(e){
         console.error(e)
@@ -596,6 +613,12 @@ export default {
         })
         return
       }
+      uni.hideLoading()
+      uni.showToast({
+        title:'上传成功',
+        icon: 'success',
+        duration: 1000
+      })
       await SynchronizeApi.updateErrorFlag(0,'10')
     },
 		listenNet(){
@@ -669,7 +692,7 @@ export default {
                         let ppdData=await SynchronizeApi.getPpdData(self.queryParams.screenId,self.queryParams.injection,self.queryParams.screenPoint,'not null',-1,self.pageSize)
                         let ppdUploadData = ppdData.map((item) => ({
                           ...item,
-                          padId:""+item.id+item.idNum,
+                          padId:item.padId??(""+item.id+item.idNum),
                           injectionAgency: self.agency
                         }));
                         // 筛查时间转换成时间戳
@@ -721,7 +744,7 @@ export default {
                         });
                         let localSum=await SynchronizeApi.getLocalSumDataTypeAndYear(2,uni.$user.year)
                         await localSum.forEach(item=>{
-                          item.padId=""+item.id+item.idNum
+                          item.padId=item.padId??(""+item.id+item.idNum)
                           if(item.lastCollectTime){
                             item.lastCollectTime = new Date(item.lastCollectTime).getTime();
                           }
@@ -786,11 +809,12 @@ export default {
                         await SynchronizeApi.updateErrorFlag(0, '5')
 // 上传试剂消耗
                         let consume=await ConsumeRecordApi.selectLocalData()
-                        let str=this.getCurrentDateString()
-                        // 处理数据
-                        for (let i = 0; i < consume.length; i++) {
+						            if(consume && consume.length>0){
+                          let str=this.getCurrentDateString()
+                          // 处理数据
+                          for (let i = 0; i < consume.length; i++) {
                             console.log(i);
-                            consume[i].padId=''+consume[i].id+uni.$person.id+str
+                            consume[i].padId=consume[i].padId??(''+consume[i].id+uni.$person.id+str)
                             console.log(consume[i]);
                             if(consume[i].createTime){
                               consume[i].createTime = new Date(consume[i].createTime).getTime();
@@ -799,22 +823,23 @@ export default {
                               consume[i].updateTime = new Date(consume[i].updateTime).getTime();
                             }
                           }
-                        // 上传试剂消耗
-                        try{
-                          let consumeResult=await ConsumeRecordApi.upload(consume)
-                          if(!consumeResult || consumeResult.data==null){
-                            throw new Error('上传试剂消耗失败')
+                          // 上传试剂消耗
+                          try{
+                            let consumeResult=await ConsumeRecordApi.upload(consume)
+                            if(!consumeResult || consumeResult.data==null){
+                              throw new Error('上传试剂消耗失败')
+                            }
+                          }catch(e){
+                            console.error(e)
+                            uni.hideLoading()
+                            uni.showToast({
+                              title:'上传失败',
+                              icon: 'error',
+                              duration: 1000
+                            })
+                            return
                           }
-                        }catch(e){
-                          console.error(e)
-                          uni.hideLoading()
-                          uni.showToast({
-                            title:'上传失败',
-                            icon: 'error',
-                            duration: 1000
-                          })
-                          return
-                        }
+						            }
                         await SynchronizeApi.updateErrorFlag(0, '10')
                         uni.hideLoading();
                         uni.showToast({
@@ -823,11 +848,6 @@ export default {
                           duration: 1000
                         })
 
-                        uni.hideLoading();
-                        uni.showLoading({
-                          title: '上传图片中...',
-                          mask: true
-                        });
 // 上传ppd组图片
                         try {
                           await SynchronizeApi.uploadOfflineImage(2);
@@ -895,7 +915,7 @@ export default {
                       self.SyncData.forEach((item) => {
                         let date = new Date(item.screenTime);
                         item.screenTime = date.getTime();
-                        item.padId=""+item.id+item.idNum
+                        item.padId=item.padId??(""+item.id+item.idNum)
                       });
                       // console.log(self.SyncData);
 // 上传ppd组数据
@@ -935,7 +955,7 @@ export default {
                         for (let i = 0; i < self.SyncData.length; i++) {
                           let sumData = await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId, self.SyncData[i].screenType, self.SyncData[i].year, self.SyncData[i].personId,self.SyncData[i].idNum)
                           sumData.forEach(item => {
-                            item.padId=""+item.id+item.idNum
+                            item.padId=item.padId??(""+item.id+item.idNum)
                             if (item.lastCollectTime) {
                               item.lastCollectTime = new Date(item.lastCollectTime).getTime();
                             }
@@ -979,7 +999,7 @@ export default {
                       // 处理数据
                       for (let i = 0; i < consume.length; i++) {
                         console.log(i);
-                        consume[i].padId=''+consume[i].id+uni.$person.id+str
+                        consume[i].padId=consume[i].padId??(''+consume[i].id+uni.$person.id+str)
                         console.log(consume[i]);
                         if(consume[i].createTime){
                           consume[i].createTime = new Date(consume[i].createTime).getTime();

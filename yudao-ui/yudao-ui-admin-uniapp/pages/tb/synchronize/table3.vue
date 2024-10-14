@@ -386,6 +386,7 @@ export default {
 										// 获取全部数据，不分页
 										self.queryParams.pageSize = -1;
 										SynchronizeApi.getTableData3(self.queryParams).then((resp) => {
+                      console.log(resp)
 											self.SyncData = resp.data.list;
 											if (uni.$user.year) {
 												// 过滤出与当前工作年度不同的数据
@@ -432,7 +433,7 @@ export default {
 														item.doctorSignature = '';
 													}
                           SynchronizeApi.removeNullProperties(item)
-                          // console.log(item)
+                          console.log(item)
 													// 插入到本地数据库前 时间戳转换
 													item.screenTime = self.formatDate(item.screenTime);
 

@@ -357,7 +357,7 @@ export default {
       });
       await SynchronizeApi.updateErrorFlag(1,'8')
       await localSum.forEach(item=>{
-        item.padId=""+item.id+item.idNum
+        item.padId=item.padId??(""+item.id+item.idNum)
         if(item.lastCollectTime){
           item.lastCollectTime = new Date(item.lastCollectTime).getTime();
         }
@@ -505,7 +505,7 @@ export default {
                       let drUploadData=await SynchronizeApi.getDrCtData(self.queryParams.screenId,self.queryParams.outcome,self.queryParams.screenPoint,'not null')
 
                       drUploadData.forEach((item) => {
-                        item.padId=""+item.id+item.idNum
+                        item.padId=item.padId??(""+item.id+item.idNum)
                         // 筛查时间转换成时间戳
                         item.screenTime = new Date(item.screenTime).getTime();
                         // 采集时间转换成时间戳
@@ -563,7 +563,7 @@ export default {
                       //上传汇总表
                       let localSum=await SynchronizeApi.getLocalSumDataTypeAndYear(2,uni.$user.year)
                       await localSum.forEach(item=>{
-                        item.padId=""+item.id+item.idNum
+                        item.padId=item.padId??(""+item.id+item.idNum)
                         if(item.lastCollectTime){
                           item.lastCollectTime = new Date(item.lastCollectTime).getTime();
                         }
@@ -697,7 +697,7 @@ export default {
                       if (item.doctorSignature == null || item.doctorSignature == 'null') {
                         item.doctorSignature = '';
                       }
-                      item.padId=""+item.id+item.idNum
+                      item.padId=item.padId??(""+item.id+item.idNum)
                     });
                     // console.log(self.SyncData);
 // 上传dr数据
@@ -726,7 +726,7 @@ export default {
                       for (let i = 0; i < self.SyncData.length; i++) {
                         let sumData = SynchronizeApi.getLocalSumData(self.SyncData[i].screenId, self.SyncData[i].screenType, self.SyncData[i].year, self.SyncData[i].personId)
                         sumData.forEach(item => {
-                          item.padId = "" + item.id + item.idNum
+                          item.padId = item.padId??(""+item.id+item.idNum)
                           if (item.lastCollectTime) {
                             item.lastCollectTime = new Date(item.lastCollectTime).getTime();
                           }

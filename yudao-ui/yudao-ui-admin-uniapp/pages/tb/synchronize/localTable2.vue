@@ -391,7 +391,7 @@ export default {
 				SyncData = local.map((item) => ({
 					...item,
 					screenAgency: this.agency,
-					padId:""+item.id+item.idNum
+					padId:item.padId??(""+item.id+item.idNum)
 				}));
 				// 筛查时间转换成时间戳
 				SyncData.forEach((item) => {
@@ -505,7 +505,7 @@ export default {
       });
       await this.updateErrorFlag(1,'2')
 			await localSum.forEach(item=>{
-				item.padId=""+item.id+item.idNum
+				item.padId=item.padId??(""+item.id+item.idNum)
 				if(item.lastCollectTime){
 				  item.lastCollectTime = new Date(item.lastCollectTime).getTime();
 				}
@@ -649,7 +649,7 @@ export default {
 											let localCollect=await local.map((item) => ({
 													...item,
 													screenAgency: self.agency,
-													padId:""+item.id+item.idNum
+													padId:item.padId??(""+item.id+item.idNum)
 												}));
                       // 筛查时间转换成时间戳
                       await localCollect.forEach((item) => {
@@ -701,7 +701,7 @@ export default {
                       });
                       let localSum=await SynchronizeApi.getLocalSumDataTypeAndYear(2,uni.$user.year)
                       await localSum.forEach(item=>{
-                        item.padId=""+item.id+item.idNum
+                        item.padId=item.padId??(""+item.id+item.idNum)
                         if(item.lastCollectTime){
                           item.lastCollectTime = new Date(item.lastCollectTime).getTime();
                         }
@@ -824,7 +824,7 @@ export default {
 										self.SyncData.forEach((item) => {
 											let date = new Date(item.screenTime);
 											item.screenTime = date.getTime();
-                      item.padId=""+item.id+item.idNum
+                      item.padId=item.padId??(""+item.id+item.idNum)
 										});
 										// console.log(self.SyncData);
                     try{
@@ -855,7 +855,7 @@ export default {
                       for (let i = 0; i < self.SyncData.length; i++) {
                         let sumData=await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId,self.SyncData[i].screenType,self.SyncData[i].year,self.SyncData[i].personId,self.SyncData[i].idNum)
                         await sumData.forEach(item=>{
-                          item.padId=""+item.id+item.idNum
+                          item.padId=item.padId??(""+item.id+item.idNum)
                             if(item.lastCollectTime){
                               item.lastCollectTime = new Date(item.lastCollectTime).getTime();
                             }

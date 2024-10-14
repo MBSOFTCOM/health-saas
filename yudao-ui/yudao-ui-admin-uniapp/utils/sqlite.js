@@ -126,6 +126,7 @@ export const tableSqls = [
 			"createTime" TEXT , -- 创建时间
 			"updater" TEXT , -- 更新者
 			"updateTime" TEXT , -- 更新时间
+			"padId" TEXT , -- 平板数据标识
 			"year" INTEGER , -- 年份
 			"statusFlag" INTEGER, --状态标识（1-新增 2-修改）
 			"screenType" TEXT  -- 筛查类型  1--常规、2--新生、3--应急
@@ -162,6 +163,7 @@ export const tableSqls = [
 				"updateTime" DATE , -- 更新时间
 				"deleted" INTEGER , -- 是否删除
 				"year" INTEGER , -- 年份
+				"padId" TEXT , -- 平板数据标识
 				"statusFlag" INTEGER, --状态标识（1-新增 2-修改）
 				"screenType" INTEGER  -- 筛查类型  1--常规、2--新生、3--应急
 			  );`
@@ -250,6 +252,7 @@ export const tableSqls = [
 			"createTime" INTEGER, --创建时间
 			"updater" TEXT, --更新者
 			"statusFlag" INTEGER, --状态标识（1-新增 2-修改）
+			"padId" TEXT , -- 平板数据标识
 			"updateTime" INTEGER --更新时间
 			);`
 	},
@@ -351,6 +354,7 @@ export const tableSqls = [
 			"experimentId" INTEGER, -- 实验组id
 			"electrocardiogramId" INTEGER, -- 心电图表id
 			"diagnosisId" INTEGER, -- 诊断表id
+			"padId" TEXT , -- 平板数据标识
 			"statusFlag" INTEGER, --状态标识（1-新增 2-修改）
 			"createTime" DATE --创建时间
 			  );`

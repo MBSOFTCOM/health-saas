@@ -391,19 +391,30 @@ public class ScreenConsumeServiceImpl implements ScreenConsumeService {
         }
         Integer successNum = 0;
         for (ScreenConsumeRecordDO screenConsumeRecordDO : list) {
-            ScreenConsumeRecordDO one = screenConsumeRecordMapper.selectOne(ScreenConsumeRecordDO::getPadId, screenConsumeRecordDO.getPadId());
-            ScreenConsumeDO screenConsumeDO = screenConsumeMapper.selectById(screenConsumeRecordDO.getConsumeId());
-            if (screenConsumeDO.getCurrentNumber() - screenConsumeRecordDO.getChangeNumber() >= 0) {
-            if (BeanUtil.isEmpty(one)){
-                screenConsumeRecordDO.setId(null);
-                screenConsumeRecordMapper.insert(screenConsumeRecordDO);
+            ScreenConsumeRecordDO one = screenConsumeRecordMapper.selectOne(ScreenConsumeRecordDO::getPadId, screenConsumeRecordDO.getPadId()); // 根据padId查询是否存在
+            ScreenConsumeDO screenConsumeDO = screenConsumeMapper.selectById(screenConsumeRecordDO.getConsumeId());  // 已存在就查询相关试剂
+                if (BeanUtil.isEmpty(one)) {
+                    if (screenConsumeDO.getCurrentNumber() - screenConsumeRecordDO.getChangeNumber() >= 0) {  // 当前库存数量是否运行修改已变化量
+                    screenConsumeRecordDO.setId(null);
+                    screenConsumeRecordDO.setUpdateTime(null);
+                    screenConsumeRecordMapper.insert(screenConsumeRecordDO);
+                    screenConsumeMapper.decreaseScreenConsume(screenConsumeRecordDO.getConsumeId(), screenConsumeRecordDO.getChangeNumber());  // 修改某试剂的现有库存量
+                    successNum++;
+                }
             }else {
-                screenConsumeRecordDO.setId(one.getId());
-                screenConsumeRecordMapper.updateById(screenConsumeRecordDO);
+//                已存在的消耗记录。先把上次扣减的数量加回去，再重新扣减
+                Integer num=0;
+                num=screenConsumeDO.getCurrentNumber()+one.getChangeNumber()-screenConsumeRecordDO.getChangeNumber();
+                if (num>=0){
+                    screenConsumeRecordDO.setId(one.getId());
+                    screenConsumeDO.setCurrentNumber(num);
+                    screenConsumeRecordDO.setUpdateTime(null);
+                    screenConsumeRecordMapper.updateById(screenConsumeRecordDO);
+                    screenConsumeMapper.updateById(screenConsumeDO);
+                    successNum++;
+                }
             }
-            screenConsumeMapper.decreaseScreenConsume(screenConsumeRecordDO.getConsumeId(), screenConsumeRecordDO.getChangeNumber());
-            successNum++;
-            }
+
         }
         return successNum;
     }

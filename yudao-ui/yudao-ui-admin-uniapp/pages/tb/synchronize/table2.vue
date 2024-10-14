@@ -342,7 +342,7 @@ export default {
 										// 获取全部数据，不分页
 										self.queryParams.pageSize = -1;
 										SynchronizeApi.getTableData2(self.queryParams).then((resp) => {
-											// console.log(resp);
+											console.log(resp);
 											self.SyncData = resp.data.list;
 											if (uni.$user.year) {
 												// 过滤出与当前工作年度不同的数据
@@ -411,6 +411,7 @@ export default {
 																	...item
 																};
 																delete addData.name;
+                                console.log(addData)
 																dbUtils.addTabItem(dbName, tbScreenCollect, addData);
 															}
 														});
@@ -447,7 +448,7 @@ export default {
 											if (sumData.length > 0) {
 												SynchronizeApi.truncateTable(tbScreenSum);
 												sumData.forEach((item) => {
-                          delete sumData['padId']
+                          delete item['padId']
 													// 时间戳转换
 													if(item.lastCollectTime){
 														item.lastCollectTime = self.formatDate1(
@@ -614,7 +615,7 @@ export default {
 										if (sumData.length > 0) {
 											SynchronizeApi.truncateTable(tbScreenSum);
 											sumData.forEach((item) => {
-                        delete sumData['padId']
+                        delete item['padId']
                         // 时间戳转换
 												if(item.lastCollectTime){
 													item.lastCollectTime = self.formatDate1(

@@ -338,26 +338,6 @@
                   style="
                     margin: 0 10px;
                     background-color: #fff;
-                    border: 1px solid rgba(51, 176, 19, 1);
-                    color: rgba(51, 176, 19, 1);
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    height: 6vh;
-                    width: 15vh;
-                    font-size: 16px;
-                  "
-                  @click="submitOutcome(item)"
-                  v-if="item.injection != '1'"
-                >
-                  提交结果
-                </u-button>
-
-                <u-button
-                  class="btn-span"
-                  style="
-                    margin: 0 10px;
-                    background-color: #fff;
                     border: 1px solid #fa9f37;
                     color: #fa9f37;
                     display: flex;
@@ -368,7 +348,6 @@
                     font-size: 16px;
                   "
                   @click="modify(item)"
-                  v-else
                 >
                   修改结果
                 </u-button>
@@ -1135,7 +1114,11 @@ export default {
 			// 首先找到 orderVal 对应的索引
 			const index = val.orderVal - 1; // 因为索引是从 0 开始的，而 orderVal 是从 1 开始的，所以要减 1
 			// 然后根据索引获取对应的日期值
-			const dateValue = val.orderTime[index].text.split('/')[1]; // 日期值是在文本中的第二部分
+      let dateValue=''
+      if (val.orderTime && val.orderTime.length>0){
+        let obj = val.orderTime.find(obj => obj.value == val.orderVal)
+        dateValue = obj.text.split('/')[1]; // 日期值是在文本中的第二部分
+      }
 
 			uni.navigateTo({
 				url:
@@ -1167,9 +1150,11 @@ export default {
 			// 首先找到 orderVal 对应的索引
 			const index = val.orderVal - 1; // 因为索引是从 0 开始的，而 orderVal 是从 1 开始的，所以要减 1
 			// 然后根据索引获取对应的日期值
-      console.log(22)
-      console.log(val)
-			const dateValue = val.orderTime[index].text.split('/')[1]; // 日期值是在文本中的第二部分
+      let dateValue=''
+      if (val.orderTime && val.orderTime.length>0){
+        let obj = val.orderTime.find(obj => obj.value == val.orderVal)
+        dateValue = obj.text.split('/')[1]; // 日期值是在文本中的第二部分
+      }
 			uni.navigateTo({
 				url:
 					'/pages/tb/ppd/ppdOutcome?id=' +

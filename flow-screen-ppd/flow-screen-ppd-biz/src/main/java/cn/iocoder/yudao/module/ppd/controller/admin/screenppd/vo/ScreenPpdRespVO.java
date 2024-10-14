@@ -88,4 +88,7 @@ public class ScreenPpdRespVO {
      */
     private String name;
 
+    private String idNum;
+    private String padId;
+
 }
