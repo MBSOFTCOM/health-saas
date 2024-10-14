@@ -39,7 +39,8 @@ public class ScreenInformedConsentFormServiceImpl implements ScreenInformedConse
         if (BeanUtil.isEmpty(screenPerson)){
             throw exception(SCREEN_PERSON_NOT_EXISTS);
         }
-        Integer isSign = createReqVO.getIsSign();
+        // 复杂校验 关闭
+        /*Integer isSign = createReqVO.getIsSign();
         if (isSign==null){
             createReqVO.setIsSign(2);
         }else if (isSign!=1 && isSign!=2){
@@ -57,7 +58,7 @@ public class ScreenInformedConsentFormServiceImpl implements ScreenInformedConse
             createReqVO.setReason(null);
         } else if (createReqVO.getIsSign() == 2) {
             createReqVO.setSignature(null);
-        }
+        }*/
         // 插入
         ScreenInformedConsentFormDO screenInformedConsentForm = BeanUtils.toBean(createReqVO, ScreenInformedConsentFormDO.class);
         screenInformedConsentForm.setClassroom(screenPerson.getClassroom());
