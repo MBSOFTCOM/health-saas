@@ -54,7 +54,7 @@
               placeholder="根据身份证自动获取"
               clearable
               class="!w-200px"
-              :disabled="formType == 'create' ? true : false"
+              disabled
             >
               <el-option
                 v-for="dict in getIntDictOptions(DICT_TYPE.PATIENT_SEX)"
@@ -66,7 +66,7 @@
         </el-col>
         <el-col :span="11">
           <el-form-item label="年龄" prop="age">
-            <el-input v-model="formData.age" type="number" placeholder="根据身份证自动获取" :disabled="formType == 'create' ? true : false"/>
+            <el-input v-model="formData.age" type="number" placeholder="根据身份证自动获取" disabled/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -751,6 +751,7 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       formData.value = await ScreenPersonApi.getScreenPerson(id)
+      autoCalculate(formData.value.idNum)
       const tempCity = formData.value.city
       const tempPermanentAddressCity = formData.value.permanentAddressCity
       const tempCounty = formData.value.county
