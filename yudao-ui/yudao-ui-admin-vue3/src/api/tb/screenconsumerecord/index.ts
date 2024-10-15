@@ -41,7 +41,7 @@ export const ScreenConsumeRecordApi = {
   },
 
   // 获取库存记录
-  getScreenConsumeRecordList: async (id: number) => {
-    return await request.get({ url: `/tb/screen-consume-record/get-list?id=` + id })
+  getScreenConsumeRecordList: async (params) => {
+    return await request.get({ url: `/tb/screen-consume-record/get-list` ,params })
   }
 }

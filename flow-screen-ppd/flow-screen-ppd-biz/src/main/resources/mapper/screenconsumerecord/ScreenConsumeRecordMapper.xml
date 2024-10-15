@@ -5,10 +5,20 @@
     <select id="getScreenConsumeRecordList"
             resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenconsumerecord.vo.ScreenConsumeRecordRespVO"
             parameterType="java.lang.Long">
-        SELECT id, change_number, type, create_time, consume_id
+        SELECT id, change_number, type, create_time,update_time, consume_id
         FROM tb_screen_consume_record
         WHERE consume_id = #{id}
           AND deleted = 0
         ORDER BY id DESC
+        <if test="pageNo !=null and pageSize !=null">
+            limit #{pageNo},#{pageSize}
+        </if>
     </select>
+    <select id="countScreenConsumeRecordList" resultType="java.lang.Long">
+        SELECT ifnull(count(*),0)
+        FROM tb_screen_consume_record
+        WHERE consume_id = #{id}
+          AND deleted = 0
+    </select>
+
 </mapper>

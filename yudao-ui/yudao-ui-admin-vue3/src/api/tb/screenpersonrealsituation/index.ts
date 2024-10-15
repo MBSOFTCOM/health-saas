@@ -122,17 +122,17 @@ export const ScreenPersonApi = {
   },
 
   // 工作进展报告--统计表--导出表格
-  exportStatistics: async (params: any) => {
-    return await request.download({url: `/tb/screen-person/statistics-export`, params})
+  exportStatistics: async (data: any) => {
+    return await request.downloadPost({url: `/tb/screen-person/statistics-export`, data})
   },
 
   // 工作进展报告--统计表--导出知情同意书
-  exportArchives: async (params: any) => {
-    return await request.download({url: `/tb/screen-person/archives-export`, params})
+  exportArchives: async (data: any) => {
+    return await request.downloadPost({url: `/tb/screen-person/archives-export`, data})
   },
 
   // 工作进展报告--统计表--导出体检表
-  exportArchives2: async (params: any) => {
-    return await request.download({url: `/tb/screen-person/archives-export2`, params})
+  exportArchives2: async (data: any) => {
+    return await request.downloadPost({url: `/tb/screen-person/archives-export2`, data})
   },
 }

@@ -28,6 +28,10 @@ public class ScreenConsumeRecordRespVO {
     @ExcelProperty("创建时间")
     private LocalDateTime createTime;
 
+    @Schema(description = "修改时间", requiredMode = Schema.RequiredMode.REQUIRED)
+    @ExcelProperty("修改时间")
+    private LocalDateTime updateTime;
+
     @Schema(description = "消耗管理表id", requiredMode = Schema.RequiredMode.REQUIRED, example = "811")
     @ExcelProperty("消耗管理表id")
     private Long consumeId;

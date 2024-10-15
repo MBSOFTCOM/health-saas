@@ -4,6 +4,8 @@ package cn.iocoder.yudao.module.cd.enums;
 import cn.iocoder.yudao.framework.common.exception.ErrorCode;
 
 public interface ErrorCodeConstants{
+    ErrorCode REQUEST_GET_SIZE_ERROR=new ErrorCode(500100,"分页请求参数分页大小错误");
+    ErrorCode REQUEST_GET_NO_ERROR=new ErrorCode(500101,"分页请求参数分页起始页错误");
     ErrorCode EXCEL_EMPTY=new ErrorCode(30001,"excel中没有数据");
     ErrorCode EMPTY=new ErrorCode(30000,"没有数据");
     ErrorCode VALUE_ERROR=new ErrorCode(300002,"值错误");

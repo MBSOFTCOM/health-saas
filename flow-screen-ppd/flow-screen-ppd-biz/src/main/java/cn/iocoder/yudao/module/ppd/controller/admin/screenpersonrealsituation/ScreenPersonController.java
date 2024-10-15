@@ -379,27 +379,27 @@ public class ScreenPersonController {
 
     }
 
-    @GetMapping("/statistics-export")
+    @PostMapping("/statistics-export")
     @Operation(summary = "工作进展报告--统计表--导出表格")
     @ApiAccessLog(operateType = EXPORT)
-    public void exportScreenPersonExcel(@Valid ScreenPersonStatisticsReqVO reqVO,
+    public void exportScreenPersonExcel(@Valid @RequestBody ScreenPersonStatisticsReqVO reqVO,
                                         HttpServletResponse response) {
         screenStaticsHistoryService.recoverScreenStaticsHistory(BeanUtils.toBean(reqVO, ScreenStaticsHistorySaveReqVO.class));
         screenPersonService.exportStatistics(reqVO, response);
     }
 
-    @GetMapping("/archives-export")
+    @PostMapping("/archives-export")
     @Operation(summary = "工作进展报告--统计表--导出知情同意书")
     @ApiAccessLog(operateType = EXPORT)
-    public void exportScreenPersonArchive(@Valid ScreenPersonStatisticsReqVO reqVO,
+    public void exportScreenPersonArchive(@Valid @RequestBody ScreenPersonStatisticsReqVO reqVO,
                                             HttpServletRequest request, HttpServletResponse response) throws IOException {
         screenPersonService.exportScreenPersonArchive(reqVO, request, response);
     }
 
-    @GetMapping("/archives-export2")
+    @PostMapping("/archives-export2")
     @Operation(summary = "工作进展报告--统计表--导出档案")
     @ApiAccessLog(operateType = EXPORT)
-    public void exportScreenPersonArchive2(@Valid ScreenPersonStatisticsReqVO reqVO,
+    public void exportScreenPersonArchive2(@Valid @RequestBody ScreenPersonStatisticsReqVO reqVO,
                                           HttpServletRequest request, HttpServletResponse response) throws IOException {
         System.out.println(reqVO);
         screenPersonService.exportScreenPersonArchive2(reqVO, request, response);

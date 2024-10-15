@@ -31,5 +31,9 @@ public interface ScreenConsumeRecordMapper extends BaseMapperX<ScreenConsumeReco
     /**
      * 获取库存记录列表
      */
-    List<ScreenConsumeRecordRespVO> getScreenConsumeRecordList(Long id);
+    List<ScreenConsumeRecordRespVO> getScreenConsumeRecordList(Long id, Integer pageSize, Integer pageNo);
+    /**
+     * 获取库存记录列表
+     */
+     Long countScreenConsumeRecordList(Long id);
 }

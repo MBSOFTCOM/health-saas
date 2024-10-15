@@ -95,8 +95,18 @@
           <dict-tag :type="DICT_TYPE.STOCK_RECORD_TYPE" :value="scope.row.type"/>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="createTime" :formatter="dateFormatter2"/>
+      <el-table-column align="center" prop="updateTime" :formatter="dateFormatter2"/>
     </el-table>
+    <div>
+    <Pagination
+      style="margin-top: 15px;"
+      :total="total"
+      layout="prev, pager, next"
+      v-model:page="queryParams.page"
+      v-model:limit="queryParams.limit"
+      @pagination="getDetailConsumeList"
+    />
+    </div>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
 <!--      <el-button @click="dialogVisible = false">取 消</el-button>-->
@@ -139,6 +149,12 @@ const formData = ref({
   threshold: undefined,
   indate: undefined,
 })
+const total = ref(50) // 列表的总页数
+const queryParams = reactive({
+  page: 1,
+  limit: 5,
+  id:null
+})
 const reagentList = ref([]) // 试剂列表
 
 const formRules = reactive({
@@ -151,7 +167,7 @@ interface ScreenConsumeRecordVO {
   type: number // 变化类型（1：筛查自动扣减，2：手动增加库存，3：手动减少库存）
   consumeId: number // 消耗管理表id
 }
-
+const reagentId=ref(0)
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   // 获取试剂列表
@@ -166,7 +182,8 @@ const open = async (type: string, id?: number) => {
     loading.value = true
     try {
       formData.value = await ScreenConsumeApi.getScreenConsume(id)
-      list.value = await ScreenConsumeRecordApi.getScreenConsumeRecordList(id)
+      reagentId.value=id
+      await getDetailConsumeList(queryParams)
     } finally {
       formLoading.value = false
       loading.value = false
@@ -174,7 +191,16 @@ const open = async (type: string, id?: number) => {
   }
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
-
+/**
+ *
+ * @param param {id:number,pageSize:number,pageNo:number}
+ */
+const getDetailConsumeList = async (param:object) => {
+  param.id=reagentId.value
+  let data= await ScreenConsumeRecordApi.getScreenConsumeRecordList(param)
+  list.value=data.list
+  total.value=data.total
+}
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {

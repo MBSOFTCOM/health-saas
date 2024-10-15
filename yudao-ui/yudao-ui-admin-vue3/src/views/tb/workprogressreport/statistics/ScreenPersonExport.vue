@@ -360,7 +360,7 @@ const handleExport = async () => {
     // 执行导出操作
     const data = await ScreenPersonApi.exportStatistics(params);
     // 下载导出文件
-    download.excel(data, '统计表.xls');
+    await download.excel(data, '统计表.xls');
     // 提示导出成功
     message.success("导出成功！");
   } catch (error) {

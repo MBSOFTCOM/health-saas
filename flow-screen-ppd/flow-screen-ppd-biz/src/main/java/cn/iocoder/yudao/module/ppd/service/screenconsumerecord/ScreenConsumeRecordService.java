@@ -58,4 +58,8 @@ public interface ScreenConsumeRecordService {
      * 获取库存记录列表
      */
     List<ScreenConsumeRecordRespVO> getScreenConsumeRecordList(Long id);
+    /**
+     * 获取库存记录列表
+     */
+    PageResult<ScreenConsumeRecordRespVO> getScreenConsumeRecordList(Long id, Integer pageSize, Integer pageNo);
 }

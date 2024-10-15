@@ -93,8 +93,8 @@ public class ScreenConsumeRecordController {
     @GetMapping("/get-list")
     @Operation(summary = "获得消耗管理记录列表")
     @Parameter(name = "id", description = "编号", required = true)
-    public CommonResult<List<ScreenConsumeRecordRespVO>> getScreenConsumeRecordList(@RequestParam("id") Long id) {
-        List<ScreenConsumeRecordRespVO> list = screenConsumeRecordService.getScreenConsumeRecordList(id);
+    public CommonResult<PageResult<ScreenConsumeRecordRespVO>> getScreenConsumeRecordList(@RequestParam("id") Long id,@RequestParam("limit") Integer limit,@RequestParam("page") Integer page) {
+        PageResult<ScreenConsumeRecordRespVO> list = screenConsumeRecordService.getScreenConsumeRecordList(id,limit,page);
         return success(list);
     }
 
