@@ -23,7 +23,7 @@
       <el-row type="flex" justify="space-between">
         <el-col :span="11">
           <el-form-item label="身份证号" prop="idNum">
-            <el-input v-model="formData.idNum" placeholder="请输入身份证号"/>
+            <el-input v-model="formData.idNum" placeholder="请输入身份证号" @change="autoCalculate(formData.idNum)"/>
           </el-form-item>
         </el-col>
         <el-col :span="11">
@@ -706,10 +706,10 @@ const formRules = reactive({
   permanentAddressCity: [{required: true, message: '请选择户籍地址-市(州)', trigger: 'blur'}],
   permanentAddressCounty: [{required: true, message: '请选择户籍地址-县', trigger: 'blur'}],
   permanentAddressTown: [{required: true, message: '请选择户籍地址-乡', trigger: 'blur'}],*/
-  province: [{required: true, message: '请选择现住址-省', trigger: 'blur'}],
-  city: [{required: true, message: '请选择现住址-市(州)', trigger: 'blur'}],
-  county: [{required: true, message: '请选择现住址-县', trigger: 'blur'}],
-  town: [{required: true, message: '请选择现住址-乡', trigger: 'blur'}],
+  province: [{required: true, message: '请选择现住址-省', trigger: ['blur', 'change']}],
+  city: [{required: true, message: '请选择现住址-市(州)', trigger: ['blur', 'change']}],
+  county: [{required: true, message: '请选择现住址-县', trigger: ['blur', 'change']}],
+  town: [{required: true, message: '请选择现住址-乡', trigger: ['blur', 'change']}],
   // nation: [{required: true, message: '请选择民族', trigger: 'change'}],
   isNew: [{required: true, message: '请选择是否需筛查', trigger: 'change'}],
   isScreened: [{required: true, message: '请选择是否已筛查', trigger: 'change'}],
@@ -783,6 +783,13 @@ defineExpose({open}) // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+const autoCalculate = (idNum:string) => {
+  const birthYear = parseInt(idNum.substr(6, 4))
+  const currentYear = new Date().getFullYear()
+  formData.value.age = currentYear - birthYear
+  formData.value.sex = getGenderCodeFromIdCard(idNum)
+
+}
 const submitForm = async () => {
   // 校验表单
   await formRef.value.validate()
@@ -813,7 +820,6 @@ const submitForm = async () => {
       const age = currentYear - birthYear
       data.age = age
       data.sex = getGenderCodeFromIdCard(data.idNum)
-
       if (formData.value.firstType == 1 && formData.value.moreTempType.includes(1)){
         if (formData.value.studentType == undefined){
           message.error('请选择学生类别！')
