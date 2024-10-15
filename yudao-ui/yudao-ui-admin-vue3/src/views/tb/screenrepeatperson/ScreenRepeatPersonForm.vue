@@ -816,7 +816,7 @@ const submitForm = async () => {
       }
       if (formData.value.firstType == 1 && formData.value.moreTempType.includes(1)){
         if (formData.value.studentType == undefined){
-          message.error('请选择学生类别！')
+          message.error('请选择学生类型！')
           return
         }else if (formData.value.isNewStudent == undefined){
           message.error('请选择是否为新生！')
