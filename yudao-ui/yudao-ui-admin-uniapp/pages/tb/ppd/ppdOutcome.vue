@@ -596,40 +596,45 @@ export default {
 					};
 					// console.log(imageData);
 					await dbUtils.addTabItem(dbName, tbScreenImages, imageData);
-					// 实拍
-					await ScreenImages.deleteOne(
-						this.patient.idNum,
-						uni.$person.year,
-						uni.$screenType,
-						this.patient.order,
-						16
-					);
-					imageData.type = 16;
-					imageData.path = this.FormData.actualPhoto;
-					await dbUtils.addTabItem(dbName, tbScreenImages, imageData);
+          if (this.FormData.actualPhoto) {
+            // 实拍
+            await ScreenImages.deleteOne(
+                this.patient.idNum,
+                uni.$person.year,
+                uni.$screenType,
+                this.patient.order,
+                16
+            );
+            imageData.type = 16;
+            imageData.path = this.FormData.actualPhoto;
+            await dbUtils.addTabItem(dbName, tbScreenImages, imageData);
+          }
 					// 红晕
-					await ScreenImages.deleteOne(
-						this.patient.idNum,
-						uni.$person.year,
-						uni.$screenType,
-						this.patient.order,
-						18
-					);
-					imageData.type = 18;
-					imageData.path = this.FormData.blushPhoto;
-					await dbUtils.addTabItem(dbName, tbScreenImages, imageData);
+          if (this.FormData.blushPhoto) {
+            await ScreenImages.deleteOne(
+                this.patient.idNum,
+                uni.$person.year,
+                uni.$screenType,
+                this.patient.order,
+                18
+            );
+            imageData.type = 18;
+            imageData.path = this.FormData.blushPhoto;
+            await dbUtils.addTabItem(dbName, tbScreenImages, imageData);
+          }
 					// 硬结
-					await ScreenImages.deleteOne(
-						this.patient.idNum,
-						uni.$person.year,
-						uni.$screenType,
-						this.patient.order,
-						17
-					);
-					imageData.type = 17;
-					imageData.path = this.FormData.scleromaPhoto;
-					await dbUtils.addTabItem(dbName, tbScreenImages, imageData);
-
+          if (this.FormData.scleromaPhoto) {
+            await ScreenImages.deleteOne(
+                this.patient.idNum,
+                uni.$person.year,
+                uni.$screenType,
+                this.patient.order,
+                17
+            );
+            imageData.type = 17;
+            imageData.path = this.FormData.scleromaPhoto;
+            await dbUtils.addTabItem(dbName, tbScreenImages, imageData);
+          }
 					//返回上一页
 					uni.navigateBack({
 						delta: 1 // 返回的页面数，如果delta是1，表示返回上一个页面

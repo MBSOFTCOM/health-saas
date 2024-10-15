@@ -916,6 +916,7 @@ export default {
 			this.show = true;
 			//保存本次注射的人员信息
 			this.person = val;
+      this.regentId=null
 			this.getRegentList()
 		},
 		selectRegentList(e){
