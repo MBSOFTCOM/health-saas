@@ -9,13 +9,13 @@
 						actColor="rgba(36, 93, 209, 1)"
 					></yile-breadcrumb>
 				</view>
-				<view style="margin-right: 18%;" v-if="synchronizeTime">
+				<view style="margin-left: 15px;" v-if="synchronizeTime">
 					上次同步时间:{{synchronizeTime}}
 				</view>
 				<view class="top-right1" style="margin-right: 10px">
 					<up-button
 						@click="PadToPc"
-						style="margin-left: 10px"
+						style="margin-left: 10px;"
 						type="success"
 						icon="download"
 						iconColor="#fff"
@@ -549,14 +549,8 @@ export default {
           icon: 'none',
           duration: 1500
         });
+        return
       }
-      uni.hideLoading();
-      uni.showToast({
-        title: '上传成功',
-        mask: true,
-        icon: 'success',
-        duration: 1500
-      });
       await SynchronizeApi.updateErrorFlag(0,'6')
     },
     async uploadConsume(){
@@ -807,47 +801,6 @@ export default {
                         }
                         uni.hideLoading();
                         await SynchronizeApi.updateErrorFlag(0, '5')
-// 上传试剂消耗
-                        let consume=await ConsumeRecordApi.selectLocalData()
-						            if(consume && consume.length>0){
-                          let str=this.getCurrentDateString()
-                          // 处理数据
-                          for (let i = 0; i < consume.length; i++) {
-                            console.log(i);
-                            consume[i].padId=consume[i].padId??(''+consume[i].id+uni.$person.id+str)
-                            console.log(consume[i]);
-                            if(consume[i].createTime){
-                              consume[i].createTime = new Date(consume[i].createTime).getTime();
-                            }
-                            if(consume[i].updateTime){
-                              consume[i].updateTime = new Date(consume[i].updateTime).getTime();
-                            }
-                          }
-                          // 上传试剂消耗
-                          try{
-                            let consumeResult=await ConsumeRecordApi.upload(consume)
-                            if(!consumeResult || consumeResult.data==null){
-                              throw new Error('上传试剂消耗失败')
-                            }
-                          }catch(e){
-                            console.error(e)
-                            uni.hideLoading()
-                            uni.showToast({
-                              title:'上传失败',
-                              icon: 'error',
-                              duration: 1000
-                            })
-                            return
-                          }
-						            }
-                        await SynchronizeApi.updateErrorFlag(0, '10')
-                        uni.hideLoading();
-                        uni.showToast({
-                          title: '试剂消耗数据上传成功',
-                          icon: 'none',
-                          duration: 1000
-                        })
-
 // 上传ppd组图片
                         try {
                           await SynchronizeApi.uploadOfflineImage(2);
@@ -861,14 +814,7 @@ export default {
                           })
                           return
                         }
-                        await this.updateErrorFlag(0, '6')
-                        uni.hideLoading();
-                        uni.showToast({
-                          title: '上传成功',
-                          mask: true,
-                          icon: 'success',
-                          duration: 1500
-                        });
+                        await SynchronizeApi.updateErrorFlag(0, '6')
                         // 记录本次同步时间(存缓存)
                         let time = self.getCurrentTime()
                         uni.setStorage({
@@ -927,13 +873,19 @@ export default {
                       try{
                         let updatePpd = await SynchronizeApi.updateTableData3(self.SyncData)
                         for (let i = 0; i < updatePpd.data.length; i++) {
+                          console.log(i)
                           if (updatePpd.data[i].id == updatePpd.data[i].newId) {
+                            console.log(560)
                             await SynchronizeApi.updateStatusFlagOnly(tbScreenPpd, updatePpd.data[i].id, updatePpd.data[i].idNum)
                           } else {
+                            console.log(789)
                             await SynchronizeApi.updateIdAndStatusFlag(tbScreenPpd, updatePpd.data[i].id, updatePpd.data[i].newId, updatePpd.data[i].idNum)
+                            console.log(89)
                             await SynchronizeApi.updateSumFieldId(updatePpd.data[i].id, updatePpd.data[i].newId, updatePpd.data[i].idNum, 'ppdId')
+                            console.log(10)
                           }
                         }
+                        console.log(3344)
                       }catch (e) {
                         console.error(e)
                         uni.hideLoading();
@@ -944,7 +896,8 @@ export default {
                         })
                         return
                       }
-                      await this.updateErrorFlag(0, '4')
+                      console.log(556)
+                      await SynchronizeApi.updateErrorFlag(0, '4')
 // 上传汇总表
                       uni.hideLoading();
                       uni.showLoading({
@@ -987,56 +940,8 @@ export default {
                         })
                         return
                       }
-                      await this.updateErrorFlag(0, '5')
-// 上传试剂消耗
-                      uni.hideLoading();
-                      uni.showLoading({
-                        title: '上传试剂消耗中...',
-                        mask: true
-                      });
-                      let consume=await ConsumeRecordApi.selectLocalData()
-                      let str=this.getCurrentDateString()
-                      // 处理数据
-                      for (let i = 0; i < consume.length; i++) {
-                        console.log(i);
-                        consume[i].padId=consume[i].padId??(''+consume[i].id+uni.$person.id+str)
-                        console.log(consume[i]);
-                        if(consume[i].createTime){
-                          consume[i].createTime = new Date(consume[i].createTime).getTime();
-                        }
-                        if(consume[i].updateTime){
-                          consume[i].updateTime = new Date(consume[i].updateTime).getTime();
-                        }
-                      }
-                      // 上传试剂消耗
-                      try{
-                        let consumeResult=await ConsumeRecordApi.upload(consume)
-                        if(!consumeResult || consumeResult.data==null){
-                          throw new Error('上传试剂消耗失败')
-                        }
-                      }catch(e){
-                        console.error(e)
-                        uni.hideLoading()
-                        uni.showToast({
-                          title:'上传失败',
-                          icon: 'error',
-                          duration: 1000
-                        })
-                        return
-                      }
-                      await SynchronizeApi.updateErrorFlag(0, '10')
-                      uni.hideLoading();
-                      uni.showToast({
-                        title: '试剂消耗数据上传成功',
-                        icon: 'none',
-                        duration: 1000
-                      })
+                      await SynchronizeApi.updateErrorFlag(0, '5')
 // 上传ppd组图片
-                      uni.hideLoading();
-                      uni.showLoading({
-                        title: '上传图片中...',
-                        mask: true
-                      });
                       try{
                         await self.SyncData.forEach((item) => {
                           SynchronizeApi.uploadOfflineImageOne(
@@ -1058,14 +963,7 @@ export default {
                         })
                         return
                       }
-
-                      await this.updateErrorFlag(0, '6')
-                      uni.showToast({
-                        title: '上传完成',
-                        mask: true,
-                        icon: 'success',
-                        duration: 1500
-                      });
+                      await SynchronizeApi.updateErrorFlag(0, '6')
                       // 记录本次同步时间(存缓存)
                       let time = self.getCurrentTime()
                       uni.setStorage({

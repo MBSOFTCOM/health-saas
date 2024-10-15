@@ -21,8 +21,25 @@
 						iconColor="#fff"
 						:plain="true"
 						class="custom-sync"
-						text="同步"
-					></up-button>
+						text="同步"/>
+          <up-button
+						@click="uploadSum"
+						style="margin-left: 10px"
+						type="success"
+						icon="download"
+						iconColor="#fff"
+						:plain="true"
+						class="custom-sync"
+						text="上传汇总表"/>
+          <up-button
+						@click="uploadImage"
+						style="margin-left: 10px"
+						type="success"
+						icon="download"
+						iconColor="#fff"
+						:plain="true"
+						class="custom-sync"
+						text="上传图片"/>
 				</view>
 			</view>
       <up-row>
@@ -441,13 +458,6 @@ export default {
         });
         return
       }
-      uni.hideLoading();
-      uni.showToast({
-        title: '上传成功',
-        mask: true,
-        icon: 'success',
-        duration: 1500
-      });
       await SynchronizeApi.updateErrorFlag(0,'9')
     },
 		// 平板到pc
@@ -594,7 +604,7 @@ export default {
                             start = start + onceLength
                             let sumResp = await SynchronizeApi.uploadSumData(updateReq);
                             console.log(updateReq);
-                            for (var i = 0; i < sumResp.length; i++) {
+                            for (let i = 0; i < sumResp.length; i++) {
                               await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp[i].id, sumResp[i].idNum)
                             }
                           }
@@ -625,13 +635,8 @@ export default {
                           return
                         }
                       }
-                      uni.hideLoading();
                       await SynchronizeApi.updateErrorFlag(0, '8')
 
-                      uni.showLoading({
-                        title: '上传图片中...',
-                        mask: true
-                      });
                       // 上传dr/ct组图片
                       try{
                         await  SynchronizeApi.uploadOfflineImage(3)
@@ -645,14 +650,7 @@ export default {
                         })
                         return
                       }
-                      await this.updateErrorFlag(0, '9')
-                      uni.hideLoading();
-                      uni.showToast({
-                        title: '上传成功',
-                        mask: true,
-                        icon: 'success',
-                        duration: 1500
-                      });
+                      await SynchronizeApi.updateErrorFlag(0, '9')
                       // 记录本次同步时间(存缓存)
                       let time = self.getCurrentTime()
                       uni.setStorage({
@@ -700,6 +698,8 @@ export default {
                       item.padId=item.padId??(""+item.id+item.idNum)
                     });
                     // console.log(self.SyncData);
+                    await SynchronizeApi.updateErrorFlag(1, ['7', '8', '9'])
+
 // 上传dr数据
                     try {
                       let res =await SynchronizeApi.updateTableData4(self.SyncData)
@@ -721,10 +721,11 @@ export default {
                       })
                       return
                     }
+                    await SynchronizeApi.updateErrorFlag(0, '7')
 //上传汇总表
                     try {
                       for (let i = 0; i < self.SyncData.length; i++) {
-                        let sumData = SynchronizeApi.getLocalSumData(self.SyncData[i].screenId, self.SyncData[i].screenType, self.SyncData[i].year, self.SyncData[i].personId)
+                        let sumData =await SynchronizeApi.getLocalSumData(self.SyncData[i].screenId, self.SyncData[i].screenType, self.SyncData[i].year, self.SyncData[i].personId,self.SyncData[i].idNum)
                         sumData.forEach(item => {
                           item.padId = item.padId??(""+item.id+item.idNum)
                           if (item.lastCollectTime) {
@@ -745,7 +746,7 @@ export default {
 
                         })
                         let sumResp = SynchronizeApi.uploadSumData(sumData);
-                        if (sumResp.data()) {
+                        if (sumResp.data && sumResp.data.length > 0) {
                           await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumData[0].id, sumData[0].idNum)
                         }
                       }
@@ -759,6 +760,7 @@ export default {
                       })
                       return
                     }
+                    await SynchronizeApi.updateErrorFlag(0, '8')
 //上传图片
                     try {
                       self.SyncData.forEach((item) => {
@@ -782,12 +784,7 @@ export default {
                       })
                       return
                     }
-                    uni.showToast({
-                      title: '上传成功',
-                      mask: true,
-                      icon: 'success',
-                      duration: 1500
-                    });
+                    await SynchronizeApi.updateErrorFlag(0, '9')
                     // 记录本次同步时间(存缓存)
                     let time = self.getCurrentTime()
                     uni.setStorage({

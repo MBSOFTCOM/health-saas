@@ -1139,7 +1139,7 @@ export function getUserInfo(id) {
  * @param {Object} year 年份
  * @param {Object} screenType 筛查类型
  */
-export function uploadOfflineImageOne(type, screenId, personId, screenOrder, year, screenType) {
+export async function uploadOfflineImageOne(type, screenId, personId, screenOrder, year, screenType) {
 	const now = new Date();
 	const currentYear = now.getFullYear();
 
@@ -1163,64 +1163,84 @@ export function uploadOfflineImageOne(type, screenId, personId, screenOrder, yea
 			inType = ' IN (4, 15) '
 			break;
 	}
+	let sql= `SELECT * FROM "tb_screen_images" 
+			WHERE "type" ${inType} and screenId = ${screenId} and personId = ${personId} and screenOrder = ${screenOrder} and year = ${year} and screenType = ${screenType} and statusFlag is not null`
+		let res = await promise(dbName,sql)
+		if (!res || res.length==0) {
+			uni.hideLoading();
+			uni.showToast({
+				title: '暂无需要上传的图片',
+				mask: true,
+				icon: 'none',
+				duration: 1500
+			});
+			return
+		}
+		uni.hideLoading()
+		uni.showLoading({
+			title: '上传图片中...',
+			mask: true
+		});
+		try{
+			for (let i = 0; i < res.length; i++) {
+				if (res[i].path) {
+					let item = res[i];
+					// 单张离线图片上传
+					let uploadResp=await upload({
+						url: '/admin-api/tb/screen-images/updateImage',
+						method: 'PUT',
+						name: 'imageFile',
+						filePath: item.path
+					})
+					if (uploadResp) {
+						let url = uploadResp.data;
 
-	plus.sqlite.selectSql({
-		name: dbName,
-		sql: `SELECT
-				*
-			FROM
-				"tb_screen_images" 
-			WHERE
-				"type" ${inType} and screenId = ${screenId} and personId = ${personId} and screenOrder = ${screenOrder} and year = ${year} and screenType = ${screenType} and statusFlag is not null`,
-		success(res) {
-			if (res) {
-				for (let i = 0; i < res.length; i++) {
-					if (res[i].path) {
-						let item = res[i];
-						// 单张离线图片上传
-						upload({
-							url: '/admin-api/tb/screen-images/updateImage',
-							method: 'PUT',
-							name: 'imageFile',
-							filePath: item.path
-						}).then(async(res) => {
-							if (res) {
-								let url = res.data;
+						let data = {
+							padId: item.padId ?? ("" + item.id + item.idNum),
+							screenId: item.screenId,
+							personId: item.personId,
+							type: item.type,
+							path: item.path,
+							idNum: item.idNum,
+							url: url,
+							screenTime: item.screenTime,
+							screenOrder: item.screenOrder,
+							screenPoint: item.screenPoint,
+							createTime: item.createTime,
+							// 筛查年份、类型
+							year: currentYear,
+							screenType: screenType
+						};
 
-								let data = {
-									screenId: item.screenId,
-									personId: item.personId,
-									type: item.type,
-									path: item.path,
-									idNum: item.idNum,
-									url: url,
-									screenTime: item.screenTime,
-									screenOrder: item.screenOrder,
-									screenPoint: item.screenPoint,
-									createTime: item.createTime,
-									// 筛查年份、类型
-									year: currentYear,
-									screenType: screenType
-								};
-
-								console.log(data);
-								// 创建移动端各组离线图片信息
-								await request({
-									url: '/tb/screen-images/create',
-									'method': 'POST',
-									data: data
-								});
-								await updateFlagTableById(tbScreenImages,item.id,null)
-							}
-						})
+						console.log(data);
+						// 创建移动端各组离线图片信息
+						await request({
+							url: '/tb/screen-images/create',
+							'method': 'POST',
+							data: data
+						});
+						await updateFlagTableById(tbScreenImages,item.id,null)
 					}
 				}
 			}
-		},
-		fail(e) {
-			console.log(e);
+		}catch (e) {
+			uni.hideLoading();
+			uni.showToast({
+				title: '图片上传失败',
+				mask: true,
+				icon: 'error',
+				duration: 1500
+			});
+			throw new Error('图片上传失败')
+			return
 		}
-	});
+		uni.hideLoading();
+		uni.showToast({
+			title: '上传成功',
+			mask: true,
+			icon: 'success',
+			duration: 1500
+		});
 }
 
 
@@ -1255,66 +1275,72 @@ export async function uploadOfflineImage(type) {
 	let sql=`SELECT * FROM "tb_screen_images" WHERE statusFlag is not null and "type" ${inType} `
 	let data=await promise(dbName,sql)
 	console.log(data)
+	uni.hideLoading()
 	uni.showLoading({
 		title: '上传图片中...',
 		mask: true
 	});
-	if (data) {
-		console.log(data.length)
-		if(data.length==0){
-			uni.hideLoading();
-			uni.showToast({
-				title: '暂无需要上传的图片',
-				mask: true,
-				icon: 'none',
-				duration: 1500
-			});
-		}
-		for (let i = 0; i < data.length; i++) {
-			try {
-				if (data[i].path) {
-					let item = data[i];
-					// 单张离线图片上传
-					let uploadResp = await upload({
-						url: '/admin-api/tb/screen-images/updateImage',
-						method: 'PUT',
-						name: 'imageFile',
-						filePath: item.path
-					})
-					if (uploadResp) {
-						let url = uploadResp.data;
-						let data = {
-							padId: "" + item.id + item.idNum,
-							screenId: item.screenId,
-							personId: item.personId,
-							type: item.type,
-							idNum: item.idNum,
-							path: item.path,
-							url: url,
-							screenTime: item.screenTime,
-							screenOrder: item.screenOrder,
-							screenPoint: item.screenPoint,
-							createTime: item.createTime,
-							// 筛查年份、类型
-							year: currentYear,
-							screenType: item.screenType
-						};
-						// 创建移动端各组离线图片信息
-						await request({
-							url: '/tb/screen-images/create',
-							'method': 'POST',
-							data: data
-						});
-						await updateFlagTableById(tbScreenImages, item.id, null)
-					}
+	console.log(data.length)
+	if (!data || data.length==0) {
+		uni.hideLoading();
+		uni.showToast({
+			title: '暂无需要上传的图片',
+			mask: true,
+			icon: 'none',
+			duration: 1500
+		});
+		return
+	}
+	for (let i = 0; i < data.length; i++) {
+		try {
+			if (data[i].path) {
+				let item = data[i];
+				// 单张离线图片上传
+				let uploadResp = await upload({
+					url: '/admin-api/tb/screen-images/updateImage',
+					method: 'PUT',
+					name: 'imageFile',
+					filePath: item.path
+				})
+				if (uploadResp) {
+					let url = uploadResp.data;
+					let data = {
+						padId: item.padId ?? ("" + item.id + item.idNum),
+						screenId: item.screenId,
+						personId: item.personId,
+						type: item.type,
+						idNum: item.idNum,
+						path: item.path,
+						url: url,
+						screenTime: item.screenTime,
+						screenOrder: item.screenOrder,
+						screenPoint: item.screenPoint,
+						createTime: item.createTime,
+						// 筛查年份、类型
+						year: currentYear,
+						screenType: item.screenType
+					};
+					// 创建移动端各组离线图片信息
+					await request({
+						url: '/tb/screen-images/create',
+						'method': 'POST',
+						data: data
+					});
+					await updateFlagTableById(tbScreenImages, item.id, null)
 				}
-			}catch (e) {
-				throw new Error('图片上传失败')
-				return
 			}
+		}catch (e) {
+			throw new Error('图片上传失败')
+			return
 		}
-}
-
+	}
+	uni.hideLoading();
+	uni.showToast({
+		title: '上传成功',
+		mask: true,
+		icon: 'success',
+		duration: 1500
+	});
 }
 /**
  * 上传图片

@@ -589,13 +589,6 @@ export default {
 				});
         return
 			}
-			uni.hideLoading();
-			uni.showToast({
-			  title: '上传成功',
-			  mask: true,
-			  icon: 'success',
-			  duration: 1500
-			});
      await this.updateErrorFlag(0,'3')
 		},
 		// 平板到pc
@@ -779,12 +772,6 @@ export default {
                         return
                       }
                       await this.updateErrorFlag(0, '3')
-												uni.showToast({
-												  title: '上传成功',
-												  mask: true,
-												  icon: 'success',
-												  duration: 1500
-												});
 												// 记录本次同步时间(存缓存)
 												let time = self.getCurrentTime()
 												uni.setStorage({

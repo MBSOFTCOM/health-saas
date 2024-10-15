@@ -588,7 +588,7 @@ export default {
 											return;
 										}
 									}
-									// console.log(self.SyncData);
+									console.log(self.SyncData);
 
 									let i = 0;
 									self.SyncData.forEach((item) => {
