@@ -52,6 +52,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
@@ -392,6 +393,12 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
                     errorMsg.append("该人员户籍省市县乡不匹配;");
                 }
             }
+            if (obj.getFirstType()==null){
+                errorMsg.append("第一人群分类未填;");
+            }
+            if (StringUtils.isEmpty(obj.getMoreTypeStr()) || StringUtils.isBlank(obj.getMoreTypeStr())){
+                errorMsg.append("多人群分类未填;");
+            }
 
             if (code != null && countyCode != null && cityCode != null && provinceCode != null){
                 if (code.substring(0, 6).equals(countyCode.substring(0, 6)) && code.substring(0, 4).equals(cityCode.substring(0, 4)) && code.substring(0,2).equals(provinceCode.substring(0, 2))){
@@ -454,7 +461,9 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             obj.setScreenStartTime(screenStartTime);
             obj.setScreenEndTime(screenEndTime);
             obj.setDeptId(deptId);
-            processScreenPerson(screenType, year, obj, batchInsert, batchUpdate, createSpecification, failureSpecification);
+            if (obj.getFirstType()!=null && !StringUtils.isEmpty(obj.getMoreTypeStr()) && !StringUtils.isBlank(obj.getMoreTypeStr())) {
+                processScreenPerson(screenType, year, obj, batchInsert, batchUpdate, createSpecification, failureSpecification);
+            }
         }
 
 
@@ -525,6 +534,12 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
                     errorMsg.append(TEL_MATCH_ERROR);
                 }
             }
+            if (obj.getFirstType()==null){
+                errorMsg.append("第一人群分类未填;");
+            }
+            if (StringUtils.isEmpty(obj.getMoreTypeStr()) || StringUtils.isBlank(obj.getMoreTypeStr())){
+                errorMsg.append("多人群分类未填;");
+            }
             if (obj.getGuardianTel()!=null && !obj.getGuardianTel().matches(TEL)){
                 errorMsg.append("监护人手机号格式错误;");
             }
@@ -561,7 +576,9 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             obj.setScreenStartTime(screenStartTime);
             obj.setScreenEndTime(screenEndTime);
             obj.setDeptId(deptId);
-            processScreenPerson2(screenType, year, obj, batchInsert2, batchUpdate2, createRepeatSpecification, failureSpecification);
+            if (obj.getFirstType()!=null && !StringUtils.isEmpty(obj.getMoreTypeStr()) && !StringUtils.isBlank(obj.getMoreTypeStr())) {
+                processScreenPerson2(screenType, year, obj, batchInsert2, batchUpdate2, createRepeatSpecification, failureSpecification);
+            }
         }
 
         // 批量插入和更新
@@ -705,9 +722,6 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
             }
             obj.setMoreType(moreType);
         }
-    } else {
-        failureSpecification.put(failureSpecification.size(), "未选择第一人群分类！");
-        return;
     }
     // 筛查类型
     obj.setScreenType(screenType);

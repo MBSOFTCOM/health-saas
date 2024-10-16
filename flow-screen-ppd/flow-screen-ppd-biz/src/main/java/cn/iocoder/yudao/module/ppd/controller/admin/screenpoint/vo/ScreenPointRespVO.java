@@ -1,5 +1,6 @@
 package cn.iocoder.yudao.module.ppd.controller.admin.screenpoint.vo;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,6 +15,7 @@ public class ScreenPointRespVO {
 
     @Schema(description = "主键", requiredMode = Schema.RequiredMode.REQUIRED)
     @ExcelProperty("编号")
+    @ExcelIgnore
     private Long id;
 
     @Schema(description = "筛查点名称")
@@ -46,18 +48,22 @@ public class ScreenPointRespVO {
 
     @Schema(description = "痰检组工作人员")
     @ExcelProperty("痰检组工作人员")
+    @ExcelIgnore
     private String sputumWorker;
 
     @Schema(description = "实验组工作人员")
     @ExcelProperty("实验组工作人员")
+    @ExcelIgnore
     private String experimentWorker;
 
     @Schema(description = "心电图组工作人员")
     @ExcelProperty("心电图组工作人员")
+    @ExcelIgnore
     private String electrocardiogramWorker;
 
     @Schema(description = "诊断组工作人员")
     @ExcelProperty("诊断组工作人员")
+    @ExcelIgnore
     private String diagnosisWorker;
 
     @Schema(description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
