@@ -83,7 +83,7 @@
 
 
     <select id="getCollectList" resultType="cn.iocoder.yudao.module.system.controller.admin.user.vo.user.UserRespVO">
-        SELECT su.id, su.username, su.nickname, sd.name as deptName
+        SELECT su.id, su.username, su.nickname, sd.name as deptName,su.mobile
         FROM system_users as su
         LEFT JOIN system_dept as sd ON sd.id = su.dept_id
         WHERE
