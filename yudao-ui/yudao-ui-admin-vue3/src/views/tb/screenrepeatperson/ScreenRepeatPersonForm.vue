@@ -774,6 +774,14 @@ defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+/**
+ * 校验身份证是否合法
+ * @param idNum
+ */
+const checkIdNum = (idNum) => {
+  let rule = new RegExp("^([1-9]\\d{5})((19|20)\\d{2})(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])\\d{3}(\\d|X|x)$");
+  return rule.test(idNum)
+}
 const autoCalculate = (idNum:string) => {
   const birthYear = parseInt(idNum.substr(6, 4))
   const currentYear = new Date().getFullYear()
@@ -804,7 +812,10 @@ const submitForm = async () => {
       message.error('请选择多人群分类！')
       return
     }
-
+    if(!checkIdNum(data.idNum)){
+      message.error('请输入正确的身份证！')
+      return
+    }
     if (formType.value === 'create') {
       await ScreenRepeatPersonApi.createScreenRepeatPerson(data)
       message.success(t('common.createSuccess'))

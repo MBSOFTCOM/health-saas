@@ -787,10 +787,21 @@ const open = async (type: string, id?: number) => {
   }
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
-
+/**
+ * 校验身份证是否合法
+ * @param idNum
+ */
+const checkIdNum = (idNum:string) => {
+  let rule = new RegExp("^([1-9]\\d{5})((19|20)\\d{2})(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])\\d{3}(\\d|X|x)$");
+  return rule.test(idNum)
+}
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 const autoCalculate = (idNum:string) => {
+  if(!checkIdNum(idNum)){
+    message.error('请输入正确的身份证')
+    return
+  }
   const birthYear = parseInt(idNum.substr(6, 4))
   const currentYear = new Date().getFullYear()
   formData.value.age = currentYear - birthYear
@@ -804,13 +815,16 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as ScreenPersonVO
-
     data.moreType =
       formData.value.moreTempType.reduce((acc, curr) => acc + curr, 0) !== 0
         ? formData.value.moreTempType.reduce((acc, curr) => acc + curr, 0)
         : 0
     if (data.firstType == 1 && (data.moreType == 0 || formData.value.moreTempType.length == 0)) {
       message.error('请选择多人群分类！')
+      return
+    }
+    if(!checkIdNum(data.idNum)){
+      message.error('请输入正确的身份证！')
       return
     }
 
