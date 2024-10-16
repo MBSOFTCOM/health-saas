@@ -90,7 +90,7 @@
             effect="dark"
             :content="formData.permanentAddress"
             placement="top"
-            :disabled="formType == 'create' ? true : false"
+            :disabled=" !formData.permanentAddress "
           >
             <el-form-item label="户籍地址" prop="permanentAddress">
               <el-input v-model="formData.permanentAddress" placeholder="请输入户籍地址" />
@@ -102,7 +102,7 @@
             effect="dark"
             :content="formData.address"
             placement="top"
-            :disabled="formType == 'create' ? true : false"
+            :disabled=" !formData.address "
           >
             <el-form-item label="现住址" prop="address">
               <el-input v-model="formData.address" placeholder="请输入现住址" />
@@ -727,7 +727,7 @@ const formRules = reactive({
   isScreened: [{ required: true, message: '请选择是否已筛查', trigger: 'change' }],
   // isNewStudent: [{ required: true, message: '请选择是否为新生', trigger: 'change' }],
   year: [{validator: checkYear, trigger: 'blur'},{required: true, message: '请输入年度', trigger: 'blur'}],
-  screenPoint:[{required: true, message: '请选择筛查点', trigger: 'blur'}],
+  // screenPoint:[{required: true, message: '请选择筛查点', trigger: 'blur'}],
   screenType: [{required: true, message: '请选择筛查类型', trigger: 'blur'}],
   timeRange: [{ required: true, message: '请选择筛查时间', trigger: 'blur' }],
   deptId: [

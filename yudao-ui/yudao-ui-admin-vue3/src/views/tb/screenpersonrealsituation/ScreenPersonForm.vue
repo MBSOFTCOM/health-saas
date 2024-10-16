@@ -90,7 +90,7 @@
             effect="dark"
             :content="formData.permanentAddress"
             placement="top"
-            :disabled="formType == 'create' ? true : false"
+            :disabled="!formData.permanentAddress"
           >
             <el-form-item label="户籍地址" prop="permanentAddress">
               <el-input v-model="formData.permanentAddress" placeholder="请输入户籍地址"/>
@@ -102,7 +102,7 @@
             effect="dark"
             :content="formData.address"
             placement="top"
-            :disabled="formType == 'create' ? true : false"
+            :disabled="!formData.address"
           >
             <el-form-item label="现住址" prop="address">
               <el-input v-model="formData.address" placeholder="请输入现住址"/>
