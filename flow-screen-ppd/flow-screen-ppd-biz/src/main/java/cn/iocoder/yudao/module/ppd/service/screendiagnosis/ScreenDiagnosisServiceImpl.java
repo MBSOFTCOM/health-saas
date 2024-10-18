@@ -74,7 +74,7 @@ public class ScreenDiagnosisServiceImpl implements ScreenDiagnosisService {
                 tbHealthScreening.setExaminationDate(DateTimeFormatter.ofPattern("yyyy年MM月dd日")
                         .format(screenCollectDO.getScreenTime()));
             }
-            if (screenCollectDO.getOutcome()!=null && screenCollectDO.getOutcome().isEmpty()) {
+            if (screenCollectDO.getOutcome()!=null && !screenCollectDO.getOutcome().isEmpty()) {
                 // 症状结果
                 String outcome = screenCollectDO.getOutcome();
                 // 症状部分内容
@@ -82,24 +82,16 @@ public class ScreenDiagnosisServiceImpl implements ScreenDiagnosisService {
                 tbHealthScreening.setCoughOrSputumForMoreThanOneWeek(outcome.contains("1"));
                 // 咯血或血痰
                 tbHealthScreening.setHemoptysisOrBloodSputum(outcome.contains("2"));
-                // 发热
-                tbHealthScreening.setFever(outcome.contains("5"));
-                // 反复发烧2周以上
-//            tbHealthScreening.setPersistentFever(outcome.contains("3") && isNewStud);
-                // 淋巴结肿大
-//            tbHealthScreening.setLymphoidEnlargement(outcome.contains("4") && isNewStud);
-                // 胸痛
-                tbHealthScreening.setChestPain(outcome.contains("7"));
                 // 乏力、盗汗
                 tbHealthScreening.setNightSweats(outcome.contains("3"));
-                // 食欲不振
-                tbHealthScreening.setLossOfAppetite(outcome.contains("6"));
-                // 乏力
-//            tbHealthScreening.setFatigue(outcome.contains("7") && !isNewStud);
                 // 体重减轻（超过 6 斤）
                 tbHealthScreening.setWeightLossOverSixPounds(outcome.contains("4"));
-                // 有无卡痕
-//            tbHealthScreening.setCheckMark(outcome.contains("9") && !isNewStud);
+                // 发热
+                tbHealthScreening.setFever(outcome.contains("5"));
+                // 食欲不振
+                tbHealthScreening.setLossOfAppetite(outcome.contains("6"));
+                // 胸痛
+                tbHealthScreening.setChestPain(outcome.contains("7"));
             }
             // 采集组医生签名
             String url = screenImagesMapper.selectLastTimeUrl(personId, 8, year, screenType);
