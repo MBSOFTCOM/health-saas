@@ -2,6 +2,10 @@ server:
   port: 48080
 
 --- #################### 数据库相关配置 ####################
+ip:
+  base-url: 172.16.1.139
+  minio:
+    port: 9000
 
 spring:
   # 数据源配置项
@@ -53,8 +57,9 @@ spring:
   data:
     redis:
       host: redis-tbStudentScreen # 地址
-      port: 6339 # 端口
-      database: 1 # 数据库索引
+      port: 6379 # 端口
+      #port: 6679
+      database: 11 # 数据库索引
       password: 1234564fsasdf^$@)341234asfsadfasd54(^%%) # 密码，建议生产环境开启
 
 --- #################### 定时任务相关配置 ####################

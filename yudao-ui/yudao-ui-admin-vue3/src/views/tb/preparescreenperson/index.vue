@@ -258,46 +258,54 @@
           重置
         </el-button>
       </el-form-item>
-      <br/>
-      <el-form-item style="float: right">
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['tb:screen-person:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px"/>
-          新增
-        </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleExportTemplate"
-          :loading="importTemplateLoading"
-        >
-          <Icon icon="ep:link" class="mr-5px"/>
-          下载导入模板
-        </el-button>
-        <el-button
-          type="info"
-          plain
-          @click="handleImport"
-          :loading="importLoading"
-          v-hasPermi="['tb:screen-person:create']"
-        >
-          <Icon icon="ep:finished" class="mr-5px" /> 导入
-        </el-button>
-        <el-button
-          type="warning"
-          plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['tb:screen-person:export']"
-        >
-          <Icon icon="ep:download" class="mr-5px"/>
-          导出
-        </el-button>
-      </el-form-item>
+      <el-row>
+        <el-col :span="12" :offset="12">
+          <el-form-item style="float: right">
+            <el-button
+              type="primary"
+              plain
+              @click="openForm('create')"
+              v-hasPermi="['tb:screen-person:create']"
+            >
+              <Icon icon="ep:plus" class="mr-5px"/>
+              新增
+            </el-button>
+            <el-button
+              type="success"
+              plain
+              @click="handleExportTemplate"
+              :loading="importTemplateLoading"
+            >
+              <Icon icon="ep:link" class="mr-5px"/>
+              下载导入模板
+            </el-button>
+            <el-button
+              type="info"
+              plain
+              @click="handleImport"
+              :loading="importLoading"
+              v-hasPermi="['tb:screen-person:create']"
+            >
+              <Icon icon="ep:finished" class="mr-5px" /> 导入
+            </el-button>
+            <el-button
+              type="warning"
+              plain
+              @click="handleExport"
+              :loading="exportLoading"
+              v-hasPermi="['tb:screen-person:export']"
+            >
+              <Icon icon="ep:download" class="mr-5px"/>
+              导出
+            </el-button>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="7" :offset="17">
+          <a :href="MinioApi.wpsVba">下载wps插件实现excel中下拉框多选</a>
+        </el-col>
+      </el-row>
     </el-form>
   </ContentWrap>
 
@@ -413,6 +421,7 @@ import ScreenPersonForm from './ScreenPersonForm.vue'
 import ScreenPersonDetail from './ScreenPersonDetail.vue'
 import {onMounted, ref, reactive, nextTick} from 'vue'
 import ScreenPersonImportForm from './ScreenPersonImportForm.vue'
+import {MinioApi} from "@/api/tb/minio";
 
 /** 摸底 列表 */
 defineOptions({name: 'PrepareScreenPerson'})
