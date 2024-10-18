@@ -63,6 +63,7 @@
 					<up-radio-group
 						v-model="contacted"
 						placement="row"
+            disabled
 						>
 						<up-radio
 							:customStyle="{marginRight: '12px'}"

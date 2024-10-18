@@ -44,7 +44,7 @@
 				<view class="main-text" style="margin-left: 315px; margin-top: -5px">
 					<view class="text-top">采集时间</view>
 					<view class="text-bom">
-						{{ formatDate(patient.screenTime) }}
+						{{ formatDate(formData.screenTime) }}
 					</view>
 				</view>
 			</view>
