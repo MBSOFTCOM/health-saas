@@ -251,22 +251,30 @@
             <el-table-column label="红晕纵径(mm)" align="center" prop="blushLongitudinalDiameter"  width="100"/>
             <el-table-column label="水泡" align="center" >
               <template #default="scope">
+                <div v-if="scope.row.bleb">
                 {{ scope.row.bleb.toString().includes('1') ? '是' : '否' }}
+                </div>
               </template>
             </el-table-column>
             <el-table-column label="双圈" align="center">
               <template #default="scope">
+                <div v-if="scope.row.bleb">
                 {{ scope.row.bleb.toString().includes('2') ? '是' : '否' }}
+                </div>
               </template>
             </el-table-column>
             <el-table-column label="坏死" align="center">
               <template #default="scope">
+                <div v-if="scope.row.bleb">
                 {{ scope.row.bleb.toString().includes('3') ? '是' : '否' }}
+                </div>
               </template>
             </el-table-column>
             <el-table-column label="淋巴管炎" align="center" width="90">
               <template #default="scope">
+                <div v-if="scope.row.bleb">
                 {{ scope.row.bleb.toString().includes('4') ? '是' : '否' }}
+                </div>
               </template>
             </el-table-column>
             <el-table-column label="注射" align="center" prop="injection">

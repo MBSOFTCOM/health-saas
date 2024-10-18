@@ -251,23 +251,31 @@
             <el-table-column label="红晕横径(mm)" align="center" prop="blushTransverseDiameter"  width="100"/>
             <el-table-column label="红晕纵径(mm)" align="center" prop="blushLongitudinalDiameter"  width="100"/>
             <el-table-column label="水泡" align="center" >
-              <template #default="scope">
-                {{ scope.row.bleb.toString().includes('1') ? '是' : '否' }}
+              <template #default="scope" >
+                <div v-if="scope.row.bleb">
+                  {{ scope.row.bleb.toString().includes('1') ? '是' : '否' }}
+                </div>
               </template>
             </el-table-column>
             <el-table-column label="双圈" align="center">
               <template #default="scope">
+                <div v-if="scope.row.bleb">
                 {{ scope.row.bleb.toString().includes('2') ? '是' : '否' }}
+                </div>
               </template>
             </el-table-column>
             <el-table-column label="坏死" align="center">
               <template #default="scope">
+                <div v-if="scope.row.bleb">
                 {{ scope.row.bleb.toString().includes('3') ? '是' : '否' }}
+                </div>
               </template>
             </el-table-column>
             <el-table-column label="淋巴管炎" align="center" width="90">
               <template #default="scope">
+                <div v-if="scope.row.bleb">
                 {{ scope.row.bleb.toString().includes('4') ? '是' : '否' }}
+                </div>
               </template>
             </el-table-column>
             <el-table-column label="注射" align="center" prop="injection">
@@ -289,7 +297,7 @@
             <el-table-column label="注射单位" align="center" prop="injectionAgency" width="180"/>
             <el-table-column
               label="筛查时间" align="center" prop="screenTime"
-              :formatter="dateFormatter2" width="110"/>
+              :formatter="dateFormatter2" width="150"/>
             <el-table-column label="操作" align="center" fixed="right" width="120">
               <template #default="scope">
                 <el-dropdown
