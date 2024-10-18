@@ -404,12 +404,14 @@
         <u-popup :show="show" mode="center">
           <view class="injection">
             <view class="injection-tle">注射试剂</view>
+            <up-form-item label="选择试剂" labelWidth="200rpx" style="padding-left: 45rpx;">
             <uni-data-select
-              style="width: 100%;"
+              style="margin-top: 15rpx;margin-right: 25rpx;"
                 v-model="regentId"
                 :localdata="regentList"
               :clear="false"
                 @change="selectRegentList"/>
+            </up-form-item>
               <up-row>
                 <up-col span="7">
                   <u-radio-group style="margin-left: 20rpx;" v-model="injectionReagent.reagentType" placement="column" disabled>

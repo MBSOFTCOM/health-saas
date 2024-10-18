@@ -86,7 +86,7 @@
 					<uni-th width="10%" align="center">年龄</uni-th>
 					<uni-th width="10%" align="center">联系电话</uni-th>
 					<uni-th width="10%" align="center">民族</uni-th>
-					<uni-th width="10%" align="center">学校或寺庙</uni-th>
+					<uni-th width="10%" align="center">单位(学校)</uni-th>
 					<uni-th width="10%" align="center">班级</uni-th>
 					<uni-th width="10%" align="center">身高</uni-th>
 					<uni-th width="10%" align="center">体重</uni-th>

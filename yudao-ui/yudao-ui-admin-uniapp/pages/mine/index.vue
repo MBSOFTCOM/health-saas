@@ -92,7 +92,7 @@ export default {
 		},
 		handleLogout() {
 			if(uni.$loginStatus){
-				this.$modal.confirm('确定注销并退出系统吗？').then(() => {
+				this.$modal.confirm('确定退出系统吗？').then(() => {
 					uni.$person = {}
 					this.$store.dispatch('LogOut').then((res) => {
 						this.$tab.reLaunch('/pages/login');
