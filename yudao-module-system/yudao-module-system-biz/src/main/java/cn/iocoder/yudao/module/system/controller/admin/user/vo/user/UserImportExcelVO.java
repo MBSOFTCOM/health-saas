@@ -3,6 +3,7 @@ package cn.iocoder.yudao.module.system.controller.admin.user.vo.user;
 import cn.iocoder.yudao.framework.excel.core.annotations.DictFormat;
 import cn.iocoder.yudao.framework.excel.core.convert.DictConvert;
 import cn.iocoder.yudao.module.system.enums.DictTypeConstants;
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,7 @@ public class UserImportExcelVO {
     private String nickname;
 
     @ExcelProperty("单位编号")
+    @ExcelIgnore
     private Long deptId;
 
     @ExcelProperty("单位名称")

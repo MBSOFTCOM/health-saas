@@ -93,7 +93,7 @@
 <!--              <el-table-column label="用户名称" align="center" prop="username"/>-->
               <el-table-column label="姓名" align="center" prop="nickname"/>
               <el-table-column label="单位" align="center" key="deptName" prop="deptName"/>
-              <el-table-column label="手机号码" align="center" prop="mobile" width="120"/>
+              <el-table-column label="手机号码" align="center" prop="mobile" width="130"/>
               <el-table-column label="操作" align="center">
                 <template #default="scope">
                   <el-button
@@ -122,7 +122,7 @@
 <!--              <el-table-column label="用户名称" align="center" prop="username"/>-->
               <el-table-column label="姓名" align="center" prop="nickname"/>
               <el-table-column label="单位" align="center" key="deptName" prop="deptName"/>
-              <el-table-column label="手机号码" align="center" prop="mobile" width="120"/>
+              <el-table-column label="手机号码" align="center" prop="mobile" width="130"/>
               <el-table-column label="操作" align="center">
                 <template #default="scope">
                   <el-button
@@ -152,7 +152,7 @@
 <!--              <el-table-column label="用户名称" align="center" prop="username"/>-->
               <el-table-column label="姓名" align="center" prop="nickname"/>
               <el-table-column label="单位" align="center" key="deptName" prop="deptName"/>
-              <el-table-column label="手机号码" align="center" prop="mobile" width="120"/>
+              <el-table-column label="手机号码" align="center" prop="mobile" width="130"/>
               <el-table-column label="操作" align="center">
                 <template #default="scope">
                   <el-button

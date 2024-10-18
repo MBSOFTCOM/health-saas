@@ -168,7 +168,7 @@ public class UserController {
         // 存放下拉选列表数据
         Map<Integer,List<String>> selectedData=new HashMap<>();
         // 部门名称
-        selectedData.put(3, deptNameList);
+        selectedData.put(2, deptNameList);
 
         // 输出
         ExcelUtils.write(response, "用户导入模板.xls", "用户列表", UserImportExcelVO.class, list, new CustomSheetWriteHandler().setMap(selectedData));

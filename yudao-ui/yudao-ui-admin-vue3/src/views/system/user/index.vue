@@ -116,7 +116,7 @@
             prop="deptName"
             :show-overflow-tooltip="true"
           />
-          <el-table-column label="手机号码" align="center" prop="mobile" width="120" />
+          <el-table-column label="手机号码" align="center" prop="mobile" width="130" />
           <el-table-column label="状态" key="status">
             <template #default="scope">
               <el-switch
