@@ -272,15 +272,13 @@
                 <Icon icon="ep:plus" class="mr-5px"/>
                 新增
               </el-button>
-              <el-button
-                type="success"
-                plain
-                @click="handleExportTemplate"
-                :loading="importTemplateLoading"
-              >
-                <Icon icon="ep:link" class="mr-5px"/>
-                下载导入模板
-              </el-button>
+            <el-button
+              type="success"
+              plain
+            >
+              <Icon icon="ep:link" class="mr-5px"/>
+              <el-link :href="MinioApi.importRealTemplate" :underline="false">下载导入模板</el-link>
+            </el-button>
               <el-button
                 type="info"
                 plain
