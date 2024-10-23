@@ -45,8 +45,8 @@ export default {
 			globalConfig: this.$config,
 			loginForm: {
 				// username: 'wanzhouqu0001',
-				username: 'zengjw',
-				password: '123456',
+				username: '',
+				password: '',
 				captchaVerification: ''
 			}
 		};
@@ -79,6 +79,12 @@ export default {
 			}
 			const password = CryptoJS.MD5(this.loginForm.password).toString() + 'pingban';
 			const user = await getUser(this.loginForm.username);
+			const userList = await getUserList();
+      console.log(userList)
+      if (userList.length==0){
+        uni.$u.toast('首次登录请选择在线登录');
+        return;
+      }
 			// console.log(user);
 			if (user.length == 0) {
 				uni.$u.toast('登录用户不存在！');
