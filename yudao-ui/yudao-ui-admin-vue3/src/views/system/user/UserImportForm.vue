@@ -110,7 +110,7 @@ const submitFormSuccess = (response: any) => {
       callback: (action: Action) => {
         ElMessage({
           type: 'info',
-          message: `action: ${action}`,
+          message: `关闭`,
         });
       },
     });
