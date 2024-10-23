@@ -44,7 +44,8 @@
 import * as UserApi from '@/api/system/user'
 import { getAccessToken, getTenantId } from '@/utils/auth'
 import download from '@/utils/download'
-
+import { ElMessage, ElMessageBox } from 'element-plus'
+import type { Action } from 'element-plus'
 defineOptions({ name: 'SystemUserImportForm' })
 
 const message = useMessage() // 消息弹窗
@@ -90,21 +91,31 @@ const submitFormSuccess = (response: any) => {
     formLoading.value = false
     return
   }
-  // 拼接提示语
-  const data = response.data
-  let text = '上传成功数量：' + data.createUsernames.length + ';'
-  for (let username of data.createUsernames) {
-    text += '< ' + username + ' >'
-  }
-  text += '更新成功数量：' + data.updateUsernames.length + ';'
-  for (const username of data.updateUsernames) {
-    text += '< ' + username + ' >'
-  }
-  text += '更新失败数量：' + Object.keys(data.failureUsernames).length + ';'
-  for (const username in data.failureUsernames) {
-    text += '< ' + username + ': ' + data.failureUsernames[username] + ' >'
-  }
-  message.alert(text)
+// 拼接提示语
+    // 拼接提示语
+    const data = response.data;
+    let text = `
+    上传成功数量：${data.createUsernames.length};<br>
+    更新成功数量：${data.updateUsernames.length};<br>
+    更新失败数量：${Object.keys(data.failureUsernames).length};<br>
+  `;
+
+    for (const username in data.failureUsernames) {
+      text += `&lt; ${username}: ${data.failureUsernames[username]} &gt;<br>`;
+    }
+
+    ElMessageBox.alert(text, '操作结果', {
+      dangerouslyUseHTMLString: true,
+      confirmButtonText: '确定',
+      callback: (action: Action) => {
+        ElMessage({
+          type: 'info',
+          message: `action: ${action}`,
+        });
+      },
+    });
+
+
   formLoading.value = false
   dialogVisible.value = false
   // 发送操作成功的事件
