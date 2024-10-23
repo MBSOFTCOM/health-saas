@@ -58,7 +58,7 @@ export default {
 				// console.log(res);
 				if(res[0].num<=0){
 					uni.showToast({
-						title: '请先同步工作队伍' ,
+						title: '请先到数据同步中同步工作队伍 ！' ,
 						mask: true,
 						icon: 'none',
 						duration: 1500
