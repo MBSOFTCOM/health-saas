@@ -64,7 +64,7 @@
                 <div>筛查编号：{{ tbHealthScreening.screeningNumber }}</div>
                 <div>身份证号：{{ tbHealthScreening.idNumber }}</div>
                 <div>姓名：{{ tbHealthScreening.name }}</div>
-                <div>年龄:：{{ tbHealthScreening.age }} 岁</div>
+                <div>年龄：{{ tbHealthScreening.age }} 岁</div>
                 <div>体检日期：{{ tbHealthScreening.examinationDate }}</div>
               </div>
               <table>
@@ -159,14 +159,13 @@
                   <td><b>ppd</b></td>
                   <td class="text-left" colspan="2">
                     注射时间：{{ tbHealthScreening.ppdInjectionTimeStr }} <br/>
-                    结果：<div v-if="tbHealthScreening.ppdOutcome ==0 || tbHealthScreening.ppdOutcome ==1">{{tbHealthScreening.ppdOutcome == 1 ? "阳性":"阴性"}}</div>
+                    结果：<span v-if="tbHealthScreening.ppdOutcome ==0 || tbHealthScreening.ppdOutcome ==1">{{tbHealthScreening.ppdOutcome == 1 ? "阳性":"阴性"}}</span>
                   </td>
                   <td class="text-left">
                     医生签名:
                     <el-image
-                      style="width: 50px; height: 50px"
+                      style="width: 50px; height: 100px;transform: rotate(90deg);"
                       :src="tbHealthScreening.ppdDoctorSignature"
-                      :preview-src-list="[tbHealthScreening.ppdDoctorSignature]"
                     />
                   </td>
                 </tr>
@@ -186,9 +185,8 @@
                   <td class="text-left">
                     医生签名:
                     <el-image
-                      style="width: 50px; height: 50px;"
+                      style="width: 50px; height: 100px;transform: rotate(90deg);"
                       :src="tbHealthScreening.chestXRayDoctorSignature"
-                      :preview-src-list="[tbHealthScreening.chestXRayDoctorSignature]"
                     />
                   </td>
                 </tr>
