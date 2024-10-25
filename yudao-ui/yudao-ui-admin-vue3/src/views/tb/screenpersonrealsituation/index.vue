@@ -394,12 +394,14 @@
       <el-table-column label="备注" align="center" prop="remark" width="200"/>
     </el-table>
     <!-- 分页 -->
-    <Pagination
-      :total="total"
-      v-model:page="queryParams.pageNo"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList"
-    />
+    <div style="margin-right: 5%;">
+      <Pagination
+        :total="total"
+        v-model:page="queryParams.pageNo"
+        v-model:limit="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </div>
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->

@@ -314,11 +314,12 @@
                        :show-overflow-tooltip="false" fixed="left"/>
       <el-table-column label="操作" align="center" fixed="right" width="160">
         <template #default="scope">
-          <el-button link type="primary" @click="openForm('update', scope.row.id)"
+          <el-button link class="custom-button"
+                     type="primary" @click="openForm('update', scope.row.id)"
                      v-hasPermi="['tb:screen-person:update']">
             修改
           </el-button>
-          <el-button link type="primary"
+          <el-button link type="primary" class="custom-button"
                      @click="openNewForm( scope.row.id, scope.row.year, scope.row.screenType)"
                      v-hasPermi="['tb:screen-person:update']">
             查看
@@ -391,12 +392,14 @@
       <el-table-column label="备注" align="center" prop="remark" width="200"/>
     </el-table>
     <!-- 分页 -->
-    <Pagination
-      :total="total"
-      v-model:page="queryParams.pageNo"
-      v-model:limit="queryParams.pageSize"
-      @pagination="getList"
-    />
+    <div style="margin-right: 5%;">
+      <Pagination
+        :total="total"
+        v-model:page="queryParams.pageNo"
+        v-model:limit="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </div>
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
@@ -626,3 +629,8 @@ onMounted(() => {
   getEthnicList()
 })
 </script>
+<style>
+.custom-button:hover {
+  color: #c3f3c3; /* 设置文字悬停颜色为淡绿色 */
+}
+</style>
