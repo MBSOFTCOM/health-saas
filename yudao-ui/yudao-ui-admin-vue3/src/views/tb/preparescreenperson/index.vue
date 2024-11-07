@@ -299,11 +299,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="7" :offset="17">
-          <a :href="MinioApi.wpsVba">下载wps插件实现excel中下拉框多选</a>
-        </el-col>
-      </el-row>
+
     </el-form>
   </ContentWrap>
 
