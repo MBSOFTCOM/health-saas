@@ -159,7 +159,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="4">
-          <el-form-item label="学生类别" prop="studentType">
+          <el-form-item label="学生类型" prop="studentType">
             <el-select
               v-model="queryParams.studentType"
               placeholder="请选择"
@@ -273,9 +273,10 @@
             <el-button
               type="success"
               plain
+              @click="handleExportTemplate"
             >
               <Icon icon="ep:link" class="mr-5px"/>
-              <el-link :href="MinioApi.importPrepareTemplate" :underline="false">下载导入模板</el-link>
+              下载导入模板
             </el-button>
             <el-button
               type="info"
@@ -299,7 +300,6 @@
           </el-form-item>
         </el-col>
       </el-row>
-
     </el-form>
   </ContentWrap>
 
@@ -354,7 +354,7 @@
           </template>
         </template>
       </el-table-column>
-      <el-table-column label="学生类别" align="center" prop="studentType" width="130">
+      <el-table-column label="学生类型" align="center" prop="studentType" width="130">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.STUDENT_TYPE" :value="scope.row.studentType"/>
         </template>
