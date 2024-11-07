@@ -135,12 +135,12 @@ public class ScreenPersonController {
         List<ScreenPersonImportVO> list = screenPersonService.createSampleData();
         // 存放下拉选列表数据
         Map<Integer, List<String>> selectedData = new HashMap<>();
-        screenPersonService.addSelectedData("is_new", 3, selectedData);
-        screenPersonService.addSelectedData("is_new", 4, selectedData);
-        screenPersonService.addSelectedData("tb_first_people_type", 5, selectedData);
-        screenPersonService.addSelectedData("tb_more_people_type", 6, selectedData);
-        screenPersonService.addSelectedData("student_type", 7,  selectedData);
-        screenPersonService.addSelectedData("tb_ethnic", 10, selectedData);
+        screenPersonService.addSelectedData("is_new", 24, selectedData);
+        screenPersonService.addSelectedData("is_new", 25, selectedData);
+        screenPersonService.addSelectedData("tb_first_people_type", 3, selectedData);
+//        screenPersonService.addSelectedData("tb_more_people_type", 6, selectedData);
+        screenPersonService.addSelectedData("student_type", 5,  selectedData);
+        screenPersonService.addSelectedData("tb_ethnic", 8, selectedData);
 
         // 获取地区名称数据
         List<String> provinceName = districtMapper.getProvinceName();
@@ -149,20 +149,20 @@ public class ScreenPersonController {
         List<String> townName = districtMapper.getTownName();
         // 将地区名称数据放入选项数据中
         if (provinceName.size()>0){
-            selectedData.put(16,provinceName);
-            selectedData.put(21,provinceName);
+            selectedData.put(12,provinceName);
+            selectedData.put(17,provinceName);
         }
         if (cityName.size()>0){
-            selectedData.put(17,cityName);
-            selectedData.put(22,cityName);
+            selectedData.put(13,cityName);
+            selectedData.put(18,cityName);
         }
         if (countyName.size()>0){
-            selectedData.put(18,countyName);
-            selectedData.put(23,countyName);
+            selectedData.put(14,countyName);
+            selectedData.put(19,countyName);
         }
         if (townName.size()>0){
-            selectedData.put(19,townName);
-            selectedData.put(24,townName);
+            selectedData.put(15,townName);
+            selectedData.put(20,townName);
         }
 
         Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
@@ -178,7 +178,7 @@ public class ScreenPersonController {
         // 筛查点列表
         List<String> screenPointList = screenPointMapper.getScreenPointList(deptNameList);
         if (screenPointList.size()>0){
-            selectedData.put(25, screenPointList);
+            selectedData.put(6, screenPointList);
         }
 
         // 导出 Excel 模板
@@ -196,12 +196,11 @@ public class ScreenPersonController {
         List<ScreenPersonImportVO> list = screenPersonService.createSampleData();
         // 存放下拉选列表数据
         Map<Integer, List<String>> selectedData = new HashMap<>();
-        screenPersonService.addSelectedData("is_new", 3, selectedData);
-//        screenPersonService.addSelectedData("is_new", 3, selectedData);
-        screenPersonService.addSelectedData("tb_first_people_type", 4, selectedData);
-        screenPersonService.addSelectedData("tb_more_people_type", 5, selectedData);
-        screenPersonService.addSelectedData("student_type", 6,  selectedData);
-        screenPersonService.addSelectedData("tb_ethnic", 9, selectedData);
+        screenPersonService.addSelectedData("tb_first_people_type", 3, selectedData);
+//        screenPersonService.addSelectedData("tb_more_people_type", 5, selectedData);
+        screenPersonService.addSelectedData("student_type", 5,  selectedData);
+        screenPersonService.addSelectedData("tb_ethnic", 8, selectedData);
+        screenPersonService.addSelectedData("is_new", 24, selectedData);
 
         // 获取地区名称数据
         List<String> provinceName = districtMapper.getProvinceName();
@@ -210,20 +209,20 @@ public class ScreenPersonController {
         List<String> townName = districtMapper.getTownName();
         // 将地区名称数据放入选项数据中
         if (provinceName.size()>0){
-            selectedData.put(15,provinceName);
-            selectedData.put(20,provinceName);
+            selectedData.put(12,provinceName);
+            selectedData.put(17,provinceName);
         }
         if (cityName.size()>0){
-            selectedData.put(16,cityName);
-            selectedData.put(21,cityName);
+            selectedData.put(13,cityName);
+            selectedData.put(18,cityName);
         }
         if (countyName.size()>0){
-            selectedData.put(17,countyName);
-            selectedData.put(22,countyName);
+            selectedData.put(14,countyName);
+            selectedData.put(19,countyName);
         }
         if (townName.size()>0){
-            selectedData.put(18,townName);
-            selectedData.put(23,townName);
+            selectedData.put(15,townName);
+            selectedData.put(20,townName);
         }
 
         Long deptId = deptService.getMyDept(SecurityFrameworkUtils.getLoginUserId());
@@ -239,7 +238,7 @@ public class ScreenPersonController {
         // 筛查点列表
         List<String> screenPointList = screenPointMapper.getScreenPointList(deptNameList);
         if (screenPointList.size()>0){
-            selectedData.put(24, screenPointList);
+            selectedData.put(6, screenPointList);
         }
 
         // 导出 Excel 模板

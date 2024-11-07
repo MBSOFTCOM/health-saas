@@ -28,24 +28,19 @@ public class ScreenPersonImportTemplateVO {
     @ExcelProperty(value = "身份证号")
     private String idNum;
 
-    @ExcelProperty(value = "是否需筛查", converter = DictConvert.class)
+    /*@ExcelProperty(value = "是否需筛查", converter = DictConvert.class)
     @DictFormat("is_new")
-    private Integer isNew;
+    private Integer isNew;*/
 
     /*@ExcelProperty(value = "是否已筛查", converter = DictConvert.class)
     @DictFormat("is_screen")
     private Integer isScreened;*/
 
-    @ExcelProperty(value = "是否为新生", converter = DictConvert.class)
-    @DictFormat("is_new")
-    private Integer isNewStudent;
-
-
     @ExcelProperty(value = "第一人群分类", converter = DictConvert.class)
     @DictFormat("tb_first_people_type")
     private Integer firstType;
 
-    @ExcelProperty(value = "多人群分类", converter = DictConvert.class)
+    @ExcelProperty(value = "多人群分类(多项用英文符的,分割)", converter = DictConvert.class)
     @DictFormat("tb_more_people_type")
     private Integer[] moreType;
 
@@ -54,9 +49,8 @@ public class ScreenPersonImportTemplateVO {
     @DictFormat("student_type")
     private Integer studentType;
 
-    @Schema(description = "监护人手机号")
-    @ExcelProperty(value = "监护人手机号")
-    private String guardianTel;
+    @ExcelProperty("筛查点")
+    private String screenPoint;
 
     /*@ExcelProperty("计划筛查时间")
     private LocalDateTime screenTime;*/
@@ -71,12 +65,6 @@ public class ScreenPersonImportTemplateVO {
     @ExcelProperty(value = "民族", converter = DictConvert.class)
     @DictFormat("tb_ethnic")
     private Integer nation;
-
-    @ExcelProperty("单位")
-    private String schoolOrTemple;
-
-    @ExcelProperty("班级")
-    private String classroom;
 
     @ExcelProperty("身高(cm)")
     private BigDecimal height;
@@ -114,9 +102,25 @@ public class ScreenPersonImportTemplateVO {
     @ExcelProperty("现住址-乡镇")
     private String town;
 
-    @ExcelProperty("筛查点")
-    private String screenPoint;
+    @ExcelProperty("单位(学校)")
+    private String schoolOrTemple;
+
+    @ExcelProperty("班级")
+    private String classroom;
+
+    @Schema(description = "监护人手机号")
+    @ExcelProperty(value = "监护人手机号")
+    private String guardianTel;
+
+    @ExcelProperty(value = "是否为新生", converter = DictConvert.class)
+    @DictFormat("is_new")
+    private Integer isNewStudent;
+
+    @ExcelProperty(value = "是否需筛查", converter = DictConvert.class)
+    @DictFormat("is_new")
+    private Integer isNew;
 
     @ExcelProperty("备注")
     private String remark;
+
 }

@@ -275,9 +275,10 @@
             <el-button
               type="success"
               plain
+              @click="handleExportTemplate"
             >
               <Icon icon="ep:link" class="mr-5px"/>
-              <el-link :href="MinioApi.importRealTemplate" :underline="false">下载导入模板</el-link>
+             下载导入模板
             </el-button>
               <el-button
                 type="info"
