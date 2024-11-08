@@ -48,7 +48,7 @@ public class ScreenPersonImportVO {
     @DictFormat("tb_first_people_type")
     private Integer firstType;
 
-    @ExcelProperty(value = "多人群分类")
+    @ExcelProperty(value = "多人群分类(多项用英文符的,分割)")
 //    @DictFormat("tb_more_people_type")
     private String moreTypeStr;
 

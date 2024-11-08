@@ -138,7 +138,7 @@ public class ScreenPersonController {
         screenPersonService.addSelectedData("is_new", 24, selectedData);
         screenPersonService.addSelectedData("is_new", 25, selectedData);
         screenPersonService.addSelectedData("tb_first_people_type", 3, selectedData);
-//        screenPersonService.addSelectedData("tb_more_people_type", 6, selectedData);
+        screenPersonService.addSelectedData("tb_more_people_type", 4, selectedData);
         screenPersonService.addSelectedData("student_type", 5,  selectedData);
         screenPersonService.addSelectedData("tb_ethnic", 8, selectedData);
 
@@ -197,7 +197,7 @@ public class ScreenPersonController {
         // 存放下拉选列表数据
         Map<Integer, List<String>> selectedData = new HashMap<>();
         screenPersonService.addSelectedData("tb_first_people_type", 3, selectedData);
-//        screenPersonService.addSelectedData("tb_more_people_type", 5, selectedData);
+        screenPersonService.addSelectedData("tb_more_people_type", 4, selectedData);
         screenPersonService.addSelectedData("student_type", 5,  selectedData);
         screenPersonService.addSelectedData("tb_ethnic", 8, selectedData);
         screenPersonService.addSelectedData("is_new", 24, selectedData);
