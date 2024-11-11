@@ -473,9 +473,10 @@ public class AdminUserServiceImpl implements AdminUserService {
             if (existUser == null) {
                 AdminUserDO adminUserDO = BeanUtils.toBean(importUser, AdminUserDO.class);
                 // 根据默认密码进行MD5加密
-                adminUserDO.setPwdMd5(md5Encrypt(userInitPassword));
-                userMapper.insert(BeanUtils.toBean(importUser, AdminUserDO.class)
-                        .setPassword(encodePassword(userInitPassword)).setPostIds(new HashSet<>())); // 设置默认密码及空岗位编号数组
+                adminUserDO.setPwdMd5(md5Encrypt(userInitPassword))// 设置默认密码及空岗位编号数组
+                        .setPassword(encodePassword(userInitPassword))
+                        .setPostIds(new HashSet<>());
+                userMapper.insert(adminUserDO);
                 respVO.getCreateUsernames().add(importUser.getUsername());
                 return;
             }
