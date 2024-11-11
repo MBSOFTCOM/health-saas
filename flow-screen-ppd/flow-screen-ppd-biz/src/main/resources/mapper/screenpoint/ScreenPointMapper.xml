@@ -67,7 +67,7 @@
             resultType="cn.iocoder.yudao.module.ppd.controller.admin.screenpoint.vo.UserVO">
         SELECT su.id, su.nickname, su.mobile, sd.name as deptName
         FROM system_users as su
-                 INNER JOIN system_dept as sd ON su.dept_id = sd.id
+                 left JOIN system_dept as sd ON su.dept_id = sd.id
         WHERE su.deleted = 0
           AND su.status = 0
     </select>
@@ -97,6 +97,21 @@
         FROM tb_screen_point
         WHERE name = #{name}
           AND deleted = 0
+    </select>
+    <select id="selectContainSomeOne"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenpoint.ScreenPointDO">
+        select *
+        from tb_screen_point
+        where collect_worker like concat('%',#{userId},'%')
+        or ppd_worker like concat('%',#{userId},'%')
+        or drct_worker like concat('%',#{userId},'%')
+    </select>
+    <select id="selectWorkerIsSomeOne"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenpoint.ScreenPointDO">
+        select *
+        from tb_screen_point
+        where worker=#{userId}
+        and deleted=0
     </select>
 
 

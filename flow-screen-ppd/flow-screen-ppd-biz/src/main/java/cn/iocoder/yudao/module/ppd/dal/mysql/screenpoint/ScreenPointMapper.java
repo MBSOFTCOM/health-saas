@@ -39,6 +39,19 @@ public interface ScreenPointMapper extends BaseMapperX<ScreenPointDO> {
     ScreenPointDO selectByPointName(String name);
 
     /**
+     * 获取被使用的某用户的筛查点
+     * @param userId 用户id
+     * @return 被分配的筛查点列表
+     */
+    List<ScreenPointDO> selectContainSomeOne(String userId);
+    /**
+     * 获取队长是某用户的未删除的筛查点
+     * @param userId 用户id
+     * @return 被分配的筛查点列表
+     */
+    List<ScreenPointDO> selectWorkerIsSomeOne(String userId);
+
+    /**
      * 筛查点列表
      */
     List<String> getScreenPointList(@Param("deptNameList") List<String> deptNameList);

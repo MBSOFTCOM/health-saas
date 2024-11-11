@@ -54,6 +54,7 @@ public interface ErrorCodeConstants{
 
     ErrorCode SCREEN_SUM_NOT_EXISTS = new ErrorCode(100011, "汇总不存在");
     ErrorCode WORKER_IS_DISTRIBUTED = new ErrorCode(100012, "该队长在该工作年度已被分配！");
+    ErrorCode WORKER_IS_USABLE = new ErrorCode(100014, "该用户已担任筛查点的队长，请先更换用户担任队长");
 
     ErrorCode SCREEN_GRPUP_EXISTS = new ErrorCode(100070, "该组类型不存在！");
 

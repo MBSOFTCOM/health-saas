@@ -294,6 +294,7 @@ const getList = async () => {
 const handleQuery = () => {
   queryParams.pageNo = 1
   getList()
+  getUserList()
 }
 
 /** 重置按钮操作 */
@@ -318,6 +319,7 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
+    await getUserList()
   } catch {
   }
 }

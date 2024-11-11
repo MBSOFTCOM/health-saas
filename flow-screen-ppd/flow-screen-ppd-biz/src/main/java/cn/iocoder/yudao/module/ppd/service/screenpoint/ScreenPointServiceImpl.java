@@ -8,12 +8,12 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ScreenPersonImportRespVO;
-import cn.iocoder.yudao.module.ppd.dal.dataobject.userscreenpoint.UserScreenPointDO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpoint.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpersonrealsituation.ScreenPersonDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpoint.ScreenPointDO;
+import cn.iocoder.yudao.module.ppd.dal.dataobject.userscreenpoint.UserScreenPointDO;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenpersonrealsituation.ScreenPersonMapper;
 import cn.iocoder.yudao.module.ppd.dal.mysql.screenpoint.ScreenPointMapper;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenpoint.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.mysql.userscreenpoint.UserScreenPointMapper;
 import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptSaveReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.user.vo.user.UserRespVO;
@@ -28,6 +28,7 @@ import cn.iocoder.yudao.module.system.dal.redis.RedisKeyConstants;
 import cn.iocoder.yudao.module.system.service.dept.DeptService;
 import cn.iocoder.yudao.module.system.service.permission.PermissionService;
 import cn.iocoder.yudao.module.system.service.permission.RoleService;
+import cn.iocoder.yudao.module.system.service.user.AdminUserService;
 import com.google.common.annotations.VisibleForTesting;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
@@ -42,10 +43,8 @@ import java.util.stream.Collectors;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertSet;
-import static cn.iocoder.yudao.module.cd.enums.ErrorCodeConstants.SCREEN_POINT_EXISTS2;
-import static cn.iocoder.yudao.module.cd.enums.ErrorCodeConstants.SCREEN_POINT_NOT_EXISTS;
+import static cn.iocoder.yudao.module.cd.enums.ErrorCodeConstants.*;
 import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.*;
-import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.DEPT_PARENT_IS_CHILD;
 
 /**
  * 筛查点 Service 实现类
@@ -76,6 +75,8 @@ public class ScreenPointServiceImpl implements ScreenPointService {
     private DeptService deptService;
     @Resource
     private DeptMapper deptMapper;
+    @Resource
+    private AdminUserService userService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -129,6 +130,56 @@ public class ScreenPointServiceImpl implements ScreenPointService {
         // 更新
         ScreenPointDO updateObj = BeanUtils.toBean(updateReqVO, ScreenPointDO.class);
         screenPointMapper.updateById(updateObj);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long userId) {
+        List<ScreenPointDO> pointDOS = screenPointMapper.selectWorkerIsSomeOne(userId.toString());
+        if (pointDOS!=null && pointDOS.size()>0){
+            throw exception(WORKER_IS_USABLE);
+        }
+        List<ScreenPointDO> screenPointDOS = screenPointMapper.selectContainSomeOne(userId.toString());
+        List<ScreenPointDO> allWorkers = new ArrayList<>();
+
+        // 遍历每个 ScreenPointDO 对象
+        for (ScreenPointDO screenPoint : screenPointDOS) {
+            // 将非null的collectWork添加到allWorkers中
+            if (screenPoint.getCollectWorker() != null) {
+                // 将字符串转换为数组
+                String[] array = screenPoint.getCollectWorker().split(",\\s*"); // 使用正则表达式去掉空格
+                List<String> collectWorker = new ArrayList<>(Arrays.asList(array));
+                collectWorker.removeIf(item-> item.equals(userId.toString()));
+                // 将剩余元素转换回字符串
+                String result = String.join(", ", collectWorker);
+                screenPoint.setCollectWorker(result.length()>0? result : "0");
+            }
+            // 将非null的ppdWorker添加到allWorkers中
+            if (screenPoint.getPpdWorker() != null) {
+                // 将字符串转换为数组
+                String[] array = screenPoint.getPpdWorker().split(",\\s*"); // 使用正则表达式去掉空格
+                List<String> ppdWorker = new ArrayList<>(Arrays.asList(array));
+                ppdWorker.removeIf(item-> item.equals(userId.toString()));
+                // 将剩余元素转换回字符串
+                String result = String.join(", ", ppdWorker);
+                screenPoint.setPpdWorker(result.length()>0? result : "0");
+            }
+            // 将非null的drctWorker添加到allWorkers中
+            if (screenPoint.getDrctWorker() != null) {
+                // 将字符串转换为数组
+                String[] array = screenPoint.getDrctWorker().split(",\\s*"); // 使用正则表达式去掉空格
+                List<String> drctWorker = new ArrayList<>(Arrays.asList(array));
+                drctWorker.removeIf(item-> item.equals(userId.toString()));
+                // 将剩余元素转换回字符串
+                String result = String.join(", ", drctWorker);
+                screenPoint.setDrctWorker(result.length()>0? result : "0");
+            }
+            if (screenPoint.getCollectWorker() != null || screenPoint.getPpdWorker() != null || screenPoint.getDrctWorker() != null){
+                allWorkers.add(screenPoint);
+            }
+        }
+        screenPointMapper.updateBatch(allWorkers);
+        userService.deleteUser(userId);
     }
 
     @Override

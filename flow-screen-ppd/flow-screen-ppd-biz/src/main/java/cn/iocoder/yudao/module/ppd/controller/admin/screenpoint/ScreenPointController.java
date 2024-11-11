@@ -9,11 +9,10 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.framework.datapermission.core.annotation.DataPermission;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
-import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.ppd.controller.admin.screenpersonrealsituation.vo.ScreenPersonImportRespVO;
+import cn.iocoder.yudao.module.ppd.controller.admin.screenpoint.vo.*;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screendistrict.ScreenDistrictDO;
 import cn.iocoder.yudao.module.ppd.dal.dataobject.screenpoint.ScreenPointDO;
-import cn.iocoder.yudao.module.ppd.controller.admin.screenpoint.vo.*;
 import cn.iocoder.yudao.module.ppd.service.screendistrict.ScreenDistrictService;
 import cn.iocoder.yudao.module.ppd.service.screenpoint.ScreenPointService;
 import cn.iocoder.yudao.module.ppd.utils.CustomSheetWriteHandler;
@@ -40,9 +39,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
@@ -78,6 +79,14 @@ public class ScreenPointController {
         return success(screenPointService.createScreenPoint(createReqVO));
     }
 
+    @DeleteMapping("/deleteUser")
+    @Operation(summary = "删除用户")
+    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @PreAuthorize("@ss.hasPermission('system:user:delete')")
+    public CommonResult<Boolean> deleteUser(@RequestParam("id") Long id) {
+        screenPointService.deleteUser(id);
+        return success(true);
+    }
 
     @PutMapping("/update")
     @Operation(summary = "更新筛查点")

@@ -41,6 +41,10 @@ public interface ScreenPointService {
     void deleteScreenPoint(Long id);
 
     /**
+     * 删除用户
+     */
+    void deleteUser(Long userId);
+    /**
      * 获得筛查点
      *
      * @param id 编号

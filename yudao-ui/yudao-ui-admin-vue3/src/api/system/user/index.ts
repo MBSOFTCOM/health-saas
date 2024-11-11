@@ -44,7 +44,8 @@ export const updateUser = (data: UserVO) => {
 
 // 删除用户
 export const deleteUser = (id: number) => {
-  return request.delete({ url: '/system/user/delete?id=' + id })
+  // return request.delete({ url: '/system/user/delete?id=' + id }) 原始删除
+  return request.delete({url:`/tb/screen-point/deleteUser?id=${id}`})
 }
 
 // 导出用户
