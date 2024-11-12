@@ -210,7 +210,7 @@ export default {
 			uni.showToast({
 				title: '载入成功',
 				icon: 'success',
-				duration: 1000
+				duration: 2000
 			}) 
 			setTimeout(()=>{
 				uni.hideLoading();
@@ -362,7 +362,7 @@ export default {
 						title: '请先同步待筛查人员',
 						mask: true,
 						icon: 'none',
-						duration: 2000
+						duration: 3000
 					});
 					return;
 				} else {

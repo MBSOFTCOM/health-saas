@@ -398,7 +398,7 @@ export default {
           title: '当前无网络连接',
           mask: true,
           icon: 'none',
-          duration: 1500
+          duration: 3000
         });
       }
 			if (this.selectedIndexs.length == 0) {
@@ -418,7 +418,7 @@ export default {
                   title: '暂无需上传的数据',
                   mask: true,
                   icon: 'none',
-                  duration: 1500
+                  duration:3000
                 });
                 return
               }
@@ -464,7 +464,7 @@ export default {
                   uni.showToast({
                     title:'上传失败',
                     icon: 'error',
-                    duration: 1000
+                    duration:3000
                   })
                   return
                 }
@@ -474,7 +474,7 @@ export default {
                   title: '上传成功',
                   mask: true,
                   icon: 'success',
-                  duration: 1500
+                  duration:3000
                 });
                 // 记录本次同步时间(存缓存)
                 let time = self.getCurrentTime()
@@ -493,7 +493,7 @@ export default {
 								title: '取消上传',
 								mask: true,
 								icon: 'error',
-								duration: 1500
+                duration:3000
 							});
 						}
 					}
@@ -541,7 +541,7 @@ export default {
                 uni.showToast({
                   title:'上传失败',
                   icon: 'error',
-                  duration: 1000
+                  duration:3000
                 })
                 return
               }
@@ -551,7 +551,7 @@ export default {
                 title: '上传成功',
                 mask: true,
                 icon: 'success',
-                duration: 1500
+                duration:3000
               });
               // 记录本次同步时间(存缓存)
               let time = self.getCurrentTime()

@@ -661,6 +661,7 @@ export default {
 						} else {
 							uni.showToast({
 								icon: 'error',
+                duration:3000,
 								title: '扫码失败请重试'
 							});
 						}
@@ -753,7 +754,7 @@ export default {
 		uGather(val) {
 			// console.log("val",val);
 			if (val.orderTime.length == 0) {
-				uni.$u.toast('该人员还未进行过采集，请先采集！');
+				uni.$u.toast('该人员还未进行过采集，请先采集！',3000);
 				return;
 			}
 			// 首先找到 orderVal 对应的索引
@@ -787,7 +788,7 @@ export default {
 		},
 		detail(val) {
 			if (val.orderTime.length == 0) {
-				uni.$u.toast('该人员还未进行过采集，请先采集！');
+				uni.$u.toast('该人员还未进行过采集，请先采集！',3000);
 				return;
 			}
 			// 首先找到 orderVal 对应的索引

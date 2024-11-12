@@ -786,6 +786,7 @@ export default {
 						} else {
 							uni.showToast({
 								icon: 'error',
+                duration:3000,
 								title: '扫码失败请重试'
 							});
 						}
@@ -930,7 +931,7 @@ export default {
 					uni.showToast({
 						title: '注意：当前试剂的现有库存已为0',
 						icon: 'none',
-						duration: 2000
+            duration:3000
 					})
 				// this.injectionReagent={}
 				}
@@ -952,6 +953,7 @@ export default {
 						} else if (res.cancel) {
 							uni.showToast({
 								title: '已取消',
+                duration:2000,
 								icon: 'none'
 							});
 						}
@@ -963,7 +965,7 @@ export default {
 				uni.showToast({
 					title: '请先选择试剂',
 					icon: 'none',
-					duration: 2000
+					duration: 3000
 				})  
 				return
 			}
@@ -1027,7 +1029,7 @@ export default {
 								uni.showToast({
 									title: '请重新选择试剂',
 									icon: 'none',
-									duration: 2000
+									duration: 3000
 								}) 
 								return
 							}
@@ -1104,13 +1106,13 @@ export default {
 			// console.log('val', val);
 
 			if (val.orderTime.length == 0) {
-				uni.$u.toast('该人员还未进行过注射，请先注射！');
+				uni.$u.toast('该人员还未进行过注射，请先注射！',3000);
 				return;
 			}
 
 			const data = await getBypersonIdAndScreenOrder(val.orderVal, val.id);
 			if (data[0].injection == 1) {
-				uni.$u.toast('本次筛查已经提交。如需修改,请点击修改!');
+				uni.$u.toast('本次筛查已经提交。如需修改,请点击修改!',3000);
 				return;
 			}
 
@@ -1146,7 +1148,7 @@ export default {
 		// 修改结果
 		modify(val) {
 			if (val.orderTime.length == 0) {
-				uni.$u.toast('该人员还未进行过注射，请先注射！');
+				uni.$u.toast('该人员还未进行过注射，请先注射！',3000);
 				return;
 			}
 

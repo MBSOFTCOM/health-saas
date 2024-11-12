@@ -61,7 +61,7 @@ export default {
 						title: '请先到数据同步中同步工作队伍 ！' ,
 						mask: true,
 						icon: 'none',
-						duration: 1500
+						duration: 3000
 					})
 					return
 				}else{
@@ -72,7 +72,7 @@ export default {
 								title: '没有工作年度' ,
 								mask: true,
 								icon: 'none',
-								duration: 1500
+								duration: 3000
 							})
 						}else{
 							let label = item.label
@@ -96,7 +96,7 @@ export default {
 					title: '离线状态无此功能' ,
 					mask: true,
 					icon: 'none',
-					duration: 1500
+					duration: 3000
 				})
 			}
 		}

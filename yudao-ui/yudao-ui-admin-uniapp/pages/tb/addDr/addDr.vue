@@ -382,12 +382,14 @@ export default {
 
 					uni.showToast({
 						title: '照片保存成功',
+            duration:3000,
 						icon: 'success'
 					});
 				},
 				fail: () => {
 					uni.showToast({
 						title: '照片保存失败',
+            duration:3000,
 						icon: 'none'
 					});
 				}

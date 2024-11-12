@@ -402,40 +402,6 @@ export default {
 		},
 		// pc到平板
 		PcToPad() {
-			// 查询用户表中是否有数据
-			// SynchronizeApi.getWorkTeamCount(null).then(res=>{
-			// 	// console.log(res);
-			// 	if(res[0].num<=0){
-			// 		uni.showToast({
-			// 			title: '请先同步工作队伍' ,
-			// 			mask: true,
-			// 			icon: 'none',
-			// 			duration: 1500
-			// 		})
-			// 		return
-			// 	}
-			// })
-
-			// if(!this.queryParams.year){
-			// 	uni.showToast({
-			// 		title: '请先选择工作年度并点击搜索再同步' ,
-			// 		mask: true,
-			// 		icon: 'none',
-			// 		duration: 2000
-			// 	})
-			// 	return
-			// }
-			// if(!this.isSelectYear){
-			// 	uni.showToast({
-			// 		title: '请先选择工作年度并点击搜索再同步' ,
-			// 		mask: true,
-			// 		icon: 'none',
-			// 		duration: 2000
-			// 	})
-			// 	return
-			// }
-
-			// 插入year到用户表
 			// SynchronizeApi.insertYear(this.queryParams.year,this.queryParams.screenPoint)
 			if (this.selectedIndexs.length == 0) {
 				let self = this;
@@ -470,7 +436,7 @@ export default {
 												title: '工作年度冲突，请先清除数据',
 												mask: true,
 												icon: 'none',
-												duration: 2000
+												duration: 3000
 											});
 											return;
 										}
@@ -579,7 +545,7 @@ export default {
 								title: '取消同步',
 								mask: true,
 								icon: 'error',
-								duration: 1500
+								duration: 2000
 							});
 						}
 					}

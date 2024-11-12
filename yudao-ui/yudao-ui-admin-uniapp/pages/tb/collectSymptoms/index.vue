@@ -359,12 +359,14 @@ export default {
 
 					uni.showToast({
 						title: '照片保存成功',
+            duration:3000,
 						icon: 'success'
 					});
 				},
 				fail: () => {
 					uni.showToast({
 						title: '照片保存失败',
+            duration:3000,
 						icon: 'none'
 					});
 				}
@@ -411,6 +413,7 @@ export default {
 						} else if (res.cancel) {
 							uni.showToast({
 								title: '已取消',
+                duration:3000,
 								icon: 'none'
 							});
 						}
@@ -471,7 +474,7 @@ export default {
 							uni.showToast({
 							title: '请选择有无接触史',
 							icon: 'none',
-							duration: 1000
+                duration:3000
 							})
 							return;
 						}
@@ -553,9 +556,9 @@ export default {
 						}
 						if(!collect.contacted){
 							uni.showToast({
-							title: '请选择有无接触史',
-							icon: 'none',
-							duration: 1000
+                title: '请选择有无接触史',
+                icon: 'none',
+                duration:3000
 							})
 							return;
 						}

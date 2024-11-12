@@ -364,7 +364,7 @@ export default {
         uni.showToast({
           title: '汇总表没有需要上传的数据',
           icon: 'none',
-          duration: 2000
+          duration: 3000
         })
         return
       }
@@ -415,7 +415,7 @@ export default {
             title: `上传失败,请重新上传`,
             mask: true,
             icon: 'none',
-            duration: 1000
+            duration: 2000
           });
           return
         }
@@ -431,7 +431,7 @@ export default {
             title: `上传失败,请重新上传`,
             mask: true,
             icon: 'none',
-            duration: 1000
+            duration: 2000
           });
           return
         }
@@ -454,7 +454,7 @@ export default {
           title: `请重新上传图片`,
           mask: true,
           icon: 'none',
-          duration: 1500
+          duration: 2000
         });
         return
       }
@@ -476,7 +476,7 @@ export default {
               uni.showToast({
                 title: '待筛查人员信息还有未上传的改动，请先同步待筛查人员信息',
                 icon: 'none',
-                duration: 2000
+                duration: 3000
               })
               return
             }
@@ -496,7 +496,6 @@ export default {
                           title: '暂无需要上传的数据',
                           mask: true,
                           icon: 'none',
-                          duration: 1500
                         });
                         return
                       }
@@ -505,8 +504,7 @@ export default {
                       uni.showToast({
                         title: '暂无需上传的数据',
                         mask: true,
-                        icon: 'none',
-                        duration: 1500
+                        icon: 'none'
                       });
                       return
                     }
@@ -558,8 +556,7 @@ export default {
                         uni.hideLoading();
                         uni.showToast({
                           title:'上传失败',
-                          icon: 'error',
-                          duration: 1000
+                          icon: 'error'
                         })
                         return
                       }
@@ -613,8 +610,7 @@ export default {
                           uni.hideLoading();
                           uni.showToast({
                             title:'上传失败',
-                            icon: 'error',
-                            duration: 1000
+                            icon: 'error'
                           })
                           return
                         }
@@ -629,8 +625,7 @@ export default {
                           uni.hideLoading();
                           uni.showToast({
                             title: '上传失败',
-                            icon: 'error',
-                            duration: 1000
+                            icon: 'error'
                           })
                           return
                         }
@@ -645,8 +640,7 @@ export default {
                         uni.hideLoading();
                         uni.showToast({
                           title:'上传失败',
-                          icon: 'error',
-                          duration: 1000
+                          icon: 'error'
                         })
                         return
                       }
@@ -667,8 +661,7 @@ export default {
                     uni.showToast({
                       title: '取消上传',
                       mask: true,
-                      icon: 'error',
-                      duration: 1500
+                      icon: 'error'
                     });
                   }
                 }
@@ -716,8 +709,7 @@ export default {
                       uni.hideLoading();
                       uni.showToast({
                         title:'上传失败',
-                        icon: 'error',
-                        duration: 1000
+                        icon: 'error'
                       })
                       return
                     }
@@ -755,8 +747,7 @@ export default {
                       uni.hideLoading();
                       uni.showToast({
                         title:'上传失败',
-                        icon: 'error',
-                        duration: 1000
+                        icon: 'error'
                       })
                       return
                     }
@@ -779,8 +770,7 @@ export default {
                       uni.hideLoading();
                       uni.showToast({
                         title:'上传失败',
-                        icon: 'error',
-                        duration: 1000
+                        icon: 'error'
                       })
                       return
                     }
@@ -803,8 +793,7 @@ export default {
                     uni.showToast({
                       title: '取消同步',
                       mask: true,
-                      icon: 'error',
-                      duration: 2000
+                      icon: 'error'
                     });
                   }
                 }
@@ -815,8 +804,7 @@ export default {
         fail(e) {
           uni.showToast({
             title: '网络状态异常',
-            icon: 'error',
-            duration: 2000
+            icon: 'error'
           })
         }
       });

@@ -654,7 +654,7 @@ updateArray(number) {
 						title: '请先同步工作队伍',
 						mask: true,
 						icon: 'none',
-						duration: 1500
+						duration: 3000
 					});
 					return;
 				} else {
@@ -684,14 +684,14 @@ updateArray(number) {
 											title: '成功',
 											mask: true,
 											icon: 'none',
-											duration: 1500
+											duration: 3000
 										});
 									} else if (res.cancel) {
 										uni.showToast({
 											title: '取消',
 											mask: true,
 											icon: 'none',
-											duration: 1500
+											duration: 3000
 										});
 									}
 								}
@@ -763,7 +763,7 @@ updateArray(number) {
 			uni.showToast({
 				title: '载入成功',
 				icon: 'success',
-				duration: 1000
+				duration: 3000
 			}) 
 			setTimeout(()=>{
 				uni.hideLoading();
@@ -781,7 +781,7 @@ updateArray(number) {
 						title: '当前账号暂未分配工作队',
 						mask: true,
 						icon: 'none',
-						duration: 2000
+						duration: 3000
 					});
 					return;
 				}
@@ -849,7 +849,7 @@ updateArray(number) {
 														title: '工作年度冲突，请先清除数据',
 														mask: true,
 														icon: 'none',
-														duration: 2000
+														duration: 3000
 													});
 													return;
 												}
@@ -891,14 +891,14 @@ updateArray(number) {
 											title: '同步成功',
 											mask: true,
 											icon: 'success',
-											duration: 2000
+											duration: 3000
 										});
 									} else if (res.cancel) {
 										uni.showToast({
 											title: '取消同步',
 											mask: true,
 											icon: 'error',
-											duration: 1500
+											duration: 3000
 										});
 									}
 								}
@@ -951,7 +951,7 @@ updateArray(number) {
 												title: '工作年度冲突，请先清除数据',
 												mask: true,
 												icon: 'none',
-												duration: 2000
+												duration: 3000
 											});
 											return;
 										}
@@ -992,14 +992,14 @@ updateArray(number) {
 									title: '同步成功',
 									mask: true,
 									icon: 'success',
-									duration: 2000
+									duration: 3000
 								});
 							} else if (res.cancel) {
 								uni.showToast({
 									title: '取消同步',
 									mask: true,
 									icon: 'error',
-									duration: 1500
+									duration: 3000
 								});
 							}
 						}
@@ -1051,7 +1051,7 @@ updateArray(number) {
 						title: '请先同步工作队伍',
 						mask: true,
 						icon: 'none',
-						duration: 2000
+						duration: 3000
 					});
 				} else {
 					let groupList = res[0].groupName.toString().split(',');
@@ -1554,7 +1554,7 @@ updateArray(number) {
 									title: '清除成功',
 									mask: true,
 									icon: 'success',
-									duration: 2000
+									duration: 3000
 								});
 								self.activeItem = 0;
 							} else {
@@ -1562,7 +1562,7 @@ updateArray(number) {
 									title: '密码错误',
 									icon: 'none',
 									mask: true,
-									duration: 1500
+									duration: 3000
 								});
 							}
 						} else {
@@ -1570,7 +1570,7 @@ updateArray(number) {
 								title: '密码不能为空',
 								mask: true,
 								icon: 'none',
-								duration: 1500
+								duration: 3000
 							});
 						}
 					} else if (res.cancel) {
@@ -1578,7 +1578,7 @@ updateArray(number) {
 							title: '取消',
 							mask: true,
 							icon: 'error',
-							duration: 1500
+							duration: 3000
 						});
 					}
 				}

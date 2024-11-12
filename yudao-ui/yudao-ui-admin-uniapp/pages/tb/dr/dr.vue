@@ -543,6 +543,7 @@ export default {
 						} else {
 							uni.showToast({
 								icon: 'error',
+                duration:3000,
 								title: '扫码失败请重试'
 							});
 						}
@@ -631,7 +632,7 @@ export default {
 			// console.log("item=",dictItem)
 			if (dictItem.label != '新增') {
 				if (!param.screenOrder) {
-					uni.$u.toast('该患者还未拍过胸片，请先拍胸片！');
+					uni.$u.toast('该患者还未拍过胸片，请先拍胸片！',3000);
 					return;
 				}
 			}

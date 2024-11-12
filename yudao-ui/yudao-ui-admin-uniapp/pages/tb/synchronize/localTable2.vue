@@ -495,7 +495,7 @@ export default {
 				uni.showToast({
 					title: '汇总表没有需要上传的数据',
 					icon: 'none',
-					duration: 2000
+					duration: 3000
 				})  
 				return
 			}
@@ -546,7 +546,7 @@ export default {
             title: `上传失败,请重新上传`,
             mask: true,
             icon: 'none',
-            duration: 1000
+            duration: 3000
           });
           return
         }
@@ -562,7 +562,7 @@ export default {
             title: `上传失败,请重新上传`,
             mask: true,
             icon: 'none',
-            duration: 1000
+            duration: 3000
           });
           return
         }
@@ -585,7 +585,7 @@ export default {
 				  title: `${e.message},请重新上传图片`,
 				  mask: true,
 				  icon: 'none',
-				  duration: 1500
+				  duration: 3000
 				});
         return
 			}
@@ -598,6 +598,7 @@ export default {
 					if( !res || res.networkType == "null" || res.networkType=='none' || !res.networkType){
 						uni.showToast({
 							title: '当前无网络连接',
+              duration:3000,
 							icon: 'none'
 						});
 						throw new Error("无网络连接")
@@ -608,7 +609,7 @@ export default {
 							uni.showToast({
 								title: '待筛查人员信息还有未上传的改动，请先同步待筛查人员信息',
 								icon: 'none',
-								duration: 2000
+								duration: 3000
 							})  
 							return
 						}
@@ -631,7 +632,7 @@ export default {
 												title: '暂无需上传的数据',
 												mask: true,
 												icon: 'none',
-												duration: 1500
+												duration: 3000
 											});
                       return
 										}
@@ -681,7 +682,7 @@ export default {
                         uni.showToast({
                           title:'上传失败',
                           icon: 'error',
-                          duration: 1000
+                          duration: 2000
                         })
                         return
                     }
@@ -733,7 +734,7 @@ export default {
                             uni.showToast({
                               title:'上传失败',
                               icon: 'error',
-                              duration: 1000
+                              duration: 2000
                             })
                             return
                           }
@@ -751,7 +752,7 @@ export default {
                           uni.showToast({
                             title:'上传失败',
                             icon: 'error',
-                            duration: 1000
+                            duration: 2000
                           })
                           return
                         }
@@ -767,7 +768,7 @@ export default {
                         uni.showToast({
                           title:'上传失败',
                           icon: 'error',
-                          duration: 1000
+                          duration: 2000
                         })
                         return
                       }
@@ -789,7 +790,7 @@ export default {
 											title: '取消上传',
 											mask: true,
 											icon: 'error',
-											duration: 1500
+											duration: 2000
 										});
 									}
 								}
@@ -832,7 +833,7 @@ export default {
                       uni.showToast({
                         title:'上传失败',
                         icon: 'error',
-                        duration: 1000
+                        duration: 2000
                       })
                       return
                     }
@@ -870,7 +871,7 @@ export default {
                       uni.showToast({
                         title:'上传失败',
                         icon: 'error',
-                        duration: 1000
+                        duration: 2000
                       })
                       return
                     }
@@ -893,7 +894,7 @@ export default {
                       uni.showToast({
                         title:'上传失败',
                         icon: 'error',
-                        duration: 1000
+                        duration: 2000
                       })
                       return
                     }
@@ -905,7 +906,7 @@ export default {
                       title: '上传成功',
                       mask: true,
                       icon: 'success',
-                      duration: 1500
+                      duration: 2000
                     });
                     // 记录本次同步时间(存缓存)
                     let time = self.getCurrentTime()

@@ -55,7 +55,6 @@ export default {
 	methods: {
 		// utils/network.js
 		getNetworkStatus() {
-			console.log(222);
 			return new Promise((resolve, reject) => {
 		    uni.getNetworkType({
 		      success(res) {
@@ -82,17 +81,17 @@ export default {
 			const userList = await getUserList();
       console.log(userList)
       if (userList.length==0){
-        uni.$u.toast('首次登录请选择在线登录');
+        uni.$u.toast('首次登录请选择在线登录',3000);
         return;
       }
 			// console.log(user);
 			if (user.length == 0) {
-				uni.$u.toast('登录用户不存在！');
+				uni.$u.toast('登录用户不存在！',3000);
 				return;
 			}
 
 			if (user[0].pwd != password) {
-				uni.$u.toast('密码错误！');
+				uni.$u.toast('密码错误！',3000);
 				return;
 			}
 			const year = await SynchronizeApi.getYear(this.loginForm.username);

@@ -1,7 +1,7 @@
 <template>
 	<view class="page-container">
 		<navigator url="/pages/tb/SQLiteManager/index" hover-class="navigator-hover">
-				<button type="default" v-if="true">SQLiteManager</button>
+				<button type="default" v-if="false">SQLiteManager</button>
 			</navigator>
 		<view class="circle-container">
 			<view class="top-circles">
@@ -108,7 +108,7 @@ export default {
 				uni.showToast({
 					title: '您没有操作权限',
 					icon: 'error',
-					duration: 2000
+					duration: 3000
 				});
 				return false;
 			}
@@ -131,7 +131,7 @@ export default {
 				uni.showToast({
 					title: '您没有操作权限',
 					icon: 'error',
-					duration: 2000
+					duration: 3000
 				});
 				return false;
 			}

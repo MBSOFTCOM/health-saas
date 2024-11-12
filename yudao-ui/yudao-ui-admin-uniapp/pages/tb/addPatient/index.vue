@@ -625,7 +625,7 @@ export default {
 				return;
 			}
 			if(!this.FormData.idNum){
-				uni.$u.toast('请填入正确的身份证号');
+				uni.$u.toast('请填入正确的身份证号',3000);
 			}
 			//通过身份证获取性别年龄
 			const genderAndAge = this.getGenderAndAge(this.FormData.idNum);
@@ -697,7 +697,7 @@ export default {
 						//对数据校验
 						const isNull = this.dataCheck(FormData1, 'dataCheck');
 						if (!isNull) {
-							uni.$u.toast('请检查表单，存在数据为空');
+							uni.$u.toast('请检查表单，存在数据为空',3000);
 							return;
 						}
 
@@ -706,7 +706,7 @@ export default {
 
 						//单独对多人群分类校验
 						if (FormData1.firstType == 1 && FormData1.moreType == 0) {
-							uni.$u.toast('选择了重点人群，多人群分类必须选择');
+							uni.$u.toast('选择了重点人群，多人群分类必须选择',3000);
 							return;
 						}
 
@@ -717,7 +717,7 @@ export default {
 								FormData1.classroom === undefined ||
 								FormData1.classroom === ''
 							) {
-								uni.$u.toast('该人员为学生，班级不能为空');
+								uni.$u.toast('该人员为学生，班级不能为空',3000);
 								return;
 							}
 						}
@@ -726,7 +726,7 @@ export default {
 						let Num = await repeatCheck(FormData1.idNum, FormData1.screenId, null);
 
 						if (Num[0].count > 0) {
-							uni.$u.toast('该人员信息已经存在');
+							uni.$u.toast('该人员信息已经存在',3000);
 							return;
 						}
 
@@ -791,7 +791,7 @@ export default {
 						//对数据校验
 						const isNull = this.dataCheck(FormData2, 'dataCheck');
 						if (!isNull) {
-							uni.$u.toast('请检查表单，存在数据为空');
+							uni.$u.toast('请检查表单，存在数据为空',3000);
 							return;
 						}
 
@@ -800,7 +800,7 @@ export default {
 
 						//单独对多人群分类校验
 						if (FormData2.firstType == 1 && FormData2.moreType == 0) {
-							uni.$u.toast('选择了重点人群，多人群分类必须选择');
+							uni.$u.toast('选择了重点人群，多人群分类必须选择',3000);
 							return;
 						}
 
@@ -811,7 +811,7 @@ export default {
 								FormData2.classroom === undefined ||
 								FormData2.classroom === ''
 							) {
-								uni.$u.toast('该人员为学生，班级不能为空');
+								uni.$u.toast('该人员为学生，班级不能为空',3000);
 								return;
 							}
 						}
@@ -821,7 +821,7 @@ export default {
 
 						// console.log(Num);
 						if (Num[0].count > 0) {
-							uni.$u.toast('该人员信息已经存在');
+							uni.$u.toast('该人员信息已经存在',3000);
 							return;
 						}
 						console.log(FormData2);
@@ -861,7 +861,7 @@ export default {
 			const regex = /^[0-9]+$/;
 			if (!regex.test(this.FormData.screenId)) {
 				this.FormData.screenId = '';
-				uni.$u.toast('请输入正整数类型数据');
+				uni.$u.toast('请输入正整数类型数据',3000);
 				return;
 			}
 		},
@@ -871,7 +871,7 @@ export default {
 			const regex = /^[\u4e00-\u9fa5]+$/;
 			if (!regex.test(this.FormData.name)) {
 				this.FormData.name = '';
-				uni.$u.toast('请输入中文');
+				uni.$u.toast('请输入中文',3000);
 				return;
 			}
 		},
@@ -880,7 +880,7 @@ export default {
 			const regex = /^(?:\d{1,3}(?:\.\d{1,2})?)$/;
 			if (!regex.test(this.FormData.height)) {
 				this.FormData.height = '';
-				uni.$u.toast('请输入有效合理数值！');
+				uni.$u.toast('请输入有效合理数值！',3000);
 				return;
 			}
 		},
@@ -889,7 +889,7 @@ export default {
 			const regex = /^(?:\d{1,3}(?:\.\d{1,2})?)$/;
 			if (!regex.test(this.FormData.weight)) {
 				this.FormData.weight = '';
-				uni.$u.toast('请输入有效合理数值！');
+				uni.$u.toast('请输入有效合理数值！',3000);
 				return;
 			}
 		},
@@ -898,7 +898,7 @@ export default {
 			const regex = /^1[3456789]\d{9}$/;
 			if (!regex.test(tel)) {
 				tel = '';
-				uni.$u.toast('请输入有效的手机号');
+				uni.$u.toast('请输入有效的手机号',3000);
 				return;
 			}
 		},
@@ -907,7 +907,7 @@ export default {
 			const regex = /^([1-9]\d{5})(18|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}(\d|X|x)$/;
 			if (!regex.test(this.FormData.idNum)) {
 				this.FormData.idNum = '';
-				uni.$u.toast('请输入有效的身份证号');
+				uni.$u.toast('请输入有效的身份证号',3000);
 				return;
 			}
 		},

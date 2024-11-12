@@ -403,12 +403,14 @@ export default {
 					// 将保存后的文件路径赋值给photoUrl以显示在页面上
 					uni.showToast({
 						title: '照片保存成功',
+            duration:3000,
 						icon: 'success'
 					});
 				},
 				fail: (e)=>{
           uni.showToast({
             title: '照片保存失败',
+            duration:3000,
             icon: 'none'
           });
 				}
@@ -569,7 +571,7 @@ export default {
 				uni.showToast({
 					title: '请选择皮肤反应类型',
 					icon: 'none',
-					duration: 2000
+					duration: 3000
 				}) 
 				return
 			}
@@ -577,7 +579,7 @@ export default {
 				uni.showToast({
 					title: '请医生签名',
 					icon: 'none',
-					duration: 2000
+					duration: 3000
 				})  
 				return
 			}
