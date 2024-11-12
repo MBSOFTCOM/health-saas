@@ -103,7 +103,7 @@
 					<uni-td align="center">{{ screenStatus(item.isScreened) }}</uni-td>
 					<uni-td align="center">{{ firstType(item.firstType) }}</uni-td>
 					<uni-td align="center">{{ moreType(item) }}</uni-td>
-					<uni-td align="center">{{ item.screenStartTime }}-{{item.screenEndTime}}</uni-td>
+					<uni-td align="center">{{ dayjs(item.screenStartTime).format('YYYY/MM/DD') }}-{{dayjs(item.screenEndTime).format('YYYY/MM/DD')}}</uni-td>
 					<uni-td align="center">{{ gender(item.sex) }}</uni-td>
 					<uni-td align="center">{{ item.age }}</uni-td>
 					<uni-td align="center">{{ item.tel }}</uni-td>
@@ -125,6 +125,7 @@
 
 <script>
 import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
+import dayjs from 'dayjs';
 import { dbName, tbScreenChestRadiograph, tbScreenCollect, tbScreenPerson, tbScreenPpd, tbScreenSum, updatePerson ,errorKey} from '@/utils/sqlite';
 import {
   errorUpload,
@@ -207,6 +208,7 @@ export default {
 		this.search();
 	},
 	methods: {
+    dayjs,
     getLabelByValue,
 		clearScreenId() {
 			this.queryParams.screenId = undefined;

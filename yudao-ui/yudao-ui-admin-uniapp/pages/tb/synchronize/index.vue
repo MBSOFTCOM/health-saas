@@ -168,7 +168,7 @@
 					</uni-tr>
 					<uni-tr v-for="(item, index) in pageData" :key="index">
 						<uni-td align="center">{{ index + 1 }}</uni-td>
-						<uni-td align="center">{{ item.name }}</uni-td>
+						<uni-x align="center">{{ item.name }}</uni-x>
 						<uni-td align="center">{{ item.idNum }}</uni-td>
 						<uni-td align="center">{{ item.year }}</uni-td>
 						<uni-td align="center">{{ item.screenId }}</uni-td>
@@ -179,7 +179,7 @@
 						<uni-td align="center">{{ screenStatus(item.isScreened) }}</uni-td>
 						<uni-td align="center">{{ firstType(item.firstType) }}</uni-td>
 						<uni-td align="center">{{ moreType(item) }}</uni-td>
-						<uni-td align="center">{{ item.screenStartTime }}-{{item.screenEndTime}}</uni-td>
+						<uni-td align="center">{{ dayjs(item.screenStartTime).format('YYYY/MM/DD') }}-{{dayjs(item.screenEndTime).format('YYYY/MM/DD')}}</uni-td>
 						<uni-td align="center">{{ gender(item.sex) }}</uni-td>
 						<uni-td align="center">{{ item.age }}</uni-td>
 						<uni-td align="center">{{ item.tel }}</uni-td>
@@ -398,6 +398,8 @@
 </template>
 
 <script>
+import dayjs from 'dayjs';
+
 import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
 import {
 	dbName,
@@ -528,6 +530,7 @@ export default {
 		this.getLastSynchronizeTime(this.activeItem)
 	},
 	methods: {
+    dayjs,
 updateArray(number) {
     let groupName = '';
     let sidebarImages = [

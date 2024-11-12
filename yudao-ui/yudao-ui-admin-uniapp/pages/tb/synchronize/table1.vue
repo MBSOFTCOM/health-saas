@@ -106,7 +106,7 @@
 					<uni-td align="center">{{ screenStatus(item.isScreened) }}</uni-td>
 					<uni-td align="center">{{ firstType(item.firstType) }}</uni-td>
 					<uni-td align="center">{{ moreType(item) }}</uni-td>
-					<uni-td align="center">{{ formatDate(item.screenTime) }}</uni-td>
+					<uni-td align="center">{{ dayjs(item.screenStartTime).format('YYYY/MM/DD') }}-{{dayjs(item.screenEndTime).format('YYYY/MM/DD') }}</uni-td>
 					<uni-td align="center">{{ gender(item.sex) }}</uni-td>
 					<uni-td align="center">{{ item.age }}</uni-td>
 					<uni-td align="center">{{ item.tel }}</uni-td>
@@ -133,6 +133,7 @@
 </template>
 
 <script>
+import dayjs from 'dayjs';
 import * as SynchronizeApi from '@/api/synchronize/synchronize';
 import dbUtils from '../../../uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
 import { dbName, tbScreenPerson, getById, updatePerson, getMaxScreenOrder } from '@/utils/sqlite';
@@ -213,6 +214,7 @@ export default {
 		// this.generateYear()
 	},
 	methods: {
+    dayjs,
 		back() {
 			uni.navigateBack({
 				delta: 1

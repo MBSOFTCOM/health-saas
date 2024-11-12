@@ -54,7 +54,7 @@
 			<up-row>
 				<up-col span="7">
 					<view class="bom-t">
-						<view style="width: 250rpx">皮肤反应类型</view>
+						<view style="width: 250rpx">皮肤反应类型<span style="color: red">*</span></view>
 						<view class="bom-mup">
 							<u-radio-group v-model="FormData.outcome" placement="row" @change="changeOutcome">
 								<u-radio
@@ -207,7 +207,7 @@
 			</up-row>
 
 			<view class="bom-m">
-				<view style="width: 250rpx">医生签名</view>
+				<view style="width: 250rpx">医生签名<span style="color: red">*</span></view>
 				<view class="sign-bg" v-if="!FormData.doctorSignature" @click="onSign">
 					<view class="sign-text">
 						<image class="sign-img" src="../../../static/images/tb/sign.png" mode=""></image>

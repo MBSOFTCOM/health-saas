@@ -43,6 +43,7 @@
 					</view>
 					<view class="top-1">
 						<span style="margin-left: 110px; display: inline-block">姓名</span>
+            <span class="red-badge">*</span>
 						<input
 							class="uni-input"
 							confirm-type="search"
@@ -79,6 +80,7 @@
 					</view>
 					<view class="top-1">
 						<span style="margin-left: 110px; display: inline-block">电话</span>
+            <span class="red-badge">*</span>
 						<input
 							style="margin-left: 15px"
 							class="uni-input"
@@ -91,6 +93,7 @@
 					</view>
 					<view class="top-1">
 						<span style="margin-left: 65px; display: inline-block">身份证号码</span>
+            <span class="red-badge">*</span>
 						<input
 							type="idNum"
 							class="uni-input"
@@ -119,6 +122,7 @@
 					</view>
 					<view class="top-1">
 						<span style="margin-left: 37px; display: inline-block">计划筛查时间</span>
+            <span class="red-badge">*</span>
 						<view style="width: 213px; margin-left: 15px">
 							<uni-datetime-picker type="daterange" :clear-icon="false" v-model="FormData.screenTime" @change="maskClick" />
 						</view>
@@ -188,6 +192,7 @@
 					<view class="bom-add">
 						<view class="select">
 							<span class="se-sp" style="margin-left: 50px">省</span>
+              <span class="red-badge">*</span>
 						<uni-data-select
 							v-model="FormData.province"
 							class="districtSelect"
@@ -197,6 +202,7 @@
 						</view>
 						<view class="select">
 							<span class="se-sp">市</span>
+              <span class="red-badge">*</span>
 						<uni-data-select
 							v-model="FormData.city"
 							class="districtSelect"
@@ -206,6 +212,7 @@
 						</view>
 						<view class="select">
 							<span class="se-sp">县</span>
+              <span class="red-badge">*</span>
 						<uni-data-select
 							v-model="FormData.county"
               class="districtSelect"
@@ -216,6 +223,7 @@
 						</view>
 						<view class="select">
 							<span class="se-sp">乡镇</span>
+              <span class="red-badge">*</span>
 						<uni-data-select
 							v-model="FormData.town"
               class="districtSelect"
@@ -227,6 +235,7 @@
 				</view>
 				<view class="bom-1-2">
 					<span>详细地址</span>
+          <span class="red-badge">*</span>
 					<input
 						class="address-input"
 						confirm-type="search"
@@ -243,6 +252,7 @@
 				<view class="bom-1-4">
 					<view class="bom-p1">
 						<span style="display: inline-block; margin-left: 10px">人群分类</span>
+            <span class="red-badge">*</span>
 						<uni-data-checkbox
 							@change="changeCrowdVal"
 							v-model="crowdVal"
@@ -1145,6 +1155,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.red-badge {
+  color: red;          /* 白色字 */
+  border-radius: 50%;    /* 圆形 */
+  margin-left: 5px;      /* 左边距 */
+  font-weight: bold;      /* 加粗 */
+  font-size: 14px;        /* 字体大小 */
+  display: inline-block;   /* 行内块元素 */
+  vertical-align: middle;  /* 垂直对齐 */
+}
+
 .top1 {
 	display: flex;
 	align-items: center;
