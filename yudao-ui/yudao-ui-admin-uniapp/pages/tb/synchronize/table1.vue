@@ -521,21 +521,21 @@ export default {
 											} else {
 												getById(dbName, tbScreenPerson, item.id).then((res) => {
 													if (res.length > 0) {
-																let newUpdateData = {
-																	...item
-																};
-                                Object.keys(newUpdateData).forEach(key => {
-                                  if (newUpdateData[key] == null) {
-                                    delete newUpdateData[key];
-                                  }
-                                });
-                                delete newUpdateData['id']
-																// 执行插入操作
-																dbUtils.addTabItem(
-																	dbName,
-																	tbScreenPerson,
-																	newUpdateData
-																);
+                            let newUpdateData = {
+                              ...item
+                            };
+                            Object.keys(newUpdateData).forEach(key => {
+                              if (newUpdateData[key] == null) {
+                                delete newUpdateData[key];
+                              }
+                            });
+                            delete newUpdateData['id']
+                            // 执行插入操作
+                            dbUtils.addTabItem(
+                              dbName,
+                              tbScreenPerson,
+                              newUpdateData
+                            );
 													} else {
                             let newUpdateData = {
                               ...item
@@ -591,7 +591,7 @@ export default {
 					content: '是否同步当前所选数据？',
 					cancelText: '取消',
 					confirmText: '确认',
-					success: function (res) {
+					success: async res=> {
 						if (res.confirm) {
 							self.selectedIndexs.map((i) => {
 								self.SyncData.push(self.pageData[i]);
@@ -623,67 +623,62 @@ export default {
 								remark: item.remark == 'null' || item.remark == null ? '' : item.remark
 							}));
 
-							// console.log(newList);
+              newList.forEach((item) => {
+                // 遍历对象的属性，判断如果值为null，就删除这个属性
+                Object.keys(item).forEach(key => {
+                  // console.log(`${key}--${item[key]}`)
+                  if (item[key] == null || item[key] == 'null') {
+                    delete item[key];
+                  }
+                });
+              })
+                console.log(newList);
 
-							let i = 0;
-							newList.forEach((item) => {
-								// 根据year(筛查年份),idNum查询 是否有对应记录的id
-								// 有记录 -- 更新
-								// 无记录 -- 根据id查记录
-								//           无记录 -- 插入
-								//           有记录 -- 查询表中id的最大值 ， 更新待插入数据的id值 再插入
-								SynchronizeApi.selectPersonIdByIndex(item.screenType, item.idNum, item.year).then(
-									(res) => {
-										if (res.length > 0) {
-											let personId = res[0].id;
-											let updateData = { ...item };
-											delete updateData.id; // 删除 id 属性
-											SynchronizeApi.updateTable(tbScreenPerson, updateData, personId);
-										} else {
-											getById(dbName, tbScreenPerson, item.id).then((res) => {
-												if (res.length > 0) {
-													SynchronizeApi.selectMaxId(tbScreenPerson).then((resp) => {
-														if (resp.length > 0) {
-															let maxId = resp[0].maxId;
-															let newUpdateData = {
-																...item,
-																id: maxId + 1
-															};
-															// 执行插入操作
-															dbUtils.addTabItem(dbName, tbScreenPerson, newUpdateData);
-														}
-													});
-												} else {
-													dbUtils.addTabItem(dbName, tbScreenPerson, item);
-												}
-											});
-										}
-									}
-								);
-								i++;
-							});
-							if (i > 0) {
-								uni.showToast({
-									title: '同步了' + i + '条数据',
-									mask: true,
-									icon: 'success',
-									duration: 2000
-								});
-								// 记录本次同步时间(存缓存)
-								let time = self.getCurrentTime()
-								uni.setStorage({
-									key:'personPc',
-									data:time
-								})
-								self.synchronizeTime=time
-								uni.setStorage({
-									key:'person',
-									data:time
-								})
-							}
-							self.SyncData = []; //清空同步数组
-							self.$refs.table.clearSelection(); //清除勾选内容
-							self.selectedIndexs.length = 0; // 清空索引数组
+              let i = 0;
+              for (const item of newList) {
+                try {
+                  // 根据 year(筛查年份), idNum 查询是否有对应记录的 id
+                  const res = await SynchronizeApi.selectPersonIdByIndex(item.screenType, item.idNum, item.year);
+                  if (res.length > 0) {
+                    // 有记录 -- 更新
+                    const personId = res[0].id;
+                    let updateData = { ...item };
+                    delete updateData.id; // 删除 id 属性
+                    await SynchronizeApi.updateTable(tbScreenPerson, updateData, personId);
+                  } else {
+                    delete item['id']
+                    // 无记录 -- 插入
+                    await dbUtils.addTabItem(dbName, tbScreenPerson, item);
+                    i++
+                  }
+                } catch (error) {
+                  console.error('Error processing item:', item, error);
+                }
+              }
+              console.log(i)
+                if (i > 0) {
+                  uni.showToast({
+                    title: '同步了' + i + '条数据',
+                    mask: true,
+                    icon: 'success',
+                    duration: 3000
+                  });
+                  // 记录本次同步时间(存缓存)
+                  let time = self.getCurrentTime()
+                  uni.setStorage({
+                    key: 'personPc',
+                    data: time
+                  })
+                  self.synchronizeTime = time
+                  uni.setStorage({
+                    key: 'person',
+                    data: time
+                  })
+                }
+
+              self.SyncData = []; //清空同步数组
+              self.$refs.table.clearSelection(); //清除勾选内容
+              self.selectedIndexs.length = 0; // 清空索引数组
 						} else if (res.cancel) {
 							uni.showToast({
 								title: '取消同步',
