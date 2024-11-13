@@ -97,7 +97,7 @@
       </el-table-column>
       <el-table-column align="center" prop="updateTime" :formatter="dateFormatter2"/>
     </el-table>
-    <div>
+    <div style="display: flex; justify-content: center;align-items: center">
     <Pagination
       style="margin-top: 15px;"
       :total="total"
