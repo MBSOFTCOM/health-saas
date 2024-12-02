@@ -8,7 +8,7 @@ public interface MatchRulesMsg extends MatchRules{
     String SUFFIX_NOT_EXIST="不匹配或不存在;";
 //    属性
     String ID_NUMBER="身份证号";
-    String TEL="手机号";
+    String TEL="联系电话";
     String SCREEN_POINT="筛查点";
 //    错误反馈
     String ID_NUMBER_MATCH_ERROR=ID_NUMBER+SUFFIX_NOT_MATCH;

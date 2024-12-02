@@ -32,7 +32,7 @@ public class ScreenPersonImportVO {
     @ExcelProperty(value = "* 身份证号")
     private String idNum;
 
-    @ExcelProperty(value = "是否需筛查", converter = DictConvert.class)
+    @ExcelProperty(value = "* 是否需筛查", converter = DictConvert.class)
     @DictFormat("is_new")
     private Integer isNew;
 
@@ -82,14 +82,14 @@ public class ScreenPersonImportVO {
     @DictFormat("system_user_sex")
     private Integer sex;*/
 
-    @ExcelProperty("联系电话")
+    @ExcelProperty("* 联系电话")
     private String tel;
 
     @ExcelProperty(value = "民族", converter = DictConvert.class)
     @DictFormat("tb_ethnic")
     private Integer nation;
 
-    @ExcelProperty("单位")
+    @ExcelProperty("* 单位(学校)")
     private String schoolOrTemple;
 
     @ExcelProperty("班级")
