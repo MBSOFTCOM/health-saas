@@ -23,20 +23,20 @@ import java.time.LocalDateTime;
 @Accessors(chain = false) // 设置 chain = false，避免用户导入有问题
 public class ScreenPersonImportVO {
 
-    @ExcelProperty("序号")
+    @ExcelProperty("* 序号")
     private String order;
 
-    @ExcelProperty("姓名")
+    @ExcelProperty("* 姓名")
     private String name;
 
-    @ExcelProperty(value = "身份证号")
+    @ExcelProperty(value = "* 身份证号")
     private String idNum;
 
     @ExcelProperty(value = "是否需筛查", converter = DictConvert.class)
     @DictFormat("is_new")
     private Integer isNew;
 
-    @ExcelProperty(value = "是否已筛查", converter = DictConvert.class)
+    @ExcelProperty(value = "* 是否已筛查", converter = DictConvert.class)
     @DictFormat("is_screen")
     private Integer isScreened;
 
@@ -44,11 +44,11 @@ public class ScreenPersonImportVO {
     @DictFormat("is_new")
     private Integer isNewStudent;
 
-    @ExcelProperty(value = "第一人群分类", converter = DictConvert.class)
+    @ExcelProperty(value = "* 第一人群分类", converter = DictConvert.class)
     @DictFormat("tb_first_people_type")
     private Integer firstType;
 
-    @ExcelProperty(value = "多人群分类(多项用英文符的,分割)")
+    @ExcelProperty(value = "* 多人群分类(多项用英文符的,分割)")
 //    @DictFormat("tb_more_people_type")
     private String moreTypeStr;
 
@@ -116,22 +116,22 @@ public class ScreenPersonImportVO {
     @ExcelProperty("户籍地址-乡镇")
     private String permanentAddressTown;
 
-    @ExcelProperty("现住址")
+    @ExcelProperty("* 现住址")
     private String address;
 
-    @ExcelProperty("现住址-省")
+    @ExcelProperty("* 现住址-省")
     private String province;
 
-    @ExcelProperty("现住址-市")
+    @ExcelProperty("* 现住址-市")
     private String city;
 
-    @ExcelProperty("现住址-县")
+    @ExcelProperty("* 现住址-县")
     private String county;
 
-    @ExcelProperty("现住址-乡镇")
+    @ExcelProperty("* 现住址-乡镇")
     private String town;
 
-    @ExcelProperty("筛查点")
+    @ExcelProperty("* 筛查点")
     private String screenPoint;
 
     @ExcelProperty("备注")

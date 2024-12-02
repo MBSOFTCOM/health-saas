@@ -671,7 +671,7 @@ export default {
                   success: async (res)=> {
                     // try{
                     if (res.confirm) {
-                      await SynchronizeApi.updateErrorFlag(1, ['4', '5', '6', '10'])
+                      await SynchronizeApi.updateErrorFlag(1, ['4', '5', '6'])
                       let uploadPageSize=100
                       let ppdCount=await SynchronizeApi.getPpdCount(this.queryParams.screenId,this.queryParams.injection,this.queryParams.screenPoint,'not null')
                       let pageCount=Math.ceil(ppdCount[0].num / uploadPageSize)
@@ -722,7 +722,7 @@ export default {
                             }
                           }
                         }catch(e){
-                        console.error(e)
+                        // console.error(e)
                         uni.hideLoading();
                         uni.showToast({
                           title:'上传失败',
@@ -731,7 +731,38 @@ export default {
                         })
                         return
                       }
-                        await SynchronizeApi.updateErrorFlag(0,'4')
+                      await SynchronizeApi.updateErrorFlag(0,'4')
+
+                      let consume=await ConsumeRecordApi.selectLocalData()
+                      // console.log(consume)
+                      if (consume && consume.length>0) {
+                        await SynchronizeApi.updateErrorFlag(1,'10')
+                        uni.showLoading({
+                          title: '上传中...',
+                          mask: true
+                        });
+                        let str = this.getCurrentDateString()
+                        // 处理数据
+                        for (let i = 0; i < consume.length; i++) {
+                          consume[i].padId = consume[i].padId ?? ('' + consume[i].id + uni.$person.id + str)
+                          if (consume[i].createTime) {
+                            consume[i].createTime = new Date(consume[i].createTime).getTime();
+                          }
+                          if (consume[i].updateTime) {
+                            consume[i].updateTime = new Date(consume[i].updateTime).getTime();
+                          }
+                        }
+                        // 上传试剂消耗
+                        let consumeResult = await ConsumeRecordApi.upload(consume)
+
+                        uni.hideLoading()
+                        uni.showToast({
+                          title: '上传试剂消耗成功',
+                          icon: 'success',
+                          duration: 2000
+                        })
+                      }
+                      await SynchronizeApi.updateErrorFlag(0,'10')
 //上传汇总表
                         uni.hideLoading();
                         uni.showLoading({
@@ -765,17 +796,17 @@ export default {
                           try {
                             for (var k = 0; k < num; k++) {
                               end = start + onceLength
-                              console.log(`${start}---${end}`);
+                              // console.log(`${start}---${end}`);
                               let updateReq = localSum.slice(start, end)
                               start = start + onceLength
                               let sumResp = await SynchronizeApi.uploadSumData(updateReq);
                               for (var i = 0; i < sumResp.length; i++) {
                                 await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp[i].id, sumResp[i].idNum)
                               }
-                              console.log(updateReq);
+                              // console.log(updateReq);
                             }
                           } catch (e) {
-                            console.error(e)
+                            // console.error(e)
                             uni.hideLoading();
                             uni.showToast({
                               title:'上传失败',
@@ -848,7 +879,7 @@ export default {
                   confirmText: '确认',
                   success: async (res) =>{
                     if (res.confirm) {
-                      await SynchronizeApi.updateErrorFlag(1, ['4', '5', '6', '10'])
+                      await SynchronizeApi.updateErrorFlag(1, ['4', '5', '6'])
                       self.selectedIndexs.map((i) => {
                         self.SyncData.push(self.pageData[i]);
                       });
@@ -875,21 +906,15 @@ export default {
                       try{
                         let updatePpd = await SynchronizeApi.updateTableData3(self.SyncData)
                         for (let i = 0; i < updatePpd.data.length; i++) {
-                          console.log(i)
                           if (updatePpd.data[i].id == updatePpd.data[i].newId) {
-                            console.log(560)
                             await SynchronizeApi.updateStatusFlagOnly(tbScreenPpd, updatePpd.data[i].id, updatePpd.data[i].idNum)
                           } else {
-                            console.log(789)
                             await SynchronizeApi.updateIdAndStatusFlag(tbScreenPpd, updatePpd.data[i].id, updatePpd.data[i].newId, updatePpd.data[i].idNum)
-                            console.log(89)
                             await SynchronizeApi.updateSumFieldId(updatePpd.data[i].id, updatePpd.data[i].newId, updatePpd.data[i].idNum, 'ppdId')
-                            console.log(10)
                           }
                         }
-                        console.log(3344)
                       }catch (e) {
-                        console.error(e)
+                        // console.error(e)
                         uni.hideLoading();
                         uni.showToast({
                           title:'上传失败',
@@ -898,8 +923,38 @@ export default {
                         })
                         return
                       }
-                      console.log(556)
                       await SynchronizeApi.updateErrorFlag(0, '4')
+                      //上传试剂消耗记录
+                      let consume=await ConsumeRecordApi.selectLocalData()
+                      // console.log(consume)
+                      if (consume && consume.length>0) {
+                        await SynchronizeApi.updateErrorFlag(1,'10')
+                        uni.showLoading({
+                          title: '上传中...',
+                          mask: true
+                        });
+                        let str = this.getCurrentDateString()
+                        // 处理数据
+                        for (let i = 0; i < consume.length; i++) {
+                          consume[i].padId = consume[i].padId ?? ('' + consume[i].id + uni.$person.id + str)
+                          if (consume[i].createTime) {
+                            consume[i].createTime = new Date(consume[i].createTime).getTime();
+                          }
+                          if (consume[i].updateTime) {
+                            consume[i].updateTime = new Date(consume[i].updateTime).getTime();
+                          }
+                        }
+                        // 上传试剂消耗
+                        let consumeResult = await ConsumeRecordApi.upload(consume)
+
+                        uni.hideLoading()
+                        uni.showToast({
+                          title: '上传试剂消耗成功',
+                          icon: 'success',
+                          duration: 2000
+                        })
+                      }
+                      await SynchronizeApi.updateErrorFlag(0,'10')
 // 上传汇总表
                       uni.hideLoading();
                       uni.showLoading({
@@ -933,7 +988,7 @@ export default {
                           }
                         }
                       }catch (e) {
-                        console.error(e)
+                        // console.error(e)
                         uni.hideLoading();
                         uni.showToast({
                           title:'上传失败',
@@ -956,7 +1011,7 @@ export default {
                           );
                         });
                       }catch (e) {
-                        console.error(e)
+                        // console.error(e)
                         uni.hideLoading();
                         uni.showToast({
                           title:'上传失败',

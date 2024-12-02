@@ -497,7 +497,6 @@ export default {
                                 delete newUpdateData[key];
                               }
                             });
-                            delete newUpdateData['id']
                             // 执行插入操作
                             dbUtils.addTabItem(
                               dbName,
@@ -614,7 +613,6 @@ export default {
                     delete updateData.id; // 删除 id 属性
                     await SynchronizeApi.updateTable(tbScreenPerson, updateData, personId);
                   } else {
-                    delete item['id']
                     // 无记录 -- 插入
                     await dbUtils.addTabItem(dbName, tbScreenPerson, item);
                     i++

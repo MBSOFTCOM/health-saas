@@ -195,13 +195,11 @@ export default {
 		this.getLastSynchronizeTime()
 		let screenPoint = uni.$user.screenPoint.toString().split(',');
 		if (screenPoint.length > 1) {
-			// console.log(111);
 			SynchronizeApi.getScreenPoint(uni.$user.name).then((res) => {
 				this.queryParams.screenPoint = res[0].screenPoint;
 				uni.$user.screenPoint = res[0].screenPoint;
 			});
 		} else {
-			// console.log(222);
 			this.queryParams.screenPoint = uni.$user.screenPoint;
 		}
 		this.selectedIndexs = [];
@@ -426,6 +424,7 @@ export default {
               }
               // 获取本地数据 上传到pc端
                 let local=await SynchronizeApi.getPersonData(this.queryParams.screenId, this.queryParams.screenPoint, 'not null',-1, this.pageSize)
+              // console.log(local)
 								// 筛查时间转换成时间戳
 								local.forEach((item) => {
 								  let startDate = new Date(item.screenStartTime);
@@ -440,15 +439,15 @@ export default {
                   title: '正在上传...',
                   mask: true
                 });
-                await this.updateErrorFlag(1, '0')
+                await SynchronizeApi.updateErrorFlag(1, '0')
 								// 上传
                 try {
                   for (let j = 0; j < local.length; j++) {
                     personEnd = personStart + pageSize
-                    let updateReq = localCollect.slice(personStart, personEnd)
+                    let updateReq = local.slice(personStart, personEnd)
                     personStart += pageSize
-                    let res = SynchronizeApi.updateTableData1(updateReq)
-                    if(!updateDataRes || updateDataRes.data ==null){
+                    let res =await SynchronizeApi.updateTableData1(updateReq)
+                    if(!res || res.data ==null){
                       throw new Error("未收到响应")
                     }
                     for (var i = 0; i < res.data.length; i++) {
@@ -516,8 +515,10 @@ export default {
 
               // 筛查时间转换成时间戳
               self.SyncData.forEach((item) => {
-                let date = new Date(item.screenTime);
-                item.screenTime = date.getTime();
+                let startDate = new Date(item.screenStartTime);
+                item.screenStartTime = startDate.getTime();
+                let endDate = new Date(item.screenEndTime);
+                item.screenEndTime = endDate.getTime();
               });
               // console.log(self.SyncData);
               uni.showLoading({

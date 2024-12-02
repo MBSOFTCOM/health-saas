@@ -88,7 +88,7 @@
 							placeholder="请填写电话"
 							v-model="FormData.tel"
 							maxlength="11"
-							@blur="telCheck(FormData.tel)"
+							@blur="telCheck('tel')"
 						/>
 					</view>
 					<view class="top-1">
@@ -317,7 +317,7 @@
 								placeholder="请填写电话"
 								v-model="FormData.guardianTel"
 								maxlength="11"
-								@blur="telCheck(FormData.guardianTel)"
+								@blur="telCheck('guardianTel')"
 							/>
 						</view>
 						<view class="bom-se">
@@ -342,6 +342,8 @@
 
 <script>
 
+import {getNextId} from "../../../utils/common";
+
 const ocrModule = uni.requireNativePlugin('YY-TomatoOCR');
 const modal = uni.requireNativePlugin('modal');
 import dbUtils from '@/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manage/dbUtils';
@@ -349,6 +351,7 @@ import { count, dbName, tbScreenPerson, updatePerson, repeatCheck,openTransactio
 import { selectDistrict, selectDistrictName,selectDistrictForSelect } from '@/utils/districtInitSql.js';
 import { ethnic } from '@/utils/dict.js';
 import { studentType } from '@/utils/dictData.js';
+import * as CommonApi from '@/utils/common.js'
 
 export default {
 	data() {
@@ -683,7 +686,7 @@ export default {
 							remark: this.FormData.remark??'',
 							statusFlag: 1
 						};
-						console.log(FormData1);
+						// console.log(FormData1);
 						//生成时间
 						this.conversionDate();
 						FormData1.year = uni.$person.year;
@@ -740,6 +743,10 @@ export default {
 							return;
 						}
 
+            let nextId =await CommonApi.getNextId(tbScreenPerson)
+            console.log(nextId)
+            FormData1.id=nextId
+            console.log(FormData1)
 						//插入数据
 						dbUtils.addTabItem(dbName, tbScreenPerson, FormData1);
 						//返回上一页
@@ -904,10 +911,10 @@ export default {
 			}
 		},
 		//手机号验证
-		telCheck(tel) {
+		telCheck(typeFlag) {
 			const regex = /^1[3456789]\d{9}$/;
-			if (!regex.test(tel)) {
-				tel = '';
+			if (!regex.test(this.FormData[typeFlag])) {
+        this.FormData[typeFlag] = '';
 				uni.$u.toast('请输入有效的手机号',3000);
 				return;
 			}

@@ -142,6 +142,7 @@ import dbUtils from '@/uni_modules/zjy-sqlite-manage/components/zjy-sqlite-manag
 import { updateOne } from '@/utils/screenSum.js';
 import ScreenImages from '@/utils/screenImages.js';
 import { commitTransaction, openTransaction, rollbackTransaction } from '@/utils/sqlite';
+import * as CommonApi from '@/utils/common.js'
 import { login } from '@/api/login';
 export default {
 	data() {
@@ -486,6 +487,10 @@ export default {
 							this.$modal.msgError('签名不能为空');
 							return;
 						}
+            let nextId =await CommonApi.getNextId(tbScreenCollect)
+            console.log(nextId)
+            collect.id=nextId
+            console.log(collect)
 						//插入采集数据
 						dbUtils.addTabItem(dbName, tbScreenCollect, collect);
 
@@ -531,6 +536,10 @@ export default {
 							gather.statusFlag=1
 							// console.log("aaa");
 							//插入
+              let nextId =await CommonApi.getNextId(tbScreenSum)
+              console.log(nextId)
+              gather.id=nextId
+              console.log(gather)
 							await dbUtils.addTabItem(dbName, tbScreenSum, gather);
 						} else {
 							gather.statusFlag=2

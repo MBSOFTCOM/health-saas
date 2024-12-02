@@ -847,12 +847,12 @@ public class ScreenPersonServiceImpl implements ScreenPersonService {
     @Override
     public List<ScreenPersonImportVO> createSampleData() {
         return List.of(
-                ScreenPersonImportVO.builder().order("1").name("张三").idNum("360888888888888888").nation(24).studentType(1)
+                ScreenPersonImportVO.builder().order("1").name("张xx").idNum("360888888888888888").nation(24).studentType(1)
                         .tel("18888888888").height(BigDecimal.valueOf(175.22)).weight(BigDecimal.valueOf(55.2))
                         .permanentAddress("重庆市重庆市辖区万州区高笋塘街道").permanentAddressProvince("重庆市")
                         .permanentAddressCity("重庆市辖区").permanentAddressCounty("万州区").permanentAddressTown("高笋塘街道")
                         .address("重庆市重庆市辖区万州区高笋塘街道").province("重庆市").city("重庆市辖区").county("万州区")
-                        .town("高笋塘街道").firstType(0).remark("备注").guardianTel("18888888888").build()
+                        .town("高笋塘街道").firstType(1).remark("备注").guardianTel("18888888888").build()
         );
     }
 

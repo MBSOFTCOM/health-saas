@@ -13,6 +13,7 @@ import {
   studentFourteen,
   teacher
 } from "./dictData";
+import {promise,dbName} from './sqlite'
 export const TYPE_MS='ms'
 export const TYPE_S='s'
 
@@ -56,6 +57,24 @@ export function showConfirm(content) {
   })
 }
 
+/**
+ * 获取某个表中小于 10 0000的id，如果没有就返回0
+ * @param table string
+ */
+export async function selectMaxIdleOneStandard(table) {
+  let sql=`select ifnull(max(id),0) num from ${table} where id < 100000`
+  return await promise(dbName,sql)
+}
+
+/**
+ *
+ * @param table
+ * @return {number}
+ */
+export async function getNextId(table){
+  let idObj=await selectMaxIdleOneStandard(table)
+  return idObj[0].num+1
+}
 /**
 * 参数处理
 * @param params 参数

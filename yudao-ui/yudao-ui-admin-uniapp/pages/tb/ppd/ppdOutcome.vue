@@ -448,53 +448,34 @@ export default {
 				count:1,
 				sourceType: ['camera', 'album'],
 				success: (resp) =>{
-          uni.showModal({
-            title: '提示',
-            content: '需要对该图片进行编辑吗？',
-            success: (res)=> {
-              if (res.confirm) {
-                uni.saveImageToPhotosAlbum({
-                  filePath: resp.tempFilePaths[0],
-                  success: (saveRes)=> {
-                    let path=saveRes.path.replace("file://","")
-                    imageEditor.imageEdit({
-                          isShowSticker: false, //是否展示贴图功能，默认为true
-                          path: path, //原始图片路径
-                          outputPath: `/storage/emulated/0/Pictures/${saveName}.jpg` //保存图片路径
-                        },
-                        (res) => {
-                          if (res.outputPath) {
-                            let path=resp.tempFilePaths[0]
-                            if(res.isImageEdit){
-                              path=res.outputPath
-                            }
-                            if (type) {
-                              // 红晕
-                              this.blushPhoto = path
-                              this.FormData.blushPhoto = path
-                            } else {
-                              this.scleromaPhoto = path;
-                              this.FormData.scleromaPhoto = path
-                            }
-                          }
-                        }
-                    );
+          uni.saveImageToPhotosAlbum({
+            filePath: resp.tempFilePaths[0],
+            success: (saveRes)=> {
+              let path=saveRes.path.replace("file://","")
+              imageEditor.imageEdit({
+                isShowSticker: false, //是否展示贴图功能，默认为true
+                path: path, //原始图片路径
+                outputPath: `/storage/emulated/0/Pictures/${saveName}.jpg` //保存图片路径
+              },
+              (res) => {
+                if (res.outputPath) {
+                  let path=resp.tempFilePaths[0]
+                  if(res.isImageEdit){
+                    path=res.outputPath
                   }
-                });
-              }
-              else {
-                if (type) {
-                  // 红晕
-                  this.blushPhoto = resp.tempFilePaths[0]
-                  this.FormData.blushPhoto = resp.tempFilePaths[0]
-                } else {
-                  this.scleromaPhoto = resp.tempFilePaths[0]
-                  this.FormData.scleromaPhoto = resp.tempFilePaths[0]
+                  if (type) {
+                    // 红晕
+                    this.blushPhoto = path
+                    this.FormData.blushPhoto = path
+                  } else {
+                    this.scleromaPhoto = path;
+                    this.FormData.scleromaPhoto = path
+                  }
                 }
               }
+              );
             }
-          })
-
+          });
 				}
 			});
 		},

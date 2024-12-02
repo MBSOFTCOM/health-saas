@@ -593,13 +593,12 @@ import { updateOne } from '@/utils/screenSum.js';
 import {
 	dbName,
   tbScreenConsumeRecord,
-	tbScreenPerson,
-	tbScreenCollect,
 	tbScreenPpd,
 	getPatientPage,
 	getGather,
 	tbScreenSum
 } from '@/utils/sqlite';
+import * as CommonApi from '@/utils/common.js'
 import {
 	getPpdList,
 	getPpdBypersonIdToOrder,
@@ -1012,17 +1011,26 @@ export default {
 
 					let staticsConsume = await consumeApi.staticsConsumeById(this.injectionReagent.id)  // 实际统计出已消耗的人次
 					let consumeNum = 0  // 库存中应消耗的试剂人次
-					if (!record || record.length==0){  // 第一次消耗一支试剂
-						// console.log(recordData);
-						//插入数据请求
-						await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
-						await dbUtils.addTabItem(dbName,tbScreenConsumeRecord,recordData)
+          let nextPpdId =await CommonApi.getNextId(tbScreenPpd)
+          console.log(nextPpdId)
+          console.log(inData)
+          let nextId =await CommonApi.getNextId(tbScreenConsumeRecord)
+          console.log(nextId)
+          console.log(recordData)
+          if (!record || record.length==0){  // 第一次消耗一支试剂
+            // console.log(recordData);
+            //插入数据请求
+            inData.id=nextPpdId
+            await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
+            recordData.id=nextId
+            await dbUtils.addTabItem(dbName,tbScreenConsumeRecord,recordData)
 					}else{
 						consumeNum=record[0].num * this.injectionReagent.reagentSpecsNum
 						console.log(consumeNum);
 						console.log(staticsConsume[0].num);
 						if (consumeNum>staticsConsume[0].num){
 						//插入数据请求
+              inData.id=nextPpdId
 							await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
 						}else if(consumeNum==staticsConsume[0].num){
 							if(this.injectionReagent.currentNumber - this.injectionReagent.changeNumber==0){
@@ -1034,9 +1042,11 @@ export default {
 								return
 							}
 							//插入数据请求
+              inData.id=nextPpdId
 							await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
 							await consumeRecordApi.updateRecordNum(Math.ceil((staticsConsume[0].num+1)/this.injectionReagent.reagentSpecsNum),this.injectionReagent.id, uni.$person.id,this.screenTime)
 						}else if (consumeNum<staticsConsume[0].num){  //
+              inData.id=nextPpdId
 							await dbUtils.addTabItem(dbName, tbScreenPpd, inData);
 							await consumeRecordApi.updateRecordNum(Math.ceil((staticsConsume[0].num+1)/this.injectionReagent.reagentSpecsNum),this.injectionReagent.id, uni.$person.id,this.screenTime)
 						}
@@ -1061,7 +1071,8 @@ export default {
 							statusFlag:1,
 							curFinish: 'ppd组'
 						};
-						console.log(gather);
+            let nextId =await CommonApi.getNextId(tbScreenSum)
+            gather.id=nextId
 						await dbUtils.addTabItem(dbName, tbScreenSum, gather);
 					} else {
 						//获取初始汇总表插入信息
