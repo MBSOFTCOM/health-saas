@@ -1425,7 +1425,7 @@ export async function updatePersonId(table,id,newId,idNum,screenId){
 	if(screenId){
 		screenIdSet=`,screenId=${screenId} `
 	}
-	let sql=`update ${table} set ${field}=${newId}${screenIdSet}${statusFlagSet} where ${field}=${id} and idNum=${idNum} `
+	let sql=`update ${table} set ${field}=${newId}${screenIdSet}${statusFlagSet} where ${field}=${id} and idNum='${idNum}' `
 	console.log(sql);
 	return promise(dbName,sql)
 }
@@ -1446,7 +1446,7 @@ export async function updatePersonIdOnly(table,id,newId,idNum,screenId){
 	if(screenId){
 		screenIdSet=`,screenId=${screenId} `
 	}
-	let sql=`update ${table} set ${field}=${newId}${screenIdSet} where ${field}=${id} and idNum=${idNum} `
+	let sql=`update ${table} set ${field}=${newId}${screenIdSet} where ${field}=${id} and idNum='${idNum}' `
 	console.log(sql);
 	return promise(dbName,sql)
 }
@@ -1469,7 +1469,7 @@ export async function updateIdAndStatusFlag(table,id,newId,idNum){
  * @param {string} idNum 患者身份证
  */
 export async function updateStatusFlagOnly(table,id,idNum){
-	let sql=`update ${table} set statusFlag=null where id=${id} and idNum=${idNum} `
+	let sql=`update ${table} set statusFlag=null where id=${id} and idNum='${idNum}' `
 	// console.log(sql);
 	return promise(dbName,sql)
 }
@@ -1481,7 +1481,7 @@ export async function updateStatusFlagOnly(table,id,idNum){
  * @param {string} field 分组表字段
  */
 export async function updateSumFieldId(id,newId,idNum,field){
-	let sql=`update ${tbScreenSum} set ${field}=${newId} where ${field}=${id} and idNum=${idNum} `
+	let sql=`update ${tbScreenSum} set ${field}=${newId} where ${field}=${id} and idNum='${idNum}' `
 	// console.log(sql);
 	return promise(dbName,sql)
 }
