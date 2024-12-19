@@ -27,7 +27,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="民族" prop="nation" label-width="120">
+          <el-form-item label="民族" prop="nation" >
             <el-select
               v-model="formData.nation"
               filterable
@@ -53,7 +53,6 @@
               v-model="formData.sex"
               placeholder="根据身份证自动获取"
               clearable
-              class="!w-200px"
               disabled
             >
               <el-option
@@ -370,7 +369,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="学生类型" prop="studentType" label-width="120" v-if="formData.firstType == 1 && formData.moreTempType.includes(1)">
+          <el-form-item label="学生类型" prop="studentType" v-if="formData.firstType == 1 && formData.moreTempType.includes(1)">
             <el-select
               v-model="formData.studentType"
               collapse-tags
@@ -457,7 +456,6 @@
               v-model="formData.screenType"
               placeholder="请选择筛查类型"
               clearable
-              class="!w-180px"
             >
               <el-option
                 v-for="dict in getIntDictOptions(DICT_TYPE.TB_SCREEN_TYPE)"
@@ -478,7 +476,6 @@
               filterable
               placeholder="请选择"
               clearable
-              class="!w-170px"
             >
               <el-option
                 v-for="item in deptList"
