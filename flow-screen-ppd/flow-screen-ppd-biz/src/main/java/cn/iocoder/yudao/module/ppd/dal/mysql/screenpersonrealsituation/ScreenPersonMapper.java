@@ -89,7 +89,6 @@ public interface ScreenPersonMapper extends BaseMapperX<ScreenPersonDO> {
      */
     default PageResult<ScreenPersonDO> selectPageForSynchronize(ScreenPersonPageReqVO reqVO) {
         LambdaQueryWrapperX<ScreenPersonDO> wrapper = new LambdaQueryWrapperX<ScreenPersonDO>()
-                .eqIfPresent(ScreenPersonDO::getIsScreened, 0)
                 .likeIfPresent(ScreenPersonDO::getScreenPoint, reqVO.getScreenPoint())
                 .eqIfPresent(ScreenPersonDO::getYear,reqVO.getYear())
                 .eqIfPresent(ScreenPersonDO::getScreenType,reqVO.getScreenType())
