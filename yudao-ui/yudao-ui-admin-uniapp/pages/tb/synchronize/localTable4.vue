@@ -359,7 +359,7 @@ export default {
 		},
     // 上传汇总表
     async uploadSum(){
-      let localSum=await SynchronizeApi.getLocalSumDataTypeAndYear(2,uni.$user.year)
+      let localSum=await SynchronizeApi.getLocalSumDataTypeAndYear(uni.$screenType,uni.$user.year)
       if(!localSum || localSum.length==0 || localSum == []){
         uni.showToast({
           title: '汇总表没有需要上传的数据',
@@ -405,8 +405,10 @@ export default {
             start=start+onceLength
             let sumResp=await SynchronizeApi.uploadSumData(updateReq);
             console.log(updateReq);
-            for (var i = 0; i < updateReq.length; i++) {
-              await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, updateReq[i].id, updateReq[i].idNum)
+            if (sumResp.data && sumResp.data.length>0){
+              for (let i = 0; i < sumResp.data.length; i++) {
+                await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp.data[i].id, sumResp.data[i].idNum)
+              }
             }
           }
         }catch(e){
@@ -422,8 +424,10 @@ export default {
       }else{
         try{
           let sumResp=await SynchronizeApi.uploadSumData(localSum);
-          for (var i = 0; i < localSum.length; i++) {
-            await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, localSum[i].id, localSum[i].idNum)
+          if (sumResp.data && sumResp.data.length>0){
+            for (let i = 0; i < sumResp.data.length; i++) {
+              await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp.data[i].id, sumResp.data[i].idNum)
+            }
           }
         }catch(e){
           uni.hideLoading();
@@ -542,11 +546,11 @@ export default {
                           }
                           if(updateDr && updateDr.data){
                             for (let i = 0; i < updateDr.data.length; i++) {
-                              if(res.data[i].id == res.data[i].newId){
-                                SynchronizeApi.updateStatusFlagOnly(tbScreenChestRadiograph,res.data[i].id,res.data[i].idNum)
+                              if(updateDr.data[i].id == updateDr.data[i].newId){
+                                SynchronizeApi.updateStatusFlagOnly(tbScreenChestRadiograph,updateDr.data[i].id,updateDr.data[i].idNum)
                               }else{
-                                await SynchronizeApi.updateIdAndStatusFlag(tbScreenChestRadiograph,res.data[i].id,res.data[i].newId,res.data[i].idNum)
-                                await SynchronizeApi.updateSumFieldId(res.data[i].id,res.data[i].newId,res.data[i].idNum,'chestRadiographId')
+                                await SynchronizeApi.updateIdAndStatusFlag(tbScreenChestRadiograph,updateDr.data[i].id,updateDr.data[i].newId,updateDr.data[i].idNum)
+                                await SynchronizeApi.updateSumFieldId(updateDr.data[i].id,updateDr.data[i].newId,updateDr.data[i].idNum,'chestRadiographId')
                               }
                             }
                           }
@@ -568,7 +572,7 @@ export default {
                         mask: true
                       });
                       //上传汇总表
-                      let localSum=await SynchronizeApi.getLocalSumDataTypeAndYear(2,uni.$user.year)
+                      let localSum=await SynchronizeApi.getLocalSumDataTypeAndYear(uni.$screenType,uni.$user.year)
                       await localSum.forEach(item=>{
                         item.padId=item.padId??(""+item.id+item.idNum)
                         if(item.lastCollectTime){
@@ -601,8 +605,10 @@ export default {
                             start = start + onceLength
                             let sumResp = await SynchronizeApi.uploadSumData(updateReq);
                             console.log(updateReq);
-                            for (let i = 0; i < sumResp.length; i++) {
-                              await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp[i].id, sumResp[i].idNum)
+                            if (sumResp.data && sumResp.data.length>0){
+                              for (let i = 0; i < sumResp.data.length; i++) {
+                                await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp.data[i].id, sumResp.data[i].idNum)
+                              }
                             }
                           }
                         } catch (e) {
@@ -618,8 +624,10 @@ export default {
 // 汇总表总数据量小于200
                         try{
                           let sumResp=await SynchronizeApi.uploadSumData(localSum);
-                          for (var i = 0; i < sumResp.length; i++) {
-                            await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp[i].id, sumResp[i].idNum)
+                          if (sumResp.data && sumResp.data.length>0){
+                            for (let i = 0; i < sumResp.data.length; i++) {
+                              await SynchronizeApi.updateStatusFlagOnly(tbScreenSum, sumResp.data[i].id, sumResp.data[i].idNum)
+                            }
                           }
                         }catch(e){
                           uni.hideLoading();
@@ -666,7 +674,8 @@ export default {
                   }
                 }
               });
-            } else {
+            }
+            else {
               let self = this;
               uni.showModal({
                 title: '提示信息',
