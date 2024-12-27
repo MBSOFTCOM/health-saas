@@ -97,16 +97,17 @@ const screenid = ref() //筛查编号
 const imageType = ref() //图片类型
 const Year = ref()
 const CreenType = ref()
-
+const idnum = ref()
 
 /** 打开弹窗 */
-const open = async (type: number, personId: number, screenOrder: number, screenId: string, year, screenType) => {
+const open = async (type: number, personId: number, screenOrder: number, screenId: string, year, screenType,idNum:string) => {
   personid.value = personId
   screenorder.value = screenOrder
   screenid.value = screenId
   imageType.value = type
   Year.value = year
   CreenType.value = screenType
+  idnum.value = idNum
   dialogVisible.value = true
   // 根据类型设置对话框标题
   switch (type) {
@@ -165,6 +166,23 @@ const handleExceed: UploadProps['onExceed'] = (files) => {
 const uploadImage = async (params) => {
   try {
     if (imageId.value){
+      if (imageType.value==2){
+        const res = await ScreenPersonApi.uploadCtImage(
+          {
+            file: params.file ,
+            personId : personid.value,
+            idNum : idnum.value,
+            screenOrder : screenorder.value,
+            screenId : screenid.value,
+            imageType : imageType.value,
+            year : Year.value,
+            screenType : SreenType.value
+          }
+        )
+        message.success("照片上传成功！")
+        imageUrl.value = res.data
+        srcList.value = [res.data]
+      }
       const res = await ScreenPersonApi.uploadImage({ file: params.file , imageId: imageId.value})
       message.success("照片上传成功！")
       imageUrl.value = res.data

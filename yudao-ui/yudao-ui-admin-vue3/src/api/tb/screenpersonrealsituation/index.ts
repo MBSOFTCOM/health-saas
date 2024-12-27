@@ -104,7 +104,13 @@ export const ScreenPersonApi = {
       data: data,
     })
   },
-
+  uploadCtImage: async (data) => {
+    console.log(data)
+    return await request.upload({
+      url: `/tb/screen-person/update-ct-image`,
+      data: data,
+    })
+  },
   // 上传图片
   uploadImage2: async (data) => {
     return await request.upload({
