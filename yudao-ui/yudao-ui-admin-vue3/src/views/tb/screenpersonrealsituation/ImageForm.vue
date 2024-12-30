@@ -180,47 +180,48 @@ const handleExceed: UploadProps['onExceed'] = (files) => {
 //上传照片
 const uploadImage = async (params) => {
   try {
-    if (imageId.value){
-      if (imageType.value==2){
-        const res = await ScreenPersonApi.uploadCtImage(
-          {
-            file: params.file ,
-            personId : personid.value,
-            idNum : idNum.value,
-            screenOrder : screenorder.value,
-            screenId : screenid.value,
-            imageType : imageType.value,
-            year : Year.value,
-            screenType : ScreenType.value
-          }
-        )
-        message.success("照片上传成功！")
-        imageUrl.value = res.data
-        srcList.value = [res.data]
-      }else {
+    if (imageType.value==2){
+    const res = await ScreenPersonApi.uploadCtImage(
+      {
+        file: params.file ,
+        personId : personid.value,
+        idNum : idNum.value,
+        screenOrder : screenorder.value,
+        screenId : screenid.value,
+        imageType : imageType.value,
+        year : Year.value,
+        screenType : ScreenType.value
+      }
+    )
+    message.success("照片上传成功！")
+    imageUrl.value = res.data
+    srcList.value = [res.data]
+  }else {
+      if (imageId.value) {
         const res = await ScreenPersonApi.uploadImage({file: params.file, imageId: imageId.value})
         message.success("照片上传成功！")
         imageUrl.value = res.data
         srcList.value = [res.data]
+
+      } else {
+        if (screenid.value === null) {
+          return message.error("该患者无筛查编号，不允许上传照片！"
+          )
+        }
+        const res = await ScreenPersonApi.uploadImage2(
+          {
+            file: params.file,
+            personId: personid.value,
+            screenOrder: screenorder.value,
+            screenId: screenid.value,
+            imageType: imageType.value,
+            year: Year.value,
+            screenType: SreenType.value
+          })
+        message.success("照片上传成功！")
+        imageUrl.value = res.data
+        srcList.value = [res.data]
       }
-    }else {
-      if (screenid.value === null){
-        return message.error("该患者无筛查编号，不允许上传照片！"
-        )
-      }
-      const res = await ScreenPersonApi.uploadImage2(
-        {
-          file: params.file,
-          personId: personid.value,
-          screenOrder: screenorder.value,
-          screenId: screenid.value,
-          imageType: imageType.value,
-          year: Year.value,
-          screenType: SreenType.value
-        })
-      message.success("照片上传成功！")
-      imageUrl.value = res.data
-      srcList.value = [res.data]
     }
   }catch (error){
     message.error("图片上传失败!")
