@@ -332,7 +332,7 @@
               <template #default="scope">
                 <el-button
                   link type="primary"
-                  @click="openImage(1, formData.id,scope.row.screenOrder,formData.screenId,formData.year,formData.screenType)">
+                  @click="openImage(1, formData.id,scope.row.screenOrder,formData.screenId,formData.year,formData.screenType,formData.idNum)">
                   查看DR
                 </el-button>
               </template>
@@ -355,7 +355,7 @@
               <template #default="scope">
                 <el-button
                   link type="primary"
-                  @click="openImage(2,formData.id,scope.row.screenOrder,formData.screenId,formData.year,formData.screenType)">
+                  @click="openImage(2,formData.id,scope.row.screenOrder,formData.screenId,formData.year,formData.screenType,formData.idNum)">
                   查看CT
                 </el-button>
               </template>
@@ -685,21 +685,21 @@ const sputumExaminationType = (value) => {
 
 /** 查看图片 对话框*/
 const imageRef = ref()
-const openImage = (type: number, personId: number, screenOrder: number, screenId: string, year: number, screenType:number) => {
-  imageRef.value.open(type, personId, screenOrder, screenId, year, screenType)
+const openImage = (type: number, personId: number, screenOrder: number, screenId: string, year: number, screenType:number,idNum:string) => {
+  imageRef.value.open(type, personId, screenOrder, screenId, year, screenType,idNum)
 }
 
 /** 操作分发 */
 const handleCommand = (command: string, row: any) => {
   switch (command) {
     case 'checkPPD':
-      openImage(16, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType)
+      openImage(16, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType,formData.value.idNum)
       break
     case 'checkInduration':
-      openImage(17, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType)
+      openImage(17, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType,formData.value.idNum)
       break
     case 'checkFlush':
-      openImage(18, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType)
+      openImage(18, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType,formData.value.idNum)
       break
     default:
       break

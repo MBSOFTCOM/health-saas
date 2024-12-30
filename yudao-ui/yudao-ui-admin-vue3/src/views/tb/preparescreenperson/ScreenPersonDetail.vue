@@ -712,13 +712,13 @@ const openImage = (type: number, personId: number, screenOrder: number, screenId
 const handleCommand = (command: string, row: any) => {
   switch (command) {
     case 'checkPPD':
-      openImage(16, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType)
+      openImage(16, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType,formData.value.idNum)
       break
     case 'checkInduration':
-      openImage(17, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType)
+      openImage(17, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType,formData.value.idNum)
       break
     case 'checkFlush':
-      openImage(18, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType)
+      openImage(18, formData.value.id, row.screenOrder, formData.value.screenId, formData.value.year, formData.value.screenType,formData.value.idNum)
       break
     default:
       break

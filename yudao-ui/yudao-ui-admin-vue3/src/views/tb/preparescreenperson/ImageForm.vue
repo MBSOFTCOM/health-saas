@@ -97,6 +97,7 @@ const screenid = ref() //筛查编号
 const imageType = ref() //图片类型
 const Year = ref()
 const CreenType = ref()
+const ScreenType = ref()
 const idnum = ref()
 
 /** 打开弹窗 */
@@ -107,6 +108,7 @@ const open = async (type: number, personId: number, screenOrder: number, screenI
   imageType.value = type
   Year.value = year
   CreenType.value = screenType
+  ScreenType.value = screenType
   idnum.value = idNum
   dialogVisible.value = true
   // 根据类型设置对话框标题
@@ -176,17 +178,18 @@ const uploadImage = async (params) => {
             screenId : screenid.value,
             imageType : imageType.value,
             year : Year.value,
-            screenType : SreenType.value
+            screenType : ScreenType.value
           }
         )
         message.success("照片上传成功！")
         imageUrl.value = res.data
         srcList.value = [res.data]
+      }else {
+        const res = await ScreenPersonApi.uploadImage({file: params.file, imageId: imageId.value})
+        message.success("照片上传成功！")
+        imageUrl.value = res.data
+        srcList.value = [res.data]
       }
-      const res = await ScreenPersonApi.uploadImage({ file: params.file , imageId: imageId.value})
-      message.success("照片上传成功！")
-      imageUrl.value = res.data
-      srcList.value = [res.data]
     }else {
       const res = await ScreenPersonApi.uploadImage2(
         {
