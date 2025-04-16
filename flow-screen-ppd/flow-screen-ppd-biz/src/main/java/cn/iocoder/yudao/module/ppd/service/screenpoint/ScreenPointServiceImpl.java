@@ -127,6 +127,10 @@ public class ScreenPointServiceImpl implements ScreenPointService {
     public void updateScreenPoint(ScreenPointSaveReqVO updateReqVO) {
         // 校验存在
         validateScreenPointExists(updateReqVO.getId());
+        ScreenPointDO screenPointDO = screenPointMapper.selectById(updateReqVO.getId());
+        if (updateReqVO.getYear() !=null && !screenPointDO.getYear().equals(updateReqVO.getYear())){
+            throw exception(SCREEN_POINT_YEAR_NOT_UPDATE);
+        }
         // 更新
         ScreenPointDO updateObj = BeanUtils.toBean(updateReqVO, ScreenPointDO.class);
         screenPointMapper.updateById(updateObj);
@@ -291,9 +295,9 @@ public class ScreenPointServiceImpl implements ScreenPointService {
         Long loginUserId = SecurityFrameworkUtils.getLoginUserId();
         List<String> roleCode = roleService.getRoleCode(loginUserId);
         // 解决 角色 不同，进行数据分割
-        resolveRole(roleCode, loginUserId, screenPointDOPageResult);
+        PageResult<ScreenPointDO> result = resolveRole(roleCode, loginUserId, screenPointDOPageResult, pageReqVO);
 
-        return screenPointDOPageResult;
+        return result;
     }
 
     @Override
@@ -304,9 +308,9 @@ public class ScreenPointServiceImpl implements ScreenPointService {
             Long loginUserId = SecurityFrameworkUtils.getLoginUserId();
             List<String> roleCode = roleService.getRoleCode(loginUserId);
             // 解决 角色 不同，进行数据分割
-            resolveRole(roleCode, loginUserId, pageResult);
+            PageResult<ScreenPointDO> result = resolveRole(roleCode, loginUserId, pageResult, pageReqVO);
 
-            List<ScreenPointDO> workerList = pageResult.getList();
+            List<ScreenPointDO> workerList = result.getList();
 
             for (ScreenPointDO obj : workerList) {
                 // 处理 worker 字段
@@ -683,7 +687,7 @@ public class ScreenPointServiceImpl implements ScreenPointService {
     }
 
     // 解决 角色 不同，进行数据分割
-    private void resolveRole(List<String> roleCode, Long loginUserId, PageResult<ScreenPointDO> screenPointDOPageResult){
+    private PageResult<ScreenPointDO> resolveRole(List<String> roleCode, Long loginUserId, PageResult<ScreenPointDO> screenPointDOPageResult,ScreenPointPageReqVO pageReqVO){
         if (ObjectUtil.isNotNull(roleCode) && ObjectUtil.isNotEmpty(roleCode)) {
             boolean hasManagerRole = false;
             boolean hasCaptainRole = false;
@@ -712,36 +716,26 @@ public class ScreenPointServiceImpl implements ScreenPointService {
                 DeptDO dept = deptService.getDept(myDept);
                 // 把所属部门添加进去
                 childDeptList.add(BeanUtils.toBean(dept, DeptVO.class));
-                // 遍历初始分页结果，筛选符合部门条件的数据
-                if (screenPointDOPageResult.getList().size() > 0){
-                    for (ScreenPointDO obj : screenPointDOPageResult.getList()) {
-                        for (DeptVO deptVO : childDeptList) {
-                            if (obj.getScreenDept().equals(deptVO.getName())) {
-                                filteredList.add(obj);
-                                // 找到匹配部门后，不再继续比较下一个部门
-                                break;
-                            }
-                        }
-                    }
-                    // 更新分页结果为符合部门条件的列表
-                    screenPointDOPageResult.setList(filteredList);
+                Integer pageNo = pageReqVO.getPageNo();
+                Integer pageSize = pageReqVO.getPageSize();
+                if (pageNo!=null && pageNo > 0 && pageSize !=null && pageSize > 0){
+                    pageReqVO.setPageNo((pageNo-1) * pageSize);
+                    List<ScreenPointDO> screenPointDOS = screenPointMapper.selectPageByChildDept(pageReqVO, childDeptList);
+                    Long aLong = screenPointMapper.countByChildDept(pageReqVO, childDeptList);
+                    PageResult<ScreenPointDO> result = new PageResult<>(screenPointDOS, aLong);
+                    return result;
                 }
             }
 
             // 如果具有队长角色
             if (hasCaptainRole){
-                // 遍历初始分页结果
-                if (screenPointDOPageResult.getList().size() > 0){
-                    for (ScreenPointDO obj : screenPointDOPageResult.getList()) {
-                        if (Long.valueOf(obj.getWorker()).equals(loginUserId)){
-                            filteredList.add(obj);
-                        }
-                    }
-                    // 更新分页结果为符合部门条件的列表
-                    screenPointDOPageResult.setList(filteredList);
-                }
+                pageReqVO.setScreenDept(null);
+                pageReqVO.setWorker(loginUserId+"");
+                PageResult<ScreenPointDO> result = screenPointMapper.selectPage(pageReqVO);
+                return result;
             }
         }
+        return null;
     }
 
     // 将用户id转化成昵称，在筛查点导出时

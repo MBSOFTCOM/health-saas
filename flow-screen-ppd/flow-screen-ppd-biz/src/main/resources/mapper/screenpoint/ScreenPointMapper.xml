@@ -113,6 +113,36 @@
         where worker=#{userId}
         and deleted=0
     </select>
+    <select id="selectPageByChildDept"
+            resultType="cn.iocoder.yudao.module.ppd.dal.dataobject.screenpoint.ScreenPointDO">
+        select *
+        from tb_screen_point
+        where deleted =0
+        <if test="reqVO.year !=null">year = #{reqVO.year}</if>
+        <if test="reqVO.name !=null and reqVO.name !=''">name = #{reqVO.name}</if>
+        <if test="deptId != null and deptId.size() > 0">
+            AND screen_dept IN
+            <foreach item="item" index="index" collection="deptId" open="(" separator="," close=")">
+                #{item.name}
+            </foreach>
+        </if>
+        <if test="reqVO.pageNo != null and reqVO.pageSize !=null">
+            limit #{reqVO.pageNo},#{reqVO.pageSize}
+        </if>
+    </select>
+    <select id="countByChildDept" resultType="java.lang.Long">
+        select count(*)
+        from tb_screen_point
+        where deleted =0
+        <if test="reqVO.year !=null">year = #{reqVO.year}</if>
+        <if test="reqVO.name !=null and reqVO.name !=''">name = #{reqVO.name}</if>
+        <if test="deptId != null and deptId.size() > 0">
+            AND screen_dept IN
+            <foreach item="item" index="index" collection="deptId" open="(" separator="," close=")">
+                #{item.name}
+            </foreach>
+        </if>
+    </select>
 
 
 </mapper>

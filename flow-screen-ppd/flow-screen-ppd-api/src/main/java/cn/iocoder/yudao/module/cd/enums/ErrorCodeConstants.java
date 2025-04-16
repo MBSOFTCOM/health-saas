@@ -40,6 +40,7 @@ public interface ErrorCodeConstants{
     // ========== 筛查点 ==========
     ErrorCode SCREEN_POINT_NOT_EXISTS = new ErrorCode(10006, "筛查点不存在");
     ErrorCode SCREEN_POINT_EXISTS = new ErrorCode(100062, "该年度该筛查单位的筛查点已存在");
+    ErrorCode SCREEN_POINT_YEAR_NOT_UPDATE = new ErrorCode(100063, "筛查点的年份不允许修改");
     ErrorCode SCREEN_POINT_EXISTS2 = new ErrorCode(100062, "筛查点已存在");
 
     ErrorCode SCREEN_DIAGNOSIS_NOT_EXISTS = new ErrorCode(10006, "诊断组不存在");

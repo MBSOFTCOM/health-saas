@@ -31,10 +31,12 @@ public interface ScreenPointMapper extends BaseMapperX<ScreenPointDO> {
         return selectPage(reqVO, new LambdaQueryWrapperX<ScreenPointDO>()
                 .likeIfPresent(ScreenPointDO::getName, reqVO.getName())
                 .eqIfPresent(ScreenPointDO::getYear, reqVO.getYear())
+                .eqIfPresent(ScreenPointDO::getWorker,reqVO.getWorker())
                 .eqIfPresent(ScreenPointDO::getScreenDept, reqVO.getScreenDept())
                 .orderByDesc(ScreenPointDO::getId));
     }
-
+    List<ScreenPointDO> selectPageByChildDept(@Param("reqVO") ScreenPointPageReqVO reqVO,@Param("deptId") List<DeptVO> deptId);
+    Long countByChildDept(@Param("reqVO") ScreenPointPageReqVO reqVO,@Param("deptId") List<DeptVO> deptId);
     ScreenPointDO selectByName(String name);
     ScreenPointDO selectByPointName(String name);
 
