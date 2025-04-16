@@ -439,7 +439,8 @@ export default {
 					if (this.patient.isNew == '1') {
 						//修改摸底人员的筛查状态
 						const personData = {
-							isScreened: 2
+							isScreened: 2,
+              statusFlag: 2
 						};
 						await dbUtils.updateSQL(dbName, tbScreenPerson, personData, 'id', parseInt(this.patient.id));
 
@@ -488,9 +489,7 @@ export default {
 							return;
 						}
             let nextId =await CommonApi.getNextId(tbScreenCollect)
-            console.log(nextId)
             collect.id=nextId
-            console.log(collect)
 						//插入采集数据
 						dbUtils.addTabItem(dbName, tbScreenCollect, collect);
 

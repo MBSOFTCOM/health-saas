@@ -744,9 +744,7 @@ export default {
 						}
 
             let nextId =await CommonApi.getNextId(tbScreenPerson)
-            console.log(nextId)
             FormData1.id=nextId
-            console.log(FormData1)
 						//插入数据
 						dbUtils.addTabItem(dbName, tbScreenPerson, FormData1);
 						//返回上一页

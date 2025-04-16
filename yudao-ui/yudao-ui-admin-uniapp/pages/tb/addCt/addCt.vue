@@ -598,9 +598,7 @@ export default {
 			try {
 				// console.log(this.formData);
         let nextId =await CommonApi.getNextId(tbScreenChestRadiograph)
-        console.log(nextId)
         this.formData.id=nextId
-        console.log(this.formData)
 				this.formData.statusFlag=1
 				await this.$dbUtils.addTabItem(dbName, tbScreenChestRadiograph, this.formData);
 				let param = {};
@@ -621,9 +619,7 @@ export default {
 				if (data[0].count == 0) {
 					param.statusFlag=1
           let nextId =await CommonApi.getNextId(tbScreenSum)
-          console.log(nextId)
           param.id=nextId
-          console.log(param)
 					await insertToSum(param, this.$dbUtils);
 				} else {
 					let personId = param.personId;
