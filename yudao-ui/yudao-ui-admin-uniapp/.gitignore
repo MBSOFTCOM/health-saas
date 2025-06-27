@@ -11,6 +11,6 @@
 /.vscode/*
 /.hbuilderx/*
 
-package-lock.json
+#package-lock.json
 yarn.lock
 

@@ -2,10 +2,17 @@ server:
   port: 48080
 
 --- #################### 数据库相关配置 ####################
-ip:
+common-set:
   base-url: 172.16.1.139
+  mysql:
+    url: 172.16.1.139
+    port: 3306
   minio:
+    url: 172.16.1.139
     port: 9000
+    endPoint: http://${common-set.minio.url}:${common-set.minio.port}
+    accessKey: jZ4nUzvZtQZju2rvWyKZ
+    secretKey: 0vFdJmU1JfVtjibh54QHHX9iIJjfLR4u8w3e077k
 
 spring:
   # 数据源配置项
@@ -44,12 +51,12 @@ spring:
       primary: master
       datasource:
         master:
-          url: jdbc:mysql://mysql-tbStudentScreen:3306/tb_student_screen?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true # MySQL Connector/J 8.X 连接的示例
+          url: jdbc:mysql://mysql-tbStudentScreen:${common-set.mysql.port}/tb_student_screen?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true # MySQL Connector/J 8.X 连接的示例
           username: student_screen
           password: student_screen_ppd_PRO_2023
         slave: # 模拟从库，可根据自己需要修改 # 模拟从库，可根据自己需要修改
           lazy: true # 开启懒加载，保证启动速度
-          url: jdbc:mysql://mysql-tbStudentScreen:3306/tb_student_screen?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true # MySQL Connector/J 8.X 连接的示例
+          url: jdbc:mysql://mysql-tbStudentScreen:${common-set.mysql.port}/tb_student_screen?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true # MySQL Connector/J 8.X 连接的示例
           username: student_screen
           password: student_screen_ppd_PRO_2023
 
@@ -143,7 +150,8 @@ spring:
 logging:
   file:
     name: ${user.home}/logs/${spring.application.name}.log # 日志文件名，全路径
-
+  level:
+    cn.iocoder.yudao.module: debug
 --- #################### 微信公众号相关配置 ####################
 wx: # 参见 https://github.com/Wechat-Group/WxJava/blob/develop/spring-boot-starters/wx-java-mp-spring-boot-starter/README.md 文档
   mp:
