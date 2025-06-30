@@ -50,8 +50,8 @@ export default {
 		},
 		// 初始化数据库
 		initDateBase(){
-			dbUtils.openDb("tb_screen")
-			dbUtils.init("tb_screen",tableSqls)
+			dbUtils.openDb("tb_school_screen")
+			dbUtils.init("tb_school_screen",tableSqls)
 			// this.$dbUtils.closeSQL("th_screen")
 		},
 		// 初始化应用
