@@ -136,7 +136,7 @@ export default {
 		width: 75vw;
 		position: absolute;
 		top: 25%;
-		left: 21%;
+		left: 22%;
 		.bgimg{
 			width:210px;
 			height:220px;
@@ -146,7 +146,7 @@ export default {
 .bom-img{
 	position: absolute;
 	top: 65%;
-	left: 21%;
+	left: 22%;
 	width:670px;
 	height:180px;
 }

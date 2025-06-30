@@ -102,23 +102,23 @@
 				<tr>
 					<td class="text-left" colspan="2">1)咳嗽、咳痰(超过2周)</td>
 					<td>{{ person.cough ? '有' : '无' }}</td>
-					<td class="text-left">5)发热</td>
-					<td>{{ person.fever ? '有' : '无' }}</td>
+					<td  class="text-left">2)咳血或血痰</td>
+					<td>{{ person.hemoptysis ? '有' : '无' }}</td>
 				</tr>
 				<tr>
-					<td colspan="2" class="text-left">2)咳血或血痰</td>
-					<td>{{ person.hemoptysis ? '有' : '无' }}</td>
+					<td class="text-left" colspan="2">3)发热</td>
+					<td>{{ person.fever ? '有' : '无' }}</td>
+					<td class="text-left">4)胸痛</td>
+					<td>{{ person.chestPain ? '有' : '无' }}</td>
+				</tr>
+				<tr>
+					<td class="text-left" colspan="2">5)乏力、盗汗</td>
+					<td>{{ person.weak ? '有' : '无' }}</td>
 					<td class="text-left">6)食欲不振</td>
 					<td>{{ person.anorexia ? '有' : '无' }}</td>
 				</tr>
 				<tr>
-					<td class="text-left" colspan="2">3)乏力、盗汗</td>
-					<td>{{ person.weak ? '有' : '无' }}</td>
-					<td class="text-left">7)胸痛</td>
-					<td>{{ person.chestPain ? '有' : '无' }}</td>
-				</tr>
-				<tr>
-					<td colspan="2" class="text-left">4)体重减轻(超过6斤)</td>
+					<td colspan="2" class="text-left">7)体重减轻(超过6斤)</td>
 					<td>{{ person.weightLoss ? '有' : '无' }}</td>
 					<td></td>
 					<td></td>

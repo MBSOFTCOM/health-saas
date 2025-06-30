@@ -98,8 +98,8 @@
 						icon="plus"
 						iconColor="rgba(36, 93, 209, 1)"
 					>
-						<span v-if="!this.formData.chestRadiograph">采集CT照片</span>
-						<span v-if="this.formData.chestRadiograph">修改CT照片</span>
+						<span v-if="!this.formData.computedTomography">采集CT照片</span>
+						<span v-if="this.formData.computedTomography">修改CT照片</span>
 					</up-button>
 				</view>
 			</view>
@@ -287,13 +287,13 @@ export default {
 			let drResult = '';
 			switch (label) {
 				case '修改':
-					drResult = '新增患者';
+					drResult = '新增CT结果';
 					break;
 				case '详情':
-					drResult = '修改患者';
+					drResult = '修改CT结果';
 					break;
 				default:
-					drResult = '新增患者';
+					drResult = '新增CT结果';
 			}
 			const screenNames = {
 				1: '常规筛查',

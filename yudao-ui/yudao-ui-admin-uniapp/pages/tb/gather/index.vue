@@ -892,7 +892,6 @@ export default {
 					let patientPageRes = results[0];
 					this.total = patientPageRes.total;
 					let collectRes = results[1];
-
 					// 使用 Promise.all 来处理数组中的每个元素
 					let resultPromises = patientPageRes.data.map(async (patient) => {
 						let orderTime = collectRes

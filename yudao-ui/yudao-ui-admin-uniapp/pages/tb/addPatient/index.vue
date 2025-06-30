@@ -53,7 +53,7 @@
 						/>
 					</view>
 					<view class="top-1">
-						<span style="margin-left: 80px; display: inline-block">身高(cm)</span>
+						<span style="margin-left: 93px; display: inline-block">身高(cm)</span>
 						<input
 							class="uni-input"
 							confirm-type="search"
@@ -178,7 +178,7 @@
 						</view>
 					</view>
 				</view>
-				<view class="bom-1-2">
+				<view class="bom-1-2" style="margin-left: 4px;">
 					<span>详细地址</span>
 					<input
 						class="address-input"
@@ -233,7 +233,7 @@
 						</view>
 					</view>
 				</view>
-				<view class="bom-1-2">
+				<view class="bom-1-2" style="margin-left: 4px;">
 					<span>详细地址</span>
           <span class="red-badge">*</span>
 					<input
@@ -270,7 +270,7 @@
 							@change="moreTypeChange"
 						></uni-data-checkbox>
 					</view>
-					<view class="bom-p1" v-if="this.crowdVal == 4">
+					<view class="bom-p1" v-if="this.crowdVal == 4" style="margin-left: 4px;">
 						<span style="display: inline-block; margin-left: -5px">多人群分类</span>
 						<uni-data-checkbox
 							style="margin-left: 13px"
@@ -281,7 +281,7 @@
 					</view>
 					<view class="bom-bm">
 						<view class="bom-se">
-							<span style="width: 230rpx;">单位(学校)</span>
+							<span style="width: 180rpx;">单位(学校)</span>
 							<input
 								class="address-input"
 								confirm-type="search"
@@ -1247,7 +1247,7 @@ export default {
 		.bom-1-3 {
 			display: flex;
 			align-items: center;
-			margin-left: 32px;
+			margin-left: 40px;
 			margin-bottom: 5px;
 			.u-text {
 				margin-left: 15px;
