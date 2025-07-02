@@ -3,7 +3,10 @@
 		<view class="sidebar-container">
 			<!-- 侧边栏 -->
 			<view class="sidebar" style="background-color: #fff; color: #000; height: 115vh; width: 13vw">
-				<image class="sidebar-header" src="../../../static/images/tb/logo.png" mode=""></image>
+				<!-- <image class="sidebar-header" src="../../../static/images/tb/logo.png" mode=""></image> -->
+				<view class="text">
+					同步工作队伍
+				</view>
 				<view class="sidebar-menu">
 					<view
 						v-for="(item, index) in sidebarItems"
@@ -1595,6 +1598,13 @@ updateArray(number) {
 .sidebar-main {
 	background: rgba(244, 247, 252, 1);
 	display: flex;
+	.text{
+		font-size: 45rpx;
+		color: rgba(36, 93, 209, 1);
+		text-align: center;
+		font-weight: 600;
+		padding-top: 10rpx;
+	}
 	.sidebar-container {
 		width: 10vw;
 	}
