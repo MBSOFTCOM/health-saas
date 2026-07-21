@@ -1,0 +1,19 @@
+{
+    "id": "w-select",
+    "name": "下拉选择器，选择框，支持单选、多选、筛选和清空功能，支持vue2和vue3",
+    "displayName": "下拉选择器，选择框，支持单选、多选、筛选和清空功能，支持vue2和vue3",
+    "version": "1.2.3",
+    "description": "用于下拉选择，使用v-model双向绑定值",
+    "keywords": [
+        "下拉选择框",
+        "单选框",
+        "vue2",
+        "vue3"
+    ],
+    "dcloudext": {
+        "category": [
+            "前端组件",
+            "通用组件"
+        ]
+    }
+}

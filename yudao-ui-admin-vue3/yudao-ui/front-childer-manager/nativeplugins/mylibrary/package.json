@@ -1,0 +1,21 @@
+{
+	"name": "mylibrary",
+	"id": "mylibrary",
+	"version": "1.0.0",
+	"description": "自定义插件",
+	"_dp_type": "nativeplugin",
+	"_dp_nativeplugin": {
+		"android": {
+			"plugins": [{
+				"type": "module",
+				"name": "ocr-method",
+				"class": "com.flow.ocr.OCRMethod"
+			}],
+			"integrateType": "aar",
+			"parameters": {},
+			"dependencies": [
+				"io.mx51:spi-client-java:2.9.5"
+			]
+		}
+	}
+}

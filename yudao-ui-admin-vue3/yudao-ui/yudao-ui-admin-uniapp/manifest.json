@@ -1,0 +1,159 @@
+{
+    "name" : "学校TB筛查管理系统",
+    "appid" : "__UNI__76CBDE0",
+    "description" : "",
+    "versionName" : "1.0.0",
+    "versionCode" : 11,
+    "transformPx" : false,
+    "app-plus" : {
+        "usingComponents" : true,
+        "nvueCompiler" : "uni-app",
+        "splashscreen" : {
+            "alwaysShowBeforeRender" : true,
+            "waiting" : true,
+            "autoclose" : true,
+            "delay" : 0
+        },
+        "modules" : {
+            "Camera" : {},
+            "SQLite" : {},
+            "Barcode" : {}
+        },
+        "distribute" : {
+            "android" : {
+                "permissions" : [
+                    "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
+                    "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
+                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.CAMERA\"/>",
+                    "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
+                    "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
+                    "<uses-feature android:name=\"android.hardware.camera\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
+                ],
+                "minSdkVersion" : 21
+            },
+            "ios" : {
+                "dSYMs" : false
+            },
+            "sdkConfigs" : {
+                "ad" : {}
+            },
+            "splashscreen" : {
+                "useOriginalMsgbox" : true
+            }
+        },
+        "nativePlugins" : {
+            "mylibrary" : {
+                "__plugin_info__" : {
+                    "name" : "mylibrary",
+                    "description" : "自定义插件",
+                    "platforms" : "Android",
+                    "url" : "",
+                    "android_package_name" : "",
+                    "ios_bundle_id" : "",
+                    "isCloud" : false,
+                    "bought" : -1,
+                    "pid" : "",
+                    "parameters" : {}
+                }
+            },
+            "Mpaas-Scan" : {
+                "AppId" : "ALIPUBC91158C031428",
+                "License" : "b94Kl+KXN+0uzW/fWLmvf8oyBzBkeBQlvqeCAeWGGuKaGfQTPK4rOjUGAqAzCjBuLPl0IKrWsC0XzWqdDpA6RB2pMk2ySEHdq4S00Lgzb2qVpMswS/y1CQ9387n7zcN5yI3iXLBpHsfTxXh7TmmXPaI8qhWaxt3sQGDZbN75hLCxRfMP71rULBWCAmf18NUj1c4Xab3skAaA7ZFVG8QjW7RJNQ9cQ3nyC7YOE0HjHpOnHVmdrFNdlaWxxtPZ4r3wIkNYtHNuu2ZrAl9sCyXgLzmNGglTK/+AJKema/gBBTdLhzTzKbo93XW7wC3yHtv8PHTDRfQEAZ4koygeZxVMoA==",
+                "WorkspaceId" : "default",
+                "__plugin_info__" : {
+                    "name" : "支付宝原生扫码插件",
+                    "description" : "支付宝原生扫码组件，包体积仅0.7MB，15分钟即可完成接入。同时，mPaaS提供「扫码分析」大盘",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=2636",
+                    "android_package_name" : "com.flowtb.ppd",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "2636",
+                    "parameters" : {
+                        "AppId" : {
+                            "des" : "Android平台的AppId，请填写Android的config文件中的appId对应的值",
+                            "key" : "mobilegw.appid",
+                            "value" : ""
+                        },
+                        "License" : {
+                            "des" : "Android平台的License,，请填写Android的config文件中的mpaasConfigLicense对应的值",
+                            "key" : "mpaasConfigLicense",
+                            "value" : ""
+                        },
+                        "WorkspaceId" : {
+                            "des" : "Android平台的WorkspaceId，请填写Android的config文件中的workspaceId对应的值",
+                            "key" : "workspaceId",
+                            "value" : ""
+                        }
+                    }
+                }
+            },
+            "Ba-ImageEditor" : {
+                "__plugin_info__" : {
+                    "name" : "图片编辑插件（涂鸦、贴图、滤镜、裁剪、美颜、文字） Ba-ImageEditor",
+                    "description" : "Ba-ImageEditor 是一款功能强大的uniapp图片编辑插件，支持涂鸦、贴图、滤镜、裁剪、旋转、添加文字、美颜等等。",
+                    "platforms" : "Android",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=9095",
+                    "android_package_name" : "com.flowtb.ppd",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "9095",
+                    "parameters" : {}
+                }
+            },
+            "YY-TomatoOCR" : {
+                "__plugin_info__" : {
+                    "name" : "本地离线文字、身份证识别TomatoOCR",
+                    "description" : "本地离线文字识别，身份证识别，支持Android系统和IOS系统",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=7907",
+                    "android_package_name" : "com.flowtb.ppd",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "7907",
+                    "parameters" : {}
+                }
+            }
+        }
+    },
+    "quickapp" : {},
+    "mp-weixin" : {
+        "appid" : "wxccd7e2a0911b3397",
+        "setting" : {
+            "urlCheck" : false,
+            "es6" : false,
+            "minified" : true,
+            "postcss" : true
+        },
+        "optimization" : {
+            "subPackages" : true
+        },
+        "usingComponents" : true
+    },
+    "vueVersion" : "3",
+    "h5" : {
+        "template" : "static/index.html",
+        "devServer" : {
+            "port" : 9090,
+            "https" : false
+        },
+        "title" : "Yudao-App",
+        "router" : {
+            "mode" : "hash",
+            "base" : "./"
+        }
+    },
+    "locale" : "zh-Hans"
+}

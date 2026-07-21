@@ -1,0 +1,216 @@
+{
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^u--(.*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
+			"^up-(.*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
+			"^u-([^-].*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue"
+		}
+	},
+	"pages": [
+		{
+			"path": "pages/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationStyle": "custom"
+			}
+		},{
+			"path": "pages/index",
+			"style": {
+				"navigationBarTitleText": "首页",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/index2",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationBarBackgroundColor": "#fff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/mine/index",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom"
+			}
+		},{
+			"path": "pages/tb/SQLiteManager/index",
+			"style": {
+				"navigationBarTitleText": "SQLite数据"
+			}
+		},
+
+
+		{
+			"path": "pages/mine/avatar/index",
+			"style": {
+				"navigationBarTitleText": "修改头像"
+			}
+		},
+		{
+			"path": "pages/mine/info/index",
+			"style": {
+				"navigationBarTitleText": "个人信息"
+			}
+		},
+		{
+			"path": "pages/mine/info/edit",
+			"style": {
+				"navigationBarTitleText": "编辑资料"
+			}
+		},
+		{
+			"path": "pages/mine/pwd/index",
+			"style": {
+				"navigationBarTitleText": "修改密码"
+			}
+		},
+		{
+			"path": "pages/mine/about/index",
+			"style": {
+				"navigationBarTitleText": "关于我们"
+			}
+		},
+		{
+			"path": "pages/common/webview/index",
+			"style": {
+				"navigationBarTitleText": "浏览网页"
+			}
+		},
+		{
+			"path": "pages/common/textview/index",
+			"style": {
+				"navigationBarTitleText": "浏览文本"
+			}
+		},
+		{
+			"path": "pages/screen/index",
+			"style": {
+				"navigationBarTitleText": "五健筛查管理",
+				"navigationBarBackgroundColor": "#fff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/screen/batch/index",
+			"style": {
+				"navigationBarTitleText": "体检批次查询",
+				"navigationBarBackgroundColor": "#fff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/screen/register/index",
+			"style": {
+				"navigationBarTitleText": "筛查数据登记",
+				"navigationBarBackgroundColor": "#fff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/screen/student/index",
+			"style": {
+				"navigationBarTitleText": "学生信息管理",
+				"navigationBarBackgroundColor": "#fff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/screen/student/add",
+			"style": {
+				"navigationBarTitleText": "新增受检者",
+				"navigationBarBackgroundColor": "#fff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/screen/examination/index",
+			"style": {
+				"navigationBarTitleText": "体检总检管理",
+				"navigationBarBackgroundColor": "#fff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/screen/progress/index",
+			"style": {
+				"navigationBarTitleText": "筛查进度查询",
+				"navigationBarBackgroundColor": "#fff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/screen/device/index",
+			"style": {
+				"navigationBarTitleText": "设备管理与数据同步",
+				"navigationBarBackgroundColor": "#fff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/screen/rescreen/checkin",
+			"style": {
+				"navigationBarTitleText": "复筛报到",
+				"navigationBarBackgroundColor": "#fff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/screen/rescreen/register",
+			"style": {
+				"navigationBarTitleText": "复筛信息登记",
+				"navigationBarBackgroundColor": "#fff",
+				"navigationBarTextStyle": "black",
+				"enablePullDownRefresh": false
+			}
+		}
+	],
+	"tabBar": {
+		"color": "#000000",
+		"selectedColor": "rgba(36, 93, 209, 1)",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"fontSize":"12px",
+		"list": [{
+				"pagePath": "pages/index",
+				"iconPath": "static/images/tabbar/home.png",
+				"selectedIconPath": "static/images/tabbar/home1.png",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/mine/index",
+				"iconPath": "static/images/tabbar/mine.png",
+				"selectedIconPath": "static/images/tabbar/mine1.png",
+				"text": "我的"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "Flow",
+		"navigationBarBackgroundColor": "#FFFFFF",
+		"pageOrientation": "landscape"
+	},
+	"condition": {
+		//模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式(list 的索引项)
+		"list": [{
+			"name": "", //模式名称
+			"path": "pages/login", //启动页面，必选
+			"query": "" //启动参数，在页面的onLoad函数里面得到
+		}]
+	},
+	"entryPagePath": "pages/login"
+}
