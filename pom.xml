@@ -15,7 +15,9 @@
         <!-- 各种 module 拓展 -->
         <module>yudao-module-system</module>
         <module>yudao-module-infra</module>
-        <module>flow-screen-ppd</module>
+<!--        <module>flow-screen-ppd</module>-->
+        <module>yudao-module-childhealth</module>
+<!--        <module>../mingbo-buss-childhealth</module>-->
 <!--        <module>yudao-module-member</module>-->
 <!--        <module>yudao-module-bpm</module>-->
 <!--        <module>yudao-module-report</module>-->

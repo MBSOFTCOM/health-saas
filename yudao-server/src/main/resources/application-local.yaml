@@ -1,14 +1,14 @@
 server:
   port: 48089
 common-set:
-  base-url: 192.168.220.129
+  base-url: 127.0.0.1
   mysql:
-    url: 192.168.220.27 #172.16.1.139
+    url: 127.0.0.1 #172.16.1.139
 #    port: 3307 #3999
     port: 3306
     dateBase: tb_screen_ppd #tb_student_screen
   minio:
-    url: 172.16.1.139
+    url: 127.0.0.1
     port: 9000
     bucket: screen-ppd
     endPoint: http://${common-set.minio.url}:${common-set.minio.port}
@@ -60,8 +60,8 @@ spring:
       primary: master
       datasource:
         master:
-          url: jdbc:mysql://${common-set.mysql.url}:${common-set.mysql.port}/${common-set.mysql.dateBase}?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true # MySQL Connector/J 8.X 连接的示例
-          #url: jdbc:mysql://172.16.1.49:3999/tb_student_screen?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true # MySQL Connector/J 8.X 连接的示例
+          #url: jdbc:mysql://${common-set.mysql.url}:${common-set.mysql.port}/${common-set.mysql.dateBase}?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true # MySQL Connector/J 8.X 连接的示例
+          url: jdbc:mysql://127.0.0.1:3306/tb_screen_ppd?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true # MySQL Connector/J 8.X 连接的示例
           #          url: jdbc:mysql://127.0.0.1:3306/ruoyi-vue-pro?useSSL=true&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai # MySQL Connector/J 5.X 连接的示例
           #          url: jdbc:postgresql://127.0.0.1:5432/ruoyi-vue-pro # PostgreSQL 连接的示例
           #          url: jdbc:oracle:thin:@127.0.0.1:1521:xe # Oracle 连接的示例
@@ -72,7 +72,7 @@ spring:
           #username: student_screen
           #password: student_screen_ppd_PRO_2023
           username:  root
-          password:  root #student_screen_PRO_root_2023
+          password:  123456 #student_screen_PRO_root_2023
           #          username: sa # SQL Server 连接的示例
           #          password: Yudao@2024 # SQL Server 连接的示例
           #          username: SYSDBA # DM 连接的示例
@@ -86,7 +86,7 @@ spring:
           #username: student_screen
           #password: student_screen_ppd_PRO_2023
           username: root
-          password: root #student_screen_PRO_root_2023
+          password: 123456 #student_screen_PRO_root_2023
 
   # Redis 配置。Redisson 默认的配置足够使用，一般不需要进行调优
   data:
@@ -197,6 +197,7 @@ logging:
     cn.iocoder.yudao.module.crm.dal.mysql: debug
     cn.iocoder.yudao.module.erp.dal.mysql: debug
     cn.iocoder.yudao.module.ppd: debug
+    cn.iocoder.yudao.module.childhealth.dal.mysql: debug
     org.springframework.context.support.PostProcessorRegistrationDelegate: ERROR # TODO 芋艿：先禁用，Spring Boot 3.X 存在部分错误的 WARN 提示
 
 debug: false

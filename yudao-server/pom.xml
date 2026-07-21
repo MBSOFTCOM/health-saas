@@ -31,9 +31,14 @@
             <artifactId>yudao-module-infra-biz</artifactId>
             <version>${revision}</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>cn.iocoder.boot</groupId>-->
+<!--            <artifactId>flow-screen-ppd-biz</artifactId>-->
+<!--            <version>${revision}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
-            <artifactId>flow-screen-ppd-biz</artifactId>
+            <artifactId>yudao-module-childhealth-biz</artifactId>
             <version>${revision}</version>
         </dependency>
 
