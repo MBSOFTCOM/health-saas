@@ -1,0 +1,3 @@
+package cn.iocoder.yudao.module.childhealth.dal.dataobject.ops;
+import com.baomidou.mybatisplus.annotation.*; import lombok.Data; import java.time.LocalDateTime;
+@Data @TableName("message_push_log") public class MessagePushLogDO { @TableId(type=IdType.AUTO) private Long id; private Long configId; private Integer pushType; private Integer pushChannel; private Integer targetType; private Long targetId; private String mobile; private String openid; private String pushContent; private LocalDateTime pushTime; private Integer pushStatus; private String errorMsg; private Boolean isRead; private LocalDateTime createTime; }

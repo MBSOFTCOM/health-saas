@@ -1,0 +1,1 @@
+package cn.iocoder.yudao.module.childhealth.dal.mysql.device; import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX; import cn.iocoder.yudao.module.childhealth.dal.dataobject.device.DeviceIntegrationLogDO; import org.apache.ibatis.annotations.Mapper; @Mapper public interface DeviceIntegrationLogMapper extends BaseMapperX<DeviceIntegrationLogDO> {}
