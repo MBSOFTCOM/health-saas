@@ -15,6 +15,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
 @Tag(name = "管理后台 - 体检方案与批次关联")
@@ -65,6 +68,34 @@ public class ScreeningPlanBatchController {
     public CommonResult<PageResult<ScreeningPlanBatchRespVO>> getScreeningPlanBatchPage(@Valid ScreeningPlanBatchPageReqVO pageReqVO) {
         PageResult<ScreeningPlanBatchDO> pageResult = screeningPlanBatchService.getScreeningPlanBatchPage(pageReqVO);
         return success(BeanUtils.toBean(pageResult, ScreeningPlanBatchRespVO.class));
+    }
+
+    @GetMapping("/list-by-batch")
+    @Operation(summary = "按批次查询所有执行单元（含方案/班级/状态）")
+    @Parameter(name = "batchId", description = "批次ID", required = true)
+    @PreAuthorize("@ss.hasPermission('childhealth:screening-plan-batch:query')")
+    public CommonResult<List<ScreeningPlanBatchRespVO>> listByBatch(@RequestParam("batchId") Long batchId) {
+        List<ScreeningPlanBatchDO> list = screeningPlanBatchService.selectListByBatchId(batchId);
+        return success(BeanUtils.toBean(list, ScreeningPlanBatchRespVO.class));
+    }
+
+    @PutMapping("/batch-update-status")
+    @Operation(summary = "批量更新完成状态（统一管理用）")
+    @PreAuthorize("@ss.hasPermission('childhealth:screening-plan-batch:update')")
+    public CommonResult<Boolean> batchUpdateStatus(@RequestBody Map<String, Object> body) {
+        @SuppressWarnings("unchecked")
+        List<Long> ids = (List<Long>) body.get("ids");
+        Integer status = (Integer) body.get("status");
+        screeningPlanBatchService.batchUpdateCompletionStatus(ids, status);
+        return success(true);
+    }
+
+    @GetMapping("/status-statistics")
+    @Operation(summary = "按批次统计各完成状态数量")
+    @Parameter(name = "batchId", description = "批次ID", required = true)
+    @PreAuthorize("@ss.hasPermission('childhealth:screening-plan-batch:query')")
+    public CommonResult<Map<Integer, Long>> statusStatistics(@RequestParam("batchId") Long batchId) {
+        return success(screeningPlanBatchService.statusStatisticsByBatch(batchId));
     }
 
 }

@@ -6,6 +6,7 @@ import cn.iocoder.yudao.module.childhealth.dal.dataobject.screening.ScreeningBat
 
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 筛查批次 Service 接口
@@ -67,5 +68,22 @@ public interface ScreeningBatchService {
      * @param status 状态
      */
     void updateBatchStatus(Long id, Integer status);
+
+    /**
+     * 批量更新筛查批次状态（统一管理用）
+     *
+     * @param ids    批次ID列表
+     * @param status 批次状态 1筹备中 2进行中 3已完成 4已关闭
+     */
+    void batchUpdateStatus(List<Long> ids, Integer status);
+
+    /**
+     * 按状态统计批次数量（统一管理用）
+     *
+     * @param schoolId 学校ID（可空）
+     * @param yearId   学年ID（可空）
+     * @return key=batchStatus, value=count
+     */
+    Map<Integer, Long> statusStatistics(Long schoolId, Long yearId);
 
 }

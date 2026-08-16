@@ -42,6 +42,16 @@ public interface FollowUpService {
      */
     List<FollowRecordResponse> getFollowRecordsByCase(Long caseId);
 
+    /**
+     * 分页查询随访记录
+     */
+    PageResult<FollowRecordResponse> getFollowRecordPage(FollowRecordQueryRequest request);
+
+    /**
+     * 按计划获取随访记录列表
+     */
+    List<FollowRecordResponse> getFollowRecordsByPlan(Long planId);
+
     // ==================== 随访任务管理 ====================
 
     /**
@@ -100,6 +110,21 @@ public interface FollowUpService {
      * 获取专案的随访计划列表
      */
     List<FollowPlanResponse> getFollowPlansByCase(Long caseId);
+
+    /**
+     * 分页查询随访计划
+     */
+    PageResult<FollowPlanResponse> getFollowPlanPage(FollowPlanQueryRequest request);
+
+    /**
+     * 获取随访计划详情
+     */
+    FollowPlanResponse getFollowPlan(Long id);
+
+    /**
+     * 根据专案自动生成随访计划
+     */
+    Long generateFollowPlan(Long caseId);
 
     // ==================== 催检规则管理 ====================
 

@@ -73,18 +73,22 @@ public class StatisticsController {
         if (snapshot == null) {
             return success(respVO);
         }
-        respVO.setTotalCount(snapshot.getActualCount());
-        respVO.setAuditedCount(snapshot.getActualCount() - snapshot.getPendingAuditCount());
-        respVO.setPendingAuditCount(snapshot.getPendingAuditCount());
-        if (snapshot.getActualCount() > 0) {
+        // 增加空值保护，避免 Integer 字段为 null 时自动拆箱触发 NPE
+        int actualCount = snapshot.getActualCount() != null ? snapshot.getActualCount() : 0;
+        int pendingAuditCount = snapshot.getPendingAuditCount() != null ? snapshot.getPendingAuditCount() : 0;
+        respVO.setTotalCount(actualCount);
+        respVO.setAuditedCount(actualCount - pendingAuditCount);
+        respVO.setPendingAuditCount(pendingAuditCount);
+        if (actualCount > 0) {
             respVO.setAuditRate(BigDecimal.valueOf(respVO.getAuditedCount())
-                    .divide(BigDecimal.valueOf(snapshot.getActualCount()), 2, RoundingMode.HALF_UP)
+                    .divide(BigDecimal.valueOf(actualCount), 2, RoundingMode.HALF_UP)
                     .multiply(BigDecimal.valueOf(100)));
         }
         respVO.setPositiveCount(snapshot.getPositiveCount());
         respVO.setPositiveRate(snapshot.getPositiveRate());
         // 转介数：从 referral_record 实时统计（快照中无此字段）
-        respVO.setReferralCount(referralRecordMapper.countAll().intValue());
+        Long referralCount = referralRecordMapper.countAll();
+        respVO.setReferralCount(referralCount != null ? referralCount.intValue() : 0);
         return success(respVO);
     }
 
@@ -143,9 +147,12 @@ public class StatisticsController {
         if (snapshot == null) {
             return success(respVO);
         }
+        // 增加空值保护
+        int pendingRecheckCount = snapshot.getPendingRecheckCount() != null ? snapshot.getPendingRecheckCount() : 0;
+        int recheckCount = snapshot.getRecheckCount() != null ? snapshot.getRecheckCount() : 0;
         respVO.setInitialPositiveCount(snapshot.getPositiveCount());
-        respVO.setNeedRecheckCount(snapshot.getPendingRecheckCount() + snapshot.getRecheckCount());
-        respVO.setRecheckCompletedCount(snapshot.getRecheckCount());
+        respVO.setNeedRecheckCount(pendingRecheckCount + recheckCount);
+        respVO.setRecheckCompletedCount(recheckCount);
         respVO.setRecheckRate(snapshot.getRecheckRate());
         // 复筛仍阳性数：直接从 recheck_record 表按日期范围实时聚合
         LocalDate startDate = reqVO.getStartDate();
@@ -153,15 +160,16 @@ public class StatisticsController {
         Long stillPositive = recheckRecordMapper.countStillPositive(startDate, endDate);
         respVO.setStillPositiveCount(stillPositive != null ? stillPositive.intValue() : 0);
         // 复筛阳性率 = 复筛仍阳性数 / 已复筛人数
-        if (snapshot.getRecheckCount() > 0 && stillPositive != null) {
+        if (recheckCount > 0 && stillPositive != null) {
             respVO.setStillPositiveRate(BigDecimal.valueOf(stillPositive)
-                    .divide(BigDecimal.valueOf(snapshot.getRecheckCount()), 2, RoundingMode.HALF_UP)
+                    .divide(BigDecimal.valueOf(recheckCount), 2, RoundingMode.HALF_UP)
                     .multiply(BigDecimal.valueOf(100)));
         } else {
             respVO.setStillPositiveRate(BigDecimal.ZERO);
         }
         // 转介数：从 referral_record 实时统计
-        respVO.setReferralCount(referralRecordMapper.countAll().intValue());
+        Long referralCount = referralRecordMapper.countAll();
+        respVO.setReferralCount(referralCount != null ? referralCount.intValue() : 0);
         return success(respVO);
     }
 
@@ -174,15 +182,18 @@ public class StatisticsController {
         if (snapshot == null) {
             return success(respVO);
         }
-        respVO.setTotalFollowCount(snapshot.getFollowCount());
+        // 增加空值保护
+        int followCount = snapshot.getFollowCount() != null ? snapshot.getFollowCount() : 0;
+        int pendingFollowCount = snapshot.getPendingFollowCount() != null ? snapshot.getPendingFollowCount() : 0;
+        respVO.setTotalFollowCount(followCount);
         // 当日随访数：从 follow_task 按 create_time=today 实时统计
         Long todayCount = followTaskMapper.countTodayCreated();
         respVO.setTodayFollowCount(todayCount != null ? todayCount.intValue() : 0);
-        respVO.setPendingFollowCount(snapshot.getPendingFollowCount());
-        respVO.setCompletedFollowCount(snapshot.getFollowCount() - snapshot.getPendingFollowCount());
-        if (snapshot.getFollowCount() > 0) {
+        respVO.setPendingFollowCount(pendingFollowCount);
+        respVO.setCompletedFollowCount(followCount - pendingFollowCount);
+        if (followCount > 0) {
             respVO.setFollowCompleteRate(BigDecimal.valueOf(respVO.getCompletedFollowCount())
-                    .divide(BigDecimal.valueOf(snapshot.getFollowCount()), 2, RoundingMode.HALF_UP)
+                    .divide(BigDecimal.valueOf(followCount), 2, RoundingMode.HALF_UP)
                     .multiply(BigDecimal.valueOf(100)));
         }
         return success(respVO);

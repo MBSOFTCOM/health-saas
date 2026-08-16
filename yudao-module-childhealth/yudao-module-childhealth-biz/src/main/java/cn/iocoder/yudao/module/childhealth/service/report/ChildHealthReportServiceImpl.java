@@ -13,6 +13,7 @@ import cn.iocoder.yudao.module.childhealth.dal.mysql.screening.ScreeningResultDe
 import cn.iocoder.yudao.module.childhealth.dal.mysql.screening.ScreeningPositiveMapper;
 import cn.iocoder.yudao.module.childhealth.dal.mysql.screening.RecheckRecordMapper;
 import cn.iocoder.yudao.module.childhealth.dal.mysql.workflow.ReferralRecordMapper;
+import cn.iocoder.yudao.module.childhealth.dal.dataobject.exam.PhysicalExamRecordDO;
 import cn.iocoder.yudao.module.childhealth.dal.mysql.workflow.HealthCheckupMapper;
 import cn.iocoder.yudao.module.childhealth.dal.mysql.exam.PhysicalExamRecordMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -47,8 +48,35 @@ public class ChildHealthReportServiceImpl implements ChildHealthReportService {
 
     @Override
     public Map<String, Object> exam(Long id) {
+        // 体检详情：主记录 + 体格检查明细 + 关联筛查记录 + 阳性项
+        HealthCheckupDO exam = healthCheckupMapper.selectById(id);
+        if (exam == null) {
+            throw error("体检记录不存在");
+        }
         Map<String, Object> result = new LinkedHashMap<>();
-        result.put("examId", id);
+        result.put("exam", exam);
+        // 体格检查明细
+        PhysicalExamRecordDO physical = physicalExamRecordMapper.selectOne(
+                Wrappers.<PhysicalExamRecordDO>lambdaQuery()
+                        .eq(PhysicalExamRecordDO::getExamId, id)
+                        .last("LIMIT 1"));
+        result.put("physical", physical);
+        // 关联筛查记录（按同儿童同日筛查关联）
+        List<ScreeningRecordDO> screeningRecords = screeningRecordMapper.selectList(
+                Wrappers.<ScreeningRecordDO>lambdaQuery()
+                        .eq(ScreeningRecordDO::getStudentId, exam.getChildId())
+                        .eq(ScreeningRecordDO::getScreeningDate, exam.getCheckupDate()));
+        result.put("screeningRecords", screeningRecords);
+        // 阳性项汇总
+        if (!screeningRecords.isEmpty()) {
+            List<Long> recordIds = new ArrayList<>(screeningRecords.size());
+            for (ScreeningRecordDO r : screeningRecords) {
+                recordIds.add(r.getId());
+            }
+            result.put("positives", screeningPositiveMapper.selectListByRecordIds(recordIds));
+        } else {
+            result.put("positives", Collections.emptyList());
+        }
         return result;
     }
 
@@ -160,7 +188,36 @@ public class ChildHealthReportServiceImpl implements ChildHealthReportService {
 
     @Override
     public byte[] export(StatisticsRequest request) {
+        return exportWithFormat(request, "csv");
+    }
+
+    /**
+     * 按指定格式导出统计报表。
+     *
+     * @param request 统计请求（含起止日期、批次）
+     * @param format  导出格式：csv / excel / pdf（pdf 仅返回提示文本，实际 PDF 由积木报表引擎渲染）
+     * @return 文件字节内容
+     */
+    public byte[] exportWithFormat(StatisticsRequest request, String format) {
         Map<String, Object> data = statistics(request);
+        if (format == null || format.isBlank() || "csv".equalsIgnoreCase(format)) {
+            return writeCsv(data);
+        }
+        if ("excel".equalsIgnoreCase(format) || "xlsx".equalsIgnoreCase(format)) {
+            return writeExcel(data);
+        }
+        if ("pdf".equalsIgnoreCase(format)) {
+            // PDF 由积木报表（Jeecg JimuReport）渲染，此处返回提示文本以便前端跳转预览
+            String tip = "PDF 报表请通过积木报表引擎预览/导出，参数：startDate="
+                    + data.get("startDate") + ", endDate=" + data.get("endDate")
+                    + ", batchId=" + data.get("batchId");
+            return tip.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        }
+        // 默认走 CSV
+        return writeCsv(data);
+    }
+
+    private byte[] writeCsv(Map<String, Object> data) {
         StringBuilder csv = new StringBuilder(
                 "start_date,end_date,exam_count,screening_count,positive_count,positive_rate\n");
         csv.append(data.get("startDate")).append(",").append(data.get("endDate")).append(",")
@@ -169,19 +226,94 @@ public class ChildHealthReportServiceImpl implements ChildHealthReportService {
         return csv.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8);
     }
 
+    private byte[] writeExcel(Map<String, Object> data) {
+        // 使用 EasyExcel 写入 xlsx：以 List<List<Object>> 表示行列，避免新建 VO
+        java.util.List<java.util.List<Object>> rows = new java.util.ArrayList<>();
+        // 表头
+        rows.add(java.util.Arrays.asList("开始日期", "结束日期", "体检数", "筛查数", "阳性数", "阳性率"));
+        // 数据行
+        rows.add(java.util.Arrays.asList(
+                String.valueOf(data.get("startDate")),
+                String.valueOf(data.get("endDate")),
+                data.get("examCount"),
+                data.get("screeningCount"),
+                data.get("positiveCount"),
+                data.get("positiveRate")));
+        java.io.ByteArrayOutputStream os = new java.io.ByteArrayOutputStream();
+        com.alibaba.excel.EasyExcel.write(os)
+                .registerWriteHandler(new com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy())
+                .sheet("儿童健康统计")
+                .doWrite(rows);
+        return os.toByteArray();
+    }
+
     @Override
     public List<Map<String, Object>> growthTrend(Long childId) {
-        return List.of();
+        // 生长发育趋势：按 child_id 关联 exam_record + physical_exam_record，按月龄/日期升序输出
+        return jdbcTemplate.queryForList(
+                "SELECT e.id examId, e.exam_date examDate, e.month_age monthAge, " +
+                        "p.height, p.weight, p.head_circumference headCircumference, " +
+                        "p.chest_circumference chestCircumference, p.bmi, " +
+                        "p.height_sd heightSd, p.weight_sd weightSd, p.growth_assessment growthAssessment " +
+                        "FROM exam_record e LEFT JOIN physical_exam_record p ON p.exam_id = e.id " +
+                        "WHERE e.child_id = ? ORDER BY e.exam_date ASC",
+                childId);
     }
 
     @Override
     public Map<String, Object> abnormalityDistribution() {
-        return Map.of();
+        // 异常分布：按五健分类（itemCode 前缀）分组统计异常明细数
+        // MySQL 用 SUBSTRING_INDEX 取下划线前的部分作为 category
+        List<Map<String, Object>> byCategory = jdbcTemplate.queryForList(
+                "SELECT SUBSTRING_INDEX(UPPER(d.item_code), '_', 1) category, " +
+                        "COUNT(*) abnormalCount " +
+                        "FROM screening_result_detail d " +
+                        "WHERE d.is_abnormal = 1 AND d.item_code IS NOT NULL " +
+                        "GROUP BY SUBSTRING_INDEX(UPPER(d.item_code), '_', 1) " +
+                        "ORDER BY abnormalCount DESC");
+        // 按性别分布
+        List<Map<String, Object>> byGender = jdbcTemplate.queryForList(
+                "SELECT CASE WHEN c.gender = 1 THEN '男' WHEN c.gender = 2 THEN '女' ELSE '未知' END gender, " +
+                        "COUNT(DISTINCT d.record_id) abnormalRecordCount " +
+                        "FROM screening_result_detail d " +
+                        "JOIN screening_record r ON r.id = d.record_id " +
+                        "LEFT JOIN child_base_info c ON c.id = r.student_id " +
+                        "WHERE d.is_abnormal = 1 " +
+                        "GROUP BY c.gender");
+        // 按年龄组分布（按出生日期推算）
+        List<Map<String, Object>> byAgeGroup = jdbcTemplate.queryForList(
+                "SELECT CASE " +
+                        "  WHEN TIMESTAMPDIFF(YEAR, c.birth_date, CURDATE()) <= 6 THEN '0-6岁' " +
+                        "  WHEN TIMESTAMPDIFF(YEAR, c.birth_date, CURDATE()) <= 10 THEN '7-10岁' " +
+                        "  WHEN TIMESTAMPDIFF(YEAR, c.birth_date, CURDATE()) <= 14 THEN '11-14岁' " +
+                        "  ELSE '15-18岁' END ageGroup, " +
+                        "  COUNT(DISTINCT d.record_id) abnormalRecordCount " +
+                        "FROM screening_result_detail d " +
+                        "JOIN screening_record r ON r.id = d.record_id " +
+                        "LEFT JOIN child_base_info c ON c.id = r.student_id " +
+                        "WHERE d.is_abnormal = 1 AND c.birth_date IS NOT NULL " +
+                        "GROUP BY ageGroup ORDER BY ageGroup");
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("byCategory", byCategory);
+        result.put("byGender", byGender);
+        result.put("byAgeGroup", byAgeGroup);
+        return result;
     }
 
     @Override
     public List<Map<String, Object>> screeningCoverage(Long batchId) {
-        return List.of();
+        // 筛查覆盖率：按学校维度统计 batchId 的目标 vs 实际筛查人数
+        // 注：school_info.target_count 为该学年学校总人数（演示用）；actual_count 为本批次实际筛查人数
+        return jdbcTemplate.queryForList(
+                "SELECT b.school_id schoolId, s.school_name schoolName, " +
+                        "b.target_count targetCount, b.actual_count actualCount, " +
+                        "CASE WHEN b.target_count > 0 " +
+                        "  THEN ROUND(b.actual_count * 100.0 / b.target_count, 2) " +
+                        "  ELSE 0 END coverageRate " +
+                        "FROM screening_batch b " +
+                        "LEFT JOIN school_info s ON s.id = b.school_id " +
+                        "WHERE b.id = ?",
+                batchId);
     }
 
     private ServiceException error(String message) {

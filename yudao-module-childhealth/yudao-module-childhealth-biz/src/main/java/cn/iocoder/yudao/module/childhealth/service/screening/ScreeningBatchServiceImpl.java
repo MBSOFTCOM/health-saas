@@ -7,9 +7,12 @@ import cn.iocoder.yudao.module.childhealth.dal.dataobject.screening.ScreeningBat
 import cn.iocoder.yudao.module.childhealth.dal.mysql.screening.ScreeningBatchMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.module.childhealth.enums.ErrorCodeConstants.*;
@@ -98,6 +101,37 @@ public class ScreeningBatchServiceImpl implements ScreeningBatchService {
         updateObj.setId(id);
         updateObj.setBatchStatus(status);
         screeningBatchMapper.updateById(updateObj);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void batchUpdateStatus(List<Long> ids, Integer status) {
+        if (ids == null || ids.isEmpty()) {
+            return;
+        }
+        for (Long id : ids) {
+            validateScreeningBatchExists(id);
+            ScreeningBatchDO updateObj = new ScreeningBatchDO();
+            updateObj.setId(id);
+            updateObj.setBatchStatus(status);
+            screeningBatchMapper.updateById(updateObj);
+        }
+    }
+
+    @Override
+    public Map<Integer, Long> statusStatistics(Long schoolId, Long yearId) {
+        List<ScreeningBatchDO> list = screeningBatchMapper.selectListByConditions(schoolId, yearId, null);
+        Map<Integer, Long> result = new HashMap<>();
+        // 初始化四个状态 1筹备中 2进行中 3已完成 4已关闭
+        result.put(1, 0L);
+        result.put(2, 0L);
+        result.put(3, 0L);
+        result.put(4, 0L);
+        for (ScreeningBatchDO b : list) {
+            Integer s = b.getBatchStatus() == null ? 1 : b.getBatchStatus();
+            result.merge(s, 1L, Long::sum);
+        }
+        return result;
     }
 
 }

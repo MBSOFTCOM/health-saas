@@ -4,6 +4,10 @@ import cn.iocoder.yudao.module.childhealth.dal.dataobject.integration.DataPushFa
 import cn.iocoder.yudao.module.childhealth.dal.dataobject.integration.DataPushTaskDO;
 import cn.iocoder.yudao.module.childhealth.dal.mysql.integration.DataPushFailLogMapper;
 import cn.iocoder.yudao.module.childhealth.dal.mysql.integration.DataPushTaskMapper;
+import cn.iocoder.yudao.module.childhealth.framework.datapush.DataPushClient;
+import cn.iocoder.yudao.module.childhealth.framework.datapush.DataPushClient.PushException;
+import cn.iocoder.yudao.module.childhealth.framework.datapush.DataPushClient.PushResponse;
+import cn.iocoder.yudao.module.childhealth.framework.datapush.DataPushProperties;
 import org.springframework.scheduling.annotation.Scheduled;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -27,15 +31,18 @@ import java.util.List;
  *   - 超过 max_retry（默认 5 次）后置为 3 失败，需人工介入
  *
  * 触发方式：
- *   - XXL-JOB 调度：childhealthDataPushJob
+ *   - @Scheduled 固定 60s 扫描
  *   - 手动触发：调用 DataPushTaskController.retry(taskId)
+ *
+ * 推送实现：
+ *   - 通过 DataPushClient 调用，支持 Mock 模式（childhealth.data-push.mock-enabled=true）
+ *     和真实 HTTP 推送模式（mock-enabled=false）
+ *   - 真实模式下根据 targetSystem 映射到 application.yaml 中配置的目标 URL
+ *   - 未配置 URL 的目标系统直接标记为失败，errorCode=TARGET_NOT_CONFIGURED
  */
 @Slf4j
 @Component
 public class DataPushJob {
-
-    /** 默认最大重试次数 */
-    private static final int DEFAULT_MAX_RETRY = 5;
 
     /** 单次扫描处理的最大任务数 */
     private static final int BATCH_SIZE = 50;
@@ -44,15 +51,17 @@ public class DataPushJob {
     private DataPushTaskMapper dataPushTaskMapper;
     @Resource
     private DataPushFailLogMapper dataPushFailLogMapper;
-    // @Resource
-    // private DataPushClient dataPushClient; // 上报客户端（HTTP/Feign）
+    @Resource
+    private DataPushClient dataPushClient;
+    @Resource
+    private DataPushProperties dataPushProperties;
 
     /**
      * 数据上报任务执行入口
      */
     @Scheduled(fixedRate = 60000)
     public void execute() {
-        log.info("[数据上报] 开始扫描待推送任务...");
+        log.info("[数据上报] 开始扫描待推送任务... mock={}", dataPushProperties.isMockEnabled());
         // 1. 处理待推送任务
         List<DataPushTaskDO> pendingList = dataPushTaskMapper.selectPendingList();
         int total = Math.min(pendingList.size(), BATCH_SIZE);
@@ -101,25 +110,12 @@ public class DataPushJob {
         long startTime = System.currentTimeMillis();
         // 1. 标记为推送中
         markInProgress(task);
-        // 2. 调用上报客户端（此处为模拟实现）
-        String responseData;
-        String requestId;
-        try {
-            // 模拟上报调用（实际应替换为 dataPushClient.push(task)）
-            Thread.sleep(200);
-            // 80% 成功率模拟
-            if (Math.random() < 0.2) {
-                throw new RuntimeException("模拟上报失败：目标系统返回 500");
-            }
-            responseData = "{\"code\":0,\"msg\":\"success\",\"data\":{\"id\":\"RPT" + System.currentTimeMillis() + "\"}}";
-            requestId = "REQ" + System.currentTimeMillis();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException("上报被中断", e);
-        }
-        int costTime = (int) (System.currentTimeMillis() - startTime);
+        // 2. 调用推送客户端（Mock 或真实 HTTP）
+        PushResponse resp = dataPushClient.push(task);
+        int costTime = resp.getCostTimeMs() != null ? resp.getCostTimeMs()
+                : (int) (System.currentTimeMillis() - startTime);
         // 3. 标记为成功
-        markSuccess(task, requestId, responseData, costTime);
+        markSuccess(task, resp.getRequestId(), resp.getResponseData(), costTime);
         log.info("[数据上报] 任务 #{} ({}) 推送成功，耗时 {}ms", task.getId(), task.getTaskNo(), costTime);
     }
 
@@ -131,18 +127,20 @@ public class DataPushJob {
         DataPushFailLogDO failLog = new DataPushFailLogDO();
         failLog.setTaskId(task.getId());
         failLog.setAttemptNo(task.getRetryCount() == null ? 1 : task.getRetryCount() + 1);
-        failLog.setErrorCode("PUSH_FAIL");
-        failLog.setErrorMsg(e.getMessage() != null ? e.getMessage().substring(0, Math.min(e.getMessage().length(), 500)) : "未知错误");
-        failLog.setErrorType(classifyError(e));
+        String errorCode = (e instanceof PushException) ? ((PushException) e).getErrorCode() : "UNKNOWN";
+        failLog.setErrorCode(errorCode);
+        String errorMsg = e.getMessage() != null ? e.getMessage() : "未知错误";
+        failLog.setErrorMsg(errorMsg.substring(0, Math.min(errorMsg.length(), 500)));
+        failLog.setErrorType(classifyError(errorCode, e));
         failLog.setRequestPayload(task.getDataPayload());
         failLog.setResponsePayload(null);
-        failLog.setHttpStatus(500);
+        failLog.setHttpStatus(errorCode.startsWith("HTTP_") ? Integer.parseInt(errorCode.substring(5)) : 500);
         failLog.setCostTimeMs(null);
         failLog.setFailTime(LocalDateTime.now());
         dataPushFailLogMapper.insert(failLog);
 
         // 2. 更新任务状态：重试或最终失败
-        int maxRetry = task.getMaxRetry() != null ? task.getMaxRetry() : DEFAULT_MAX_RETRY;
+        int maxRetry = task.getMaxRetry() != null ? task.getMaxRetry() : dataPushProperties.getDefaultMaxRetry();
         int newRetryCount = (task.getRetryCount() == null ? 0 : task.getRetryCount()) + 1;
         DataPushTaskDO update = new DataPushTaskDO();
         update.setId(task.getId());
@@ -167,18 +165,34 @@ public class DataPushJob {
     /**
      * 分类错误类型（用于失败日志统计）
      */
-    private String classifyError(Exception e) {
-        String msg = e.getMessage() != null ? e.getMessage() : "";
-        if (msg.contains("timeout") || msg.contains("Timeout")) {
-            return "TIMEOUT";
+    private String classifyError(String errorCode, Exception e) {
+        if (errorCode == null) {
+            return "BUSINESS";
         }
-        if (msg.contains("auth") || msg.contains("Auth") || msg.contains("401") || msg.contains("403")) {
-            return "AUTH";
+        switch (errorCode) {
+            case "TIMEOUT":
+                return "TIMEOUT";
+            case "AUTH":
+            case "HTTP_401":
+            case "HTTP_403":
+                return "AUTH";
+            case "NETWORK":
+            case "CALL_ERROR":
+            case "HTTP_500":
+            case "HTTP_502":
+            case "HTTP_503":
+            case "HTTP_504":
+                return "NETWORK";
+            case "TARGET_NOT_CONFIGURED":
+                return "CONFIG";
+            case "MOCK_FAIL":
+                return "MOCK";
+            default:
+                if (errorCode.startsWith("HTTP_")) {
+                    return "BUSINESS";
+                }
+                return "BUSINESS";
         }
-        if (msg.contains("network") || msg.contains("Network") || msg.contains("connect")) {
-            return "NETWORK";
-        }
-        return "BUSINESS";
     }
 
     private void markInProgress(DataPushTaskDO task) {

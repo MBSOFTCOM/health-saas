@@ -3,6 +3,8 @@ package cn.iocoder.yudao.module.childhealth.controller.admin.screeningconfig.vo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import jakarta.validation.constraints.NotBlank;
+
 @Schema(description = "管理后台 - 体检方案配置创建/更新 Request VO")
 @Data
 public class ScreeningPlanSaveReqVO {
@@ -11,9 +13,11 @@ public class ScreeningPlanSaveReqVO {
     private Long id;
 
     @Schema(description = "方案编码", requiredMode = Schema.RequiredMode.REQUIRED, example = "PLAN_C_001")
+    @NotBlank(message = "方案编码不能为空")
     private String planCode;
 
     @Schema(description = "方案名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "五健筛查默认方案")
+    @NotBlank(message = "方案名称不能为空")
     private String planName;
 
     @Schema(description = "方案类型 1五健 2基础体检 3入园入托", example = "1")

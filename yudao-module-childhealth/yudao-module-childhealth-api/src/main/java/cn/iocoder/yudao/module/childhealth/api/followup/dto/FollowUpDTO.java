@@ -277,4 +277,33 @@ public final class FollowUpDTO {
         private Long associatedRecord;
         private LocalDateTime createTime;
     }
+
+    /**
+     * 随访计划分页查询请求
+     */
+    @Data
+    public static class FollowPlanQueryRequest {
+        private Long caseId;
+        private Integer planType; // 1自动生成 2手工创建
+        private Integer planStatus; // 1待执行 2已完成 3已取消
+        private LocalDate planDateStart;
+        private LocalDate planDateEnd;
+        private Integer pageNum;
+        private Integer pageSize;
+    }
+
+    /**
+     * 随访记录分页查询请求
+     */
+    @Data
+    public static class FollowRecordQueryRequest {
+        private Long caseId;
+        private Long childId;
+        private Long planId;
+        private Integer followType; // 1电话 2短信 3微信 4面诊
+        private LocalDate followDateStart;
+        private LocalDate followDateEnd;
+        private Integer pageNum;
+        private Integer pageSize;
+    }
 }

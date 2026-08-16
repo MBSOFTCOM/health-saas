@@ -302,6 +302,53 @@ public class ParentAppController {
         return success(guidanceMap);
     }
 
+    // ==================== 11. 多子女显式绑定/解绑 ====================
+
+    @PostMapping("/children/bind")
+    @Operation(summary = "绑定孩子", description = "家长通过手机号显式绑定学生档案，写入 student_info.guardian_mobile")
+    public CommonResult<Boolean> bindChild(
+            @RequestParam("mobile") String mobile,
+            @RequestParam("studentId") Long studentId) {
+        if (mobile == null || mobile.isBlank()) {
+            throw exception(PARENT_MOBILE_REQUIRED);
+        }
+        StudentInfoDO student = studentInfoMapper.selectById(studentId);
+        if (student == null) {
+            throw exception(STUDENT_NOT_EXISTS);
+        }
+        // 已绑定其他手机号则拒绝（避免误绑），允许同号重复绑定
+        if (student.getGuardianMobile() != null
+                && !student.getGuardianMobile().isBlank()
+                && !mobile.equals(student.getGuardianMobile())) {
+            throw exception(STUDENT_ALREADY_BOUND);
+        }
+        StudentInfoDO update = new StudentInfoDO();
+        update.setId(studentId);
+        update.setGuardianMobile(mobile);
+        studentInfoMapper.updateById(update);
+        return success(true);
+    }
+
+    @DeleteMapping("/children/unbind")
+    @Operation(summary = "解绑孩子", description = "家长解绑学生档案（校验 mobile 匹配后清空 guardian_mobile）")
+    public CommonResult<Boolean> unbindChild(
+            @RequestParam("mobile") String mobile,
+            @RequestParam("studentId") Long studentId) {
+        StudentInfoDO student = studentInfoMapper.selectById(studentId);
+        if (student == null) {
+            throw exception(STUDENT_NOT_EXISTS);
+        }
+        if (student.getGuardianMobile() == null
+                || !mobile.equals(student.getGuardianMobile())) {
+            throw exception(STUDENT_NOT_BOUND_BY_YOU);
+        }
+        StudentInfoDO update = new StudentInfoDO();
+        update.setId(studentId);
+        update.setGuardianMobile("");
+        studentInfoMapper.updateById(update);
+        return success(true);
+    }
+
     // ==================== 内部辅助方法 ====================
 
     /**

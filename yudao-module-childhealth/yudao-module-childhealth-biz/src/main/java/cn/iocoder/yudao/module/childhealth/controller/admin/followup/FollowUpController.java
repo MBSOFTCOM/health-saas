@@ -77,6 +77,21 @@ public class FollowUpController {
         return success(followUpService.getFollowRecordsByCase(caseId));
     }
 
+    @GetMapping("/record/page")
+    @Operation(summary = "分页查询随访记录")
+    @PreAuthorize("@ss.hasPermission('childhealth:followup:query')")
+    public CommonResult<PageResult<FollowRecordResponse>> getFollowRecordPage(@Valid FollowRecordQueryRequest request) {
+        return success(followUpService.getFollowRecordPage(request));
+    }
+
+    @GetMapping("/record/plan/{planId}")
+    @Operation(summary = "获取计划的随访记录列表")
+    @Parameter(name = "planId", description = "计划ID", required = true)
+    @PreAuthorize("@ss.hasPermission('childhealth:followup:query')")
+    public CommonResult<List<FollowRecordResponse>> getFollowRecordsByPlan(@PathVariable Long planId) {
+        return success(followUpService.getFollowRecordsByPlan(planId));
+    }
+
     // ==================== 随访任务管理 ====================
 
     @PostMapping("/task")
@@ -171,6 +186,29 @@ public class FollowUpController {
     @PreAuthorize("@ss.hasPermission('childhealth:followup:query')")
     public CommonResult<List<FollowPlanResponse>> getFollowPlansByCase(@PathVariable Long caseId) {
         return success(followUpService.getFollowPlansByCase(caseId));
+    }
+
+    @GetMapping("/plan/page")
+    @Operation(summary = "分页查询随访计划")
+    @PreAuthorize("@ss.hasPermission('childhealth:followup:query')")
+    public CommonResult<PageResult<FollowPlanResponse>> getFollowPlanPage(@Valid FollowPlanQueryRequest request) {
+        return success(followUpService.getFollowPlanPage(request));
+    }
+
+    @GetMapping("/plan/{id}")
+    @Operation(summary = "获取随访计划详情")
+    @Parameter(name = "id", description = "计划ID", required = true)
+    @PreAuthorize("@ss.hasPermission('childhealth:followup:query')")
+    public CommonResult<FollowPlanResponse> getFollowPlan(@PathVariable Long id) {
+        return success(followUpService.getFollowPlan(id));
+    }
+
+    @PostMapping("/plan/generate")
+    @Operation(summary = "根据专案自动生成随访计划")
+    @Parameter(name = "caseId", description = "专案ID", required = true)
+    @PreAuthorize("@ss.hasPermission('childhealth:followup:create')")
+    public CommonResult<Long> generateFollowPlan(@RequestParam Long caseId) {
+        return success(followUpService.generateFollowPlan(caseId));
     }
 
     // ==================== 催检规则管理 ====================

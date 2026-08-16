@@ -203,6 +203,9 @@ public interface ErrorCodeConstants {
     ErrorCode HEALTH_SCREENING_PLAN_NOT_EXISTS = new ErrorCode(100150000, "体检方案不存在");
     ErrorCode HEALTH_SCREENING_PLAN_CODE_DUPLICATE = new ErrorCode(100150001, "体检方案编码已存在");
     ErrorCode SCREENING_PLAN_BATCH_NOT_EXISTS = new ErrorCode(100150100, "体检方案批次关联不存在");
+    ErrorCode SCREENING_BATCH_STUDENT_NOT_EXISTS = new ErrorCode(100150150, "批次内学生名单不存在");
+    ErrorCode SCREENING_BATCH_STUDENT_DUPLICATE = new ErrorCode(100150151, "该学生已在批次名单中");
+    ErrorCode SCREENING_BATCH_STUDENT_NO_MATCH = new ErrorCode(100150152, "学号无法匹配学生档案");
     ErrorCode SCREENING_DEPARTMENT_NOT_EXISTS = new ErrorCode(100150200, "筛查科室不存在");
     ErrorCode SCREENING_DEPARTMENT_CODE_DUPLICATE = new ErrorCode(100150201, "筛查科室编码已存在");
     ErrorCode HEALTH_ARTICLE_NOT_EXISTS = new ErrorCode(100150300, "健康文章不存在");
@@ -225,5 +228,10 @@ public interface ErrorCodeConstants {
     ErrorCode DEVICE_DATA_RECORD_NOT_EXISTS = new ErrorCode(100151200, "设备数据记录不存在");
     ErrorCode RECHECK_CHECKIN_NOT_EXISTS = new ErrorCode(100151300, "复筛报到记录不存在");
     ErrorCode RECHECK_CHECKIN_NO_DUPLICATE = new ErrorCode(100151301, "复筛报到编号已存在");
+
+    // ========== E. 家长端绑定/解绑 100152000-100152999 ==========  (新增 2026-08-15)
+    ErrorCode PARENT_MOBILE_REQUIRED = new ErrorCode(100152000, "家长手机号不能为空");
+    ErrorCode STUDENT_ALREADY_BOUND = new ErrorCode(100152001, "该学生已被其他家长绑定");
+    ErrorCode STUDENT_NOT_BOUND_BY_YOU = new ErrorCode(100152002, "该学生未由当前家长绑定，无法解绑");
 
 }

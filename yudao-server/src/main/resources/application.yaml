@@ -219,6 +219,9 @@ yudao:
       - infra_job_log
       - infra_job_log
       - infra_data_source_config
+       # childhealth：系统级聚合/快照表，由定时任务跨租户生成，按表自身 tenant_id 列自管理
+      - ops_indicator_snapshot
+      - staff_workload_statistics
       - jimu_dict
       - jimu_dict_item
       - jimu_report
@@ -272,3 +275,26 @@ spring:
     template-loader-path: classpath:freemarker/
     settings:
       classic_compatible: true
+
+# 五健筛查模块配置
+childhealth:
+  # 数据上报推送配置
+  data-push:
+    # 是否启用 Mock 模式（true=不实际调用远程，仅模拟成功/失败；false=真实 HTTP 推送）
+    mock-enabled: true
+    # 连接超时（毫秒）
+    connect-timeout-ms: 5000
+    # 读取超时（毫秒）
+    read-timeout-ms: 15000
+    # 默认重试次数（任务级 max_retry 为空时回退）
+    default-max-retry: 5
+    # 目标系统 URL 映射（key=DataPushTaskDO.targetSystem，value=推送 URL）
+    # 留空表示该系统暂未对接，任务将直接标记为失败
+    targets:
+      HIS: ''   # 例：http://his.example.com/api/childhealth/screening
+      LIS: ''   # 例：http://lis.example.com/api/childhealth/lab
+      WCHB: ''  # 妇幼保健
+      WSJW: ''  # 卫生健康委
+      EDU: ''   # 教育局
+    # 推送认证 Token（统一Bearer Token，留空则不添加 Authorization 头）
+    auth-token: ''

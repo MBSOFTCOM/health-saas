@@ -40,4 +40,15 @@ public interface ScreeningPositiveMapper extends BaseMapperX<ScreeningPositiveDO
                 .orderByDesc(ScreeningPositiveDO::getId));
     }
 
+    /**
+     * 按筛查记录ID列表批量查询阳性记录（用于看板按 recordIds 聚合复筛统计）
+     */
+    default List<ScreeningPositiveDO> selectListByRecordIds(List<Long> recordIds) {
+        if (recordIds == null || recordIds.isEmpty()) {
+            return java.util.Collections.emptyList();
+        }
+        return selectList(new LambdaQueryWrapperX<ScreeningPositiveDO>()
+                .in(ScreeningPositiveDO::getRecordId, recordIds));
+    }
+
 }

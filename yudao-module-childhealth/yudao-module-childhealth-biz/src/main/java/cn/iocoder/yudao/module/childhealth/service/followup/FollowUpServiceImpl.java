@@ -27,6 +27,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -111,6 +112,34 @@ public class FollowUpServiceImpl implements FollowUpService {
     public List<FollowRecordResponse> getFollowRecordsByCase(Long caseId) {
         return followRecordMapper.selectList(Wrappers.<FollowUpRecordDO>lambdaQuery()
                         .eq(FollowUpRecordDO::getCaseId, caseId)
+                        .orderByDesc(FollowUpRecordDO::getFollowDate))
+                .stream()
+                .map(this::convertToFollowRecordResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public PageResult<FollowRecordResponse> getFollowRecordPage(FollowRecordQueryRequest request) {
+        List<FollowUpRecordDO> list = followRecordMapper.selectList(Wrappers.<FollowUpRecordDO>lambdaQuery()
+                .eq(request.getCaseId() != null, FollowUpRecordDO::getCaseId, request.getCaseId())
+                .eq(request.getChildId() != null, FollowUpRecordDO::getChildId, request.getChildId())
+                .eq(request.getPlanId() != null, FollowUpRecordDO::getPlanId, request.getPlanId())
+                .eq(request.getFollowType() != null, FollowUpRecordDO::getFollowType, request.getFollowType())
+                .ge(request.getFollowDateStart() != null, FollowUpRecordDO::getFollowDate, request.getFollowDateStart())
+                .le(request.getFollowDateEnd() != null, FollowUpRecordDO::getFollowDate, request.getFollowDateEnd())
+                .orderByDesc(FollowUpRecordDO::getFollowDate));
+
+        List<FollowRecordResponse> responseList = list.stream()
+                .map(this::convertToFollowRecordResponse)
+                .collect(Collectors.toList());
+
+        return new PageResult<>(responseList, (long) responseList.size());
+    }
+
+    @Override
+    public List<FollowRecordResponse> getFollowRecordsByPlan(Long planId) {
+        return followRecordMapper.selectList(Wrappers.<FollowUpRecordDO>lambdaQuery()
+                        .eq(FollowUpRecordDO::getPlanId, planId)
                         .orderByDesc(FollowUpRecordDO::getFollowDate))
                 .stream()
                 .map(this::convertToFollowRecordResponse)
@@ -265,6 +294,43 @@ public class FollowUpServiceImpl implements FollowUpService {
                 .stream()
                 .map(this::convertToFollowPlanResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public PageResult<FollowPlanResponse> getFollowPlanPage(FollowPlanQueryRequest request) {
+        List<FollowPlanDO> list = followPlanMapper.selectList(Wrappers.<FollowPlanDO>lambdaQuery()
+                .eq(request.getCaseId() != null, FollowPlanDO::getCaseId, request.getCaseId())
+                .eq(request.getPlanType() != null, FollowPlanDO::getPlanType, request.getPlanType())
+                .eq(request.getPlanStatus() != null, FollowPlanDO::getPlanStatus, request.getPlanStatus())
+                .ge(request.getPlanDateStart() != null, FollowPlanDO::getPlanDate, request.getPlanDateStart())
+                .le(request.getPlanDateEnd() != null, FollowPlanDO::getPlanDate, request.getPlanDateEnd())
+                .orderByDesc(FollowPlanDO::getPlanDate));
+
+        List<FollowPlanResponse> responseList = list.stream()
+                .map(this::convertToFollowPlanResponse)
+                .collect(Collectors.toList());
+
+        return new PageResult<>(responseList, (long) responseList.size());
+    }
+
+    @Override
+    public FollowPlanResponse getFollowPlan(Long id) {
+        FollowPlanDO plan = followPlanMapper.selectById(id);
+        return plan == null ? null : convertToFollowPlanResponse(plan);
+    }
+
+    @Override
+    @Transactional
+    public Long generateFollowPlan(Long caseId) {
+        FollowPlanDO plan = new FollowPlanDO();
+        plan.setCaseId(caseId);
+        plan.setPlanType(1); // 自动生成
+        plan.setPlanDate(LocalDate.now());
+        plan.setFollowContent("自动生成随访计划");
+        plan.setPlanStatus(1);
+        plan.setCreateTime(LocalDateTime.now());
+        followPlanMapper.insert(plan);
+        return plan.getId();
     }
 
     // ==================== 催检规则管理 ====================

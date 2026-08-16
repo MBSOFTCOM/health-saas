@@ -11,11 +11,15 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
@@ -27,6 +31,69 @@ public class ScreeningBatchController {
 
     @Resource
     private ScreeningBatchService screeningBatchService;
+
+    @Resource
+    private JdbcTemplate jdbc;
+
+    // ==================== 批次维度扩展接口（对应前端 api/screen/batch.js） ====================
+
+    @GetMapping("/schools")
+    @Operation(summary = "查询批次内学校列表", description = "当前批次模型为单学校，返回该批次的学校信息")
+    @Parameter(name = "batchId", description = "批次ID", required = true)
+    public CommonResult<List<Map<String, Object>>> getBatchSchools(@RequestParam("batchId") Long batchId) {
+        ScreeningBatchDO batch = screeningBatchService.getScreeningBatch(batchId);
+        if (batch == null || batch.getSchoolId() == null) {
+            return success(new ArrayList<>());
+        }
+        List<Map<String, Object>> schools = jdbc.queryForList(
+                "SELECT id, school_name AS schoolName, school_code AS schoolCode FROM school_info WHERE id = ?",
+                batch.getSchoolId());
+        return success(schools);
+    }
+
+    @GetMapping("/classes")
+    @Operation(summary = "查询批次内班级列表", description = "从该批次有筛查记录的学生中聚合班级")
+    @Parameter(name = "batchId", description = "批次ID", required = true)
+    @Parameter(name = "schoolId", description = "学校ID（可选，当前批次已绑定单学校，传入仅作过滤预留）")
+    public CommonResult<List<Map<String, Object>>> getBatchClasses(
+            @RequestParam("batchId") Long batchId,
+            @RequestParam(value = "schoolId", required = false) Long schoolId) {
+        // 通过 student_info -> class_info -> grade_info -> school_info 关联，按批次下的筛查记录聚合
+        String sql =
+                "SELECT DISTINCT c.id AS classId, c.class_name AS className, " +
+                        "g.id AS gradeId, g.grade_name AS gradeName " +
+                        "FROM screening_record r " +
+                        "LEFT JOIN student_info s ON s.id = r.student_id " +
+                        "LEFT JOIN class_info c ON c.id = s.class_id " +
+                        "LEFT JOIN grade_info g ON g.id = c.grade_id " +
+                        "WHERE r.batch_id = ? AND c.id IS NOT NULL " +
+                        "ORDER BY g.grade_level, c.class_name";
+        List<Map<String, Object>> list = jdbc.queryForList(sql, batchId);
+        return success(list);
+    }
+
+    @GetMapping("/screen-items")
+    @Operation(summary = "查询批次筛查项目", description = "返回五健筛查的5个固定项目（体形/视力/骨骼/口腔/心理）")
+    @Parameter(name = "batchId", description = "批次ID", required = true)
+    public CommonResult<List<Map<String, Object>>> getBatchScreenItems(@RequestParam("batchId") Long batchId) {
+        // 五健筛查固定5项，项目编码与 ScreeningItemConfig 保持一致
+        List<Map<String, Object>> items = new ArrayList<>();
+        String[][] defaults = {
+                {"BODY_SHAPE", "体形筛查", "体重/身高/BMI"},
+                {"VISION", "视力筛查", "裸眼视力/矫正视力"},
+                {"SPINE", "骨骼筛查", "脊柱侧弯/扁平足"},
+                {"ORAL", "口腔筛查", "龋齿/牙龈"},
+                {"PSYCHOLOGY", "心理筛查", "心理量表评估"}
+        };
+        for (String[] d : defaults) {
+            Map<String, Object> m = new LinkedHashMap<>();
+            m.put("itemCode", d[0]);
+            m.put("itemName", d[1]);
+            m.put("itemDesc", d[2]);
+            items.add(m);
+        }
+        return success(items);
+    }
 
     @PostMapping("/create")
     @Operation(summary = "创建筛查批次")
@@ -86,6 +153,28 @@ public class ScreeningBatchController {
                                                     @RequestParam("status") Integer status) {
         screeningBatchService.updateBatchStatus(id, status);
         return success(true);
+    }
+
+    @PutMapping("/batch-update-status")
+    @Operation(summary = "批量更新筛查批次状态（统一管理用）")
+    @PreAuthorize("@ss.hasPermission('childhealth:screening-batch:update')")
+    public CommonResult<Boolean> batchUpdateStatus(@RequestBody Map<String, Object> body) {
+        @SuppressWarnings("unchecked")
+        List<Long> ids = (List<Long>) body.get("ids");
+        Integer status = (Integer) body.get("status");
+        screeningBatchService.batchUpdateStatus(ids, status);
+        return success(true);
+    }
+
+    @GetMapping("/status-statistics")
+    @Operation(summary = "按状态统计批次数量（统一管理用）")
+    @Parameter(name = "schoolId", description = "学校ID（可选）")
+    @Parameter(name = "yearId", description = "学年ID（可选）")
+    @PreAuthorize("@ss.hasPermission('childhealth:screening-batch:query')")
+    public CommonResult<Map<Integer, Long>> statusStatistics(
+            @RequestParam(value = "schoolId", required = false) Long schoolId,
+            @RequestParam(value = "yearId", required = false) Long yearId) {
+        return success(screeningBatchService.statusStatistics(schoolId, yearId));
     }
 
 }

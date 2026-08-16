@@ -1,6 +1,7 @@
 package cn.iocoder.yudao.module.childhealth.job;
 
 import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
+import cn.iocoder.yudao.framework.tenant.core.util.TenantUtils;
 import cn.iocoder.yudao.module.childhealth.dal.dataobject.management.FollowTaskDO;
 import cn.iocoder.yudao.module.childhealth.dal.dataobject.ops.OpsIndicatorSnapshotDO;
 import cn.iocoder.yudao.module.childhealth.dal.dataobject.screening.*;
@@ -38,12 +39,21 @@ import java.util.List;
  *   3. follow_task：随访任务数
  *   4. referral_record：转介数（用于扩展指标）
  *
+ * 租户上下文：
+ *   - 定时任务不经过 TenantContextWebFilter，租户上下文为空
+ *   - 通过 TenantUtils.execute(DEFAULT_TENANT_ID, ...) 显式注入默认租户（id=1）
+ *   - ops_indicator_snapshot 已加入 yudao.tenant.ignore-tables，写入时不强制注入 tenant_id
+ *     （由 DB 列 DEFAULT 1 兜底）；读取业务表仍走租户过滤，确保仅统计本租户数据。
+ *
  * 触发方式：
- *   - XXL-JOB 调度：childhealthOpsSnapshotJob
+ *   - @Scheduled 调度
  */
 @Slf4j
 @Component
 public class OpsSnapshotJob {
+
+    /** 默认租户编号（与 system_users.tenant_id=1 一致）；多租户化后需遍历 system_tenant 表逐个生成 */
+    private static final Long DEFAULT_TENANT_ID = 1L;
 
     @Resource
     private ScreeningRecordMapper screeningRecordMapper;
@@ -65,26 +75,29 @@ public class OpsSnapshotJob {
      */
     @Scheduled(cron = "0 0 1 * * ?")
     public void execute() {
-        LocalDate snapshotDate = LocalDate.now().minusDays(1); // T-1 快照
-        log.info("[运营快照] 开始生成 {} 日快照...", snapshotDate);
+        // 定时任务无 Web 上下文，显式注入默认租户，避免 TenantDatabaseInterceptor 抛 "不存在租户编号"
+        TenantUtils.execute(DEFAULT_TENANT_ID, () -> {
+            LocalDate snapshotDate = LocalDate.now().minusDays(1); // T-1 快照
+            log.info("[运营快照] 开始生成 {} 日快照... tenantId={}", snapshotDate, DEFAULT_TENANT_ID);
 
-        // 1. 查询所有进行中/已完成的批次
-        List<ScreeningBatchDO> batches = screeningBatchMapper.selectListByConditions(null, null, null);
-        int generated = 0;
-        int skipped = 0;
-        for (ScreeningBatchDO batch : batches) {
-            try {
-                boolean created = generateSnapshotForBatch(batch, snapshotDate);
-                if (created) {
-                    generated++;
-                } else {
-                    skipped++;
+            // 1. 查询所有进行中/已完成的批次
+            List<ScreeningBatchDO> batches = screeningBatchMapper.selectListByConditions(null, null, null);
+            int generated = 0;
+            int skipped = 0;
+            for (ScreeningBatchDO batch : batches) {
+                try {
+                    boolean created = generateSnapshotForBatch(batch, snapshotDate);
+                    if (created) {
+                        generated++;
+                    } else {
+                        skipped++;
+                    }
+                } catch (Exception e) {
+                    log.error("[运营快照] 批次 #{} 快照生成失败", batch.getId(), e);
                 }
-            } catch (Exception e) {
-                log.error("[运营快照] 批次 #{} 快照生成失败", batch.getId(), e);
             }
-        }
-        log.info("[运营快照] {} 日快照完成：新增 {} 个，跳过（已存在）{} 个", snapshotDate, generated, skipped);
+            log.info("[运营快照] {} 日快照完成：新增 {} 个，跳过（已存在）{} 个", snapshotDate, generated, skipped);
+        });
     }
 
     /**

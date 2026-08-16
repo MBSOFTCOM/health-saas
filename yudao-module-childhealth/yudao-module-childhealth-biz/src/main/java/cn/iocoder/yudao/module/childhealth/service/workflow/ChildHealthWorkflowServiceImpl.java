@@ -28,20 +28,28 @@ import cn.iocoder.yudao.module.childhealth.api.ops.dto.ChildHealthOpsDTO.Message
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class ChildHealthWorkflowServiceImpl implements ChildHealthWorkflowService {
     @Resource private ChildInfoMapper childInfoMapper;
@@ -166,9 +174,36 @@ public class ChildHealthWorkflowServiceImpl implements ChildHealthWorkflowServic
     @Transactional
     public String generateChildQrCode(Long id) {
         ChildInfoDO child = requireChild(id);
-        // ponytail: 存储稳定的二维码内容，需服务端PNG时再接文件存储。
         String content = "childhealth://child/" + child.getId() + "?code=" + child.getChildCode();
-        child.setQrCode(content); child.setUpdateTime(LocalDateTime.now()); childInfoMapper.updateById(child); return content;
+        String qrCode = encodeQrCodeToBase64Png(content);
+        // ZXing 生成失败时回退为内容字符串，保证主流程可用
+        if (qrCode == null) {
+            qrCode = content;
+        }
+        child.setQrCode(qrCode);
+        child.setUpdateTime(LocalDateTime.now());
+        childInfoMapper.updateById(child);
+        return qrCode;
+    }
+
+    /**
+     * 使用 ZXing 将文本编码为 PNG 二维码，返回 data:image/png;base64,... 格式的 Data URI。
+     * 编码失败时返回 null，调用方做兜底处理。
+     */
+    private String encodeQrCodeToBase64Png(String content) {
+        if (content == null || content.isBlank()) {
+            return null;
+        }
+        try {
+            QRCodeWriter writer = new QRCodeWriter();
+            BitMatrix matrix = writer.encode(content, BarcodeFormat.QR_CODE, 300, 300);
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            MatrixToImageWriter.writeToStream(matrix, "PNG", os);
+            return "data:image/png;base64," + Base64.getEncoder().encodeToString(os.toByteArray());
+        } catch (Exception e) {
+            log.error("[encodeQrCodeToBase64Png] ZXing 生成二维码失败 content={}", content, e);
+            return null;
+        }
     }
 
     @Override

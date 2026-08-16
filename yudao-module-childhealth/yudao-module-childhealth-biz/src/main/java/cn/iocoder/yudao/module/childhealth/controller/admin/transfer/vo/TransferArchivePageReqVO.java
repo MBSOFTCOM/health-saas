@@ -20,11 +20,17 @@ public class TransferArchivePageReqVO extends PageParam {
     @Schema(description = "儿童ID", example = "1")
     private Long childId;
 
-    @Schema(description = "转递类型", example = "1")
+    @Schema(description = "转递类型 1转入 2转出", example = "1")
     private Integer transferType;
 
     @Schema(description = "转递日期")
     private LocalDate[] transferDate;
+
+    @Schema(description = "来源医院")
+    private String sourceHospital;
+
+    @Schema(description = "目标医院")
+    private String targetHospital;
 
     @Schema(description = "状态", example = "0")
     private Integer status;

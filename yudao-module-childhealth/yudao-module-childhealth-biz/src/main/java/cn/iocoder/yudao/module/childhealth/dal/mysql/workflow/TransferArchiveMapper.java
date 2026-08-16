@@ -16,6 +16,8 @@ public interface TransferArchiveMapper extends BaseMapperX<TransferArchiveDO> {
                 .eqIfPresent(TransferArchiveDO::getChildId, reqVO.getChildId())
                 .eqIfPresent(TransferArchiveDO::getTransferType, reqVO.getTransferType())
                 .betweenIfPresent(TransferArchiveDO::getTransferDate, reqVO.getTransferDate())
+                .likeIfPresent(TransferArchiveDO::getSourceHospital, reqVO.getSourceHospital())
+                .likeIfPresent(TransferArchiveDO::getTargetHospital, reqVO.getTargetHospital())
                 .eqIfPresent(TransferArchiveDO::getStatus, reqVO.getStatus())
                 .orderByDesc(TransferArchiveDO::getId));
     }

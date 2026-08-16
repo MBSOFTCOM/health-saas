@@ -15,6 +15,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
 @Tag(name = "管理后台 - 体检方案配置")
@@ -65,6 +67,34 @@ public class ScreeningPlanController {
     public CommonResult<PageResult<ScreeningPlanRespVO>> getScreeningPlanPage(@Valid ScreeningPlanPageReqVO pageReqVO) {
         PageResult<ScreeningPlanDO> pageResult = screeningPlanService.getScreeningPlanPage(pageReqVO);
         return success(BeanUtils.toBean(pageResult, ScreeningPlanRespVO.class));
+    }
+
+    @GetMapping("/get-default")
+    @Operation(summary = "按类型获取默认方案")
+    @Parameter(name = "planType", description = "方案类型 1五健 2基础体检 3入园入托", required = true, example = "1")
+    @PreAuthorize("@ss.hasPermission('childhealth:screening-plan:query')")
+    public CommonResult<ScreeningPlanRespVO> getDefaultPlan(@RequestParam("planType") Integer planType) {
+        ScreeningPlanDO plan = screeningPlanService.selectDefaultPlan(planType);
+        return success(BeanUtils.toBean(plan, ScreeningPlanRespVO.class));
+    }
+
+    @PutMapping("/set-default")
+    @Operation(summary = "设置默认方案（同类型互斥）")
+    @Parameter(name = "id", description = "方案ID", required = true)
+    @Parameter(name = "planType", description = "方案类型", required = true)
+    @PreAuthorize("@ss.hasPermission('childhealth:screening-plan:update')")
+    public CommonResult<Boolean> setDefaultPlan(@RequestParam("id") Long id,
+                                                @RequestParam("planType") Integer planType) {
+        screeningPlanService.setDefaultPlan(id, planType);
+        return success(true);
+    }
+
+    @GetMapping("/active-list")
+    @Operation(summary = "获取所有启用的方案（下拉选择用）")
+    @PreAuthorize("@ss.hasPermission('childhealth:screening-plan:query')")
+    public CommonResult<List<ScreeningPlanRespVO>> getActiveList() {
+        List<ScreeningPlanDO> list = screeningPlanService.selectActiveList();
+        return success(BeanUtils.toBean(list, ScreeningPlanRespVO.class));
     }
 
 }

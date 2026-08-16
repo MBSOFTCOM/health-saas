@@ -3,9 +3,13 @@ package cn.iocoder.yudao.module.childhealth.service.dashboard;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.iocoder.yudao.module.childhealth.controller.admin.dashboard.vo.*;
 import cn.iocoder.yudao.module.childhealth.dal.dataobject.ops.OpsIndicatorSnapshotDO;
+import cn.iocoder.yudao.module.childhealth.dal.dataobject.screening.RecheckRecordDO;
+import cn.iocoder.yudao.module.childhealth.dal.dataobject.screening.ScreeningPositiveDO;
 import cn.iocoder.yudao.module.childhealth.dal.dataobject.screening.ScreeningRecordDO;
 import cn.iocoder.yudao.module.childhealth.dal.dataobject.screening.ScreeningResultDetailDO;
 import cn.iocoder.yudao.module.childhealth.dal.mysql.ops.OpsIndicatorSnapshotMapper;
+import cn.iocoder.yudao.module.childhealth.dal.mysql.screening.RecheckRecordMapper;
+import cn.iocoder.yudao.module.childhealth.dal.mysql.screening.ScreeningPositiveMapper;
 import cn.iocoder.yudao.module.childhealth.dal.mysql.screening.ScreeningRecordMapper;
 import cn.iocoder.yudao.module.childhealth.dal.mysql.screening.ScreeningResultDetailMapper;
 import jakarta.annotation.Resource;
@@ -20,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 数据看板 Service 实现
@@ -43,6 +49,10 @@ public class DashboardServiceImpl implements DashboardService {
     private ScreeningRecordMapper screeningRecordMapper;
     @Resource
     private ScreeningResultDetailMapper screeningResultDetailMapper;
+    @Resource
+    private ScreeningPositiveMapper screeningPositiveMapper;
+    @Resource
+    private RecheckRecordMapper recheckRecordMapper;
 
     @Override
     public DashboardOverviewRespVO getOverview(DashboardQueryReqVO reqVO) {
@@ -139,13 +149,21 @@ public class DashboardServiceImpl implements DashboardService {
         // 3. 查询全部明细（分母）和异常明细（分子）
         List<ScreeningResultDetailDO> allDetails = screeningResultDetailMapper.selectListByRecordIds(recordIds);
         List<ScreeningResultDetailDO> abnormalDetails = screeningResultDetailMapper.selectAbnormalListByRecordIds(recordIds);
-        // 4. 按 itemCode 前缀分组聚合
+        // 4. 查询阳性记录（用于复筛统计；阳性记录的 diseaseCode 同样按五健前缀归类）
+        List<ScreeningPositiveDO> positiveList = screeningPositiveMapper.selectListByRecordIds(recordIds);
+        // 5. 提取 positiveIds 并查询复筛记录
+        List<Long> positiveIds = new ArrayList<>(positiveList.size());
+        for (ScreeningPositiveDO p : positiveList) {
+            positiveIds.add(p.getId());
+        }
+        List<RecheckRecordDO> recheckList = recheckRecordMapper.selectListByPositiveIds(positiveIds);
+        // 6. 按 itemCode/diseaseCode 前缀分组聚合 stats: [筛查数, 阳性数, 复筛数]
         Map<String, int[]> stats = new HashMap<>();
-        stats.put(CATEGORY_VISION, new int[]{0, 0});
-        stats.put(CATEGORY_ORAL, new int[]{0, 0});
-        stats.put(CATEGORY_BONE, new int[]{0, 0});
-        stats.put(CATEGORY_PSY, new int[]{0, 0});
-        stats.put(CATEGORY_SHAPE, new int[]{0, 0});
+        stats.put(CATEGORY_VISION, new int[]{0, 0, 0});
+        stats.put(CATEGORY_ORAL, new int[]{0, 0, 0});
+        stats.put(CATEGORY_BONE, new int[]{0, 0, 0});
+        stats.put(CATEGORY_PSY, new int[]{0, 0, 0});
+        stats.put(CATEGORY_SHAPE, new int[]{0, 0, 0});
         for (ScreeningResultDetailDO d : allDetails) {
             String cat = resolveCategory(d.getItemCode());
             if (cat != null) {
@@ -158,7 +176,20 @@ public class DashboardServiceImpl implements DashboardService {
                 stats.get(cat)[1] += 1;
             }
         }
-        // 5. 构造 VO 列表（按固定顺序）
+        // 7. 以 positiveId -> ScreeningPositiveDO 映射，将复筛记录归属到对应分类
+        Map<Long, ScreeningPositiveDO> positiveMap = positiveList.stream()
+                .collect(Collectors.toMap(ScreeningPositiveDO::getId, Function.identity()));
+        for (RecheckRecordDO r : recheckList) {
+            ScreeningPositiveDO p = positiveMap.get(r.getPositiveId());
+            if (p == null) {
+                continue;
+            }
+            String cat = resolveCategory(p.getDiseaseCode());
+            if (cat != null) {
+                stats.get(cat)[2] += 1;
+            }
+        }
+        // 8. 构造 VO 列表（按固定顺序）
         List<DashboardCategoryRespVO> result = new ArrayList<>(5);
         result.add(buildCategoryWithData(CATEGORY_VISION, "视力", stats.get(CATEGORY_VISION)));
         result.add(buildCategoryWithData(CATEGORY_ORAL, "口腔", stats.get(CATEGORY_ORAL)));
@@ -247,7 +278,7 @@ public class DashboardServiceImpl implements DashboardService {
 
     /**
      * 根据统计数组构造分类 VO
-     * @param stats int[2] = [筛查数, 阳性数]
+     * @param stats int[3] = [筛查数, 阳性数, 复筛数]
      */
     private DashboardCategoryRespVO buildCategoryWithData(String code, String name, int[] stats) {
         DashboardCategoryRespVO category = new DashboardCategoryRespVO();
@@ -256,15 +287,24 @@ public class DashboardServiceImpl implements DashboardService {
         category.setScreeningCount(stats[0]);
         category.setPositiveCount(stats[1]);
         if (stats[0] > 0) {
+            // 阳性率 = 阳性数 / 筛查数 * 100，保留两位小数
             category.setPositiveRate(BigDecimal.valueOf(stats[1])
-                    .divide(BigDecimal.valueOf(stats[0]), 2, RoundingMode.HALF_UP)
-                    .multiply(BigDecimal.valueOf(100)));
+                    .divide(BigDecimal.valueOf(stats[0]), 4, RoundingMode.HALF_UP)
+                    .multiply(BigDecimal.valueOf(100))
+                    .setScale(2, RoundingMode.HALF_UP));
         } else {
             category.setPositiveRate(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP));
         }
-        // 复筛数/复筛率需关联 screening_positive + recheck_record 联表统计，此处暂置零
-        category.setRecheckCount(0);
-        category.setRecheckRate(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP));
+        // 复筛率 = 复筛数 / 阳性数 * 100，保留两位小数（阳性数为 0 时置零）
+        category.setRecheckCount(stats[2]);
+        if (stats[1] > 0) {
+            category.setRecheckRate(BigDecimal.valueOf(stats[2])
+                    .divide(BigDecimal.valueOf(stats[1]), 4, RoundingMode.HALF_UP)
+                    .multiply(BigDecimal.valueOf(100))
+                    .setScale(2, RoundingMode.HALF_UP));
+        } else {
+            category.setRecheckRate(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP));
+        }
         return category;
     }
 

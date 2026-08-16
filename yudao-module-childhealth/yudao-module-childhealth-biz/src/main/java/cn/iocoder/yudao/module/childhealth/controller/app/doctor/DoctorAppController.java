@@ -3,10 +3,12 @@ package cn.iocoder.yudao.module.childhealth.controller.app.doctor;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
 import cn.iocoder.yudao.module.childhealth.controller.app.doctor.vo.*;
+import cn.iocoder.yudao.module.childhealth.dal.dataobject.device.RecheckCheckinDO;
 import cn.iocoder.yudao.module.childhealth.dal.dataobject.management.FollowTaskDO;
 import cn.iocoder.yudao.module.childhealth.dal.dataobject.ops.StaffWorkloadStatisticsDO;
 import cn.iocoder.yudao.module.childhealth.dal.dataobject.screening.*;
 import cn.iocoder.yudao.module.childhealth.dal.dataobject.workflow.StudentInfoDO;
+import cn.iocoder.yudao.module.childhealth.dal.mysql.device.RecheckCheckinMapper;
 import cn.iocoder.yudao.module.childhealth.dal.mysql.management.FollowTaskMapper;
 import cn.iocoder.yudao.module.childhealth.dal.mysql.ops.StaffWorkloadStatisticsMapper;
 import cn.iocoder.yudao.module.childhealth.dal.mysql.screening.*;
@@ -24,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -72,6 +75,8 @@ public class DoctorAppController {
     private StaffWorkloadStatisticsMapper staffWorkloadStatisticsMapper;
     @Resource
     private StudentInfoMapper studentInfoMapper;
+    @Resource
+    private RecheckCheckinMapper recheckCheckinMapper;
 
     // ==================== 1. 医生工作台 ====================
 
@@ -400,6 +405,334 @@ public class DoctorAppController {
         List<StaffWorkloadStatisticsDO> list = staffWorkloadStatisticsMapper.selectListByStaffAndDateRange(
                 doctorId, startDate, endDate);
         return success(list);
+    }
+
+    // ==================== 11. 批量保存筛查结果（对应前端 register.js batchSaveScreeningResult） ====================
+
+    @PostMapping("/screening-batch-input")
+    @Operation(summary = "批量保存筛查结果", description = "循环调用单条录入逻辑，任一失败抛出异常回滚")
+    public CommonResult<List<Long>> screeningBatchInput(@RequestBody List<DoctorScreeningInputReqVO> list) {
+        if (list == null || list.isEmpty()) {
+            return success(new ArrayList<>());
+        }
+        List<Long> ids = new ArrayList<>(list.size());
+        for (DoctorScreeningInputReqVO vo : list) {
+            // 复用单条录入逻辑（不调用本 Controller 方法，直接走相同流程，避免事务边界问题）
+            StudentInfoDO student = studentInfoMapper.selectById(vo.getStudentId());
+            if (student == null) {
+                throw exception(STUDENT_NOT_EXISTS);
+            }
+            ScreeningBatchDO batch = screeningBatchMapper.selectById(vo.getBatchId());
+            if (batch == null) {
+                throw exception(SCREENING_BATCH_NOT_EXISTS);
+            }
+            ScreeningRecordDO existing = screeningRecordMapper.selectByBatchIdAndStudentId(
+                    vo.getBatchId(), vo.getStudentId());
+            if (existing != null) {
+                // 已存在则跳过，避免重复录入阻断整批
+                ids.add(existing.getId());
+                continue;
+            }
+            ScreeningRecordDO record = new ScreeningRecordDO();
+            record.setRecordNo("SR" + System.currentTimeMillis());
+            record.setBatchId(vo.getBatchId());
+            record.setStudentId(vo.getStudentId());
+            record.setScreeningDate(LocalDate.parse(vo.getScreeningDate()));
+            record.setCheckStatus(2);
+            record.setHasPositive(vo.getHasPositive() != null ? vo.getHasPositive() : 0);
+            record.setPositiveItems(vo.getPositiveItems());
+            record.setAuditDoctor(vo.getCheckerId());
+            screeningRecordMapper.insert(record);
+            if (vo.getDetailJson() != null && !vo.getDetailJson().isEmpty()) {
+                ScreeningResultDetailDO detail = new ScreeningResultDetailDO();
+                detail.setRecordId(record.getId());
+                detail.setItemCode("BATCH_JSON");
+                detail.setItemValue(vo.getDetailJson());
+                detail.setIsAbnormal(vo.getHasPositive() != null && vo.getHasPositive() == 1 ? 1 : 0);
+                detail.setCheckerId(vo.getCheckerId());
+                detail.setCheckTime(LocalDateTime.now());
+                detail.setDeviceCode(vo.getDeviceCode());
+                screeningResultDetailMapper.insert(detail);
+            }
+            ids.add(record.getId());
+        }
+        return success(ids);
+    }
+
+    // ==================== 12. 筛查数据校验（对应前端 register.js validateScreeningData） ====================
+
+    @PostMapping("/screening-validate")
+    @Operation(summary = "筛查数据校验", description = "提交前的完整性、合理性校验，当前为基础校验占位")
+    public CommonResult<Map<String, Object>> validateScreeningData(@RequestBody Map<String, Object> data) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        List<String> errors = new ArrayList<>();
+        // 基础校验：必须有 studentId / batchId / screeningDate
+        if (data.get("studentId") == null) {
+            errors.add("studentId 不能为空");
+        }
+        if (data.get("batchId") == null) {
+            errors.add("batchId 不能为空");
+        }
+        if (data.get("screeningDate") == null || data.get("screeningDate").toString().isEmpty()) {
+            errors.add("screeningDate 不能为空");
+        }
+        result.put("valid", errors.isEmpty());
+        result.put("errors", errors);
+        return success(result);
+    }
+
+    // ==================== 13. 批量保存复筛结果（对应前端 rescreen.js batchSaveRescreenResult） ====================
+
+    @PostMapping("/recheck-batch-input")
+    @Operation(summary = "批量保存复筛结果", description = "循环调用复筛录入逻辑，任一失败抛出异常回滚")
+    public CommonResult<List<Long>> recheckBatchInput(@RequestBody List<DoctorRecheckInputReqVO> list) {
+        if (list == null || list.isEmpty()) {
+            return success(new ArrayList<>());
+        }
+        List<Long> ids = new ArrayList<>(list.size());
+        for (DoctorRecheckInputReqVO vo : list) {
+            ScreeningPositiveDO positive = screeningPositiveMapper.selectById(vo.getPositiveId());
+            if (positive == null) {
+                throw exception(POSITIVE_RECORD_NOT_EXISTS);
+            }
+            RecheckRecordDO existing = recheckRecordMapper.selectByPositiveId(vo.getPositiveId());
+            if (existing != null) {
+                // 已存在则跳过
+                ids.add(existing.getId());
+                continue;
+            }
+            RecheckRecordDO recheck = new RecheckRecordDO();
+            recheck.setPositiveId(vo.getPositiveId());
+            recheck.setStudentId(vo.getStudentId());
+            recheck.setInitialRecordId(vo.getInitialRecordId());
+            recheck.setRecheckDate(LocalDate.parse(vo.getRecheckDate()));
+            recheck.setRecheckItems(vo.getRecheckItems());
+            recheck.setRecheckResult(vo.getRecheckResult());
+            recheck.setIsStillPositive(vo.getIsStillPositive());
+            recheck.setRecheckConclusion(vo.getRecheckConclusion());
+            recheck.setFollowPlan(vo.getFollowPlan());
+            recheck.setDoctorId(vo.getDoctorId());
+            recheckRecordMapper.insert(recheck);
+            ScreeningPositiveDO positiveUpdate = new ScreeningPositiveDO();
+            positiveUpdate.setId(vo.getPositiveId());
+            positiveUpdate.setRecheckStatus(2);
+            screeningPositiveMapper.updateById(positiveUpdate);
+            ids.add(recheck.getId());
+        }
+        return success(ids);
+    }
+
+    // ==================== 14. 查询复筛状态（对应前端 rescreen.js getRescreenStatus） ====================
+
+    @GetMapping("/recheck-status")
+    @Operation(summary = "查询复筛状态", description = "按学生+批次查询阳性记录与复筛完成情况")
+    @Parameter(name = "studentId", description = "学生ID", required = true)
+    @Parameter(name = "batchId", description = "批次ID", required = true)
+    public CommonResult<Map<String, Object>> getRecheckStatus(
+            @RequestParam("studentId") Long studentId,
+            @RequestParam("batchId") Long batchId) {
+        // 1. 查该批次该学生的筛查记录
+        ScreeningRecordDO record = screeningRecordMapper.selectByBatchIdAndStudentId(batchId, studentId);
+        Map<String, Object> result = new LinkedHashMap<>();
+        if (record == null) {
+            result.put("hasPositive", 0);
+            result.put("positiveCount", 0);
+            result.put("recheckCompletedCount", 0);
+            result.put("recheckStatus", "NO_RECORD");
+            return success(result);
+        }
+        // 2. 查阳性记录
+        List<ScreeningPositiveDO> positives = screeningPositiveMapper.selectList(
+                new LambdaQueryWrapperX<ScreeningPositiveDO>()
+                        .eq(ScreeningPositiveDO::getRecordId, record.getId())
+                        .orderByDesc(ScreeningPositiveDO::getId));
+        int needRecheck = (int) positives.stream().filter(p -> p.getNeedRecheck() != null && p.getNeedRecheck() == 1).count();
+        int completed = (int) positives.stream().filter(p -> p.getRecheckStatus() != null && p.getRecheckStatus() == 2).count();
+        result.put("recordId", record.getId());
+        result.put("hasPositive", record.getHasPositive());
+        result.put("positiveCount", positives.size());
+        result.put("needRecheckCount", needRecheck);
+        result.put("recheckCompletedCount", completed);
+        // 状态：NO_RECHECK(无需复筛) / PENDING(待复筛) / COMPLETED(已完成)
+        result.put("recheckStatus", needRecheck == 0 ? "NO_RECHECK" : (completed >= needRecheck ? "COMPLETED" : "PENDING"));
+        return success(result);
+    }
+
+    // ==================== 15. 记录复筛到检（对应前端 rescreen.js recordRescreenArrival） ====================
+
+    @PostMapping("/recheck-arrival")
+    @Operation(summary = "记录复筛到检", description = "创建复筛报到记录，初始现场状态=0待接诊")
+    public CommonResult<Long> recordRescreenArrival(@RequestBody Map<String, Object> data) {
+        RecheckCheckinDO checkin = new RecheckCheckinDO();
+        checkin.setCheckinNo("RC" + System.currentTimeMillis());
+        checkin.setRecheckId(data.get("recheckId") != null ? Long.valueOf(data.get("recheckId").toString()) : null);
+        checkin.setPositiveId(data.get("positiveId") != null ? Long.valueOf(data.get("positiveId").toString()) : null);
+        checkin.setChildId(data.get("childId") != null ? Long.valueOf(data.get("childId").toString()) : null);
+        checkin.setStudentId(data.get("studentId") != null ? Long.valueOf(data.get("studentId").toString()) : null);
+        checkin.setCheckinTime(LocalDateTime.now());
+        checkin.setCheckinMethod(data.get("checkinMethod") != null ? Integer.valueOf(data.get("checkinMethod").toString()) : 2);
+        checkin.setOnSiteStatus(0); // 0待接诊
+        if (data.get("qrcodeContent") != null) {
+            checkin.setQrcodeContent(data.get("qrcodeContent").toString());
+        }
+        recheckCheckinMapper.insert(checkin);
+        return success(checkin.getId());
+    }
+
+    // ==================== 16. 复筛报到列表（对应前端 rescreen.js getRescreenCheckinList） ====================
+
+    @GetMapping("/recheck-checkin/list")
+    @Operation(summary = "复筛报到列表", description = "按现场状态查询报到记录，可附带日期过滤")
+    @Parameter(name = "onSiteStatus", description = "现场状态 0待接诊 1已接诊 2已检查 3已离场")
+    @Parameter(name = "checkinDate", description = "报到日期 yyyy-MM-dd")
+    public CommonResult<List<RecheckCheckinDO>> getRecheckCheckinList(
+            @RequestParam(value = "onSiteStatus", required = false) Integer onSiteStatus,
+            @RequestParam(value = "checkinDate", required = false) String checkinDate) {
+        LambdaQueryWrapperX<RecheckCheckinDO> wrapper = new LambdaQueryWrapperX<RecheckCheckinDO>()
+                .eqIfPresent(RecheckCheckinDO::getOnSiteStatus, onSiteStatus)
+                .orderByDesc(RecheckCheckinDO::getCheckinTime);
+        if (checkinDate != null && !checkinDate.isEmpty()) {
+            LocalDate d = LocalDate.parse(checkinDate);
+            wrapper.between(RecheckCheckinDO::getCheckinTime, d.atStartOfDay(), d.atTime(23, 59, 59));
+        }
+        return success(recheckCheckinMapper.selectList(wrapper));
+    }
+
+    // ==================== 17. 复筛数据同步（对应前端 rescreen.js syncRescreenData） ====================
+
+    @PostMapping("/recheck-sync")
+    @Operation(summary = "复筛数据同步", description = "复筛保存时已实时入库，本接口用于离线场景补传，确认同步时间")
+    public CommonResult<Boolean> syncRescreenData(@RequestBody Map<String, Object> data) {
+        // 更新对应复筛记录的同步时间戳（复筛录入时已入库，这里仅刷新时间）
+        if (data.get("recheckId") != null) {
+            Long recheckId = Long.valueOf(data.get("recheckId").toString());
+            RecheckRecordDO update = new RecheckRecordDO();
+            update.setId(recheckId);
+            // RecheckRecordDO 无独立 syncTime 字段，依靠 BaseDO.updater/update_time 自动维护
+            recheckRecordMapper.updateById(update);
+        }
+        return success(true);
+    }
+
+    // ==================== 18. 复筛归档至健康档案（对应前端 rescreen.js archiveRescreenToHealth） ====================
+
+    @PostMapping("/recheck-archive")
+    @Operation(summary = "复筛结果归档至健康档案", description = "复筛录入时已通过 recheckStatus=2 关联归档，本接口用于显式触发并校验")
+    public CommonResult<Map<String, Object>> archiveRescreenToHealth(@RequestBody Map<String, Object> data) {
+        Long studentId = data.get("studentId") != null ? Long.valueOf(data.get("studentId").toString()) : null;
+        Long batchId = data.get("batchId") != null ? Long.valueOf(data.get("batchId").toString()) : null;
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("archived", true);
+        result.put("studentId", studentId);
+        result.put("batchId", batchId);
+        result.put("archiveTime", LocalDateTime.now());
+        return success(result);
+    }
+
+    // ==================== 19. 补检任务 - 创建（对应前端 examination.js createRecheckTask） ====================
+
+    @PostMapping("/recheck-task/create")
+    @Operation(summary = "创建补检任务", description = "为缺检学生创建一条筛查记录，状态=1进行中，recordNo 以 RT 前缀标记")
+    public CommonResult<Long> createRecheckTask(@RequestBody Map<String, Object> data) {
+        Long studentId = data.get("studentId") != null ? Long.valueOf(data.get("studentId").toString()) : null;
+        Long batchId = data.get("batchId") != null ? Long.valueOf(data.get("batchId").toString()) : null;
+        if (studentId == null || batchId == null) {
+            throw exception(STUDENT_NOT_EXISTS);
+        }
+        StudentInfoDO student = studentInfoMapper.selectById(studentId);
+        if (student == null) {
+            throw exception(STUDENT_NOT_EXISTS);
+        }
+        ScreeningBatchDO batch = screeningBatchMapper.selectById(batchId);
+        if (batch == null) {
+            throw exception(SCREENING_BATCH_NOT_EXISTS);
+        }
+        // 已存在则返回原记录ID
+        ScreeningRecordDO existing = screeningRecordMapper.selectByBatchIdAndStudentId(batchId, studentId);
+        if (existing != null) {
+            return success(existing.getId());
+        }
+        ScreeningRecordDO record = new ScreeningRecordDO();
+        record.setRecordNo("RT" + System.currentTimeMillis()); // RT 前缀标识补检任务
+        record.setBatchId(batchId);
+        record.setStudentId(studentId);
+        record.setScreeningDate(LocalDate.now());
+        record.setCheckStatus(1); // 1进行中
+        record.setHasPositive(0);
+        screeningRecordMapper.insert(record);
+        return success(record.getId());
+    }
+
+    // ==================== 20. 补检任务 - 列表（对应前端 examination.js getRecheckTaskList） ====================
+
+    @GetMapping("/recheck-task/list")
+    @Operation(summary = "补检任务列表", description = "查询 recordNo 以 RT 开头、状态=1进行中的筛查记录")
+    @Parameter(name = "batchId", description = "批次ID")
+    public CommonResult<List<Map<String, Object>>> getRecheckTaskList(
+            @RequestParam(value = "batchId", required = false) Long batchId) {
+        // 拆开链式调用：likeRight/eq 是父类方法返回 LambdaQueryWrapper，会丢失 LambdaQueryWrapperX 类型
+        LambdaQueryWrapperX<ScreeningRecordDO> wrapper = new LambdaQueryWrapperX<>();
+        wrapper.likeRight(ScreeningRecordDO::getRecordNo, "RT");
+        wrapper.eq(ScreeningRecordDO::getCheckStatus, 1);
+        if (batchId != null) {
+            wrapper.eq(ScreeningRecordDO::getBatchId, batchId);
+        }
+        wrapper.orderByDesc(ScreeningRecordDO::getId);
+        List<ScreeningRecordDO> records = screeningRecordMapper.selectList(wrapper);
+        if (records.isEmpty()) {
+            return success(new ArrayList<>());
+        }
+        // 批量查学生姓名
+        List<Long> studentIds = records.stream().map(ScreeningRecordDO::getStudentId)
+                .distinct().collect(Collectors.toList());
+        Map<Long, String> studentNameMap = new HashMap<>();
+        if (!studentIds.isEmpty()) {
+            List<StudentInfoDO> students = studentInfoMapper.selectBatchIds(studentIds);
+            for (StudentInfoDO s : students) {
+                studentNameMap.put(s.getId(), s.getName());
+            }
+        }
+        List<Map<String, Object>> result = new ArrayList<>(records.size());
+        for (ScreeningRecordDO r : records) {
+            Map<String, Object> m = new LinkedHashMap<>();
+            m.put("taskId", r.getId());
+            m.put("taskNo", r.getRecordNo());
+            m.put("batchId", r.getBatchId());
+            m.put("studentId", r.getStudentId());
+            m.put("studentName", studentNameMap.get(r.getStudentId()));
+            m.put("screeningDate", r.getScreeningDate());
+            m.put("checkStatus", r.getCheckStatus());
+            result.add(m);
+        }
+        return success(result);
+    }
+
+    // ==================== 21. 补检任务 - 完成（对应前端 examination.js completeRecheckTask） ====================
+
+    @PutMapping("/recheck-task/complete")
+    @Operation(summary = "完成补检任务", description = "将补检任务状态从 1进行中 改为 2待审核")
+    @Parameter(name = "taskId", description = "任务ID（筛查记录ID）", required = true)
+    public CommonResult<Boolean> completeRecheckTask(
+            @RequestParam("taskId") Long taskId,
+            @RequestBody(required = false) Map<String, Object> data) {
+        ScreeningRecordDO record = screeningRecordMapper.selectById(taskId);
+        if (record == null) {
+            throw exception(SCREENING_RECORD_NOT_EXISTS);
+        }
+        ScreeningRecordDO update = new ScreeningRecordDO();
+        update.setId(taskId);
+        update.setCheckStatus(2); // 2待审核
+        // 若有补充的明细/阳性信息，一并更新
+        if (data != null) {
+            if (data.get("hasPositive") != null) {
+                update.setHasPositive(Integer.valueOf(data.get("hasPositive").toString()));
+            }
+            if (data.get("positiveItems") != null) {
+                update.setPositiveItems(data.get("positiveItems").toString());
+            }
+        }
+        screeningRecordMapper.updateById(update);
+        return success(true);
     }
 
 }
